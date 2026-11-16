@@ -117,7 +117,7 @@ UKB_460K.biochemistry_Urea	Loh_2018_Urea	drafted
 UKB_460K.biochemistry_VitaminD	Loh_2018_VitaminD	drafted
 PASS_ADHD_Demontis2018	Demontis_2019_ADHD	drafted
 PASS_AdultOnsetAsthma_Ferreira2019	Ferreira_2019_AdultOnsetAsthma	drafted
-PASS_AgeOfInitiation_Liu2019	Liu_2019_AgeDrinkingInitiation	drafted
+PASS_AgeOfInitiation_Liu2019	Liu_2019_AgeSmokingInitiation	by hand: age of smoking initiation: the GWAS Catalog lists it among the traits of Liu 2019, and no age of starting to drink. The release's trait name, Age of Drinking Initiation, is wrong
 PASS_Alzheimers_Jansen2019	Jansen_2019_Alzheimers	drafted
 PASS_AlzheimersMaternal_Marioni2018	Marioni_2018_AlzheimersMaternal	drafted
 PASS_AlzheimersPaternal_Marioni2018	Marioni_2018_AlzheimersPaternal	drafted

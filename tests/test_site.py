@@ -12,6 +12,7 @@ import os
 import pwd
 import re
 import subprocess
+import tomllib
 from pathlib import Path
 
 import pytest
@@ -24,6 +25,7 @@ from build.__main__ import BLOB, build
 from build.release import tree
 from conftest import DATA, ROOT, SITE
 from papers import cite
+from qc import labels
 
 SITE_DATA = json.loads((DATA / "studies.json").read_text())
 STUDIES, RELEASE = SITE_DATA["studies"], SITE_DATA["release"]
@@ -156,13 +158,19 @@ def test_every_study_cites_its_paper():
 
 
 def test_the_checks_catch_the_known_mislabels():
-    """Four studies of the Pan-UK Biobank whose label and genetic correlations disagree: the label check finds each."""
-    doubts = lambda study: [note for note in BY_ID[study].get("notes", []) if note[1].startswith("label in doubt")]
+    """Four studies of the Pan-UK Biobank whose label and genetic correlations disagree: the label check finds each, by
+    itself, from the trait names and the genetic correlations alone."""
+    tables = {anc: correlations(anc) for anc in RELEASE["ancestries"]}
+    signed = {d["id"]: {"trait": d["trait"], "h2_z": d["h2_z"]} for d in STUDIES if d["cross"]}
+    found = labels.check(signed, tables, tomllib.loads((merge.DATA / "checks.toml").read_text())["label"])
     ldl = "PANUKBB_LDLDirectAdjustedByMedication"
-    assert BY_ID[ldl]["qc"] == "fail" and any(level == "fail" and "FEV1" in text for level, text in doubts(ldl))  # its best match is FEV1/FVC
-    assert BY_ID["PANUKBB_IndirectBilirubin"]["qc"] == "fail" and doubts("PANUKBB_IndirectBilirubin")
-    for study in ("PANUKBB_OperationTonsillectomyAdenoids", "PANUKBB_AtrialFibrillationAndFlutter"):
-        assert BY_ID[study]["qc"] in ("warn", "fail") and doubts(study)
+    assert any(level == "fail" and "FEV1" in text for level, text in found[ldl])  # its best match is FEV1/FVC
+    assert any(level == "fail" for level, _ in found["PANUKBB_IndirectBilirubin"])
+    assert found["PANUKBB_OperationTonsillectomyAdenoids"] and found["PANUKBB_AtrialFibrillationAndFlutter"]
+    # what the site says of them, after a person looked: three hold another trait; the fourth is what it says, and the
+    # study it disagreed with is the one at fault, its Z not going with its alleles
+    assert [BY_ID[study]["qc"] for study in (ldl, "PANUKBB_IndirectBilirubin", "PANUKBB_OperationTonsillectomyAdenoids")] == ["fail"] * 3
+    assert BY_ID["PANUKBB_AtrialFibrillationAndFlutter"]["qc"] == "pass" and BY_ID["PASS_AtrialFibrillation_Nielsen2018"]["qc"] == "fail"
 
 
 def test_what_the_checks_say_of_the_release():

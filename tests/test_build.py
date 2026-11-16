@@ -380,6 +380,17 @@ def test_a_study_that_is_another_trait_s_twin_fails_when_that_trait_is_confirmed
                            ("warn", "label in doubt: rg 0.08 only with {d} (LDLdirect), a study of the same trait by its label")]}  # d is not blamed: a failed one explains it
 
 
+def test_a_study_known_to_be_at_fault_explains_a_disagreement():
+    pair = (["Atrial Fibrillation And Flutter", "Atrial Fibrilation"], {"ab": -0.19})
+    assert set(label_check(*pair)) == {"a", "b"}
+    ids = ["a", "b"]
+    table = {"EUR": {"ids": ids, "rg": [-0.19], "se": [0.02]}}
+    found = labels.check({i: {"trait": trait, "h2_z": 10} for i, trait in zip(ids, pair[0])}, table, LABEL_RULES, faulty={"b"})
+    assert set(found) == {"b"}  # b's Z does not go with its alleles: a is not blamed for disagreeing with it
+    twins = labels.check({"a": {"trait": "Operation Tonsillectomy Adenoids", "h2_z": 10}, "b": {"trait": "Varicose Veins", "h2_z": 10}}, {"EUR": {"ids": ids, "rg": [1.03], "se": [0.01]}}, LABEL_RULES, faulty={"a"})
+    assert set(twins) == {"a"}  # a holds b's trait: b's label is not in doubt
+
+
 def test_two_twins_of_different_labels_both_warn_when_nothing_confirms_either():
     found = label_check(["Operation Tonsillectomy Adenoids", "Varicose Veins"], {"ab": 1.03})
     assert found == {"a": [("warn", "label in doubt: rg 1.03 with {b} (Varicose Veins), a study of another trait by its label; one of the two labels is wrong")],

@@ -45,9 +45,10 @@ def related(a: list[str], b: list[str], pairs) -> bool:
     return any((p in x and q in y) or (q in x and p in y) for p, q in pairs)
 
 
-def check(studies: dict[str, dict], tables: dict[str, dict], rules: dict) -> dict[str, list[tuple[str, str]]]:
+def check(studies: dict[str, dict], tables: dict[str, dict], rules: dict, faulty=frozenset()) -> dict[str, list[tuple[str, str]]]:
     """{study ID: its findings, each (fail or warn, what was found)}. `studies`: {ID: trait, h2_z}; `tables`: per
-    ancestry, `ids` and the lists `rg` and `se` over the pairs of ids, row by row; `rules`: the [label] thresholds."""
+    ancestry, `ids` and the lists `rg` and `se` over the pairs of ids, row by row; `rules`: the [label] thresholds;
+    `faulty`: studies known to be at fault, which explain a disagreement: the other study is not blamed for it."""
     ignore = set(rules["ignore"])
     label = {i: words(d["trait"], ignore) for i, d in studies.items()}
     pairs = [tuple(" ".join(words(part, ignore)) for part in pair) for pair in rules["related"]]  # in the labels' own spelling
@@ -68,11 +69,11 @@ def check(studies: dict[str, dict], tables: dict[str, dict], rules: dict) -> dic
     found = {}
     for a, b, rg in twins:  # the one whose label nothing confirms carries, it seems, the other's trait
         for mine, other in ((a, b), (b, a)):
-            if mine not in confirmed:
+            if mine not in confirmed and (mine in faulty or other not in faulty):
                 level = "fail" if other in confirmed else "warn"
                 found.setdefault(mine, []).append((level, f"label in doubt: rg {rg:.2f} with {name(other)}, a study of another trait by its label; "
                                                    + ("other studies confirm that label, none this study's" if level == "fail" else "one of the two labels is wrong")))
-    failed = {i for i, findings in found.items() if any(level == "fail" for level, _ in findings)}
+    failed = {i for i, findings in found.items() if any(level == "fail" for level, _ in findings)} | set(faulty)
     for a, b, rg in conflicts:  # a failed study explains the disagreement: the other is not blamed for it
         for mine, other in ((a, b), (b, a)):
             if mine not in confirmed and (mine in failed or other not in failed):

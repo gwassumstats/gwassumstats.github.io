@@ -124,7 +124,8 @@ def judge(studies: pd.DataFrame, tables: dict, metrics: pd.DataFrame, catalog: p
         raise ValueError(f"a finding made by hand is a {wrong[0]}: expected one of {', '.join(LEVELS)}")
     found += [finding for finding in by_hand if finding[0] in studies.index]
     signed = studies[studies["cross"]].assign(trait=lambda t: [reviewed[study][0] if study in reviewed else trait for study, trait in t["trait"].items()])
-    found += [(study, level, text) for study, findings in labels.check(signed[["trait", "h2_z"]].to_dict("index"), tables, rules["label"]).items() for level, text in findings]
+    faulty = {study for study, level, _ in by_hand if level == "fail"}  # a study that a person found at fault: its partners are not blamed for disagreeing with it
+    found += [(study, level, text) for study, findings in labels.check(signed[["trait", "h2_z"]].to_dict("index"), tables, rules["label"], faulty).items() for level, text in findings]
     notes = {study: [] for study in studies.index}
     for study, level, text in sorted(found, key=lambda finding: LEVELS.index(finding[1])):  # a stable sort: within a level, in the order found
         notes[study].append([level, text])
