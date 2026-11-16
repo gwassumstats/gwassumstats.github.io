@@ -110,7 +110,7 @@ main:has(#listview:not([hidden]) table:empty) { min-height: 100vh; }  /* the foo
 .data td.id { color: var(--muted); font-size: var(--fs-small); }
 .data .ref { min-width: 14.5rem; }  /* "Speliotes et al., 2010 Nat Genet" on one line */
 .pairs { max-width: 56rem; }  /* few columns: kept together */
-.pairs .id { width: auto; }
+.pairs .id, #h2-table .id { width: auto; }  /* and room for the ID on one line */
 .data .short { white-space: nowrap; }
 .data .sub td { padding-top: 0; }  /* a dataset's files, under its row, once logged in */
 .paths { color: var(--muted); font-size: var(--fs-small); }
