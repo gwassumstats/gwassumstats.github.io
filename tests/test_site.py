@@ -1,0 +1,256 @@
+"""The committed site: its data against the release it is built from, and nothing private in the repository.
+
+The release folder and the passphrase come from SUMSTATS_RELEASE and SUMSTATS_PASSPHRASE; a test that needs one that
+is not set is skipped, and says so. Run with both before publishing.
+"""
+import csv
+import functools
+import getpass
+import json
+import math
+import os
+import pwd
+import re
+import subprocess
+from pathlib import Path
+
+import pytest
+from cryptography.exceptions import InvalidTag
+
+import numpy as np
+
+from build import crypt
+from build.__main__ import BLOB, build
+from build.release import tree
+from conftest import DATA, ROOT, SITE
+
+SITE_DATA = json.loads((DATA / "datasets.json").read_text())
+DATASETS, RELEASE = SITE_DATA["datasets"], SITE_DATA["release"]
+BY_ID = {d["id"]: d for d in DATASETS}
+COLUMNS = {"rg": "genetic_correlation", "se": "genetic_correlation_se", "z": "genetic_correlation_z", "p": "genetic_correlation_p",
+           "gcov": "genetic_covariance", "gcov_se": "genetic_covariance_se"}  # site name -> the release's
+# What is never published: a path on O2 or on someone's computer, and a user name there (two to four letters, then
+# two to four digits). This file names none either: it is committed too.
+PATH = re.compile(r"/n/[a-z0-9_]+|/(?:home|Users)/\w")
+NAME = r"[a-z]{2,4}[0-9]{2,4}"
+USER = re.compile(rf"(?<![A-Za-z0-9_#.-]){NAME}(?![A-Za-z0-9_-])")
+NOT_USERS = {"base64", "sha256", "win32"}
+
+
+def correlations(anc):
+    return json.loads((DATA / f"rg_{anc}.json").read_text())
+
+
+def by_pair(t):
+    """{the two IDs: the pair's values}: the lists hold the pairs i < j of `ids`, row by row."""
+    order = [frozenset((a, b)) for i, a in enumerate(t["ids"]) for b in t["ids"][i + 1:]]
+    return dict(zip(order, zip(*(t[c] for c in COLUMNS), strict=True), strict=True))
+
+
+def rows(path):
+    with open(path, encoding="utf-8", newline="") as f:
+        return list(csv.DictReader(f, delimiter="\t", quoting=csv.QUOTE_NONE))
+
+
+def number(text):
+    """A cell of a results table as the site holds it: a number, or None where the release has no estimate."""
+    try:
+        return None if math.isnan(float(text)) else float(text)
+    except ValueError:
+        return None
+
+
+def git(*args):
+    return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True, check=True).stdout
+
+
+def committed():
+    """Every file that is committed or would be: {path: text}."""
+    return {name: (ROOT / name).read_text(encoding="utf-8", errors="replace")
+            for name in git("ls-files", "--cached", "--others", "--exclude-standard").splitlines() if (ROOT / name).is_file()}
+
+
+def people():
+    """O2 user names known here: whoever runs the tests and, where the release is at hand, the owners of its files."""
+    folder, names = Path(os.environ.get("SUMSTATS_RELEASE") or ROOT), {getpass.getuser()}
+    for uid in {path.stat().st_uid for path in [folder, *folder.parents, *(folder.rglob("*") if folder != ROOT else [])]}:
+        try:
+            names.add(pwd.getpwuid(uid).pw_name)
+        except KeyError:  # an account that is gone
+            pass
+    return {name for name in names if re.fullmatch(NAME, name)}  # not root, nor the account of a build machine
+
+
+# ---------------------------------------------------------------- the data
+
+
+def test_counts_are_the_release_s():
+    count = lambda **want: sum(all(d.get(k) == v for k, v in want.items()) for d in DATASETS)
+    assert len(DATASETS) == len(BY_ID) == 602
+    assert (count(anc="EUR"), count(anc="EAS")) == (546, 56)
+    assert [sum("panel" in d for d in DATASETS if d["anc"] == anc) for anc in ("EUR", "EAS")] == [85, 17]
+    assert count(signed=True) == count(cross=True) == 576 and count(release=2026) == 205 and count(release=2024) == 397
+    for anc, signed, failed in (("EUR", 520, 821), ("EAS", 56, 55)):
+        t = correlations(anc)
+        assert t["ids"] == [d["id"] for d in DATASETS if d["anc"] == anc and d["cross"]] and len(t["ids"]) == signed
+        assert {len(t[c]) for c in COLUMNS} == {signed * (signed - 1) // 2} and t["rg"].count(None) == failed
+        assert RELEASE[anc] | {"worst": None} == RELEASE[anc] | {"worst": None, "datasets": count(anc=anc), "signed": signed, "pairs": len(t["rg"]), "failed": failed}
+
+
+def test_a_panel_is_what_about_says():
+    for anc in RELEASE["ancestries"]:
+        panel = sorted((d for d in DATASETS if d["anc"] == anc and "panel" in d), key=lambda d: d["panel"])
+        estimates = by_pair(correlations(anc))
+        within = [estimates[frozenset((a["id"], b["id"]))][0] for i, a in enumerate(panel) for b in panel[i + 1:]]
+        assert [d["panel"] for d in panel] == list(range(1, len(panel) + 1))
+        assert all(d["h2_z"] > 6 and d["cross"] for d in panel)
+        assert all(rg is not None and rg ** 2 <= 0.1 for rg in within)
+
+
+def test_a_heatmap_is_in_the_order_of_its_clustering():
+    for anc in RELEASE["ancestries"]:
+        t = correlations(anc)
+        n, estimates = len(t["ids"]), by_pair(t)
+        rg = np.array([[0 if a == b else estimates[frozenset((a, b))][0] or 0 for b in t["ids"]] for a in t["ids"]])  # no estimate: 0
+        distance = 1 - np.minimum(np.abs(rg), 1)
+        panel = [i for i, name in enumerate(t["ids"]) if "panel" in BY_ID[name]]
+        assert t["heat"] == {"all": tree(distance), "panel": tree(distance[np.ix_(panel, panel)], panel)}
+        for members, heat in ((list(range(n)), t["heat"]["all"]), (panel, t["heat"]["panel"])):
+            heights = [height for *_, height in heat["merges"]]
+            assert sorted(heat["order"]) == members and len(heights) == len(members) - 1 and heights == sorted(heights)
+
+
+def test_the_data_is_small():
+    sizes = {path.name: path.stat().st_size for path in DATA.iterdir()}
+    assert set(sizes) == {"datasets.json", "rg_EUR.json", "rg_EAS.json", BLOB}
+    assert sum(sizes.values()) < 20e6  # the plan: well under 100 MB
+
+
+def test_the_site_data_is_a_build_of_the_release(release, tmp_path):
+    build(release, tmp_path, "not the passphrase", 1000)
+    differ = [name for name in ("datasets.json", "rg_EUR.json", "rg_EAS.json") if (tmp_path / name).read_bytes() != (DATA / name).read_bytes()]
+    assert not differ, "rebuild the site: python -m build"
+
+
+def test_every_value_is_the_release_s(release):
+    """Read again from the release's own tables, without the build's code."""
+    one = lambda pattern: functools.reduce(lambda _, path: path, sorted(release.glob(pattern)))
+    yes = lambda cell: {"YES": True, "NO": False}[cell]
+    inventory = rows(one("summary_statistics_*.txt"))
+    assert [(r["Trait Identifier"], r["Trait Name"].strip(), r["Population"], int(r["N"]), int(r["M"]), r["Origin"].strip(), r["Reference"].strip(),
+             yes(r["Signed SumStat"]), yes(r["Allele Info"]), yes(r["Cross-Trait LDSC"])) for r in inventory] \
+        == [(d["id"], d["trait"], d["anc"], d["n"], d["m"], d["origin"], d["ref"], d["signed"], d["alleles"], d["cross"]) for d in DATASETS]
+    for anc in ("EUR", "EAS"):
+        mine = [d for d in DATASETS if d["anc"] == anc]
+        h2 = rows(one(f"sldsc_heritabilities_{anc}_*.txt"))
+        assert {r["trait_identifier"]: tuple(float(r[c]) for c in ("h2", "h2_se", "h2_z", "intercept")) for r in h2} \
+            == {d["id"]: (d["h2"], d["h2_se"], d["h2_z"], d["intercept"]) for d in mine}
+        assert [r["trait_identifier"] for r in rows(one(f"non_redundent_traits_{anc}_*.txt"))] \
+            == [d["id"] for d in sorted((d for d in mine if "panel" in d), key=lambda d: d["panel"])]
+        table, t = rows(one(f"ldsc_genetic_correlations_trait_pairs_{anc}_*.txt")), correlations(anc)
+        theirs = {frozenset((r["trait1"], r["trait2"])): tuple(number(r[c]) for c in COLUMNS.values()) for r in table}
+        ours = by_pair(t)
+        assert len(table) == len(theirs) == len(ours)
+        assert not [sorted(pair) for pair in theirs if theirs[pair] != ours.get(pair)][:5]
+        reasons = {frozenset((r["trait1"], r["trait2"])): " ".join(r["genetic_correlation_z"].split("(")[-1].rstrip(")").split())
+                   for r in table if "out of bounds" in r["genetic_correlation_z"]}
+        assert reasons == {pair: t["notes"][str(k)] for k, pair in enumerate(ours) if str(k) in t["notes"]} and len(reasons) == len(t["notes"])
+    index = rows(release / "_audit" / "sumstats_file_index.tsv")
+    assert [(r["Trait Identifier"], int(r["Release"][:4]), int(r["M in RG input"]) if r["M in RG input"] else None) for r in index] \
+        == [(d["id"], d["release"], d.get("m_rg")) for d in DATASETS]
+    papers = rows(release / "_audit" / "new_study_provenance.tsv")
+    assert {r["Trait Identifier"]: (r["PMID"], r["Paper Link"], r["Catalog Study Link"], r["Target Paper Identifier"]) for r in papers} \
+        == {d["id"]: (d["pmid"], d["paper"], d["catalog"], d["paper_id"]) for d in DATASETS if "pmid" in d}
+    assert len(papers) == RELEASE["all"]["added"] and len({r["Target Paper Identifier"] for r in papers}) == RELEASE["papers"]
+
+
+def test_the_texts_quote_the_release(release):
+    notes = re.sub(r"<[^>]+>|\s+", " ", (SITE / "index.html").read_text())
+    kept = {r["Check"]: int(r["Details"]) for r in rows(release / "_audit" / "validation_results.tsv") if r["Check"].endswith("complete subgraph")}
+    eur, eas = kept["EUR complete subgraph"], kept["EAS complete subgraph"]
+    assert re.sub(r"\s+", " ", f"{RELEASE['EUR']['signed'] - eur} EUR datasets and {RELEASE['EAS']['signed'] - eas} EAS dataset go, {eur} and {eas} stay.") in re.sub(r"\s+", " ", notes)
+
+
+def test_the_numbers_in_the_texts_are_the_data_s():
+    """The page fills them in from the data when it loads; what is written in must agree, for a reader of the file."""
+    html = (SITE / "index.html").read_text()
+    written = re.findall(r'data-v="([\w.]+)">([^<]*)<', html)
+    value = lambda path: functools.reduce(lambda o, k: o[k], path.split("."), RELEASE)
+    shown = lambda v: f"{v:,}" if isinstance(v, int) else v.replace("-", "/")
+    assert len(written) > 40
+    assert not [(path, text) for path, text in written if text != shown(value(path))]
+    corrected = BY_ID["GCST90503316"]
+    assert f"GCST90503316 uses a corrected estimate (h² {corrected['h2']}, SE {corrected['h2_se']})" in html
+    assert f"{RELEASE['year']} release" in html and "Gaspard Kerner" in html and "Ben Strober" in html
+
+
+# ---------------------------------------------------------------- what is private
+
+
+def test_the_blob_opens_with_the_passphrase_only(passphrase):
+    blob = json.loads((DATA / BLOB).read_text())
+    assert (blob["kdf"], blob["cipher"]) == ("PBKDF2-HMAC-SHA256", "AES-256-GCM") and blob["iterations"] >= 600_000
+    assert [len(crypt.base64.b64decode(blob[k])) for k in ("salt", "iv")] == [16, 12]
+    private = json.loads(crypt.decrypt(blob, passphrase))
+    assert set(private["files"]) == set(BY_ID) and all(private["files"][d["id"]][0] and bool(private["files"][d["id"]][1]) == d["cross"] for d in DATASETS)
+    for wrong in (passphrase + " ", passphrase[:-1], passphrase.upper(), ""):
+        with pytest.raises(InvalidTag):
+            crypt.decrypt(blob, wrong)
+
+
+def test_the_blob_holds_the_file_index_and_every_file_is_there(release, passphrase, tmp_path):
+    private = json.loads(crypt.decrypt(json.loads((DATA / BLOB).read_text()), passphrase))
+    build(release, tmp_path, "not the passphrase", 1000)
+    assert private == json.loads(crypt.decrypt(json.loads((tmp_path / BLOB).read_text()), "not the passphrase")), "rebuild the site: python -m build"
+    where = lambda file: file and f"{private['folders'][file[0]]}/{file[1]}"
+    index = rows(release / "_audit" / "sumstats_file_index.tsv")
+    assert [(r["Trait Identifier"], r["H2 Sumstats"], r["RG Sumstats"] or None) for r in index] \
+        == [(d["id"], where(private["files"][d["id"]][0]), where(private["files"][d["id"]][1])) for d in DATASETS]
+    assert private["release"] == str(release) and all((release / name).is_file() for name in private["tables"])
+    head = lambda path: Path(path).open().readline().rstrip("\n").split("\t")  # About: "What is in a file?"
+    wrong = [r["Trait Identifier"] for r in index for path in {r["H2 Sumstats"], r["RG Sumstats"]} - {""}
+             if head(path) != (["SNP", "A1", "A2", "N", "Z"] if BY_ID[r["Trait Identifier"]]["alleles"] else ["SNP", "N", "Z"])]
+    assert not wrong
+
+
+def test_no_path_and_no_user_name_is_committed():
+    known, files = people(), committed()
+    assert len(files) > 10
+    del files[f"site/data/{BLOB}"]  # ciphertext: a few of its letters, digits and slashes can look like a path or a name
+    paths = {name: PATH.findall(text)[:3] for name, text in files.items() if PATH.search(text)}
+    shaped = {name: sorted(set(USER.findall(text)) - NOT_USERS)[:5] for name, text in files.items()}
+    named = [name for name, text in files.items() if any(person in text for person in known)]
+    assert not paths and not {name: found for name, found in shaped.items() if found} and not named
+
+
+def test_the_passphrase_and_the_paths_are_nowhere_but_in_the_blob(passphrase):
+    files = committed()
+    private = json.loads(crypt.decrypt(json.loads(files[f"site/data/{BLOB}"]), passphrase))
+    release = Path(private["release"])
+    secret = [str(release), release.name, str(Path(*release.parts[:3])), *private["folders"]]  # the folder, its name, the root it is under
+    leaks = [name for name, text in files.items() if passphrase.lower() in text.lower() or any(s in text for s in secret)]
+    assert not leaks  # the names of the files only: a failure must not print the passphrase
+
+
+def test_the_history_is_clean():
+    """Nothing private in an earlier commit or in a commit message either."""
+    if not (ROOT / ".git").exists():
+        pytest.skip("not a git checkout")
+    everything = git("log", "--all", "-p", "--format=%B")  # every line a commit added or removed, and every message
+    readable = git("log", "--all", "-p", "--format=%B", "--", ".", f":(exclude)site/data/{BLOB}")  # without the ciphertext
+    assert not PATH.findall(readable)[:3]
+    assert not sorted(set(USER.findall(readable)) - NOT_USERS)[:5]
+    assert not [k for k, person in enumerate(sorted(people())) if person in readable]
+    passphrase = os.environ.get("SUMSTATS_PASSPHRASE")
+    leaked = bool(passphrase) and passphrase.lower() in everything.lower()
+    assert not leaked  # said without printing it
+
+
+def test_the_page_loads_nothing_from_elsewhere():
+    """The passphrase is typed into this page: no script, style or request of another site."""
+    html, script, style = ((SITE / name).read_text() for name in ("index.html", "app.js", "style.css"))
+    assert all(rule in html for rule in ("default-src 'none'", "script-src 'self'", "style-src 'self'", "connect-src 'self'", "form-action 'none'"))
+    loaded = re.findall(r'<(?:script|link|img|iframe|source)\b[^>]*?\b(?:src|href)="([^"]+)"', html)
+    assert len(loaded) == 4 and not [url for url in loaded if re.match(r"(?:[a-z]+:)?//", url)]  # the icon (data:), the style, the inventory, the script
+    assert re.findall(r"https?://[\w./-]+", script) == ["http://www.w3.org/2000/svg"]  # a name, not a request
+    assert "url(" not in style and "@import" not in style and " style=" not in html
