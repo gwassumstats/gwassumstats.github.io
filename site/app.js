@@ -1,11 +1,13 @@
 // GWAS Sumstats: a catalog read from data/*.json (written by build/). Where the files are on O2 is in
 // data/paths.enc.json, encrypted under the lab's passphrase; it is decrypted here, and nothing leaves this browser.
+// A study is called by its short name (d.name) everywhere; its ID in the release shows on its page and in exports.
 
 const TITLE = "GWAS Sumstats";
 const TABS = { sumstats: "", h2: "Heritability", rg: "Genetic correlation", notes: "Release notes", about: "About" };  // tab → its page title
 const STRONG_Z = 3;  // a genetic correlation is listed among a study's strongest if its |z| is at least this
 const TOP = 10;      // the strongest shown before "show all"
 const PANEL_MAX = Math.sqrt(0.1);  // a panel's heatmap: its colours end at the panels' bound, rg² = 0.1
+const PUBMED = "https://pubmed.ncbi.nlm.nih.gov/", DOI = "https://doi.org/";  // where a paper's links lead
 const $ = (id) => document.getElementById(id);
 const el = (tag, cls, text) => Object.assign(document.createElement(tag), { className: cls || "", textContent: text ?? "" });
 const svg = (tag, attrs = {}) => {
@@ -16,9 +18,11 @@ const svg = (tag, attrs = {}) => {
 
 const state = {
   loaded: false, studies: [], byId: new Map(), release: null,
+  papers: {},         // PMID → the label of a paper: "Speliotes et al. 2010 Nat Genet"
   view: "sumstats",   // a tab, or "study": the page of state.study
   study: null,
-  filter: { q: "", anc: "", z6: false, signed: false, panel: false },  // of the studies under "sumstats" and "heritability"
+  filter: { q: "", anc: "", z6: false, signed: false, panel: false, ticked: false },  // of the studies under "sumstats" and "heritability"
+  cart: new Set(),    // the IDs of the studies ticked, for the exports; kept in this browser
   sort: { sumstats: null, h2: { key: "h2", dir: -1 }, neighbours: null },  // null: the release's order; for neighbours, the strongest first
   rg: { a: null, b: null, strict: true, all: false, heat: null },  // the pair looked up, the neighbours listed, the heatmap drawn ({ anc, kind })
   paths: null,        // where the files are, once logged in
@@ -26,6 +30,7 @@ const state = {
 const tables = new Map();  // ancestry → promise of its genetic correlations
 const rows = { sumstats: new Map(), h2: new Map() };  // study id → its <tbody>, per table
 let blob;  // promise of the encrypted paths
+let records;  // promise of the papers: authors, title, journal, BibTeX entry
 
 // ---------------------------------------------------------------- helpers
 
@@ -92,10 +97,25 @@ const outside = (url, ...content) => {
   a.append(...content);
   return a;
 };
-const studyLink = (d) => Object.assign(el("a", "", d.trait), { href: `?study=${encodeURIComponent(d.id)}` });
-const reference = (d) => (httpUrl(d.paper) ? outside(d.paper, ...parts(d.ref)) : parts(d.ref));
+const studyLink = (d) => {
+  const a = Object.assign(el("a"), { href: `?study=${encodeURIComponent(d.id)}` });
+  a.append(...parts(d.name));
+  return a;
+};
+// A study's paper, by its label, linked to PubMed; the inventory's own words for a study whose paper is not known
+const reference = (d) => (d.cite ? outside(`${PUBMED}${d.cite[0]}/`, state.papers[d.cite[0]]) : parts(d.ref));
 
 const load = (name) => fetch(`data/${name}`, { cache: "no-cache" }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(`${name}: ${r.status}`))));
+const papers = () => (records ??= load("papers.json").catch((e) => { records = undefined; throw e; }));  // loaded when first needed
+
+// Hands the reader a file made here
+function download(name, text, type) {
+  const a = Object.assign(el("a"), { href: URL.createObjectURL(new Blob([text], { type })), download: name });
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+}
 
 // ---------------------------------------------------------------- genetic correlations
 
@@ -145,6 +165,7 @@ async function decrypt({ iv, data }, key) {
 function setPaths(paths) {
   state.paths = paths;
   for (const cache of Object.values(rows)) cache.clear();  // the rows gain or lose their paths
+  renderCart();  // and the export its paths
   render();
 }
 
@@ -231,29 +252,107 @@ function pathLine(d, label = "") {
 function shown() {
   const f = state.filter, sought = words(f.q);
   return state.studies.filter((d) => (!f.anc || d.anc === f.anc) && (!f.z6 || d.h2_z > 6) && (!f.signed || d.signed) && (!f.panel || d.panel)
-    && sought.every((w) => d.text.includes(w)));
+    && (!f.ticked || state.cart.has(d.id)) && sought.every((w) => d.text.includes(w)));
 }
 
 const compare = (x, y) => (typeof x === "string" ? x.localeCompare(y, "en", { numeric: true, sensitivity: "base" }) : (x ?? -Infinity) - (y ?? -Infinity));
 // `list` by a column, in the direction asked; ties, and no sort at all, keep the order of `list`
 const sorted = (list, sort, value = (item) => item[sort.key]) => (sort ? [...list].sort((a, b) => sort.dir * compare(value(a), value(b))) : list);
 
+// ---------------------------------------------------------------- the cart: studies ticked, and what is exported of them
+
+const ticked = () => state.studies.filter((d) => state.cart.has(d.id));
+// The ticks kept in this browser, without those of studies that are gone
+function readCart() {
+  let ids = [];
+  try { ids = JSON.parse(store("cart")) ?? []; } catch {}
+  state.cart = new Set(Array.isArray(ids) ? ids.filter((id) => state.byId.has(id)) : []);
+}
+let tickAll;  // the box in the header of the table shown: ticks every study listed
+
+function tick(studies, on) {
+  for (const d of studies) on ? state.cart.add(d.id) : state.cart.delete(d.id);
+  store("cart", JSON.stringify([...state.cart]));
+  for (const cache of Object.values(rows)) {  // the same study's box in the other table
+    for (const d of studies) {
+      const box = cache.get(d.id)?.querySelector(".tick input");
+      if (box) box.checked = on;
+    }
+  }
+  if (state.filter.ticked && (state.view === "sumstats" || state.view === "h2")) renderList();  // the rows listed change
+  else renderCart();
+}
+
+// A study's box. Ticking leaves the table as it is, so the keyboard stays on the row.
+function tickBox(d) {
+  const box = Object.assign(el("input"), { type: "checkbox", checked: state.cart.has(d.id) });
+  box.setAttribute("aria-label", `Tick ${d.name}`);
+  box.addEventListener("change", () => tick([d], box.checked));
+  return box;
+}
+
+function tickAllBox() {
+  tickAll = Object.assign(el("input"), { type: "checkbox", title: "Tick every study listed" });
+  tickAll.setAttribute("aria-label", "Tick every study listed");
+  tickAll.addEventListener("change", () => tick(shown(), tickAll.checked));
+  return tickAll;
+}
+
+// How many are ticked, and the exports; the header's box says whether the studies listed are
+function renderCart() {
+  const n = state.cart.size, cart = $("cart");
+  cart.hidden = !n;
+  if (n) {
+    cart.replaceChildren(` · ${int(n)} ticked: download `, action(state.paths ? "IDs and paths (TSV)" : "IDs (TSV)", exportStudies), " or ",
+      action("references (BibTeX)", exportReferences), " · ", action("untick all", () => tick(ticked(), false)));
+  }
+  if (!tickAll?.isConnected) return;
+  const list = shown(), on = list.filter((d) => state.cart.has(d.id)).length;
+  tickAll.checked = on > 0 && on === list.length;
+  tickAll.indeterminate = on > 0 && on < list.length;
+}
+
+// The studies ticked as a table: short name, ID, and what a script needs to find and cite each; the path after login
+function exportStudies() {
+  const columns = [["short_name", (d) => d.name], ["id", (d) => d.id], ["release_name", (d) => d.trait], ["ancestry", (d) => d.anc], ["n", (d) => d.n],
+    ["reference", (d) => d.label], ["pmid", (d) => (d.cite ?? []).join(";")], ...(state.paths ? [["path", filePath]] : [])];
+  const cell = (value) => String(value ?? "").replace(/[\t\r\n]+/g, " ");
+  const lines = [columns.map(([name]) => name), ...ticked().map((d) => columns.map(([, value]) => cell(value(d))))];
+  download("gwas-sumstats-studies.tsv", `${lines.map((line) => line.join("\t")).join("\n")}\n`, "text/tab-separated-values");
+}
+
+// The papers of the studies ticked, as BibTeX: an entry a paper, under a comment that names its studies
+async function exportReferences() {
+  let all;
+  try {
+    all = await papers();
+  } catch {
+    return toast("The references did not load; check the connection and try again.");
+  }
+  const cited = new Map(), named = (d) => `${d.name} (${d.id})`;
+  for (const d of ticked()) for (const pmid of d.cite ?? []) cited.set(pmid, [...(cited.get(pmid) ?? []), named(d)]);
+  const entries = [...cited].sort(([a], [b]) => compare(all[a].key, all[b].key)).map(([pmid, studies]) => `% ${studies.join(", ")}\n${all[pmid].bib}`);
+  const without = ticked().filter((d) => !d.cite).map(named);
+  download("gwas-sumstats-references.bib", entries.join("\n") + (without.length ? `\n% no paper known: ${without.join(", ")}\n` : ""), "application/x-bibtex");
+}
+
 // A column: key (the field it shows and sorts by), label, title (what the label means), num (a format: right-aligned,
-// largest first), show (the cell's content, if not the field itself), cls, first (-1: a click sorts the largest first).
-const TRAIT = { key: "trait", label: "Trait", cls: "trait", show: studyLink };
-const ID = { key: "id", label: "ID", cls: "id", show: (d) => parts(d.id) };
+// largest first), show (the cell's content, if not the field itself), cls, first (-1: a click sorts the largest first),
+// fixed (it does not sort).
+const TICK = { key: "ticked", label: tickAllBox, cls: "tick", fixed: true, show: tickBox };
+const STUDY = { key: "name", label: "Study", title: "Short name: first author, year and trait", cls: "study", show: studyLink };
 const ANCESTRY = { key: "anc", label: "Ancestry", cls: "short" };
 const H2 = { key: "h2", label: plusMinusLabel("h²"), title: "Heritability and its standard error: S-LDSC, observed scale", cls: "pm", first: -1, show: (d) => plusMinusCell(d.h2, d.h2_se) };
 const H2_Z = { key: "h2_z", label: "h² z", title: "h² over its standard error", num: sig };
 const COLUMNS = {
-  sumstats: [TRAIT, ID, ANCESTRY,
+  sumstats: [TICK, STUDY, ANCESTRY,
     { key: "n", label: "N", title: "Sample size", num: int },
     { key: "m", label: "M", title: "SNPs in the file", num: int },
     H2, H2_Z,
-    { key: "ref", label: "Reference", cls: "ref", show: reference }],
-  h2: [TRAIT, ID, ANCESTRY, H2, H2_Z,
+    { key: "label", label: "Reference", title: "The study's paper", cls: "ref", show: reference }],
+  h2: [TICK, STUDY, ANCESTRY, H2, H2_Z,
     { key: "intercept", label: "Intercept", title: "Intercept of the LD score regression", num: fixed(4) }],
-  neighbours: [{ ...TRAIT, show: (r) => studyLink(r.d) }, { ...ID, show: (r) => parts(r.d.id) },
+  neighbours: [{ ...STUDY, show: (r) => studyLink(r.d) },
     { key: "rg", label: rgPlusMinusLabel, title: "Genetic correlation and its standard error", cls: "pm", first: -1, show: (r) => plusMinusCell(r.rg, r.se) },
     { key: "z", label: "z", num: sig },
     { key: "p", label: "p", num: pValue }],
@@ -268,7 +367,7 @@ function header(columns, sort, onSort) {
   for (const c of columns) {
     const th = el("th", c.cls || (c.num ? "num" : "")), first = c.first ?? (c.num ? -1 : 1);
     th.scope = "col";
-    if (onSort) {
+    if (onSort && !c.fixed) {
       const button = el("button");
       button.type = "button";
       button.append(...labelOf(c));
@@ -281,7 +380,7 @@ function header(columns, sort, onSort) {
       th.append(button);
     } else {
       th.append(...labelOf(c));
-      th.title = c.title ?? "";
+      if (c.title) th.title = c.title;
     }
     tr.append(th);
   }
@@ -325,6 +424,7 @@ function renderList() {
   const bodies = sorted(list, state.sort[view]).map((d) => cache.get(d.id) ?? cache.set(d.id, body(columns, d, pathLine(d))).get(d.id));
   const head = header(columns, state.sort[view], (sort) => { state.sort[view] = sort; renderList(); });
   $(`${view}-table`).replaceChildren(head, ...(bodies.length ? bodies : [nothing(columns, "No study matches.")]));
+  renderCart();
   if (view === "h2") drawHistogram(list);
 }
 
@@ -416,7 +516,7 @@ async function drawHeat() {
   figure.dataset.drawn = drawn;
   const { order, merges } = t.heat[kind], n = order.length, studies = order.map((i) => state.byId.get(t.ids[i]));
   const limit = kind === "panel" ? PANEL_MAX : 1, colours = shades();
-  const TREE = 90, names = n <= 100 ? 230 : 0;  // the tree on the left; the traits' names on the right, where a row is tall enough to read one
+  const TREE = 90, names = n <= 100 ? 270 : 0;  // the tree on the left; the studies' names on the right, where a row is tall enough to read one
   const cell = Math.max(2, Math.min(28, Math.floor((width - TREE - names) / n))), size = cell * n;
 
   const canvas = Object.assign(document.createElement("canvas"), { width: n, height: n }), pixels = canvas.getContext("2d").createImageData(n, n);
@@ -444,7 +544,7 @@ async function drawHeat() {
     const font = Math.min(12, cell), fits = Math.floor((names - 8) / (font * 0.6));
     for (const [k, d] of studies.entries()) {
       const name = svg("text", { x: TREE + size + 8, y: (k + 0.5) * cell, "dominant-baseline": "central" });
-      name.textContent = d.trait.length > fits ? `${d.trait.slice(0, fits - 1).trimEnd()}…` : d.trait;
+      name.textContent = d.name.length > fits ? `${d.name.slice(0, fits - 1)}…` : d.name;
       name.style.fontSize = `${font}px`;
       chart.append(name);
     }
@@ -462,7 +562,7 @@ async function drawHeat() {
     if (!here) return leave();
     const [i, j] = here, e = i === j ? null : estimate(t, order[i], order[j]);
     for (const [name, value] of [["x", TREE + j * cell], ["y", i * cell], ["visibility", "visible"]]) frame.setAttribute(name, value);
-    showTip(event, ...(e ? [el("b", "", e.rg == null ? "not estimated" : plusMinus(e.rg, e.se)), el("br"), `${studies[i].trait} × ${studies[j].trait}`] : [studies[i].trait]));
+    showTip(event, ...(e ? [el("b", "", e.rg == null ? "not estimated" : plusMinus(e.rg, e.se)), el("br"), `${studies[i].name} × ${studies[j].name}`] : [studies[i].name]));
   });
   chart.addEventListener("pointerleave", leave);
   chart.addEventListener("click", (event) => {  // a cell's pair, looked up above
@@ -496,7 +596,7 @@ function picker(input, list, among, picked, onPick) {
   };
   const pick = (d) => {
     close();
-    if (d) input.value = d.trait;
+    if (d) input.value = d.name;
     onPick(d);
   };
   const mark = (k) => {
@@ -509,9 +609,9 @@ function picker(input, list, among, picked, onPick) {
     const sought = words(input.value);
     found = among().filter((d) => sought.every((w) => d.text.includes(w))).slice(0, 60);
     list.replaceChildren(...(found.length ? found.map((d, k) => {
-      const option = Object.assign(el("a", "", d.trait), { href: `?study=${encodeURIComponent(d.id)}`, id: `${list.id}-${k}` });
+      const option = Object.assign(el("a", "", d.name), { href: `?study=${encodeURIComponent(d.id)}`, id: `${list.id}-${k}` });
       option.setAttribute("role", "option");
-      option.append(" ", el("span", "hint", `${d.id} · ${d.anc}`));
+      option.append(" ", el("span", "hint", d.anc));
       option.addEventListener("mousedown", (event) => event.preventDefault());  // the field keeps the focus, so the click lands before the list closes
       option.addEventListener("click", link(() => pick(d)));
       return option;
@@ -522,7 +622,7 @@ function picker(input, list, among, picked, onPick) {
   };
   input.addEventListener("input", () => (input.value.trim() ? open() : pick(null)));
   input.addEventListener("focus", () => { input.select(); open(); });
-  input.addEventListener("blur", () => { close(); input.value = picked()?.trait ?? ""; });  // what was typed and not picked goes
+  input.addEventListener("blur", () => { close(); input.value = picked()?.name ?? ""; });  // what was typed and not picked goes
   input.addEventListener("keydown", (event) => {
     if (event.key === "Escape") return close();
     if (event.key === "Enter") {
@@ -555,7 +655,7 @@ function pairResult(a, b, e) {
 
 async function renderRg() {
   const { a, b } = state.rg;
-  for (const [input, d] of [[$("rg-a"), a], [$("rg-b"), b]]) if (document.activeElement !== input) input.value = d?.trait ?? "";
+  for (const [input, d] of [[$("rg-a"), a], [$("rg-b"), b]]) if (document.activeElement !== input) input.value = d?.name ?? "";
   $("rg-b").disabled = !a;
   $("pair-result").hidden = !(a && b);
   $("neighbours").hidden = !a;
@@ -575,9 +675,9 @@ async function renderRg() {
   if (b) pairResult(a, b, estimate(t, t.at.get(a.id), t.at.get(b.id)));
   const pairs = neighbours(t, a), missing = pairs.filter((r) => r.rg == null).length, listed = state.rg.strict ? strong(pairs) : pairs;
   const sort = state.sort.neighbours, columns = COLUMNS.neighbours;
-  const ordered = sort ? sorted(listed, sort, (r) => (sort.key === "trait" ? r.d.trait : sort.key === "id" ? r.d.id : r[sort.key])) : [...listed].sort(strongest);
+  const ordered = sort ? sorted(listed, sort, (r) => (sort.key === "name" ? r.d.name : r[sort.key])) : [...listed].sort(strongest);
   const head = el("span");
-  head.append(studyLink(a), ` (${a.id}): ${state.rg.strict ? `${int(listed.length)} of ` : ""}${howMany(pairs.length - missing, "genetic correlation")}`
+  head.append(studyLink(a), `: ${state.rg.strict ? `${int(listed.length)} of ` : ""}${howMany(pairs.length - missing, "genetic correlation")}`
     + `${missing ? `, ${int(missing)} not estimated` : ""}${sort ? "" : ", the strongest first"}`);
   $("neighbours-head").replaceChildren(head);
   $("rg-strict").checked = state.rg.strict;
@@ -591,19 +691,32 @@ async function renderRg() {
 
 // ---------------------------------------------------------------- a study's page
 
+// A paper in full: authors, title, journal, and its links
+function citation(pmid, paper) {
+  const line = el("div", "citation"), issue = `${paper.volume}${paper.issue ? `(${paper.issue})` : ""}`;
+  line.append(`${paper.authors.map((name) => name.replace(/^\{|\}$/g, "")).join(", ")}${paper.more ? ", et al" : ""}. ${paper.title}. `
+    + `${paper.journal} ${paper.year}${issue ? `;${issue}` : ""}${paper.pages ? `:${paper.pages}` : ""}. `,
+    outside(`${PUBMED}${pmid}/`, "PubMed"), ...(paper.doi ? [" · ", outside(`${DOI}${paper.doi}`, "DOI")] : []));
+  return line;
+}
+
 async function renderStudy() {
-  const d = state.study, page = $("view-study"), fields = el("div", "fields");
+  const d = state.study, page = $("view-study"), fields = el("div", "fields"), cited = el("div"), ticking = el("label", "check");
+  cited.append(...(d.cite ? d.cite.map((pmid) => { const line = el("div", "citation"); line.append(outside(`${PUBMED}${pmid}/`, state.papers[pmid])); return line; }) : [d.ref]));
+  if (d.cite) papers().then((all) => { if (state.study === d) cited.replaceChildren(...d.cite.map((pmid) => citation(pmid, all[pmid]))); }, () => {});  // the labels stay if it fails
+  ticking.append(tickBox(d), " ticked for export");
   fields.append(
-    field("ID", ...parts(d.id)), field("Ancestry", d.anc), field("N", int(d.n)),
+    field("ID", ...parts(d.id)), field("Release name", d.trait), field("Ancestry", d.anc), field("N", int(d.n)),
     field("M", d.m_rg != null && d.m_rg !== d.m ? `${int(d.m)} SNPs; ${int(d.m_rg)} without the strand-ambiguous ones, for rg` : `${int(d.m)} SNPs`),
-    field("Release", d.origin), field("Reference", ...[reference(d)].flat(), d.pmid ? ` (PMID ${d.pmid})` : ""),
+    field("Release", d.origin), field("Reference", cited),
     ...(httpUrl(d.catalog) ? [field("GWAS Catalog", outside(d.catalog, d.id))] : []),
     field("Signed", yesNo(d.signed)), field("Allele info", yesNo(d.alleles)), field("Cross-trait LDSC", yesNo(d.cross)),
     field("Nonredundant panel", d.panel ? `yes: ${int(d.panel)} of ${int(state.release[d.anc].panel)} in the ${d.anc} panel, by h² z` : "no"),
     field("h² ± SE", plusMinus(d.h2, d.h2_se)), field("h² z", sig(d.h2_z)), field("Intercept", fixed(4)(d.intercept)),
     field("Path", pathLine(d) ?? action("login to see it", () => openLogin(true))));
-  const head = el("h2", "", d.trait), section = el("div");
-  page.replaceChildren(head, fields, section);
+  const head = el("h2"), section = el("div");
+  head.append(...parts(d.name));
+  page.replaceChildren(head, ticking, fields, section);
   if (!d.cross) return section.append(el("p", "section-head", "No genetic correlations: the sumstats are unsigned."));
   section.append(el("p", "section-head", "Loading the genetic correlations…"));
   let t;
@@ -679,7 +792,7 @@ function route() {
     tab.classList.toggle("current", current);
     current ? tab.setAttribute("aria-current", "page") : tab.removeAttribute("aria-current");
   }
-  document.title = [state.study?.trait ?? TABS[state.view], TITLE].filter(Boolean).join(" · ");
+  document.title = [state.study?.name ?? TABS[state.view], TITLE].filter(Boolean).join(" · ");
   hideTip();
   render();
 }
@@ -696,15 +809,22 @@ function go(params) {
 function start(data) {
   state.release = data.release;
   state.studies = data.studies;
+  state.papers = data.papers;
   for (const d of data.studies) {
-    d.text = [d.trait, d.id, d.origin, d.ref].join("\n").toLowerCase();  // what the search reads
+    d.label = d.cite ? state.papers[d.cite[0]] : d.ref;  // its paper, as the table lists and sorts it
+    d.text = [d.name, d.id, d.trait, d.origin, d.ref, ...(d.cite ?? []).map((pmid) => state.papers[pmid])].join("\n").toLowerCase();  // what the search reads
     state.byId.set(d.id, d);
   }
   state.loaded = true;
+  readCart();
   $("f-anc").append(...data.release.ancestries.map((anc) => el("option", "", anc)));
-  for (const node of document.querySelectorAll("[data-v]")) {  // the numbers in the texts, from the release itself
+  for (const node of document.querySelectorAll("[data-v]")) {  // the numbers in the texts, from the release itself; a study by its name
     const value = node.dataset.v.split(".").reduce((o, k) => o?.[k], data.release);
-    if (value != null) node.textContent = typeof value === "number" ? int(value) : String(value).replace(/^(\d{4})-(\d\d)-(\d\d)$/, "$1/$2/$3");
+    if (state.byId.has(value)) node.replaceChildren(studyLink(state.byId.get(value)));
+    else if (value != null) node.textContent = typeof value === "number" ? int(value) : String(value).replace(/^(\d{4})-(\d\d)-(\d\d)$/, "$1/$2/$3");
+  }
+  for (const node of document.querySelectorAll("[data-study]")) {  // a study the texts name
+    if (state.byId.has(node.dataset.study)) node.replaceChildren(studyLink(state.byId.get(node.dataset.study)));
   }
   route();
   restore();
@@ -715,7 +835,7 @@ function listen() {
   $("filters").addEventListener("submit", (event) => event.preventDefault());
   $("q").addEventListener("input", () => { f.q = $("q").value; renderList(); });
   $("f-anc").addEventListener("change", () => { f.anc = $("f-anc").value; renderList(); });
-  for (const name of ["z6", "signed", "panel"]) $(`f-${name}`).addEventListener("change", () => { f[name] = $(`f-${name}`).checked; renderList(); });
+  for (const name of ["z6", "signed", "panel", "ticked"]) $(`f-${name}`).addEventListener("change", () => { f[name] = $(`f-${name}`).checked; renderList(); });
 
   $("pair").addEventListener("submit", (event) => event.preventDefault());
   const signed = () => state.studies.filter((d) => d.cross);
@@ -730,12 +850,15 @@ function listen() {
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !$("login").hidden) { closeLogin(); $("login-open").focus({ preventScroll: true }); }
   });
-  addEventListener("storage", (event) => { if (event.key === "key") restore(); });  // a login or logout in another tab of this browser applies here too
+  addEventListener("storage", (event) => {  // a login, a logout or a tick in another tab of this browser applies here too
+    if (event.key === "key") restore();
+    if (event.key === "cart" && state.loaded) { readCart(); for (const cache of Object.values(rows)) cache.clear(); render(); }
+  });
 
   // A link to another tab or study of this page changes the page in place; Ctrl, Cmd or Shift opens it as the browser would.
   document.addEventListener("click", (event) => {
     const a = event.target.closest?.("a[href]");
-    if (!a || event.defaultPrevented || event.button || event.ctrlKey || event.metaKey || event.shiftKey || a.target || a.getAttribute("href").startsWith("#")) return;
+    if (!a || event.defaultPrevented || event.button || event.ctrlKey || event.metaKey || event.shiftKey || a.target || a.download || a.getAttribute("href").startsWith("#")) return;
     const url = new URL(a.href);
     if (url.origin !== location.origin || url.pathname !== location.pathname) return;
     event.preventDefault();

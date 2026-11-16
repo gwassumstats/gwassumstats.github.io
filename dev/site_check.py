@@ -1,8 +1,8 @@
 """Browser check of the site, served from site/ on this machine.
 
-A headless browser opens every tab: the tables, the filters and the sorting, the charts, a study's page, and the
-login, which must show the paths only for the right passphrase, keep them over a reload and drop them at logout. What
-the page shows is compared with site/data, read here independently.
+A headless browser opens every tab: the tables, the filters and the sorting, the ticks and the files they export, the
+charts, a study's page with its paper, and the login, which must show the paths only for the right passphrase, keep
+them over a reload and drop them at logout. What the page shows is compared with site/data, read here independently.
 
   uv run --with playwright python -m playwright install chromium   # once
   SUMSTATS_PASSPHRASE=... uv run --with playwright python dev/site_check.py
@@ -30,10 +30,12 @@ from build import crypt  # noqa: E402
 PASSPHRASE = os.environ.get("SUMSTATS_PASSPHRASE") or sys.exit("set SUMSTATS_PASSPHRASE: the check logs in")
 SHOTS = os.environ.get("SITE_CHECK_SHOTS")
 DATA = json.loads((SITE / "data" / "studies.json").read_text())
-STUDIES, RELEASE = DATA["studies"], DATA["release"]
+STUDIES, RELEASE, LABELS = DATA["studies"], DATA["release"], DATA["papers"]
 BY_ID = {d["id"]: d for d in STUDIES}
+PAPERS = json.loads((SITE / "data" / "papers.json").read_text())
 RG = {anc: json.loads((SITE / "data" / f"rg_{anc}.json").read_text()) for anc in RELEASE["ancestries"]}
 PATHS = json.loads(crypt.decrypt(json.loads((SITE / "data" / "paths.enc.json").read_text()), PASSPHRASE))
+PUBMED = "https://pubmed.ncbi.nlm.nih.gov/"
 failed = False
 
 
@@ -93,8 +95,30 @@ def plus_minus(value, se):
     return "–" if value is None else f"{sig(value)} ± {sig(se)}"
 
 
+def label(d):
+    """A study's paper as the table names it."""
+    return LABELS[d["cite"][0]] if "cite" in d else d["ref"]
+
+
 def text(d):
-    return "\n".join([d["trait"], d["id"], d["origin"], d["ref"]]).lower()
+    """What the search reads of a study: its short name, its ID and name in the release, its release, its paper."""
+    return "\n".join([d["name"], d["id"], d["trait"], d["origin"], d["ref"], *(LABELS[pmid] for pmid in d.get("cite", []))]).lower()
+
+
+def table_of(studies, paths):
+    """The file of the studies ticked: a line each, with the path after login."""
+    head = ["short_name", "id", "release_name", "ancestry", "n", "reference", "pmid", *(["path"] if paths else [])]
+    lines = [[d["name"], d["id"], d["trait"], d["anc"], str(d["n"]), label(d), ";".join(d.get("cite", [])), *([file_path(d["id"])] if paths else [])] for d in studies]
+    return "".join("\t".join(line) + "\n" for line in [head, *lines])
+
+
+def references_of(studies):
+    """The BibTeX file of the studies ticked: an entry a paper, by key, under a comment that names its studies."""
+    cited = {}
+    for d in studies:
+        for pmid in d.get("cite", []):
+            cited.setdefault(pmid, []).append(f"{d['name']} ({d['id']})")
+    return "\n".join(f"% {', '.join(cited[pmid])}\n{PAPERS[pmid]['bib']}" for pmid in sorted(cited, key=lambda pmid: PAPERS[pmid]["key"].lower()))
 
 
 def run(pw, url, name, **context):
@@ -107,12 +131,15 @@ def run(pw, url, name, **context):
     page.on("console", lambda m: m.type in ("error", "warning") and errors.append(m.text))
     page.on("pageerror", lambda e: errors.append(str(e)))
     page.on("requestfailed", lambda r: errors.append(f"request failed: {r.url}"))
-    page.on("request", lambda r: r.url.startswith(url) or r.url.startswith("data:") or elsewhere.append(r.url))
+    page.on("request", lambda r: r.url.startswith(url) or r.url.startswith(("data:", "blob:")) or elsewhere.append(r.url))
     count = lambda: page.inner_text("#count")
     bodies = lambda table: page.locator(f"#{table} tbody")
-    first = lambda table: bodies(table).first.locator("td.trait").inner_text()
+    first = lambda table: bodies(table).first.locator("td.study").inner_text()
     fits = lambda: page.evaluate("document.documentElement.scrollWidth <= innerWidth")
     private = lambda: [f for f in [PATHS["release"], *PATHS["folders"]] if f in page.content()]
+    heads = lambda table: [" ".join(text.split()) for text in page.locator(f"#{table} th").all_inner_texts()]
+    cells = lambda table: [" ".join(text.split()) for text in bodies(table).first.locator("td").all_inner_texts()]  # of its first row
+    kept = lambda: json.loads(page.evaluate("localStorage.getItem('cart')") or "[]")
 
     def shot(view, full=True):
         if SHOTS:
@@ -122,21 +149,30 @@ def run(pw, url, name, **context):
         page.goto(url + query)
         expect(page.locator(ready).first).to_be_visible(timeout=20000)
 
+    def downloaded(link):
+        """The name and the text of the file that a click on the cart's link hands over."""
+        with page.expect_download() as download:
+            page.locator("#cart a", has_text=link).click()
+        return download.value.suggested_filename, Path(download.value.path()).read_text(encoding="utf-8")
+
     # the studies
     show("", "#sumstats-table tbody")
     check(f"[{name}] the table lists every study", bodies("sumstats-table").count() == len(STUDIES) == 602 and count() == "602 studies", count)
-    heads = lambda table: [" ".join(text.split()) for text in page.locator(f"#{table} th").all_inner_texts()]
-    cells = lambda table: [" ".join(text.split()) for text in bodies(table).first.locator("td").all_inner_texts()]  # of its first row
     d = STUDIES[0]
-    check(f"[{name}] its columns: h² ± SE and h² z to two significant digits; no Signed, no Release",
-          heads("sumstats-table") == ["Trait", "ID", "Ancestry", "N", "M", "h² ± SE", "h² z", "Reference"]
-          and cells("sumstats-table") == [d["trait"], d["id"], d["anc"], f"{d['n']:,}", f"{d['m']:,}", plus_minus(d["h2"], d["h2_se"]), sig(d["h2_z"]), d["ref"]],
+    check(f"[{name}] its columns: a study by its short name; h² ± SE and h² z to two significant digits; no ID, no trait, no Signed, no Release",
+          heads("sumstats-table") == ["", "Study", "Ancestry", "N", "M", "h² ± SE", "h² z", "Reference"]
+          and cells("sumstats-table") == ["", d["name"], d["anc"], f"{d['n']:,}", f"{d['m']:,}", plus_minus(d["h2"], d["h2_se"]), sig(d["h2_z"]), label(d)],
           lambda: (heads("sumstats-table"), cells("sumstats-table")))
+    links = page.locator("#sumstats-table td.ref a").evaluate_all("list => list.map((a) => [a.textContent, a.href, a.target, a.rel])")
+    check(f"[{name}] every study's reference names its paper and leads to PubMed, in a new tab",
+          links == [[label(d), f"{PUBMED}{d['cite'][0]}/", "_blank", "noopener noreferrer"] for d in STUDIES], lambda: links[:3])
     shot("sumstats", full=False)
-    page.fill("#q", "height uk")
-    found = [d for d in STUDIES if all(w in text(d) for w in ("height", "uk"))]
-    check(f"[{name}] the search finds every word, in trait, ID, release or reference",
-          0 < len(found) < 602 and bodies("sumstats-table").count() == len(found) and count() == f"{len(found)} of 602 studies", count)
+    ok = True
+    for sought in ("height uk", d["id"], d["name"].lower(), "body mass index", "bycroft"):  # words; an ID; a short name; a name in the release; a paper
+        page.fill("#q", sought)
+        found = [s for s in STUDIES if all(w in text(s) for w in sought.lower().split())]
+        ok &= 0 < len(found) < 602 and bodies("sumstats-table").count() == len(found) and count() == f"{len(found)} of 602 studies"
+    check(f"[{name}] the search finds every word, in short name, ID, name in the release, release or reference", ok, count)
     page.fill("#q", "")
     page.select_option("#f-anc", "EAS")
     eas = [d for d in STUDIES if d["anc"] == "EAS"]
@@ -159,8 +195,41 @@ def run(pw, url, name, **context):
         sort_n.click()
         order.append(first("sumstats-table"))
     check(f"[{name}] a column sorts largest first, then smallest first, then as released",
-          order == [by_n[-1]["trait"], by_n[0]["trait"], STUDIES[0]["trait"]], lambda: order)
+          order == [by_n[-1]["name"], by_n[0]["name"], STUDIES[0]["name"]], lambda: order)
     check(f"[{name}] logged out, no path is in the page", not private() and page.locator(".paths").count() == 0, private)
+
+    # the cart: ticks, and the files they export
+    boxes = page.locator("#sumstats-table td.tick input")
+    boxes.nth(0).check()
+    boxes.nth(2).check()
+    mine = [STUDIES[0], STUDIES[2]]
+    all_box = page.locator("#sumstats-table th.tick input")
+    check(f"[{name}] ticking studies counts them and offers the exports",
+          page.text_content("#cart") == " · 2 ticked: download IDs (TSV) or references (BibTeX) · untick all" and kept() == [d["id"] for d in mine]
+          and all_box.evaluate("box => box.indeterminate && !box.checked"), lambda: page.text_content("#cart"))
+    shot("cart", full=False)
+    got = downloaded("IDs (TSV)")
+    check(f"[{name}] the studies ticked download as a table: short name, ID, name in the release, ancestry, N, reference, PMID; no path",
+          got == ("gwas-sumstats-studies.tsv", table_of(mine, paths=False)), lambda: got)
+    got = downloaded("references (BibTeX)")
+    check(f"[{name}] their papers download as BibTeX, an entry a paper, under the studies that cite it",
+          got == ("gwas-sumstats-references.bib", references_of(mine)) and got[1].count("@article{") == len({d["cite"][0] for d in mine}), lambda: got[1][:300])
+    page.fill("#q", "teslovich")
+    all_box.check()
+    mine = [d for d in STUDIES if d in mine or "teslovich" in text(d)]
+    ok = len(mine) == 5 and bodies("sumstats-table").count() == 3 and all_box.is_checked() and kept() == [d["id"] for d in mine]  # in the order ticked: the two, then the three
+    page.fill("#q", "")
+    page.check("#f-ticked")
+    ok &= count() == "5 of 602 studies" and page.locator("#sumstats-table td.study").all_inner_texts() == [d["name"] for d in mine]
+    page.reload()
+    expect(page.locator("#cart")).to_contain_text("5 ticked", timeout=20000)
+    ok &= boxes.evaluate_all("list => list.filter((box) => box.checked).length") == 5
+    page.click("nav a[data-tab=h2]")
+    expect(page.locator("#h2-table tbody").first).to_be_visible()
+    ok &= page.locator("#h2-table td.tick input").evaluate_all("list => list.filter((box) => box.checked).length") == 5
+    page.click("nav a[data-tab=sumstats]")
+    check(f"[{name}] the header's box ticks the studies listed; the ticks stay over a reload and in the other table, and filter the studies", ok,
+          lambda: (kept(), count()))
 
     # login
     page.click("#login-open")
@@ -182,6 +251,8 @@ def run(pw, url, name, **context):
     shot("sumstats-logged-in", full=False)
     page.locator("#sumstats-table tbody").first.locator(".paths a").click()
     check(f"[{name}] copy puts the path on the clipboard", page.evaluate("navigator.clipboard.readText()") == file_path(STUDIES[0]["id"]))
+    got = downloaded("IDs and paths (TSV)")
+    check(f"[{name}] after login, the table of the studies ticked has their paths", got == ("gwas-sumstats-studies.tsv", table_of(mine, paths=True)), lambda: got[1][:300])
     page.reload()
     expect(page.locator("#sumstats-table .paths").first).to_be_visible(timeout=30000)
     check(f"[{name}] a reload stays logged in", page.inner_text("#login-open") == "logout")
@@ -207,8 +278,11 @@ def run(pw, url, name, **context):
     page.click("#login-open")
     expect(page.locator("#o2-folders")).to_be_hidden()
     show("", "#sumstats-table tbody")
-    check(f"[{name}] logout hides the paths and forgets the key",
-          not private() and page.locator(".paths").count() == 0 and page.evaluate("localStorage.getItem('key')") is None and page.inner_text("#login-open") == "login", private)
+    check(f"[{name}] logout hides the paths and forgets the key; the export has no path again",
+          not private() and page.locator(".paths").count() == 0 and page.evaluate("localStorage.getItem('key')") is None and page.inner_text("#login-open") == "login"
+          and downloaded("IDs (TSV)")[1] == table_of(mine, paths=False), private)
+    page.locator("#cart a", has_text="untick all").click()
+    check(f"[{name}] untick all empties the cart", page.locator("#cart").is_hidden() and kept() == [] and boxes.evaluate_all("list => list.every((box) => !box.checked)"))
 
     # heritability
     show("?tab=h2", "#h2-plot svg")
@@ -217,11 +291,11 @@ def run(pw, url, name, **context):
     mode = max(sorted(set(bins)), key=bins.count)
     check(f"[{name}] heritability: a column per bin of h², and the studies by h²",
           page.inner_text("#h2-caption") == f"h² of the 602 studies shown, in bins of 0.02: most often {mode * 0.02:.2f} to {(mode + 1) * 0.02:.2f}."
-          and first("h2-table") == top["trait"] and page.locator("#h2-plot .bar").count() == len(set(bins)) and fits(),
+          and first("h2-table") == top["name"] and page.locator("#h2-plot .bar").count() == len(set(bins)) and fits(),
           lambda: page.inner_text("#h2-caption"))
     check(f"[{name}] its table: h² ± SE in one column, sorted by h², without bars",
-          heads("h2-table") == ["Trait", "ID", "Ancestry", "h² ± SE ▼", "h² z", "Intercept"] and page.locator(".meter").count() == 0
-          and cells("h2-table") == [top["trait"], top["id"], top["anc"], plus_minus(top["h2"], top["h2_se"]), sig(top["h2_z"]), f"{top['intercept']:.4f}"],
+          heads("h2-table") == ["", "Study", "Ancestry", "h² ± SE ▼", "h² z", "Intercept"] and page.locator(".meter").count() == 0
+          and cells("h2-table") == ["", top["name"], top["anc"], plus_minus(top["h2"], top["h2_se"]), sig(top["h2_z"]), f"{top['intercept']:.4f}"],
           lambda: (heads("h2-table"), cells("h2-table")))
     shot("h2", full=False)
     box = page.locator("#h2-plot svg").bounding_box()
@@ -243,50 +317,55 @@ def run(pw, url, name, **context):
         show(f"?tab=rg&a={a}&b={b}", "#pair-result .fields")
         seen.append(page.locator("#pair-result .row").first.locator(".value").inner_text())
         ok &= seen[-1] == (plus_minus(e["rg"], e["se"]) if e["rg"] is not None else f"not estimated: LDSC gave none for this pair ({e['note']})")
-        ok &= page.input_value("#rg-a") == BY_ID[a]["trait"] and page.input_value("#rg-b") == BY_ID[b]["trait"]
+        ok &= page.input_value("#rg-a") == BY_ID[a]["name"] and page.input_value("#rg-b") == BY_ID[b]["name"]
+        ok &= page.inner_text("#pair-result h3") == f"{BY_ID[a]['name']} and {BY_ID[b]['name']}"
     check(f"[{name}] a pair's genetic correlation is the one in the data, in either order, in EUR and EAS, or says why there is none", ok, lambda: seen)
     a = "UKB_460K.body_HEIGHTz"
     near = neighbours(a)
     strong = [r for r in near if r["rg"] is not None and abs(r["z"]) >= 3]
     show(f"?tab=rg&a={a}&b={strong[1]['id']}", "#neighbours-table tbody")
-    listed = lambda: page.locator("#neighbours-table td.trait").all_inner_texts()
-    ok = listed() == [BY_ID[r["id"]]["trait"] for r in strong[:10]] and fits()
-    ok &= heads("neighbours-table") == ["Trait", "ID", "rg ± SE", "z", "p"]
-    ok &= cells("neighbours-table")[2:4] == [plus_minus(strong[0]["rg"], strong[0]["se"]), sig(strong[0]["z"])]
+    listed = lambda: page.locator("#neighbours-table td.study").all_inner_texts()
+    ok = listed() == [BY_ID[r["id"]]["name"] for r in strong[:10]] and fits()
+    ok &= heads("neighbours-table") == ["Study", "rg ± SE", "z", "p"] and page.inner_text("#neighbours-head").startswith(f"{BY_ID[a]['name']}: {len(strong)} of ")
+    ok &= cells("neighbours-table")[1:3] == [plus_minus(strong[0]["rg"], strong[0]["se"]), sig(strong[0]["z"])]
     shot("rg")
     page.click("#neighbours-more")
     ok &= bodies("neighbours-table").count() == len(strong)
     page.uncheck("#rg-strict")
     page.click("#neighbours-more")
     ok &= bodies("neighbours-table").count() == len(near) == len(eur) - 1
-    page.locator("#neighbours-table th:nth-child(4) button").click()  # z
+    page.locator("#neighbours-table th:nth-child(3) button").click()  # z
     by_z = max((r for r in near if r["z"] is not None), key=lambda r: r["z"])
-    ok &= listed()[0] == BY_ID[by_z["id"]]["trait"]
+    ok &= listed()[0] == BY_ID[by_z["id"]]["name"]
     check(f"[{name}] a study's genetic correlations: the strongest ten with |z| ≥ 3, then all, then every pair, sortable", ok, lambda: listed()[:10])
     show("?tab=rg", "#heat svg")
+    ok = True
+    for sought in ("schizo", "UKB_460K.body_HEIGHTz", "body mass index"):  # a short name; an ID; a name in the release
+        page.fill("#rg-a", sought)
+        options = page.locator("#rg-a-list a")
+        expect(options.first).to_be_visible()
+        matches = [d for d in STUDIES if d["cross"] and all(w in text(d) for w in sought.lower().split())]
+        ok &= options.all_inner_texts() == [f"{d['name']} {d['anc']}" for d in matches[:60]] and len(matches) > 0
     page.fill("#rg-a", "schizo")
-    options = page.locator("#rg-a-list a")
-    expect(options.first).to_be_visible()
     matches = [d for d in STUDIES if d["cross"] and "schizo" in text(d)]
-    ok = options.count() == len(matches)
     shot("rg-picker", full=False)
     page.keyboard.press("ArrowDown")
     page.keyboard.press("ArrowDown")
     page.keyboard.press("Enter")
     expect(page.locator("#neighbours-table tbody").first).to_be_visible(timeout=20000)
-    check(f"[{name}] typing in a field lists the signed studies that match; arrows and Enter pick one",
-          ok and page.evaluate("new URLSearchParams(location.search).get('a')") == matches[1]["id"] and page.input_value("#rg-a") == matches[1]["trait"],
-          lambda: (options.count(), len(matches), page.url))
+    check(f"[{name}] typing a short name, an ID or a name in the release lists the signed studies that match, by short name; arrows and Enter pick one",
+          ok and page.evaluate("new URLSearchParams(location.search).get('a')") == matches[1]["id"] and page.input_value("#rg-a") == matches[1]["name"],
+          lambda: (page.locator("#rg-a-list a").all_inner_texts()[:5], page.url))
     order = lambda anc, kind: [BY_ID[RG[anc]["ids"][i]] for i in RG[anc]["heat"][kind]["order"]]  # the build's clustering
 
     def named(rows):
         """The heatmap names these studies beside its rows, in this order (a long name cut short)."""
         shown = page.locator("#heat text").all_text_contents()
-        return len(shown) == len(rows) and all(d["trait"].startswith(s.rstrip("…")) for s, d in zip(shown, rows))
+        return len(shown) == len(rows) and all(d["name"].startswith(s.rstrip("…")) for s, d in zip(shown, rows))
 
     def tip_for(a, b):
         e = estimate(a["id"], b["id"])
-        return ("not estimated" if e["rg"] is None else plus_minus(e["rg"], e["se"])) + f"\n{a['trait']} × {b['trait']}"
+        return ("not estimated" if e["rg"] is None else plus_minus(e["rg"], e["se"])) + f"\n{a['name']} × {b['name']}"
 
     def cell(rows, i, j):
         """The middle of the heatmap's cell in row i, column j, scrolled to the middle of the window."""
@@ -311,7 +390,7 @@ def run(pw, url, name, **context):
     shot("rg-heat-eas", full=False)
     page.mouse.click(*cell(rows, 4, 14))
     ok &= page.evaluate("location.search") == f"?tab=rg&a={rows[4]['id']}&b={rows[14]['id']}" and named(rows)
-    check(f"[{name}] a panel's heatmap is in the order of the build's clustering; a cell names its pair and looks it up", ok, lambda: (tip, page.url))
+    check(f"[{name}] a panel's heatmap is in the order of the build's clustering; a cell names its pair, by short names, and looks it up", ok, lambda: (tip, page.url))
     show("?tab=rg", "#heat image")
     ok = True
     for anc in RG:
@@ -335,35 +414,59 @@ def run(pw, url, name, **context):
     d, strong = BY_ID[added], [r for r in neighbours(added) if r["rg"] is not None and abs(r["z"]) >= 3]
     fields = dict(zip(page.locator("#view-study .label").all_inner_texts(), page.locator("#view-study .value").all_inner_texts()))
     links = page.locator("#view-study .fields a").evaluate_all("list => list.map((a) => a.href)")
-    check(f"[{name}] a study's page: its fields, its paper and GWAS Catalog links, its strongest genetic correlations",
-          page.inner_text("#view-study h2") == d["trait"] and fields["ID"] == added and fields["N"] == f"{d['n']:,}" and fields["Release"] == d["origin"]
-          and fields["Signed"] == "yes" and fields["h² ± SE"] == plus_minus(d["h2"], d["h2_se"]) and fields["h² z"] == sig(d["h2_z"])
-          and fields["Path"] == "login to see it" and d["paper"] in links and d["catalog"] in links
-          and page.locator("#view-study .pairs td.trait").all_inner_texts() == [BY_ID[r["id"]]["trait"] for r in strong[:10]]
-          and page.title() == f"{d['trait']} · GWAS Sumstats" and fits(), lambda: fields)
+    check(f"[{name}] a study's page: its short name as title; its ID and name in the release; its fields; its strongest genetic correlations",
+          page.inner_text("#view-study h2") == d["name"] and fields["ID"] == added and fields["Release name"] == d["trait"] and fields["N"] == f"{d['n']:,}"
+          and fields["Release"] == d["origin"] and fields["Signed"] == "yes" and fields["h² ± SE"] == plus_minus(d["h2"], d["h2_se"]) and fields["h² z"] == sig(d["h2_z"])
+          and fields["Path"] == "login to see it" and d["catalog"] in links
+          and page.locator("#view-study .pairs td.study").all_inner_texts() == [BY_ID[r["id"]]["name"] for r in strong[:10]]
+          and page.title() == f"{d['name']} · GWAS Sumstats" and fits(), lambda: fields)
     shot("study")
+    both = next(d for d in STUDIES if len(d.get("cite", [])) == 2)  # the paper of its statistics, and the resource it names
+    show(f"?study={both['id']}", "#view-study .citation a")
+    expect(page.locator("#view-study .citation", has_text=PAPERS[both["cite"][0]]["title"])).to_be_visible(timeout=20000)
+    cited = page.locator("#view-study .citation").all_inner_texts()
+    links = page.locator("#view-study .citation a").evaluate_all("list => list.map((a) => [a.textContent, a.href])")
+
+    def in_full(pmid):
+        p = PAPERS[pmid]
+        authors = ", ".join(author.strip("{}") for author in p["authors"]) + (", et al" if p["more"] else "")
+        issue = p["volume"] + (f"({p['issue']})" if p["issue"] else "")
+        return f"{authors}. {p['title']}. {p['journal']} {p['year']}" + (f";{issue}" if issue else "") + (f":{p['pages']}" if p["pages"] else "") + ". PubMed" + (" · DOI" if p["doi"] else "")
+
+    check(f"[{name}] a study's page cites its papers in full, with their PubMed and DOI links",
+          cited == [in_full(pmid) for pmid in both["cite"]]
+          and links == [pair for pmid in both["cite"] for pair in (["PubMed", f"{PUBMED}{pmid}/"], ["DOI", f"https://doi.org/{PAPERS[pmid]['doi']}"])], lambda: (cited, links))
+    shot("study-papers", full=False)
+    page.locator("#view-study > .check input").check()
+    ok = kept() == [both["id"]]
+    show("", "#sumstats-table tbody")
+    ok &= page.text_content("#cart").startswith(" · 1 ticked") and page.locator("#sumstats-table td.tick input:checked").count() == 1
+    page.locator("#cart a", has_text="untick all").click()
+    check(f"[{name}] a study is ticked on its page too", ok and kept() == [], kept)
     unsigned = next(d for d in STUDIES if not d["cross"])
     show(f"?study={unsigned['id']}", "#view-study .section-head")
     check(f"[{name}] an unsigned study's page says it has no genetic correlations", "unsigned" in page.inner_text("#view-study .section-head"))
     for tab in ("notes", "about"):
         show(f"?tab={tab}", f"#view-{tab} h2")
         values = page.locator(f"#view-{tab} [data-v]").all_inner_texts()
-        check(f"[{name}] {tab}: its numbers are filled in, and nothing private shows", all(values) and fits() and not private()
-              and page.locator("#o2-release").is_hidden() and page.locator("#o2-folders").is_hidden(), lambda: values)
+        named_here = page.locator(f"#view-{tab} [data-study] a, #view-{tab} [data-v] a").evaluate_all("list => list.map((a) => [a.textContent, a.getAttribute('href')])")
+        check(f"[{name}] {tab}: its numbers are filled in, a study it names is a link by its short name, and nothing private shows",
+              all(values) and fits() and not private() and page.locator("#o2-release").is_hidden() and page.locator("#o2-folders").is_hidden()
+              and len(named_here) > 0 and all(BY_ID[href.removeprefix("?study=")]["name"] == text for text, href in named_here), lambda: (values, named_here))
         shot(tab)
     show("", "#sumstats-table tbody")
-    page.locator("#sumstats-table td.trait a").first.click()
-    expect(page.locator("#view-study h2")).to_have_text(STUDIES[0]["trait"])
+    page.locator("#sumstats-table td.study a").first.click()
+    expect(page.locator("#view-study h2")).to_have_text(STUDIES[0]["name"])
     page.click("nav a[data-tab=h2]")
     expect(page.locator("#h2-plot svg")).to_be_visible()
     page.go_back()
-    expect(page.locator("#view-study h2")).to_have_text(STUDIES[0]["trait"])
+    expect(page.locator("#view-study h2")).to_have_text(STUDIES[0]["name"])
     page.go_back()
     expect(page.locator("#sumstats-table tbody").first).to_be_visible()
     check(f"[{name}] links change the address, and Back returns", page.evaluate("location.search") == "")
     show(f"?dataset={added}", "#view-study h2")
     check(f"[{name}] an old link, ?dataset=ID, opens the study's page as ?study=ID",
-          page.evaluate("location.search") == f"?study={added}" and page.inner_text("#view-study h2") == BY_ID[added]["trait"], lambda: page.url)
+          page.evaluate("location.search") == f"?study={added}" and page.inner_text("#view-study h2") == BY_ID[added]["name"], lambda: page.url)
     check(f"[{name}] no error, and nothing is loaded from elsewhere", not errors and not elsewhere, lambda: (errors, elsewhere))
     browser.close()
 

@@ -1,5 +1,6 @@
 """What the tests share: the real release and passphrase, from the environment and never from a file, and a made-up
-miniature release that tests the build anywhere."""
+miniature release, with what a repository would add to it, that tests the build anywhere."""
+import json
 import os
 from pathlib import Path
 
@@ -34,11 +35,39 @@ def write(path: Path, header, rows):
     path.write_text("\n".join("\t".join(map(str, row)) for row in [header, *rows]) + "\n", encoding="utf-8")
 
 
+PAPERS = {  # as PubMed would record the papers of the made-up release
+    "1": {"authors": ["Smith J", "Doe A Jr", "Roe B", "Poe C"], "title": "Height of 1,000 people", "journal": "Nature", "year": "2010", "volume": "1", "issue": "2", "pages": "10-9", "doi": "10.1000/one"},
+    "2": {"authors": ["{The Example Consortium}"], "title": "Loci & genes for Alzheimer's disease", "journal": "Nat Genet", "year": "2021", "volume": "53", "issue": "", "pages": "", "doi": "10.1000/two"},
+    "3": {"authors": ["Kim A", "Park B"], "title": "Trait D in East Asians", "journal": "Nat Genet", "year": "2018", "volume": "50", "issue": "1", "pages": "100-110", "doi": "10.1000/three"},
+    "4": {"authors": ["Kim C"], "title": "A biobank", "journal": "Nature", "year": "2018", "volume": "9", "issue": "", "pages": "e12", "doi": ""},
+    "111": {"authors": ["Ortín Vela S", "Li X"], "title": "A new trait", "journal": "Nat Genet", "year": "2026", "volume": "58", "issue": "1", "pages": "1-9", "doi": "10.1000/new"},
+    "222": {"authors": ["Ito K"], "title": "Traits E and F", "journal": "Nat Commun", "year": "2024", "volume": "15", "issue": "", "pages": "1234", "doi": "10.1000/ito"},
+}
+NAMES = [["A_unsigned", "Smith_2010_Height", "drafted"], ["B", "TEC_2021_Alzheimers", "drafted"], ["C", "Lee_2022_TraitC", "check: no paper found"],
+         ["GCST0001", "OrtinVela_2025_TraitNew", "drafted"], ["D_EAS", "Kim_2018_TraitDEAS", "drafted"], ["GCST0002", "Ito_2024_TraitEEAS", "by hand"],
+         ["GCST0003", "Ito_2024_TraitFEAS", "drafted"]]
+
+
+def data_of(release: Path) -> Path:
+    """The folder that plays data/ for a made-up release."""
+    return release.parent / "data"
+
+
 @pytest.fixture
 def mini(tmp_path):
     """A release folder of seven studies, laid out as a real one: four EUR (one unsigned, one added in 2026) and
-    three EAS (two added). The pair tables name the pairs in no particular order."""
+    three EAS (two added). The pair tables name the pairs in no particular order. Beside it, data_of(release): the
+    papers of the studies and their short names, as data/ holds them for the real release."""
     release = tmp_path / "release_2026_20260907"
+    data = data_of(release)
+    write(data / "references.tsv", ["reference", "study", "pmid", "doi", "how", "paper"], [
+        ["Smith et al., 2010 Nature", "", "1", "10.1000/one", "author, year and journal: the only paper", "Smith J 2010 Nature: Height of 1,000 people"],
+        ["NG_Lee_2021_x", "", "2", "10.1000/two", "by hand: a consortium, found by its title", "{The Example Consortium} 2021 Nat Genet: Loci & genes"],
+        ["Lee et al. 2022 Cell", "", "9", "", "author, year and journal: of 3 papers, check: none stands out by its title", "Lee Q 2022 Cell: Something else"],
+        ["Kim et al. 2018 Nat Genet", "", "3;4", "10.1000/three;", "by hand: the paper, and the resource it names", "Kim A 2018 Nat Genet: Trait D in East Asians"]])
+    (data / "papers.json").write_text(json.dumps(PAPERS, ensure_ascii=False), encoding="utf-8")
+    write(data / "consortia.tsv", ["group", "short"], [["# a comment line", ""], ["The Example Consortium", "TEC"]])
+    write(data / "names.tsv", ["id", "name", "how"], NAMES)
     inventory = [
         ["Height (old)", "A_unsigned", "Old 2015", "Smith et al., 2010 Nature ", 1000, 900, "EUR", "NO", "YES", "NO"],
         ["Alzheimer’s disease", "B", "New 2024", "NG_Lee_2021_x", 2000, 910, "EUR", "YES", "YES", "YES"],

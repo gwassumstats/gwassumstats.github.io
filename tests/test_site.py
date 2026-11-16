@@ -19,14 +19,16 @@ from cryptography.exceptions import InvalidTag
 
 import numpy as np
 
-from build import crypt
+from build import crypt, merge
 from build.__main__ import BLOB, build
 from build.release import tree
 from conftest import DATA, ROOT, SITE
+from papers import cite
 
 SITE_DATA = json.loads((DATA / "studies.json").read_text())
 STUDIES, RELEASE = SITE_DATA["studies"], SITE_DATA["release"]
 BY_ID = {d["id"]: d for d in STUDIES}
+PAPERS = json.loads((DATA / "papers.json").read_text())
 COLUMNS = {"rg": "genetic_correlation", "se": "genetic_correlation_se", "z": "genetic_correlation_z", "p": "genetic_correlation_p",
            "gcov": "genetic_covariance", "gcov_se": "genetic_covariance_se"}  # site name -> the release's
 # What is never published: a path on O2 or on someone's computer, and a user name there (two to four letters, then
@@ -121,15 +123,41 @@ def test_a_heatmap_is_in_the_order_of_its_clustering():
             assert sorted(heat["order"]) == members and len(heights) == len(members) - 1 and heights == sorted(heights)
 
 
+def test_every_study_has_a_short_name():
+    names = [d["name"] for d in STUDIES]
+    assert all(merge.NAME.fullmatch(name) for name in names) and len({name.lower() for name in names}) == len(names) == 602
+    kept = cite.table(merge.DATA / "names.tsv")
+    assert {row["id"]: row["name"] for row in kept} == {d["id"]: d["name"] for d in STUDIES} and all(row["how"] for row in kept)
+    assert BY_ID["PASS_BMI1"]["name"] == "Speliotes_2010_BMI" and BY_ID["GCST90651074"]["name"] == "Kany_2025_AorticStenosis"  # the owner's examples
+    assert sum(d["name"].endswith("EAS") for d in STUDIES) == sum(d["anc"] == "EAS" for d in STUDIES) == 56  # an East Asian study says so, and no other
+
+
+def test_every_study_cites_its_paper():
+    """A paper for each of the 602: the release's own for a study it gives a PMID, the one of data/references.tsv for the others."""
+    assert all(d.get("cite") for d in STUDIES) and all(d["cite"] == [d["pmid"]] for d in STUDIES if "pmid" in d)
+    cited = {pmid for d in STUDIES for pmid in d["cite"]}
+    assert cited == set(PAPERS) == set(SITE_DATA["papers"]) and SITE_DATA["papers"] == {pmid: paper["label"] for pmid, paper in PAPERS.items()}
+    keys = [paper["key"] for paper in PAPERS.values()]
+    assert len(set(keys)) == len(keys) and all(re.fullmatch(r"[A-Za-z]+\d{4}[a-z]?", key) for key in keys)
+    assert all(paper["bib"].startswith(f"@article{{{paper['key']},\n  author = {{") and paper["bib"].endswith(f"  pmid = {{{pmid}}}\n}}\n") for pmid, paper in PAPERS.items())
+    assert all(paper["title"] and paper["journal"] and paper["authors"] and re.fullmatch(r"(19|20)\d\d", paper["year"]) for paper in PAPERS.values())
+    # a study's short name begins with whom and when its paper is cited by, which is also the paper's key
+    assert not [d["id"] for d in STUDIES if not PAPERS[d["cite"][0]]["key"].startswith(cite.plain("".join(d["name"].split("_")[:2])))]
+    # UK Biobank's studies cite the paper of their statistics, then the resource; the Pan-UK Biobank's, that project's paper
+    assert all(d["cite"] == ["29892013", "30305743"] for d in STUDIES if d["id"].startswith("UKB_460K")) and all(d["cite"] == ["40968291"] for d in STUDIES if d["id"].startswith("PANUKBB_"))
+    references = cite.table(merge.DATA / "references.tsv")
+    assert {row["reference"] for row in references} == {d["ref"] for d in STUDIES if "pmid" not in d} and not [row for row in references if "check" in row["how"] or not row["pmid"]]
+
+
 def test_the_data_is_small():
     sizes = {path.name: path.stat().st_size for path in DATA.iterdir()}
-    assert set(sizes) == {"studies.json", "rg_EUR.json", "rg_EAS.json", BLOB}
+    assert set(sizes) == {"studies.json", "papers.json", "rg_EUR.json", "rg_EAS.json", BLOB}
     assert sum(sizes.values()) < 20e6  # the plan: well under 100 MB
 
 
 def test_the_site_data_is_a_build_of_the_release(release, tmp_path):
     build(release, tmp_path, "not the passphrase", 1000)
-    differ = [name for name in ("studies.json", "rg_EUR.json", "rg_EAS.json") if (tmp_path / name).read_bytes() != (DATA / name).read_bytes()]
+    differ = [name for name in ("studies.json", "papers.json", "rg_EUR.json", "rg_EAS.json") if (tmp_path / name).read_bytes() != (DATA / name).read_bytes()]
     assert not differ, "rebuild the site: python -m build"
 
 
@@ -177,11 +205,13 @@ def test_the_numbers_in_the_texts_are_the_data_s():
     html = (SITE / "index.html").read_text()
     written = re.findall(r'data-v="([\w.]+)">([^<]*)<', html)
     value = lambda path: functools.reduce(lambda o, k: o[k], path.split("."), RELEASE)
-    shown = lambda v: f"{v:,}" if isinstance(v, int) else v.replace("-", "/")
+    shown = lambda v: f"{v:,}" if isinstance(v, int) else BY_ID[v]["name"] if v in BY_ID else v.replace("-", "/")  # a study by its short name
     assert len(written) > 40
     assert not [(path, text) for path, text in written if text != shown(value(path))]
+    named = re.findall(r'data-study="([^"]+)">([^<]*)<', html)
+    assert len(named) >= 2 and not [(study, text) for study, text in named if text != BY_ID[study]["name"]]
     corrected = BY_ID["GCST90503316"]
-    assert f"GCST90503316 uses a corrected estimate (h² {corrected['h2']}, SE {corrected['h2_se']})" in html
+    assert re.search(rf'<span data-study="GCST90503316">{corrected["name"]}</span> uses a corrected\s+estimate \(h² {corrected["h2"]}, SE {corrected["h2_se"]}\)', html)
     assert f"{RELEASE['year']} release" in html and "Gaspard Kerner" in html and "Ben Strober" in html
 
 
@@ -261,5 +291,5 @@ def test_the_page_loads_nothing_from_elsewhere():
     assert all(rule in html for rule in ("default-src 'none'", "script-src 'self'", "style-src 'self'", "connect-src 'self'", "form-action 'none'"))
     loaded = re.findall(r'<(?:script|link|img|iframe|source)\b[^>]*?\b(?:src|href)="([^"]+)"', html)
     assert len(loaded) == 4 and not [url for url in loaded if re.match(r"(?:[a-z]+:)?//", url)]  # the icon (data:), the style, the inventory, the script
-    assert re.findall(r"https?://[\w./-]+", script) == ["http://www.w3.org/2000/svg"]  # a name, not a request
+    assert re.findall(r"https?://[\w./-]+", script) == ["https://pubmed.ncbi.nlm.nih.gov/", "https://doi.org/", "http://www.w3.org/2000/svg"]  # two links and a name: no request
     assert "url(" not in style and "@import" not in style and " style=" not in html

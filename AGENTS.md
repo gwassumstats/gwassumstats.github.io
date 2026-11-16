@@ -4,9 +4,10 @@ A catalog of the Price lab's GWAS summary statistics, at <https://gwassumstats.g
 Read `README.md` before changing anything. Sibling of StatGenPapers (`../statgenpapers.github.io`): follow its
 conventions unless this file says otherwise.
 
-Status (2026-11-16): phase 1 of `notebook/plans/2026-11-16-portal.md` is built, the catalog: Sumstats, Heritability,
-Genetic correlation, Release notes, About, a page per study, and the login that shows the O2 paths. Next: phase 2,
-tools for members (cart, citations, label check); phase 3, the next release (candidates, backtest, QC).
+Status (2026-11-16): of `notebook/plans/2026-11-16-portal.md`, phase 1 is built (the catalog: Sumstats,
+Heritability, Genetic correlation, Release notes, About, a page per study, the login that shows the O2 paths), and of
+phase 2 the papers, the short names and the cart (ticked studies export as TSV and BibTeX). Next: the label check and
+QC, then the candidates for the next release and their backtest.
 
 ## Hard constraints
 
@@ -19,6 +20,7 @@ tools for members (cart, citations, label check); phase 3, the next release (can
 2. The passphrase and the release folder's path come from the environment (`SUMSTATS_PASSPHRASE`, `SUMSTATS_RELEASE`)
    or a prompt. Never write them into a file of the repository, a test or a page.
 3. `site/data/` is written by `python -m build` only. The files stay on O2: the repository holds metadata, h² and rg.
+   `data/` is drafted by scripts and corrected by hand; a script never overwrites a row that is there.
 4. The site loads nothing from other sites (no analytics, fonts or scripts): the passphrase is typed into it.
 5. Before a push, run `uv run pytest` with both variables set, and `dev/site_check.py`. A skipped test did not run.
 6. Push workflow files over SSH (the `gh` token lacks the `workflow` scope).
@@ -32,11 +34,21 @@ tools for members (cart, citations, label check); phase 3, the next release (can
 5. Committed site data stays well under 100 MB: compact files, loaded when needed, rather than dropped content.
 6. An estimate shows as "estimate ± SE", both to two significant digits, in one column that sorts by the estimate; z to
    two significant digits too. No bars in tables. rg is red above 0, blue below.
+7. A study is called by its short name everywhere: tables, pickers, heatmaps, tooltips, titles, notes. Its ID shows
+   only on its page and in exports; its trait name in the release only on its page, as "Release name". The search
+   finds all three.
 
 ## Terminology
 
 - *Sumstats:* GWAS summary statistics files.
 - *Study:* one GWAS summary-statistics file of the collection, keyed by its Trait Identifier (its ID). Never "dataset".
+- *Short name:* what the site calls a study: `FirstAuthor_Year_Trait` (`Speliotes_2010_BMI`), in `data/names.tsv`.
+  A label only: this repository never renames, moves or writes a file on O2, nor changes an ID. A future release may
+  adopt short names as file names for new studies; that is the release owner's step.
+- *Paper, reference:* the paper a study cites (`data/references.tsv`, PubMed's record in `data/papers.json`); its
+  *label* is who and which year it is cited by, and its journal: `Speliotes et al. 2010 Nat Genet`.
+- *Cart:* the studies a reader ticked, kept in the browser; it exports their names, IDs and paths (TSV) and their
+  papers (BibTeX).
 - *Release:* the collection as published on O2 in one *release folder*; the site shows one (2026: 602 studies).
 - *Origin:* the update that added a study (`Finucane2015`, ..., `New 2026`); "Release" on a study's page.
 - *Signed:* a study whose Z has a direction. Only signed studies have rg.

@@ -5,9 +5,14 @@
 RELEASE defaults to $SUMSTATS_RELEASE; without $SUMSTATS_PASSPHRASE the build asks for the passphrase. Neither is
 ever written to the repository. The build writes, in site/data/:
 
-  studies.json         the inventory with h², and the release's counts     public
-  rg_{ancestry}.json   every genetic correlation of an ancestry            public
-  paths.enc.json       where each study's file is, encrypted (crypt.py)    readable after login
+  studies.json         the inventory with h², each study's short name and the paper it cites, and
+                       the release's counts                                              public
+  papers.json          every paper cited: authors, title, journal, DOI, BibTeX entry     public
+  rg_{ancestry}.json   every genetic correlation of an ancestry                          public
+  paths.enc.json       where each study's file is, encrypted (crypt.py)                  readable after login
+
+The papers are those of data/references.tsv and data/papers.json (python -m papers); the short names, those of
+data/names.tsv (python -m names). A study without a short name stops the build.
 
 A release that has not changed rewrites the same files, and keeps the encrypted one as it is, so readers stay logged in.
 """
@@ -20,7 +25,7 @@ from pathlib import Path
 
 from cryptography.exceptions import InvalidTag
 
-from build import crypt, release as rel
+from build import crypt, merge, release as rel
 
 SITE_DATA = Path(__file__).parents[1] / "site" / "data"
 BLOB = "paths.enc.json"
@@ -39,14 +44,18 @@ def holds(path: Path, plain: bytes, passphrase: str, iterations: int) -> bool:
         return False
 
 
-def build(release: Path, out: Path, passphrase: str, iterations: int = crypt.ITERATIONS) -> list[Path]:
-    """Writes the site's data for the release at `release` into `out`; returns the files."""
+def build(release: Path, out: Path, passphrase: str, iterations: int = crypt.ITERATIONS, data: Path = merge.DATA) -> list[Path]:
+    """Writes the site's data for the release at `release` into `out`, with what `data` adds to it; returns the files."""
     d = rel.studies(release)
     rg = {anc: rel.correlations(release, d, anc) for anc in d["anc"].unique()}
-    public = d[rel.PUBLIC].reset_index()
+    cited, papers = merge.citations(d, data)
+    public = d.assign(name=merge.names(d, data))[["name", *rel.PUBLIC]].reset_index()
     records = public.astype(object).where(public.notna(), None).to_dict("records")
-    texts = {"studies.json": f'{{\n"release":{dumps(rel.summary(release, d, rg))},\n"studies":[\n'  # a study a line, for readable diffs
-                              + ",\n".join(dumps({k: v for k, v in r.items() if v is not None}) for r in records) + "\n]}\n"}
+    records = [{k: v for k, v in r.items() if v is not None} | ({"cite": pmids} if pmids else {}) for r, pmids in zip(records, cited)]
+    lines = lambda items: ",\n".join(items)  # a study, a paper a line, for readable diffs
+    texts = {"studies.json": f'{{\n"release":{dumps(rel.summary(release, d, rg))},\n"papers":{dumps({pmid: p["label"] for pmid, p in papers.items()})},\n"studies":[\n'
+                             + lines(map(dumps, records)) + "\n]}\n",
+             "papers.json": "{\n" + lines(f"{dumps(pmid)}:{dumps(paper)}" for pmid, paper in papers.items()) + "\n}\n"}
     for anc, t in rg.items():
         texts[f"rg_{anc}.json"] = "{\n" + ",\n".join(f"{dumps(k)}:{dumps(v)}" for k, v in t.items()) + "\n}\n"
     out.mkdir(parents=True, exist_ok=True)
@@ -62,13 +71,14 @@ def main():
     parser = argparse.ArgumentParser(prog="python -m build", description="Builds the site's data from a release folder.")
     parser.add_argument("release", nargs="?", default=os.environ.get("SUMSTATS_RELEASE"), help="the release folder (default: $SUMSTATS_RELEASE)")
     parser.add_argument("--out", type=Path, default=SITE_DATA, help="where to write (default: site/data)")
+    parser.add_argument("--data", type=Path, default=merge.DATA, help="what the repository adds to the release (default: data)")
     args = parser.parse_args()
     if not args.release:
         parser.error("name the release folder, or set SUMSTATS_RELEASE")
     passphrase = os.environ.get("SUMSTATS_PASSPHRASE") or getpass.getpass("Passphrase: ")
     if not passphrase:
         parser.error("the passphrase is empty")
-    for path in build(Path(os.path.abspath(args.release)), args.out, passphrase):
+    for path in build(Path(os.path.abspath(args.release)), args.out, passphrase, data=args.data):
         size = path.stat().st_size
         print(f"{path.name:<16} {size / 1e3:>8,.0f} kB  ({len(gzip.compress(path.read_bytes(), 6)) / 1e3:,.0f} kB gzipped)")
 
