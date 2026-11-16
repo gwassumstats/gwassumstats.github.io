@@ -1,0 +1,26 @@
+name: A study for the next release
+description: Nominate a GWAS with public summary statistics that the collection lacks.
+title: "Candidate: "
+body:
+  - type: markdown
+    attributes:
+      value: This issue is public. Do not paste a path on O2, the passphrase, or anything from the lab's mailing list.
+  - type: input
+    id: paper
+    attributes:
+      label: Paper
+      description: PMID, DOI or link.
+    validations:
+      required: true
+  - type: textarea
+    id: studies
+    attributes:
+      label: Summary statistics
+      description: GWAS Catalog accessions (GCST...) or the links to the files; trait, ancestry and N of each if you know them.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why add it?
+      description: For example a trait the collection lacks, or a larger study of one it has.

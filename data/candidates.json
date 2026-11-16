@@ -1,0 +1,3417 @@
+{
+ "catalog": {
+  "fetched": "2026-11-16",
+  "studies": 230057,
+  "public": 179834,
+  "published_to": "2026-08-19",
+  "added_to": "2026-09-10"
+ },
+ "rule": {
+  "journals": [
+   "Nature",
+   "Nat Genet",
+   "Nat Commun",
+   "Nat Rev Genet",
+   "Nat Med",
+   "Nat Hum Behav",
+   "Science",
+   "Sci Transl Med",
+   "Cell",
+   "Cell Genom",
+   "Am J Hum Genet"
+  ],
+  "max_studies": 100,
+  "ancestries": [
+   "European",
+   "East Asian"
+  ],
+  "min_n": 50000
+ },
+ "since": "2024-03-01",
+ "until": "2026-08-26",
+ "candidates": [
+  {
+   "pmid": "36539618",
+   "author": "Fernandez-Rozadilla C",
+   "journal": "Nat Genet",
+   "published": "2022-12-20",
+   "added": "2026-09-01",
+   "title": "Deciphering colorectal cancer genetics through multi-omic analysis of 100,204 cases and 154,587 controls of European and east Asian ancestries.",
+   "studies": [
+    {
+     "id": "GCST90255675",
+     "trait": "Colorectal cancer",
+     "n": 185616,
+     "ancestry": "European"
+    },
+    {
+     "id": "GCST90255676",
+     "trait": "Colorectal cancer",
+     "n": 160527,
+     "ancestry": "European"
+    }
+   ]
+  }
+ ],
+ "aside": [
+  {
+   "why": "more than 100 studies",
+   "papers": [
+    {
+     "pmid": "39024449",
+     "author": "Verma A",
+     "journal": "Science",
+     "published": "2024-07-19",
+     "added": "2026-09-08",
+     "title": "Diversity and scale: Genetic architecture of 2068 traits in the VA Million Veteran Program.",
+     "studies": 6022
+    }
+   ]
+  },
+  {
+   "why": "another journal",
+   "papers": [
+    {
+     "pmid": "42634071",
+     "author": "Nyberg F",
+     "journal": "Respir Res",
+     "published": "2026-08-08",
+     "added": "2026-09-08",
+     "title": "Genome-wide association study of image-based emphysema scoring in the Swedish CArdioPulmonary bioImage Study (SCAPIS) suggests two new risk loci in smokers.",
+     "studies": 10
+    }
+   ]
+  }
+ ],
+ "other": 2,
+ "backtest": {
+  "since": "2024-03-01",
+  "until": "2026-08-26",
+  "taken": 205,
+  "taken_papers": 35,
+  "steps": [
+   {
+    "rule": "with summary statistics",
+    "studies": 108232,
+    "papers": 397,
+    "found": 202,
+    "found_papers": 34
+   },
+   {
+    "rule": "in a paper of at most 100 such studies",
+    "studies": 3050,
+    "papers": 352,
+    "found": 202,
+    "found_papers": 34
+   },
+   {
+    "rule": "of European or East Asian ancestry only",
+    "studies": 2287,
+    "papers": 295,
+    "found": 202,
+    "found_papers": 34
+   },
+   {
+    "rule": "of at least 50,000 individuals",
+    "studies": 1104,
+    "papers": 164,
+    "found": 202,
+    "found_papers": 34
+   },
+   {
+    "rule": "in a journal that StatGenPapers reads",
+    "studies": 672,
+    "papers": 87,
+    "found": 202,
+    "found_papers": 34
+   }
+  ],
+  "missed": [
+   {
+    "id": "GCST90295949",
+    "why": "published 2024/01/10, outside the window"
+   },
+   {
+    "id": "GCST90295950",
+    "why": "published 2024/01/10, outside the window"
+   },
+   {
+    "id": "GCST90295951",
+    "why": "published 2024/01/10, outside the window"
+   }
+  ],
+  "beyond": {
+   "studies": 470,
+   "papers": 59,
+   "in_taken_papers": 14,
+   "new_papers": [
+    {
+     "pmid": "42521817",
+     "author": "Kerrebijn I",
+     "journal": "Nat Med",
+     "published": "2026-07-28",
+     "added": "2026-08-13",
+     "title": "The genetic architecture of fibromyalgia across 2.5 million individuals.",
+     "studies": [
+      {
+       "id": "GCST90838603",
+       "trait": "Fibromyalgia",
+       "n": 2313287,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90838604",
+       "trait": "Fibromyalgia",
+       "n": 1292196,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90838605",
+       "trait": "Fibromyalgia",
+       "n": 1021091,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90838606",
+       "trait": "Fibromyalgia",
+       "n": 2081174,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90838607",
+       "trait": "Fibromyalgia",
+       "n": 1940677,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90838608",
+       "trait": "Fibromyalgia",
+       "n": 2107382,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90838609",
+       "trait": "Fibromyalgia",
+       "n": 1812684,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90838610",
+       "trait": "Fibromyalgia",
+       "n": 1996902,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90838611",
+       "trait": "Fibromyalgia",
+       "n": 2220485,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90838612",
+       "trait": "Fibromyalgia",
+       "n": 2262234,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90838613",
+       "trait": "Fibromyalgia",
+       "n": 2271401,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90838614",
+       "trait": "Fibromyalgia",
+       "n": 2235938,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90838615",
+       "trait": "Fibromyalgia",
+       "n": 1890706,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "42432248",
+     "author": "Chai RC",
+     "journal": "Nat Genet",
+     "published": "2026-07-10",
+     "added": "2026-07-16",
+     "title": "Multiscale analysis and functional validation of the cellular and genetic determinants of skeletal disease.",
+     "studies": [
+      {
+       "id": "GCST90726625",
+       "trait": "Estimated bone mineral density",
+       "n": 448010,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "42243103",
+     "author": "Nam K",
+     "journal": "Nat Commun",
+     "published": "2026-06-04",
+     "added": "2026-06-29",
+     "title": "Integrative genomic analysis of 21 orofacial diseases identifies shared genetic architecture with systemic diseases.",
+     "studies": [
+      {
+       "id": "GCST90837192",
+       "trait": "Sialolithiasis",
+       "n": 401190,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837193",
+       "trait": "Sjogren's disease",
+       "n": 401211,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837202",
+       "trait": "Stroke",
+       "n": 457512,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837203",
+       "trait": "Type 2 diabetes",
+       "n": 457512,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837194",
+       "trait": "Temporomandibular joint disorder",
+       "n": 399611,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837174",
+       "trait": "Benign bone tumor",
+       "n": 280045,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837175",
+       "trait": "Benign head and neck tumor",
+       "n": 280594,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837176",
+       "trait": "Benign salivary gland tumor",
+       "n": 280647,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837195",
+       "trait": "Coronary artery disease",
+       "n": 457512,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837196",
+       "trait": "Cancer",
+       "n": 457512,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837177",
+       "trait": "Cleft lip with or without cleft palate",
+       "n": 399628,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837197",
+       "trait": "Chronic obstructive pulmonary disease",
+       "n": 457512,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837178",
+       "trait": "Dental caries",
+       "n": 324039,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837179",
+       "trait": "Dental malocclusion",
+       "n": 401001,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837180",
+       "trait": "Eruption disorder",
+       "n": 398875,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837181",
+       "trait": "Glossitis",
+       "n": 397706,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837182",
+       "trait": "Glossodynia",
+       "n": 397644,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837198",
+       "trait": "Hypertension",
+       "n": 457512,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837183",
+       "trait": "Impacted third molar",
+       "n": 400690,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837184",
+       "trait": "Leukoplakia",
+       "n": 400089,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837199",
+       "trait": "Lung cancer",
+       "n": 457512,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837185",
+       "trait": "Malignant bone tumor",
+       "n": 301405,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837186",
+       "trait": "Malignant head and neck tumor",
+       "n": 303132,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837187",
+       "trait": "Malignant salivary gland tumor",
+       "n": 301605,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837188",
+       "trait": "Mandibular retrognathism",
+       "n": 401170,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837189",
+       "trait": "Oral ulcer",
+       "n": 440091,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837200",
+       "trait": "Oral cancer",
+       "n": 457512,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837190",
+       "trait": "Periodontitis",
+       "n": 275045,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837201",
+       "trait": "Rheumatoid arthritis",
+       "n": 457512,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90837191",
+       "trait": "Sialoadenitis",
+       "n": 401189,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "42237039",
+     "author": "EADB",
+     "journal": "Nat Genet",
+     "published": "2026-06-03",
+     "added": "2026-06-09",
+     "title": "Consensus meta-analysis of genome-wide association studies for Alzheimer's disease and related dementias.",
+     "studies": [
+      {
+       "id": "GCST90704646",
+       "trait": "Alzheimer's disease, proxy Alzheimer's disease or related dementias",
+       "n": 978514,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704647",
+       "trait": "Alzheimer's disease or related dementias",
+       "n": 1119443,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704648",
+       "trait": "Alzheimer's disease",
+       "n": 147103,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "42225636",
+     "author": "Brito Nunes C",
+     "journal": "Nat Commun",
+     "published": "2026-06-01",
+     "added": "2026-07-02",
+     "title": "Multi-ancestry, trans-generational GWAS meta-analysis of gestational diabetes and glycaemic traits during pregnancy reveals limited evidence of pregnancy-specific genetic effects.",
+     "studies": [
+      {
+       "id": "GCST90841457",
+       "trait": "Gestational diabetes",
+       "n": 766250,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90841466",
+       "trait": "Gestational diabetes",
+       "n": 84089,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "42178310",
+     "author": "Tyrmi JS",
+     "journal": "Nat Commun",
+     "published": "2026-05-25",
+     "added": "2026-06-08",
+     "title": "Genome-wide meta-analysis identifies genetic drivers of bile acid metabolism in intrahepatic cholestasis of pregnancy.",
+     "studies": [
+      {
+       "id": "GCST90832988",
+       "trait": "Intrahepatic cholestasis of pregnancy",
+       "n": 441572,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "42173832",
+     "author": "Sinnott-Armstrong N",
+     "journal": "Nat Commun",
+     "published": "2026-05-22",
+     "added": "2026-06-04",
+     "title": "Genetic variants affect diurnal glucose levels throughout the day.",
+     "studies": [
+      {
+       "id": "GCST90838681",
+       "trait": "Glucose levels (adjusted for time of day)",
+       "n": 387790,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90838682",
+       "trait": "Glucose x time of day interaction (sine component)",
+       "n": 387790,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90838683",
+       "trait": "Glucose x time of day interaction (cosine component)",
+       "n": 387790,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "42062540",
+     "author": "McGrail C",
+     "journal": "Nat Genet",
+     "published": "2026-04-30",
+     "added": "2026-05-14",
+     "title": "Genetic association and machine learning improve the prediction of type 1 diabetes risk.",
+     "studies": [
+      {
+       "id": "GCST90824163",
+       "trait": "Type 1 diabetes",
+       "n": 817718,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "42062297",
+     "author": "Londono-Correa D",
+     "journal": "Nat Commun",
+     "published": "2026-04-30",
+     "added": "2026-06-23",
+     "title": "Crystallized and fluid cognitive abilities have different genetic associations with neuropsychiatric disorders.",
+     "studies": [
+      {
+       "id": "GCST90827738",
+       "trait": "Fluid reasoning (multivariate analysis)",
+       "n": 89594,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90827739",
+       "trait": "Crystallized knowledge (multivariate analysis)",
+       "n": 438582,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90827740",
+       "trait": "Fluid reasoning unique of reaction time (multivariate analysis)",
+       "n": 117637,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90827741",
+       "trait": "Crystallized knowledge unique of fluid reasoning and reaction time (multivariate analysis)",
+       "n": 172301,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "41922918",
+     "author": "Portas L",
+     "journal": "Nat Commun",
+     "published": "2026-04-01",
+     "added": "2026-04-15",
+     "title": "Genetic architecture of sleep in a genome wide association study of device measured sleep traits.",
+     "studies": [
+      {
+       "id": "GCST90824104",
+       "trait": "Sleep duration",
+       "n": 80013,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90824105",
+       "trait": "Sleep efficiency",
+       "n": 80013,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90824106",
+       "trait": "REM sleep duration",
+       "n": 80013,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90824107",
+       "trait": "Non-REM sleep duration",
+       "n": 80013,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "41882355",
+     "author": "Kamitaki N",
+     "journal": "Nature",
+     "published": "2026-03-25",
+     "added": "2026-04-02",
+     "title": "The DNA virome varies with human genes and environments.",
+     "studies": [
+      {
+       "id": "GCST90809826",
+       "trait": "Torque teno virus 16 (TUS01) DNA load in blood",
+       "n": 453770,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809827",
+       "trait": "Torque teno virus 1 (VT416) DNA load in blood",
+       "n": 200091,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809828",
+       "trait": "Torque teno virus 1 (VT416) DNA load in blood",
+       "n": 653861,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809829",
+       "trait": "Torque teno virus 1 (VT416) DNA load in blood",
+       "n": 453770,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809802",
+       "trait": "Epstein-Barr virus DNA load in blood",
+       "n": 201168,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809803",
+       "trait": "Epstein-Barr virus DNA load in blood",
+       "n": 654938,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809804",
+       "trait": "Epstein-Barr virus DNA load in blood",
+       "n": 453770,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809808",
+       "trait": "Endogenous human herpesvirus 6A integration status in blood",
+       "n": 419249,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809809",
+       "trait": "Endogenous human herpesvirus 6B integration status in blood",
+       "n": 419249,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809810",
+       "trait": "Human herpesvirus 6B DNA load in blood",
+       "n": 198059,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809811",
+       "trait": "Human herpesvirus 6B DNA load in blood",
+       "n": 645249,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809812",
+       "trait": "Human herpesvirus 6B DNA load in blood",
+       "n": 447190,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809815",
+       "trait": "Human herpesvirus 7 DNA load in blood",
+       "n": 200091,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809816",
+       "trait": "Human herpesvirus 7 DNA load in blood",
+       "n": 653861,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809817",
+       "trait": "Human herpesvirus 7 DNA load in blood",
+       "n": 453770,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809821",
+       "trait": "Torque teno virus (HD14a) DNA load in blood",
+       "n": 200091,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809822",
+       "trait": "Torque teno virus (HD14a) DNA load in blood",
+       "n": 653861,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809823",
+       "trait": "Torque teno virus (HD14a) DNA load in blood",
+       "n": 453770,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809824",
+       "trait": "Torque teno virus 16 (TUS01) DNA load in blood",
+       "n": 200091,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809825",
+       "trait": "Torque teno virus 16 (TUS01) DNA load in blood",
+       "n": 653861,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "41861830",
+     "author": "Bartell E",
+     "journal": "Am J Hum Genet",
+     "published": "2026-03-19",
+     "added": "2026-04-23",
+     "title": "Genetics of skeletal proportions across two different populations.",
+     "studies": [
+      {
+       "id": "GCST90728584",
+       "trait": "Standing height (inverse-normalization-transformed)",
+       "n": 451921,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90728585",
+       "trait": "Sitting height ratio adjusted for height and BMI (inverse-normalization-transformed)",
+       "n": 451921,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90728586",
+       "trait": "Sitting height (inverse-normalization-transformed)",
+       "n": 451921,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90728587",
+       "trait": "Leg length (inverse-normalization-transformed)",
+       "n": 451921,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90727382",
+       "trait": "Standing height",
+       "n": 72471,
+       "ancestry": "East Asian"
+      },
+      {
+       "id": "GCST90727383",
+       "trait": "Sitting height",
+       "n": 72471,
+       "ancestry": "East Asian"
+      },
+      {
+       "id": "GCST90727384",
+       "trait": "Sitting height ratio adjusted for height and BMI",
+       "n": 72471,
+       "ancestry": "East Asian"
+      },
+      {
+       "id": "GCST90727385",
+       "trait": "Leg length",
+       "n": 72471,
+       "ancestry": "East Asian"
+      }
+     ]
+    },
+    {
+     "pmid": "41792138",
+     "author": "Haapaniemi H",
+     "journal": "Nat Commun",
+     "published": "2026-03-06",
+     "added": "2026-08-05",
+     "title": "The genetic basis of dermatophytosis skin infection susceptibility.",
+     "studies": [
+      {
+       "id": "GCST90809869",
+       "trait": "ICD10 B35.0: Tinea barbae or tinea capitis",
+       "n": 708300,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809871",
+       "trait": "ICD10 B35.2: Tinea manuum",
+       "n": 1166015,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809874",
+       "trait": "ICD10 B35.5: Tinea imbricata",
+       "n": 708300,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809875",
+       "trait": "ICD10 B35.6: Tinea cruris",
+       "n": 1166015,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809876",
+       "trait": "ICD10 B35.8: Other dermatophytoses",
+       "n": 1166015,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809877",
+       "trait": "ICD10 B35.9: Dermatophytosis, unspecified",
+       "n": 958063,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "41760662",
+     "author": "Nicholls HL",
+     "journal": "Nat Commun",
+     "published": "2026-02-27",
+     "added": "2026-03-11",
+     "title": "Genome-wide analysis of cardiac ventricular phenotypes reveals novel loci and therapeutic targets for heart failure.",
+     "studies": [
+      {
+       "id": "GCST90797595",
+       "trait": "Body surface area-indexed left ventricular end-systolic volume or Body surface area-indexed left ventricular end-diastolic volume (MTAG)",
+       "n": 56206,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797596",
+       "trait": "Body surface area-indexed left ventricular end-systolic volume or Left ventricular end-diastolic volume (MTAG)",
+       "n": 56206,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797597",
+       "trait": "Left ventricular global function index or Left ventricular ejection fraction (MTAG)",
+       "n": 56204,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797598",
+       "trait": "Left ventricular myocardial contraction fraction or Left ventricular mass-to-volume ratio (MTAG)",
+       "n": 56204,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797599",
+       "trait": "Left ventricular mass-to-volume ratio or Left ventricular myocardial contraction fraction (MTAG)",
+       "n": 56204,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797600",
+       "trait": "Body surface area-indexed left ventricular stroke volume or Body surface area-indexed left ventricular end-diastolic volume (MTAG)",
+       "n": 56210,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797601",
+       "trait": "Left ventricular stroke volume or Left ventricular end-diastolic volume (MTAG)",
+       "n": 56210,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797602",
+       "trait": "Body surface area-indexed right ventricular end-systolic volume or Right ventricular ejection fraction (MTAG)",
+       "n": 56225,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797603",
+       "trait": "Body surface area-indexed right ventricular end-diastolic volume or Body surface area-indexed right ventricular end-systolic volume (MTAG)",
+       "n": 56231,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797604",
+       "trait": "Body surface area-indexed right ventricular end-diastolic volume or Body surface area-indexed right ventricular stroke volume (MTAG)",
+       "n": 56231,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797605",
+       "trait": "Right ventricular end diastolic volume or Right ventricular end systolic volume (MTAG)",
+       "n": 56231,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797606",
+       "trait": "Right ventricular end diastolic volume or Right ventricular stroke volume (MTAG)",
+       "n": 56231,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797607",
+       "trait": "Right ventricular ejection fraction or Right ventricular end systolic volume (MTAG)",
+       "n": 56224,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797608",
+       "trait": "Right ventricular ejection fraction or Body surface area-indexed right ventricular end-systolic volume (MTAG)",
+       "n": 56224,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797609",
+       "trait": "Body surface area-indexed right ventricular end-systolic volume or Body surface area-indexed right ventricular end-diastolic volume (MTAG)",
+       "n": 56225,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797610",
+       "trait": "Right ventricular end systolic volume or Right ventricular end diastolic volume (MTAG)",
+       "n": 56225,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797611",
+       "trait": "Right ventricular end systolic volume or Right ventricular ejection fraction (MTAG)",
+       "n": 56225,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797612",
+       "trait": "Body surface area-indexed right ventricular stroke volume or Body surface area-indexed right ventricular end-diastolic volume (MTAG)",
+       "n": 56224,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797613",
+       "trait": "Right ventricular stroke volume or Right ventricular end diastolic volume (MTAG)",
+       "n": 56224,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797570",
+       "trait": "Body surface area-indexed left ventricular end-diastolic volume",
+       "n": 56210,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797571",
+       "trait": "Left ventricular end-diastolic volume",
+       "n": 56210,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797572",
+       "trait": "Left ventricular ejection fraction",
+       "n": 56210,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797573",
+       "trait": "Body surface area-indexed left ventricular end-systolic volume",
+       "n": 56206,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797574",
+       "trait": "Left ventricular end-systolic volume",
+       "n": 56206,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797575",
+       "trait": "Left ventricular global function index",
+       "n": 56204,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797576",
+       "trait": "Left ventricular mass indexed by body surface area",
+       "n": 56204,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797577",
+       "trait": "Left ventricular myocardial contraction fraction",
+       "n": 56204,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797578",
+       "trait": "Left ventricular mass",
+       "n": 56204,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797579",
+       "trait": "Left ventricular mass-to-volume ratio",
+       "n": 56204,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797580",
+       "trait": "Body surface area-indexed left ventricular stroke volume",
+       "n": 56210,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797581",
+       "trait": "Left ventricular stroke volume",
+       "n": 56210,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797582",
+       "trait": "Body surface area-indexed right ventricular end-diastolic volume",
+       "n": 56231,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797583",
+       "trait": "Right ventricular end diastolic volume",
+       "n": 56231,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797584",
+       "trait": "Right ventricular ejection fraction",
+       "n": 56224,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797585",
+       "trait": "Body surface area-indexed right ventricular end-systolic volume",
+       "n": 56225,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797586",
+       "trait": "Right ventricular end systolic volume",
+       "n": 56225,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797587",
+       "trait": "Right-to-left ventricular volume ratio",
+       "n": 56207,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797588",
+       "trait": "Body surface area-indexed right ventricular stroke volume",
+       "n": 56224,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797589",
+       "trait": "Right ventricular stroke volume",
+       "n": 56224,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797590",
+       "trait": "Body surface area-indexed left ventricular end-diastolic volume or Body surface area-indexed left ventricular end-systolic volume (MTAG)",
+       "n": 56210,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797591",
+       "trait": "Body surface area-indexed left ventricular end-diastolic volume or Body surface area-indexed left ventricular stroke volume (MTAG)",
+       "n": 56210,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797592",
+       "trait": "Body surface area-indexed left ventricular end-diastolic volume or Left ventricular end-systolic volume (MTAG)",
+       "n": 56210,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797593",
+       "trait": "Body surface area-indexed left ventricular end-diastolic volume or Left ventricular stroke volume (MTAG)",
+       "n": 56210,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90797594",
+       "trait": "Left ventricular ejection fraction or Left ventricular global function index (MTAG)",
+       "n": 56210,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "41735279",
+     "author": "Rajagopal VM",
+     "journal": "Nat Commun",
+     "published": "2026-02-24",
+     "added": "2026-04-16",
+     "title": "Rare coding variants in CHRNB3 associate with reduced daily cigarette smoking across ancestries.",
+     "studies": [
+      {
+       "id": "GCST90833057",
+       "trait": "Smoking behaviour (cigarettes smoked per day)",
+       "n": 133133,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "41714741",
+     "author": "Schmidt A",
+     "journal": "Nature",
+     "published": "2026-02-19",
+     "added": "2026-02-24",
+     "title": "Host control of persistent Epstein-Barr virus infection.",
+     "studies": [
+      {
+       "id": "GCST90809298",
+       "trait": "EBV read positivity (EBV-read count 1-18)",
+       "n": 360283,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809299",
+       "trait": "EBV read positivity (EBV-read count 2-18 vs 1)",
+       "n": 56180,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809300",
+       "trait": "EBV read positivity (EBV-read count 1)",
+       "n": 339665,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809301",
+       "trait": "EBV read positivity (EBV-read count 2-18)",
+       "n": 324450,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809302",
+       "trait": "EBV read positivity (EBV-read count 1-18), sensitivity analysis (basic covariates-sex, age, sex x age, PCs)",
+       "n": 360138,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809303",
+       "trait": "EBV read positivity (EBV-read count 1-18), sensitivity analysis (no blood count based covariates)",
+       "n": 360138,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809304",
+       "trait": "EBV read positivity (EBV-read count 1-18), sensitivity analysis (extended set of covariates, including imputed genotypes of HLA-alleles)",
+       "n": 360138,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809305",
+       "trait": "EBV read positivity (EBV-read count 1-18)",
+       "n": 192949,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90809306",
+       "trait": "EBV read positivity (EBV-read count 1-18)",
+       "n": 167189,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "41644669",
+     "author": "White SL",
+     "journal": "Nat Genet",
+     "published": "2026-02-05",
+     "added": "2026-02-19",
+     "title": "Global multi-ancestry genome-wide analyses identify genes and biological pathways associated with thyroid cancer and benign thyroid diseases.",
+     "studies": [
+      {
+       "id": "GCST90627740",
+       "trait": "Benign nodular goiter",
+       "n": 1807553,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90627744",
+       "trait": "Graves' disease",
+       "n": 1881665,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90627749",
+       "trait": "Hypothyroidism",
+       "n": 1786062,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90627753",
+       "trait": "Lymphocytic thyroiditis",
+       "n": 183708,
+       "ancestry": "East Asian"
+      },
+      {
+       "id": "GCST90627754",
+       "trait": "Lymphocytic thyroiditis",
+       "n": 1420658,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90627762",
+       "trait": "Thyroid cancer",
+       "n": 410556,
+       "ancestry": "East Asian"
+      },
+      {
+       "id": "GCST90627763",
+       "trait": "Thyroid cancer",
+       "n": 2106366,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90627765",
+       "trait": "Benign nodular goiter",
+       "n": 1731896,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90627767",
+       "trait": "Graves' disease",
+       "n": 1804785,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90627769",
+       "trait": "Hypothyroidism",
+       "n": 1713889,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90627771",
+       "trait": "Lymphocytic thyroiditis",
+       "n": 1343778,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90627775",
+       "trait": "Thyroid cancer",
+       "n": 2029547,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "41501457",
+     "author": "Hujoel MLA",
+     "journal": "Nature",
+     "published": "2026-01-07",
+     "added": "2026-01-30",
+     "title": "Insights into DNA repeat expansions among 900,000 biobank participants.",
+     "studies": [
+      {
+       "id": "GCST90704617",
+       "trait": "Somatic instability of expanded AAAG repeats at chr19_14.8Mb",
+       "n": 453377,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704620",
+       "trait": "Somatic instability of midlength AAAG repeats at chr19_14.8Mb",
+       "n": 56884,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704621",
+       "trait": "Somatic instability of midlength AAAG repeats at chr2_232.4Mb",
+       "n": 217586,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704622",
+       "trait": "Somatic instability of midlength AAAG repeats at chr2_232.4Mb",
+       "n": 124699,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704625",
+       "trait": "Somatic instability of midlength AAAG repeats at chr2_232.4Mb",
+       "n": 342285,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704626",
+       "trait": "Adjusted in-repeat read counts at chr11_123457120_123457139_AAAG",
+       "n": 419013,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704627",
+       "trait": "Adjusted in-repeat read counts at chr12_7148157_7148215_AAAG",
+       "n": 419013,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704628",
+       "trait": "Adjusted in-repeat read counts at chr13_102161576_102161726_AAG",
+       "n": 419013,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704629",
+       "trait": "Adjusted in-repeat read counts at chr15_74894038_74894108_AC",
+       "n": 419013,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704630",
+       "trait": "Adjusted in-repeat read counts at chr16_4804933_4804971_AC",
+       "n": 419013,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704631",
+       "trait": "Adjusted in-repeat read counts at chr17_48857973_48858074_AATAG",
+       "n": 419013,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704632",
+       "trait": "Adjusted in-repeat read counts at chr17_57450255_57450322_AAAG",
+       "n": 419013,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704633",
+       "trait": "Adjusted in-repeat read counts at chr17_74480730_74480759_AAAG",
+       "n": 419013,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704634",
+       "trait": "Adjusted in-repeat read counts at chr18_55586154_55586228_AGC",
+       "n": 419013,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704635",
+       "trait": "Adjusted in-repeat read counts at chr19_14774675_14774689_AAAG",
+       "n": 419013,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704636",
+       "trait": "Adjusted in-repeat read counts at chr1_34802228_34802447_AAACC",
+       "n": 419013,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704637",
+       "trait": "Adjusted in-repeat read counts at chr1_54510617_54510666_AAACC",
+       "n": 419013,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704638",
+       "trait": "Adjusted in-repeat read counts at chr2_232389717_232389783_AAAG",
+       "n": 419013,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704639",
+       "trait": "Adjusted in-repeat read counts at chr2_36966899_36966928_AC",
+       "n": 419013,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704640",
+       "trait": "Adjusted in-repeat read counts at chr2_62664077_62664171_AG",
+       "n": 419013,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704641",
+       "trait": "Adjusted in-repeat read counts at chr4_28663621_28663675_AAG",
+       "n": 419013,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90704642",
+       "trait": "Adjusted in-repeat read counts at chr9_36507233_36507253_AAG",
+       "n": 419013,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "41350255",
+     "author": "Oppenheimer H",
+     "journal": "Nat Commun",
+     "published": "2025-12-05",
+     "added": "2025-12-16",
+     "title": "No causal links between estradiol and female's brain and mental health using Mendelian randomization.",
+     "studies": [
+      {
+       "id": "GCST90483376",
+       "trait": "Detectable estradiol levels",
+       "n": 207119,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "41238566",
+     "author": "Luben RN",
+     "journal": "Nat Commun",
+     "published": "2025-11-14",
+     "added": "2026-04-10",
+     "title": "GWAS for primary angle-closure glaucoma identifies loci related to ocular biometry and morphology.",
+     "studies": [
+      {
+       "id": "GCST90832109",
+       "trait": "Glaucoma (primary angle closure)",
+       "n": 776397,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "41062462",
+     "author": "Abner E",
+     "journal": "Nat Commun",
+     "published": "2025-10-08",
+     "added": "2025-10-24",
+     "title": "Characterization of prevalent genetic variants in the Estonian Biobank body-mass index GWAS.",
+     "studies": [
+      {
+       "id": "GCST90624699",
+       "trait": "Body mass index (rank-based inverse normal transformation)",
+       "n": 204747,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90624700",
+       "trait": "Body mass index",
+       "n": 204747,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90624701",
+       "trait": "Height",
+       "n": 137885,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90624703",
+       "trait": "Weight",
+       "n": 204714,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90624702",
+       "trait": "Waist-hip ratio",
+       "n": 93368,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90624704",
+       "trait": "Body mass index",
+       "n": 128703,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90624705",
+       "trait": "Body mass index",
+       "n": 67832,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "40858613",
+     "author": "Thomas JT",
+     "journal": "Nat Commun",
+     "published": "2025-08-26",
+     "added": "2025-10-14",
+     "title": "Sex-stratified genome-wide association meta-analysis of major depressive disorder.",
+     "studies": [
+      {
+       "id": "GCST90565869",
+       "trait": "Major depressive disorder",
+       "n": 289992,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565870",
+       "trait": "Major depressive disorder",
+       "n": 196990,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565871",
+       "trait": "Major depressive disorder x sex interaction (full X chromosome dosage compensation)",
+       "n": 486982,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565872",
+       "trait": "Major depressive disorder x sex interaction (no X chromosome dosage compensation)",
+       "n": 486982,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "40849414",
+     "author": "He W",
+     "journal": "Nat Commun",
+     "published": "2025-08-23",
+     "added": "2025-09-10",
+     "title": "Large-scale GWAS of strabismus identifies risk loci and provides support for a link with maternal smoking.",
+     "studies": [
+      {
+       "id": "GCST90572735",
+       "trait": "Strabismus",
+       "n": 975385,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90572736",
+       "trait": "Esotropia",
+       "n": 594757,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90572737",
+       "trait": "Exotropia",
+       "n": 587466,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "40835838",
+     "author": "Greene CA",
+     "journal": "Nat Commun",
+     "published": "2025-08-20",
+     "added": "2025-09-04",
+     "title": "Multi-ancestry meta-analysis of keloids uncovers novel susceptibility loci in diverse populations.",
+     "studies": [
+      {
+       "id": "GCST90652488",
+       "trait": "Keloid",
+       "n": 1282582,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "40796553",
+     "author": "Arehart CH",
+     "journal": "Nat Commun",
+     "published": "2025-08-13",
+     "added": "2025-08-28",
+     "title": "Modeling the genomic architecture of adiposity and anthropometrics across the lifespan.",
+     "studies": [
+      {
+       "id": "GCST90624103",
+       "trait": "Abdominal size (multivariate analysis)",
+       "n": 176820,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90624105",
+       "trait": "Body size or adipose distribution (multivariate analysis)",
+       "n": 690110,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90624107",
+       "trait": "Adiposity (multivariate analysis)",
+       "n": 393268,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90624101",
+       "trait": "Birth size (multivariate analysis)",
+       "n": 52404,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "40645996",
+     "author": "Yuan S",
+     "journal": "Nat Commun",
+     "published": "2025-07-11",
+     "added": "2025-08-07",
+     "title": "Cross-population GWAS and proteomics improve risk prediction and reveal mechanisms in atrial fibrillation.",
+     "studies": [
+      {
+       "id": "GCST90624412",
+       "trait": "Atrial fibrillation",
+       "n": 1840341,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90624413",
+       "trait": "Atrial fibrillation",
+       "n": 1432392,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90624414",
+       "trait": "Atrial fibrillation",
+       "n": 407949,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "40533518",
+     "author": "Nicolas A",
+     "journal": "Nat Genet",
+     "published": "2025-06-18",
+     "added": "2025-06-30",
+     "title": "Transferability of European-derived Alzheimer's disease polygenic risk scores across multiancestry populations.",
+     "studies": [
+      {
+       "id": "GCST90565439",
+       "trait": "Alzheimer's disease",
+       "n": 99796,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "40374629",
+     "author": "Schoeler T",
+     "journal": "Nat Commun",
+     "published": "2025-05-15",
+     "added": "2025-07-29",
+     "title": "Combining cross-sectional and longitudinal genomic approaches to identify determinants of cognitive and physical decline.",
+     "studies": [
+      {
+       "id": "GCST90565862",
+       "trait": "Fluid intelligence score decline (difference score)",
+       "n": 131736,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565863",
+       "trait": "Height decline (difference score)",
+       "n": 72792,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565865",
+       "trait": "Hand grip strength decline (difference score)",
+       "n": 71943,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565855",
+       "trait": "Hand grip strength decline (log-difference score)",
+       "n": 71943,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565836",
+       "trait": "Cognitive function (baseline)",
+       "n": 404449,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565837",
+       "trait": "Physical function (baseline)",
+       "n": 405979,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565838",
+       "trait": "Reaction time (baseline)",
+       "n": 403967,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565839",
+       "trait": "Duration to complete alphanumeric path task (baseline)",
+       "n": 168864,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565840",
+       "trait": "Number of puzzles correctly solved (baseline)",
+       "n": 158996,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565841",
+       "trait": "Symbol digit substitution test performance (baseline)",
+       "n": 181587,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565842",
+       "trait": "Fluid intelligence score (baseline)",
+       "n": 254641,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565843",
+       "trait": "Height (baseline)",
+       "n": 405540,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565844",
+       "trait": "Forced expiratory volume (baseline)",
+       "n": 373397,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565845",
+       "trait": "Hand grip strength (baseline)",
+       "n": 404112,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565846",
+       "trait": "Cognitive decline (log-difference score)",
+       "n": 103938,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565847",
+       "trait": "Physical decline (log-difference score)",
+       "n": 72220,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565848",
+       "trait": "Reaction time decline (log-difference score)",
+       "n": 69028,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565849",
+       "trait": "Duration to complete alphanumeric path task decline (log-difference score)",
+       "n": 77380,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565851",
+       "trait": "Symbol digit substitution test performance decline (log-difference score)",
+       "n": 90713,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565852",
+       "trait": "Fluid intelligence score decline (log-difference score)",
+       "n": 131736,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565853",
+       "trait": "Height decline (log-difference score)",
+       "n": 72792,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565856",
+       "trait": "Cognitive decline (difference score)",
+       "n": 103938,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565857",
+       "trait": "Physical decline (difference score)",
+       "n": 72220,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565858",
+       "trait": "Reaction time decline (difference score)",
+       "n": 69028,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565859",
+       "trait": "Duration to complete alphanumeric path task decline (difference score)",
+       "n": 77380,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565861",
+       "trait": "Symbol digit substitution test performance decline (difference score)",
+       "n": 90713,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "40335706",
+     "author": "Gui A",
+     "journal": "Nat Hum Behav",
+     "published": "2025-05-07",
+     "added": "2025-07-29",
+     "title": "Genome-wide association meta-analysis of age at onset of walking in over 70,000 infants of European ancestry.",
+     "studies": [
+      {
+       "id": "GCST90651078",
+       "trait": "Age at onset of walking",
+       "n": 70560,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "40335489",
+     "author": "Xiang R",
+     "journal": "Nat Commun",
+     "published": "2025-05-07",
+     "added": "2025-05-22",
+     "title": "Genome-wide analyses of variance in blood cell phenotypes provide new insights into complex trait biology and prediction.",
+     "studies": [
+      {
+       "id": "GCST90565679",
+       "trait": "Immature fraction of reticulocytes variance",
+       "n": 396407,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565680",
+       "trait": "Plateletcrit variance",
+       "n": 390802,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565681",
+       "trait": "Lymphocyte count variance",
+       "n": 407276,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565682",
+       "trait": "Basophil count variance",
+       "n": 404717,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565683",
+       "trait": "Reticulocyte count variance",
+       "n": 396719,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565684",
+       "trait": "Hematocrit variance",
+       "n": 408111,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565685",
+       "trait": "Hemoglobin concentration variance",
+       "n": 407738,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565686",
+       "trait": "High light scatter reticulocyte count variance",
+       "n": 400333,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565687",
+       "trait": "High light scatter reticulocyte percentage of red cells variance",
+       "n": 400437,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565688",
+       "trait": "Basophil percentage of white cells variance",
+       "n": 404531,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565689",
+       "trait": "Eosinophil count variance",
+       "n": 406469,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565690",
+       "trait": "Eosinophil percentage of white cells variance",
+       "n": 406416,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565691",
+       "trait": "Lymphocyte percentage of white cells variance",
+       "n": 407318,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565692",
+       "trait": "Mean corpuscular hemoglobin concentration variance",
+       "n": 407849,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565693",
+       "trait": "Mean corpuscular hemoglobin variance",
+       "n": 406516,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565694",
+       "trait": "Mean corpuscular volume variance",
+       "n": 407156,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565695",
+       "trait": "Mean platelet volume variance",
+       "n": 391597,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565696",
+       "trait": "Mean reticulocyte volume variance",
+       "n": 393244,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565697",
+       "trait": "Mean spheric corpuscular volume variance",
+       "n": 397436,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565698",
+       "trait": "Monocyte count variance",
+       "n": 403993,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565699",
+       "trait": "Monocyte percentage of white cells variance",
+       "n": 403135,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565700",
+       "trait": "Neutrophil count variance",
+       "n": 406787,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565701",
+       "trait": "Neutrophil percentage of white cells variance",
+       "n": 407113,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565702",
+       "trait": "Platelet count variance",
+       "n": 391231,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565703",
+       "trait": "Platelet distribution width variance",
+       "n": 391449,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565704",
+       "trait": "Red blood cell count variance",
+       "n": 408068,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565705",
+       "trait": "Red cell distribution width variance",
+       "n": 404440,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565706",
+       "trait": "Reticulocyte fraction of red cells variance",
+       "n": 396810,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90565707",
+       "trait": "White blood cell count variance",
+       "n": 408031,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "40164604",
+     "author": "Oliva M",
+     "journal": "Nat Commun",
+     "published": "2025-04-01",
+     "added": "2025-04-24",
+     "title": "Integration of GWAS, QTLs and keratinocyte functional assays reveals molecular mechanisms of atopic dermatitis.",
+     "studies": [
+      {
+       "id": "GCST90503109",
+       "trait": "Atopic dermatitis",
+       "n": 451435,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "40069456",
+     "author": "Pujol Gualdo N",
+     "journal": "Nat Med",
+     "published": "2025-03-11",
+     "added": "2025-03-28",
+     "title": "Atlas of genetic and phenotypic associations across 42 female reproductive health diagnoses.",
+     "studies": [
+      {
+       "id": "GCST90454227",
+       "trait": "ICD10 O00: Ectopic pregnancy",
+       "n": 255880,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454228",
+       "trait": "ICD10 O01: Hydatidiform mole",
+       "n": 251660,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454229",
+       "trait": "ICD10 O02: Other abnormal products of conception",
+       "n": 260287,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454230",
+       "trait": "ICD10 O03: Spontenous abortion",
+       "n": 264708,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454231",
+       "trait": "ICD10 O12: Gestational oedema and proteinuria without hypertension",
+       "n": 289609,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454232",
+       "trait": "ICD10 O13: Gestational hypertension",
+       "n": 294039,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454233",
+       "trait": "ICD10 O14: Pre-eclampsia",
+       "n": 292742,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454234",
+       "trait": "ICD10 O15: Eclampsia",
+       "n": 287862,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454235",
+       "trait": "ICD10 O20: Haemorrhage in early pregnancy",
+       "n": 284403,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454236",
+       "trait": "ICD10 O24.4: Diabetes mellitus arising in pregnancy",
+       "n": 300553,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454237",
+       "trait": "ICD10 O26.6: Liver disorders in pregnancy, childbirth and puerperium",
+       "n": 300553,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454238",
+       "trait": "ICD10 O42: Premature rupture of membranes",
+       "n": 274607,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454239",
+       "trait": "ICD10 O44: Placenta praevia",
+       "n": 270458,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454240",
+       "trait": "ICD10 O45: Premature separation of placenta (abruptio placentae)",
+       "n": 270006,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454241",
+       "trait": "ICD10 O48: Prolonged pregnancy",
+       "n": 272704,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454242",
+       "trait": "ICD10 O60: Preterm labor and delivery",
+       "n": 270721,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454243",
+       "trait": "ICD10 O73: Retained placenta and membranes, without haemorrhage",
+       "n": 265562,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454205",
+       "trait": "ICD10 E28.2: Polycystic ovarian syndrome",
+       "n": 288356,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454206",
+       "trait": "ICD10 E28.3: Primary ovarian failure",
+       "n": 287690,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454207",
+       "trait": "ICD10 N70: Salpingitis and oophoritis",
+       "n": 288194,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454208",
+       "trait": "ICD10 N71: Inflammatory disease of uterus, except cervix",
+       "n": 286812,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454209",
+       "trait": "ICD10 N72: Inflammatory disease of cervix uteri",
+       "n": 285050,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454210",
+       "trait": "ICD10 N73: Other female pelvic inflammatory diseases",
+       "n": 287675,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454211",
+       "trait": "ICD10 N75: Diseases of Bartholin gland",
+       "n": 284356,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454212",
+       "trait": "ICD10 N76: Other inflammation of vagina and vulva",
+       "n": 284261,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454213",
+       "trait": "ICD10 N80: Endometriosis",
+       "n": 233257,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454214",
+       "trait": "ICD10 N81: Female genital prolapse",
+       "n": 234621,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454215",
+       "trait": "ICD10 N83.0, N83.1, N83.2: Ovarian cyst, including follicular cyst, corpus luteum cyst, and other/unspecified ovarian cyst",
+       "n": 232058,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454216",
+       "trait": "ICD10 N84: Polyp of female genital tract",
+       "n": 232293,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454217",
+       "trait": "ICD10 N86: Erosion and ectropion of cervix uteri",
+       "n": 221885,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454218",
+       "trait": "ICD10 N87: Dysplasia of cervix uteri",
+       "n": 227598,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454219",
+       "trait": "ICD10 N91.0, N91.1, N91.2: Amenorrhea, including primary amenorrhea, secondary amenorrhea and unspecified amenorrhea",
+       "n": 222924,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454220",
+       "trait": "ICD10 N91.3, N91.4, N91.5: Oligomenorrhea, including primary oligomenorrhea, secondary oligomenorrhea, and unspecified oligomenorrhea",
+       "n": 222034,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454221",
+       "trait": "ICD10 N92: Excessive, frequent and irregular menstruation",
+       "n": 249874,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454222",
+       "trait": "ICD10 N96: Habitual aborter",
+       "n": 221596,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454223",
+       "trait": "ICD10 N97.0: Female infertility associated with anovulation",
+       "n": 222943,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454224",
+       "trait": "ICD10 N97.1: Female infertility of tubal origin",
+       "n": 222355,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454225",
+       "trait": "ICD10 N97.8: Female infertility of other origin",
+       "n": 229752,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454226",
+       "trait": "ICD10 N98.1: Hyperstimulation of ovaries",
+       "n": 291046,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454202",
+       "trait": "ICD10 C53: Malignant neoplasm of cervix uteri",
+       "n": 295291,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454203",
+       "trait": "ICD10 C56: Malignant neoplasm of ovary",
+       "n": 295291,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90454204",
+       "trait": "ICD10 D25: Leiomyoma of uterus",
+       "n": 295291,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "40073867",
+     "author": "Wilcox N",
+     "journal": "Am J Hum Genet",
+     "published": "2025-03-07",
+     "added": "2025-03-26",
+     "title": "The contribution of coding variants to the heritability of multiple cancer types using UK Biobank whole-exome sequencing data.",
+     "studies": [
+      {
+       "id": "GCST90503274",
+       "trait": "Pancreatic cancer (Gene-based burden)",
+       "n": 419307,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90503275",
+       "trait": "Endometrial cancer (Gene-based burden)",
+       "n": 419307,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90503276",
+       "trait": "Ovarian cancer (Gene-based burden)",
+       "n": 419307,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90503277",
+       "trait": "Esophageal cancer (Gene-based burden)",
+       "n": 419307,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90503278",
+       "trait": "Kidney cancer (Gene-based burden)",
+       "n": 419307,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90503279",
+       "trait": "Bladder cancer (Gene-based burden)",
+       "n": 419307,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90503280",
+       "trait": "Malignant melanoma (Gene-based burden)",
+       "n": 419307,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "40050615",
+     "author": "Kim J",
+     "journal": "Nat Commun",
+     "published": "2025-03-06",
+     "added": "2025-03-12",
+     "title": "Genome-wide meta-analysis identifies novel risk loci for uterine fibroids within and across multiple ancestry groups.",
+     "studies": [
+      {
+       "id": "GCST90461958",
+       "trait": "Uterine fibroids",
+       "n": 434152,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "40021682",
+     "author": "Park J",
+     "journal": "Nat Commun",
+     "published": "2025-02-28",
+     "added": "2025-03-12",
+     "title": "Rare genetic associations with human lifespan in UK Biobank are enriched for oncogenic genes.",
+     "studies": [
+      {
+       "id": "GCST90551884",
+       "trait": "Lifespan",
+       "n": 393833,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90551885",
+       "trait": "Lifespan",
+       "n": 180970,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90551886",
+       "trait": "Lifespan",
+       "n": 212863,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90551887",
+       "trait": "Lifespan (Gene-based)",
+       "n": 393833,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90551888",
+       "trait": "Lifespan (Gene-based)",
+       "n": 180970,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90551889",
+       "trait": "Lifespan (Gene-based)",
+       "n": 212863,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "40021644",
+     "author": "Dand N",
+     "journal": "Nat Commun",
+     "published": "2025-02-28",
+     "added": "2025-03-12",
+     "title": "GWAS meta-analysis of psoriasis identifies new susceptibility alleles impacting disease mechanisms and therapeutic targets.",
+     "studies": [
+      {
+       "id": "GCST90472771",
+       "trait": "Psoriasis",
+       "n": 494544,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "39948438",
+     "author": "Wen S",
+     "journal": "Nat Genet",
+     "published": "2025-02-13",
+     "added": "2025-11-03",
+     "title": "Comparative analysis of the Mexico City Prospective Study and the UK Biobank identifies ancestry-specific effects on clonal hematopoiesis.",
+     "studies": [
+      {
+       "id": "GCST90435353",
+       "trait": "Clonal hematopoiesis (overall)",
+       "n": 406826,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90435354",
+       "trait": "Clonal hematopoiesis (DNMT3A mutation)",
+       "n": 398696,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90435355",
+       "trait": "Clonal hematopoiesis (TET2 mutation)",
+       "n": 391811,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90435356",
+       "trait": "Clonal hematopoiesis (ASXL1 mutation)",
+       "n": 388769,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90435357",
+       "trait": "Clonal hematopoiesis (PPM1D mutation)",
+       "n": 387530,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90435358",
+       "trait": "Clonal hematopoiesis (TP53 mutation)",
+       "n": 387285,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90435359",
+       "trait": "Clonal hematopoiesis (SF3B1 mutation)",
+       "n": 387067,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90435360",
+       "trait": "Clonal hematopoiesis (SRSF2 mutation)",
+       "n": 387176,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90435361",
+       "trait": "Clonal hematopoiesis (GNB1 mutation)",
+       "n": 387057,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90435362",
+       "trait": "Clonal hematopoiesis (IDH2 mutation)",
+       "n": 386941,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90435363",
+       "trait": "Clonal hematopoiesis (JAK2 mutation)",
+       "n": 387041,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90435364",
+       "trait": "Clonal hematopoiesis (SF3B1 or SRSF2 mutation)",
+       "n": 387381,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "39753771",
+     "author": "Jia G",
+     "journal": "Nat Genet",
+     "published": "2025-01-03",
+     "added": "2025-07-31",
+     "title": "Refining breast cancer genetic risk and biology through multi-ancestry fine-mapping analyses of 192 risk regions.",
+     "studies": [
+      {
+       "id": "GCST90429846",
+       "trait": "Breast cancer",
+       "n": 127435,
+       "ancestry": "East Asian"
+      }
+     ]
+    },
+    {
+     "pmid": "39715877",
+     "author": "Akimova ET",
+     "journal": "Nat Hum Behav",
+     "published": "2024-12-23",
+     "added": "2025-01-08",
+     "title": "Polygenic prediction of occupational status GWAS elucidates genetic and environmental interplay in intergenerational transmission, careers and health in UK Biobank.",
+     "studies": [
+      {
+       "id": "GCST90446160",
+       "trait": "ISEI occupational score",
+       "n": 271769,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90446162",
+       "trait": "CAMSIS occupational score",
+       "n": 273157,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90446163",
+       "trait": "SIOPS occupational score",
+       "n": 271769,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "39695248",
+     "author": "Schoeler T",
+     "journal": "Nat Hum Behav",
+     "published": "2024-12-18",
+     "added": "2025-01-15",
+     "title": "The impact of self-report inaccuracy in the UK Biobank and its interplay with selective participation.",
+     "studies": [
+      {
+       "id": "GCST90448966",
+       "trait": "Reporting error summary score",
+       "n": 62129,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "39537608",
+     "author": "Koskeridis F",
+     "journal": "Nat Commun",
+     "published": "2024-11-13",
+     "added": "2024-12-04",
+     "title": "Multi-trait association analysis reveals shared genetic loci between Alzheimer's disease and cardiovascular traits.",
+     "studies": [
+      {
+       "id": "GCST90449053",
+       "trait": "Alzheimer's disease (MTAG)",
+       "n": 455258,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90449054",
+       "trait": "Atrial fibrillation (MTAG)",
+       "n": 1030836,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90449055",
+       "trait": "Alzheimer's disease (MTAG)",
+       "n": 455258,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90449056",
+       "trait": "Systolic blood pressure (MTAG)",
+       "n": 757601,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90449057",
+       "trait": "Diastolic blood pressure (MTAG)",
+       "n": 757601,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90449058",
+       "trait": "Alzheimer's disease (MTAG)",
+       "n": 455258,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90449060",
+       "trait": "Alzheimer's disease (MTAG)",
+       "n": 455258,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90449061",
+       "trait": "Carotid intima-media thickness (MTAG)",
+       "n": 113578,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90449062",
+       "trait": "Alzheimer's disease (MTAG)",
+       "n": 455258,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90449063",
+       "trait": "Stroke (MTAG)",
+       "n": 446696,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "39375568",
+     "author": "Sidorenko J",
+     "journal": "Nat Genet",
+     "published": "2024-10-07",
+     "added": "2024-10-23",
+     "title": "Genetic architecture reconciles linkage and association studies of complex traits.",
+     "studies": [
+      {
+       "id": "GCST90446645",
+       "trait": "Body mass index",
+       "n": 650000,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "39362880",
+     "author": "Hawkes G",
+     "journal": "Nat Commun",
+     "published": "2024-10-03",
+     "added": "2024-10-16",
+     "title": "Whole-genome sequencing in 333,100 individuals reveals rare non-coding single variant and aggregate associations with height.",
+     "studies": [
+      {
+       "id": "GCST90446475",
+       "trait": "Standing height",
+       "n": 183078,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90446476",
+       "trait": "Standing height (Gene-based burden)",
+       "n": 183078,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "39349818",
+     "author": "Miao J",
+     "journal": "Nat Genet",
+     "published": "2024-09-30",
+     "added": "2024-10-15",
+     "title": "Valid inference for machine learning-assisted genome-wide association studies.",
+     "studies": [
+      {
+       "id": "GCST90446627",
+       "trait": "DXA-Bone mineral density (arms)  (UKB data field 23225)",
+       "n": 50659,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90446630",
+       "trait": "DXA-Bone mineral density (femur total) (UKB data field 23291)",
+       "n": 50588,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90446631",
+       "trait": "DXA-Bone mineral density (femur troch) (UKB data field 23295)",
+       "n": 50070,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90446635",
+       "trait": "DXA-Bone mineral density (legs) (UKB data field 23231)",
+       "n": 53461,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90446636",
+       "trait": "DXA-Bone mineral density (pelvis) (UKB data field 23232)",
+       "n": 50593,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90446637",
+       "trait": "DXA-Bone mineral density (ribs) (UKB data field 23233)",
+       "n": 60879,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90446638",
+       "trait": "DXA-Bone mineral density (spine) (UKB data field 23234)",
+       "n": 54408,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90446639",
+       "trait": "DXA-Bone mineral density (trunk) (UKB data field 23241)",
+       "n": 55688,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90446640",
+       "trait": "DXA-Bone mineral density (total body) (UKB data field 23236)",
+       "n": 53256,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90446641",
+       "trait": "DXA-Bone mineral density (femur neck)",
+       "n": 79940,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90446642",
+       "trait": "DXA-Bone mineral density (L1-L4)",
+       "n": 79071,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90446643",
+       "trait": "DXA-Bone mineral density (head)",
+       "n": 81622,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90446644",
+       "trait": "DXA-Bone mineral density (total body)",
+       "n": 117015,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "39266554",
+     "author": "Wei Y",
+     "journal": "Nat Commun",
+     "published": "2024-09-13",
+     "added": "2024-10-01",
+     "title": "Genome-wide association studies of thyroid-related hormones, dysfunction, and autoimmunity among 85,421 Chinese pregnancies.",
+     "studies": [
+      {
+       "id": "GCST90435195",
+       "trait": "Thyroid stimulating hormone levels within normal range in pregnancy",
+       "n": 67471,
+       "ancestry": "East Asian"
+      },
+      {
+       "id": "GCST90435196",
+       "trait": "Free thyroxine levels within normal range in pregnancy",
+       "n": 67315,
+       "ancestry": "East Asian"
+      },
+      {
+       "id": "GCST90435197",
+       "trait": "Subclinical hypothyroidism in pregnancy",
+       "n": 73050,
+       "ancestry": "East Asian"
+      },
+      {
+       "id": "GCST90435198",
+       "trait": "Isolated hypothyroxinemia  in pregnancy",
+       "n": 50407,
+       "ancestry": "East Asian"
+      },
+      {
+       "id": "GCST90435199",
+       "trait": "Subclinical hyperthyroidism in pregnancy",
+       "n": 72631,
+       "ancestry": "East Asian"
+      },
+      {
+       "id": "GCST90435200",
+       "trait": "Overt hyperthyroidism in pregnancy",
+       "n": 69788,
+       "ancestry": "East Asian"
+      },
+      {
+       "id": "GCST90435201",
+       "trait": "Thyroid peroxidase antibody levels in pregnancy",
+       "n": 60225,
+       "ancestry": "East Asian"
+      },
+      {
+       "id": "GCST90435202",
+       "trait": "Thyroid peroxidase antibody positivity in pregnancy",
+       "n": 69061,
+       "ancestry": "East Asian"
+      },
+      {
+       "id": "GCST90435203",
+       "trait": "Thyroid peroxidase antibody positivity with euthyroid in pregnancy",
+       "n": 64344,
+       "ancestry": "East Asian"
+      }
+     ]
+    },
+    {
+     "pmid": "39242605",
+     "author": "Li M",
+     "journal": "Nat Commun",
+     "published": "2024-09-06",
+     "added": "2024-12-05",
+     "title": "Cognitive processing speed and accuracy are intrinsically different in genetic architecture and brain phenotypes.",
+     "studies": [
+      {
+       "id": "GCST90446168",
+       "trait": "Cognitive processing speed",
+       "n": 2266733,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90446169",
+       "trait": "Cognitive processing accuracy",
+       "n": 1783727,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "39134668",
+     "author": "Shi S",
+     "journal": "Nat Genet",
+     "published": "2024-08-12",
+     "added": "2024-08-30",
+     "title": "A Genomics England haplotype reference panel and imputation of UK Biobank.",
+     "studies": [
+      {
+       "id": "GCST90435412",
+       "trait": "Height",
+       "n": 404900,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90435413",
+       "trait": "Body mass index",
+       "n": 403610,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90435414",
+       "trait": "Diastolic blood pressure",
+       "n": 404337,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90435415",
+       "trait": "Systolic blood pressure",
+       "n": 404507,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "39080267",
+     "author": "Doostparast Torshizi A",
+     "journal": "Nat Commun",
+     "published": "2024-07-31",
+     "added": "2024-11-15",
+     "title": "Proteogenomic network analysis reveals dysregulated mechanisms and potential mediators in Parkinson's disease.",
+     "studies": [
+      {
+       "id": "GCST90319903",
+       "trait": "Parkinson's disease",
+       "n": 161740,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "38987359",
+     "author": "Marchi M",
+     "journal": "Nat Hum Behav",
+     "published": "2024-07-10",
+     "added": "2024-07-30",
+     "title": "Investigating the impact of poverty on mental illness in the UK Biobank using Mendelian randomization.",
+     "studies": [
+      {
+       "id": "GCST90302879",
+       "trait": "Poverty (general factor)",
+       "n": 453689,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90302880",
+       "trait": "Household income",
+       "n": 379598,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90302881",
+       "trait": "Household income (low)",
+       "n": 379598,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90302882",
+       "trait": "Household income (low to mid)",
+       "n": 379598,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90302883",
+       "trait": "Household income (mid to high)",
+       "n": 379598,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90302884",
+       "trait": "Household income (high)",
+       "n": 379598,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90302885",
+       "trait": "Social deprivation",
+       "n": 440350,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "38977853",
+     "author": "Yun T",
+     "journal": "Nat Genet",
+     "published": "2024-07-08",
+     "added": "2025-02-12",
+     "title": "Unsupervised representation learning on high-dimensional clinical data improves genomic discovery and prediction.",
+     "studies": [
+      {
+       "id": "GCST90399858",
+       "trait": "Spirogram blow FVC",
+       "n": 324702,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399859",
+       "trait": "Spirogram blow FEV1/FVC ratio",
+       "n": 324702,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399860",
+       "trait": "Spirogram blow PEF",
+       "n": 324702,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399861",
+       "trait": "Spirogram blow FEF25-75",
+       "n": 324702,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399862",
+       "trait": "PPG encoding coordinate 1",
+       "n": 141275,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399863",
+       "trait": "PPG encoding coordinate 2",
+       "n": 141275,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399864",
+       "trait": "PPG encoding coordinate 3",
+       "n": 141275,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399865",
+       "trait": "PPG encoding coordinate 4",
+       "n": 141275,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399850",
+       "trait": "Spirogram encoding coordinate 1",
+       "n": 324702,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399866",
+       "trait": "PPG encoding coordinate 5",
+       "n": 141275,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399851",
+       "trait": "Spirogram encoding coordinate 2",
+       "n": 324702,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399854",
+       "trait": "Spirogram encoding coordinate 5",
+       "n": 324702,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399856",
+       "trait": "Residual spirogram encoding coordinate 2",
+       "n": 324702,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399868",
+       "trait": "Residual PPG encoding coordinate 2",
+       "n": 141275,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399867",
+       "trait": "Residual PPG encoding coordinate 1",
+       "n": 141275,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399852",
+       "trait": "Spirogram encoding coordinate 3",
+       "n": 324702,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399853",
+       "trait": "Spirogram encoding coordinate 4",
+       "n": 324702,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399855",
+       "trait": "Residual spirogram encoding coordinate 1",
+       "n": 324702,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399857",
+       "trait": "Spirogram blow FEV1",
+       "n": 324702,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399869",
+       "trait": "PPG absence of notch",
+       "n": 141275,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399870",
+       "trait": "PPG position of notch",
+       "n": 141275,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399871",
+       "trait": "PPG position of peak",
+       "n": 141275,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399872",
+       "trait": "PPG position of shoulder",
+       "n": 141275,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90399873",
+       "trait": "PPG peak-to-peak time",
+       "n": 141275,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "38965376",
+     "author": "Carey CE",
+     "journal": "Nat Hum Behav",
+     "published": "2024-07-04",
+     "added": "2024-10-04",
+     "title": "Principled distillation of UK Biobank phenotype data reveals underlying structure in human variation.",
+     "studies": [
+      {
+       "id": "GCST90309336",
+       "trait": "Anxiety and nervousness (confirmatory factor analysis Factor 1)",
+       "n": 117885,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309337",
+       "trait": "Depressive symptomatology (confirmatory factor analysis Factor 2)",
+       "n": 117684,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309338",
+       "trait": "Clinical anxiety and depression (confirmatory factor analysis Factor 3)",
+       "n": 118015,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309339",
+       "trait": "Urbanicity (confirmatory factor analysis Factor 4)",
+       "n": 355841,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309340",
+       "trait": "Occupation and workplace environment (confirmatory factor analysis Factor 5)",
+       "n": 90883,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309341",
+       "trait": "Smoking and associated risk behaviours (confirmatory factor analysis Factor 6)",
+       "n": 310267,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309342",
+       "trait": "BMI and adiposity (confirmatory factor analysis Factor 7)",
+       "n": 338590,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309343",
+       "trait": "Trauma (confirmatory factor analysis Factor 9)",
+       "n": 118006,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309344",
+       "trait": "Educational attainment (confirmatory factor analysis Factor 10)",
+       "n": 139825,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309345",
+       "trait": "Respiratory disease (confirmatory factor analysis Factor 11)",
+       "n": 360406,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309346",
+       "trait": "Hypertension (confirmatory factor analysis Factor 12)",
+       "n": 338391,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309347",
+       "trait": "Use of dietary supplements (confirmatory factor analysis Factor 13)",
+       "n": 359151,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309348",
+       "trait": "Joint pain (confirmatory factor analysis Factor 14)",
+       "n": 360311,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309349",
+       "trait": "Social and economic stability (confirmatory factor analysis Factor 15)",
+       "n": 358135,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309350",
+       "trait": "Coronary artery disease (confirmatory factor analysis Factor 16)",
+       "n": 360021,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309351",
+       "trait": "Office and retail occupations (confirmatory factor analysis Factor 17)",
+       "n": 91033,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309352",
+       "trait": "Chronic pain (confirmatory factor analysis Factor 18)",
+       "n": 360249,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309353",
+       "trait": "Bone density (confirmatory factor analysis Factor 19)",
+       "n": 115532,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309354",
+       "trait": "Severe, life-threatening illness (confirmatory factor analysis Factor 20)",
+       "n": 360656,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309355",
+       "trait": "Body size (confirmatory factor analysis Factor 21)",
+       "n": 329172,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309356",
+       "trait": "Alcohol use and misuse (confirmatory factor analysis Factor 22)",
+       "n": 118022,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309357",
+       "trait": "Physical activity (confirmatory factor analysis Factor 23)",
+       "n": 354112,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309358",
+       "trait": "Eye autorefraction and astigmatism (confirmatory factor analysis Factor 24)",
+       "n": 75226,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309359",
+       "trait": "Eye conditions (confirmatory factor analysis Factor 25)",
+       "n": 359995,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309360",
+       "trait": "Intraocular pressure (confirmatory factor analysis Factor 26)",
+       "n": 77267,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309361",
+       "trait": "Age-related eyesight deterioration (confirmatory factor analysis Factor 27)",
+       "n": 80058,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309362",
+       "trait": "Diabetes (confirmatory factor analysis Factor 28)",
+       "n": 360514,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309363",
+       "trait": "Comfortable retirement (confirmatory factor analysis Factor 29)",
+       "n": 359774,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309364",
+       "trait": "Inflammatory markers and poor diet (confirmatory factor analysis Factor 30)",
+       "n": 337045,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309365",
+       "trait": "Gastrointestinal issues (confirmatory factor analysis Factor 31)",
+       "n": 360225,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309367",
+       "trait": "Living near London (confirmatory factor analysis Factor 33)",
+       "n": 357605,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309369",
+       "trait": "Neutrophils and lymphocytes in blood (confirmatory factor analysis Factor 35)",
+       "n": 349613,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309370",
+       "trait": "Handedness (confirmatory factor analysis Factor 36)",
+       "n": 302934,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309368",
+       "trait": "Cognition and processing speed (confirmatory factor analysis Factor 34)",
+       "n": 119671,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90309366",
+       "trait": "Hearing (confirmatory factor analysis Factor 32)",
+       "n": 115571,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "38872030",
+     "author": "McCaw ZR",
+     "journal": "Nat Genet",
+     "published": "2024-06-13",
+     "added": "2024-08-05",
+     "title": "Synthetic surrogates improve power for genome-wide association studies of partially missing phenotypes in population biobanks.",
+     "studies": [
+      {
+       "id": "GCST90435503",
+       "trait": "Trunk total mass (UKB data field 23287)",
+       "n": 348000,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90435504",
+       "trait": "Arms total mass (UKB data field 23260)",
+       "n": 348000,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90435505",
+       "trait": "Gynoid total mass (UKB data field 23265)",
+       "n": 348000,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90435506",
+       "trait": "Total mass (UKB data field 23283)",
+       "n": 348000,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90435507",
+       "trait": "Leg total mass (UKB data field 23277)",
+       "n": 348000,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90435508",
+       "trait": "Android total mass (UKB data field 23248)",
+       "n": 348000,
+       "ancestry": "European"
+      }
+     ]
+    },
+    {
+     "pmid": "38867047",
+     "author": "Liu A",
+     "journal": "Nature",
+     "published": "2024-06-12",
+     "added": "2024-08-15",
+     "title": "Genetic drivers and cellular selection of female mosaic X chromosome loss.",
+     "studies": [
+      {
+       "id": "GCST90328147",
+       "trait": "Mosaic loss of chromosome X",
+       "n": 806257,
+       "ancestry": "European"
+      },
+      {
+       "id": "GCST90328149",
+       "trait": "Mosaic loss of chromosome X",
+       "n": 806257,
+       "ancestry": "European"
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

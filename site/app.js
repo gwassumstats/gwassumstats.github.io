@@ -3,12 +3,13 @@
 // A study is called by its short name (d.name) everywhere; its ID in the release shows on its page and in exports.
 
 const TITLE = "GWAS Sumstats";
-const TABS = { sumstats: "", h2: "Heritability", rg: "Genetic correlation", notes: "Release notes", about: "About" };  // tab → its page title
+const TABS = { sumstats: "", h2: "Heritability", rg: "Genetic correlation", candidates: "Candidates", notes: "Release notes", about: "About" };  // tab → its page title
 const STRONG_Z = 3;  // a genetic correlation is listed among a study's strongest if its |z| is at least this
 const TOP = 10;      // the strongest shown before "show all"
 const PANEL_MAX = Math.sqrt(0.1);  // a panel's heatmap: its colours end at the panels' bound, rg² = 0.1
 const PUBMED = "https://pubmed.ncbi.nlm.nih.gov/", DOI = "https://doi.org/";  // where a paper's links lead
 const ISSUES = "https://github.com/gwassumstats/gwassumstats.github.io/issues/new";  // where a problem is reported
+const CATALOG = "https://www.ebi.ac.uk/gwas/studies/";  // where the GWAS Catalog shows a study
 const QC = ["pass", "warn", "fail"];  // what the quality checks say of a study, the best first
 const $ = (id) => document.getElementById(id);
 const el = (tag, cls, text) => Object.assign(document.createElement(tag), { className: cls || "", textContent: text ?? "" });
@@ -33,6 +34,7 @@ const tables = new Map();  // ancestry → promise of its genetic correlations
 const rows = { sumstats: new Map(), h2: new Map() };  // study id → its <tbody>, per table
 let blob;  // promise of the encrypted paths
 let records;  // promise of the papers: authors, title, journal, BibTeX entry
+let found;  // promise of the candidates for the next release, and of the rule's backtest
 
 // ---------------------------------------------------------------- helpers
 
@@ -764,6 +766,69 @@ async function renderStudy() {
   section.replaceChildren(title, ...(top.length ? [scroll] : []));
 }
 
+// ---------------------------------------------------------------- candidates for the next release
+
+const day = (date) => date.replaceAll("-", "/");
+const paperOf = (p) => outside(`${PUBMED}${p.pmid}/`, `${p.author}, ${p.journal}, ${day(p.published)}`);
+const cells = (tag, row) => {  // a table row: text, or what to put in the cell; a number to the right
+  const tr = el("tr");
+  tr.append(...row.map((content) => {
+    const cell = el(tag, typeof content === "number" ? "num" : "");
+    cell.append(...[typeof content === "number" ? int(content) : content].flat());
+    return cell;
+  }));
+  return tr;
+};
+const grid = (table, head, rows) => {
+  const thead = el("thead"), tbody = el("tbody");
+  thead.append(cells("th", head));
+  tbody.append(...rows.map((row) => cells("td", row)));
+  table.replaceChildren(thead, tbody);
+};
+
+// The candidates the GWAS Catalog holds for the next release, the rule that finds them, and what the rule finds of
+// the studies that the last release added (candidates/, data/candidates.json)
+async function renderCandidates() {
+  let c;
+  try {
+    c = await (found ??= load("candidates.json").catch((e) => { found = undefined; throw e; }));
+  } catch {
+    $("cand-lead").textContent = "The candidates did not load; check the connection and reload.";
+    return;
+  }
+  if (state.view !== "candidates") return;
+  const year = state.release.year, test = c.backtest, last = test.steps.at(-1), beyond = test.beyond;
+  const studies = c.candidates.flatMap((p) => p.studies.map((s, k) => [k ? "" : paperOf(p), outside(`${CATALOG}${s.id}`, s.id), s.trait, s.n, s.ancestry]));
+  $("cand-lead").textContent = `${howMany(studies.length, "study", "studies")} in ${howMany(c.candidates.length, "paper")}: GWAS with public summary statistics that the GWAS Catalog added after `
+    + `${day(c.until)}, where the ${year} release stopped, and that pass the rule below. The Catalog was read on ${day(c.catalog.fetched)}; its latest paper was then of ${day(c.catalog.published_to)}.`;
+  $("cand-list").hidden = !studies.length;
+  grid($("cand-list"), ["Paper", "Study", "Trait", "N", "Ancestry"], studies);
+  const aside = c.aside.flatMap((group) => group.papers.map((p) => [paperOf(p), ` (${howMany(p.studies, "study", "studies")}: ${group.why})`]));
+  $("cand-aside").replaceChildren(...(aside.length ? ["Set aside: ", ...aside.flatMap((item, k) => [k ? "; " : "", ...item]), "."] : []),
+    c.other ? ` ${howMany(c.other, "more study", "more studies")} of the Catalog ${c.other === 1 ? "is" : "are"} of another ancestry or too small.` : "");
+  $("cand-rule").replaceChildren(...["Its summary statistics are public in the Catalog.", `Its paper has at most ${int(c.rule.max_studies)} such studies.`,
+    `Its individuals are of one ancestry: ${c.rule.ancestries.join(" or ")}.`, `It has at least ${int(c.rule.min_n)} individuals.`,
+    `Its paper is in a journal that StatGenPapers reads: ${c.rule.journals.join(", ")}.`].map((text) => el("li", "", text)));
+  $("cand-test").textContent = `The backtest: the same rule, on the GWAS published from ${day(test.since)} to ${day(test.until)}, against the ${int(test.taken)} studies of `
+    + `${int(test.taken_papers)} papers that the ${year} release added. It finds ${int(last.found)} of the ${int(test.taken)} studies (${(100 * last.found / test.taken).toFixed(1)}%) and `
+    + `${int(last.found_papers)} of the ${int(test.taken_papers)} papers.`;
+  grid($("cand-steps"), ["GWAS published in those days", "Studies", "Papers", `Of the ${int(test.taken)} added`, `Of their ${int(test.taken_papers)} papers`],
+    test.steps.map((step, k) => [`${k ? "… and " : ""}${step.rule}`, step.studies, step.papers, step.found, step.found_papers]));
+  const why = new Map();  // reason → the studies missed for it
+  for (const m of test.missed) why.set(m.why, [...(why.get(m.why) ?? []), state.byId.has(m.id) ? studyLink(state.byId.get(m.id)) : m.id]);
+  $("cand-missed").replaceChildren(...(why.size ? ["Missed: ", ...[...why].flatMap(([reason, missed], k) => [k ? "; " : "", ...missed.flatMap((study, j) => [j ? ", " : "", study]), ` (${reason})`]), "."]
+    : ["It misses none."]));
+  const more = $("cand-more"), toggle = action("", () => { more.hidden = !more.hidden; label(); }), label = () => { toggle.textContent = more.hidden ? "show the papers" : "hide the papers"; };
+  label();
+  $("cand-beyond").replaceChildren(`Beyond those, the rule finds ${howMany(beyond.studies, "study", "studies")} that the release did not add: ${int(beyond.in_taken_papers)} in papers it took others from, `
+    + `${int(beyond.studies - beyond.in_taken_papers)} in ${howMany(beyond.new_papers.length, "other paper")}. `, toggle);
+  more.replaceChildren(...beyond.new_papers.map((p) => {
+    const item = el("li");
+    item.append(paperOf(p), `: ${p.title} (${howMany(p.studies.length, "study", "studies")})`);
+    return item;
+  }));
+}
+
 // ---------------------------------------------------------------- the bar, the tabs, the address
 
 function renderBar() {
@@ -795,6 +860,7 @@ function render() {
   if (!state.loaded) return;
   if (state.view === "sumstats" || state.view === "h2") renderList();
   else if (state.view === "rg") renderRg();
+  else if (state.view === "candidates") renderCandidates();
   else if (state.view === "study") renderStudy();
   renderPrivate();
 }

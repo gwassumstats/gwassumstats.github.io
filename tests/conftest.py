@@ -111,6 +111,7 @@ def mini(tmp_path):
     (data / "checks.toml").write_text(RULES)
     write(data / "labels.tsv", ["id", "label", "why"], [["# a study whose label in the release is wrong", "", ""]])
     write(data / "findings.tsv", ["id", "level", "finding"], [["# what a person found of a study", "", ""]])
+    (data / "candidates.json").write_text(json.dumps({"until": "2026-08-26", "candidates": [{"pmid": "333", "studies": [{"id": "GCST0009", "trait": "Trait G"}]}]}, indent=1))
     inventory = [
         ["Height (old)", "A_unsigned", "Old 2015", "Smith et al., 2010 Nature ", 1000, 900, "EUR", "NO", "YES", "NO"],
         ["Alzheimer’s disease", "B", "New 2024", "NG_Lee_2021_x", 2000, 910, "EUR", "YES", "YES", "YES"],

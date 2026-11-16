@@ -1,8 +1,8 @@
 """Browser check of the site, served from site/ on this machine.
 
 A headless browser opens every tab: the tables, the filters and the sorting, the ticks and the files they export, the
-charts, a study's page with its paper, and the login, which must show the paths only for the right passphrase, keep
-them over a reload and drop them at logout. What the page shows is compared with site/data, read here independently.
+charts, a study's page with its paper and what the checks found, the candidates, and the login, which must show the
+paths only for the right passphrase, keep them over a reload and drop them at logout. What the page shows is compared with site/data, read here independently.
 
   uv run --with playwright python -m playwright install chromium   # once
   SUMSTATS_PASSPHRASE=... uv run --with playwright python dev/site_check.py
@@ -34,6 +34,7 @@ DATA = json.loads((SITE / "data" / "studies.json").read_text())
 STUDIES, RELEASE, LABELS = DATA["studies"], DATA["release"], DATA["papers"]
 BY_ID = {d["id"]: d for d in STUDIES}
 PAPERS = json.loads((SITE / "data" / "papers.json").read_text())
+CANDIDATES = json.loads((SITE / "data" / "candidates.json").read_text())
 RG = {anc: json.loads((SITE / "data" / f"rg_{anc}.json").read_text()) for anc in RELEASE["ancestries"]}
 PATHS = json.loads(crypt.decrypt(json.loads((SITE / "data" / "paths.enc.json").read_text()), PASSPHRASE))
 PUBMED = "https://pubmed.ncbi.nlm.nih.gov/"
@@ -479,6 +480,31 @@ def run(pw, url, name, **context):
           and dict(urllib.parse.parse_qsl(report.split("?", 1)[1])) == {"template": "study.yml", "title": f"{doubted['name']}: ", "study": f"{doubted['name']} ({doubted['id']})"},
           lambda: report)
     shot("study-qc", full=False)
+    # the candidates for the next release, and the rule's backtest
+    show("?tab=candidates", "#cand-steps tbody tr")
+    table = lambda name: [[" ".join(cell.split()) for cell in row] for row in page.locator(f"#{name} tbody tr").evaluate_all("rows => rows.map((row) => [...row.cells].map((cell) => cell.innerText))")]
+    slash, test = lambda date: date.replace("-", "/"), CANDIDATES["backtest"]
+    paper = lambda p: f"{p['author']}, {p['journal']}, {slash(p['published'])}"
+    listed = [[paper(p) if k == 0 else "", s["id"], s["trait"], f"{s['n']:,}", s["ancestry"]] for p in CANDIDATES["candidates"] for k, s in enumerate(p["studies"])]
+    lead, aside = page.inner_text("#cand-lead"), page.inner_text("#cand-aside")
+    links = page.locator("#cand-list a").evaluate_all("list => list.map((a) => a.href)")
+    check(f"[{name}] candidates: the studies that the GWAS Catalog added since the release and that pass the rule, by paper, with their links; the papers set aside",
+          table("cand-list") == listed and lead.startswith(f"{len(listed)} studies in {len(CANDIDATES['candidates'])} paper") and slash(CANDIDATES["until"]) in lead and slash(CANDIDATES["catalog"]["fetched"]) in lead
+          and all(f"https://www.ebi.ac.uk/gwas/studies/{row[1]}" in links for row in listed) and f"{PUBMED}{CANDIDATES['candidates'][0]['pmid']}/" in links
+          and all(paper(p) in aside and group["why"] in aside for group in CANDIDATES["aside"] for p in group["papers"])
+          and page.locator("#view-candidates a", has_text="Nominate a study").get_attribute("href") == "https://github.com/gwassumstats/gwassumstats.github.io/issues/new?template=candidate.yml"
+          and page.title() == "Candidates · GWAS Sumstats" and fits(), lambda: (table("cand-list"), lead, aside))
+    last, said_test, missed = test["steps"][-1], page.inner_text("#cand-test"), page.locator("#cand-missed a").evaluate_all("list => list.map((a) => [a.textContent, a.getAttribute('href')])")
+    check(f"[{name}] the backtest: what each condition of the rule leaves, what it finds of the studies that the release added, and the ones it misses by their short names",
+          table("cand-steps") == [[("… and " if k else "") + step["rule"], f"{step['studies']:,}", f"{step['papers']:,}", f"{step['found']:,}", f"{step['found_papers']:,}"] for k, step in enumerate(test["steps"])]
+          and f"It finds {last['found']} of the {test['taken']} studies ({100 * last['found'] / test['taken']:.1f}%) and {last['found_papers']} of the {test['taken_papers']} papers." in said_test
+          and missed == [[BY_ID[m["id"]]["name"], f"?study={m['id']}"] for m in test["missed"]] and all(m["why"] in page.inner_text("#cand-missed") for m in test["missed"])
+          and len(page.locator("#cand-rule li").all_inner_texts()) == 5, lambda: (table("cand-steps"), said_test, missed))
+    shot("candidates")
+    page.locator("#cand-beyond a").click()
+    check(f"[{name}] what the rule finds beyond the release: counted, and the papers listed on demand",
+          f"{test['beyond']['studies']} studies that the release did not add" in page.inner_text("#cand-beyond") and page.locator("#cand-more li").count() == len(test["beyond"]["new_papers"])
+          and page.locator("#cand-more").is_visible() and page.inner_text("#cand-beyond a") == "hide the papers", lambda: page.inner_text("#cand-beyond"))
     unsigned = next(d for d in STUDIES if not d["cross"])
     show(f"?study={unsigned['id']}", "#view-study .section-head")
     check(f"[{name}] an unsigned study's page says it has no genetic correlations", "unsigned" in page.inner_text("#view-study .section-head"))

@@ -14,7 +14,7 @@
 <body>
 <header class="bar">
   <h1 class="brand"><a class="home" href="./"><svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><path d="M2.5 1.5h22.5l4.5 4.5v24.5H2.5z" fill="#fff" stroke="#10204f" stroke-width="1.4" stroke-linejoin="round"/><path d="M25.0 1.5V6.0H29.5" fill="#c9d6f7" stroke="#10204f" stroke-width="1.4" stroke-linejoin="round"/><g font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="11" fill="#10204f" text-anchor="middle"><text x="16.0" y="16.2" textLength="22" lengthAdjust="spacingAndGlyphs">Sum</text><text x="16.0" y="27.2" textLength="20" lengthAdjust="spacingAndGlyphs">Stat</text></g></svg><b>GWAS Sumstats</b></a></h1>
-  <nav class="links"><a href="./" data-tab="sumstats">sumstats</a> | <a href="?tab=h2" data-tab="h2">heritability</a> | <a href="?tab=rg" data-tab="rg">genetic correlation</a> | <a href="?tab=notes" data-tab="notes">release notes</a> | <a href="?tab=about" data-tab="about">about</a></nav>
+  <nav class="links"><a href="./" data-tab="sumstats">sumstats</a> | <a href="?tab=h2" data-tab="h2">heritability</a> | <a href="?tab=rg" data-tab="rg">genetic correlation</a> | <a href="?tab=candidates" data-tab="candidates">candidates</a> | <a href="?tab=notes" data-tab="notes">release notes</a> | <a href="?tab=about" data-tab="about">about</a></nav>
   <span class="account"><a href="#" id="login-open" aria-expanded="false" aria-controls="login">login</a></span>
 </header>
 
@@ -76,6 +76,28 @@
   </section>
 
   <section id="view-study" class="page" hidden></section>
+
+  <!-- the numbers and the lists come from data/candidates.json, when the tab is first opened -->
+  <section id="view-candidates" class="prose" hidden>
+    <h2>Candidates for the next release</h2>
+    <p id="cand-lead">GWAS with public summary statistics that the GWAS Catalog added since the last release.</p>
+    <table id="cand-list"></table>
+    <p id="cand-aside"></p>
+    <p><a href="https://github.com/gwassumstats/gwassumstats.github.io/issues/new?template=candidate.yml" target="_blank" rel="noopener noreferrer">Nominate a study</a>
+    that is not listed: a GWAS with public summary statistics, in the GWAS Catalog or elsewhere. The form is on GitHub, and public.</p>
+
+    <h2>How are candidates found?</h2>
+    <p>A study of the GWAS Catalog is a candidate if all of this holds:</p>
+    <ol id="cand-rule"></ol>
+    <p>The rule was read off what the 2026 update took. A paper that it sets aside is named above, to be looked at by hand.</p>
+
+    <h2>Does the rule find what the last release added?</h2>
+    <p id="cand-test"></p>
+    <table id="cand-steps"></table>
+    <p id="cand-missed"></p>
+    <p id="cand-beyond"></p>
+    <ol id="cand-more" hidden></ol>
+  </section>
 
   <section id="view-notes" class="prose" hidden>
     <h2>2026 release</h2>
@@ -213,6 +235,10 @@
     <h2>How do I export a list of studies?</h2>
     <p>Tick them, in a table or on their pages. Above the table, download their names and IDs as a tab-separated file,
     with the paths after login, or their references as BibTeX. The ticks stay in this browser.</p>
+
+    <h2>How does a study get in?</h2>
+    <p>A release adds GWAS with public summary statistics. The <a href="?tab=candidates">candidates</a> for the next one are
+    found in the GWAS Catalog by a rule, which is tested on what the last release added; anyone can nominate another there.</p>
 
     <h2>Who made it?</h2>
     <p>Gaspard Kerner made the 2026 update. Ben Strober made the 2024 collection, which the update extends.</p>

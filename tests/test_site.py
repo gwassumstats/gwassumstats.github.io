@@ -187,17 +187,19 @@ def test_what_the_checks_say_of_the_release():
 def test_a_problem_is_reported_through_a_form_that_warns_it_is_public():
     form, script = (ROOT / ".github" / "ISSUE_TEMPLATE" / "study.yml").read_text(), (SITE / "app.js").read_text()
     assert "id: study" in form and "public" in form and 'template: "study.yml"' in script and "study: `${d.name} (${d.id})`" in script  # the page fills in the study
+    nominate = (ROOT / ".github" / "ISSUE_TEMPLATE" / "candidate.yml").read_text()
+    assert "public" in nominate and "issues/new?template=candidate.yml" in (SITE / "index.html").read_text()  # and a study is nominated through another
 
 
 def test_the_data_is_small():
     sizes = {path.name: path.stat().st_size for path in DATA.iterdir()}
-    assert set(sizes) == {"studies.json", "papers.json", "rg_EUR.json", "rg_EAS.json", BLOB}
+    assert set(sizes) == {"studies.json", "papers.json", "candidates.json", "rg_EUR.json", "rg_EAS.json", BLOB}
     assert sum(sizes.values()) < 20e6  # the plan: well under 100 MB
 
 
 def test_the_site_data_is_a_build_of_the_release(release, tmp_path):
     build(release, tmp_path, "not the passphrase", 1000)
-    differ = [name for name in ("studies.json", "papers.json", "rg_EUR.json", "rg_EAS.json") if (tmp_path / name).read_bytes() != (DATA / name).read_bytes()]
+    differ = [name for name in ("studies.json", "papers.json", "candidates.json", "rg_EUR.json", "rg_EAS.json") if (tmp_path / name).read_bytes() != (DATA / name).read_bytes()]
     assert not differ, "rebuild the site: python -m build"
 
 
@@ -331,5 +333,6 @@ def test_the_page_loads_nothing_from_elsewhere():
     assert all(rule in html for rule in ("default-src 'none'", "script-src 'self'", "style-src 'self'", "connect-src 'self'", "form-action 'none'"))
     loaded = re.findall(r'<(?:script|link|img|iframe|source)\b[^>]*?\b(?:src|href)="([^"]+)"', html)
     assert len(loaded) == 4 and not [url for url in loaded if re.match(r"(?:[a-z]+:)?//", url)]  # the icon (data:), the style, the inventory, the script
-    assert re.findall(r"https?://[\w./-]+", script) == ["https://pubmed.ncbi.nlm.nih.gov/", "https://doi.org/", "https://github.com/gwassumstats/gwassumstats.github.io/issues/new", "http://www.w3.org/2000/svg"]  # three links and a name: no request
+    assert re.findall(r"https?://[\w./-]+", script) == ["https://pubmed.ncbi.nlm.nih.gov/", "https://doi.org/", "https://github.com/gwassumstats/gwassumstats.github.io/issues/new", "https://www.ebi.ac.uk/gwas/studies/",
+            "http://www.w3.org/2000/svg"]  # four links and a name: no request
     assert "url(" not in style and "@import" not in style and " style=" not in html

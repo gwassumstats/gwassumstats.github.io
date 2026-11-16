@@ -8,12 +8,14 @@ ever written to the repository. The build writes, in site/data/:
   studies.json         the inventory with h², each study's short name, the paper it cites and
                        what the quality checks say of it, and the release's counts       public
   papers.json          every paper cited: authors, title, journal, DOI, BibTeX entry     public
+  candidates.json      the candidates for the next release, and the rule's backtest      public
   rg_{ancestry}.json   every genetic correlation of an ancestry                          public
   paths.enc.json       where each study's file is, encrypted (crypt.py)                  readable after login
 
 The papers are those of data/references.tsv and data/papers.json (python -m papers); the short names, those of
 data/names.tsv (python -m names). A study without a short name stops the build. The quality checks (qc/checks.py)
-judge each study from its file as measured (data/metrics.tsv: python -m qc.scan), its results and its label.
+judge each study from its file as measured (data/metrics.tsv: python -m qc.scan), its results and its label. The
+candidates are those of data/candidates.json (python -m candidates), as they are.
 
 A release that has not changed rewrites the same files, and keeps the encrypted one as it is, so readers stay logged in.
 """
@@ -59,7 +61,8 @@ def build(release: Path, out: Path, passphrase: str, iterations: int = crypt.ITE
     lines = lambda items: ",\n".join(items)  # a study, a paper a line, for readable diffs
     texts = {"studies.json": f'{{\n"release":{dumps(summary)},\n"papers":{dumps({pmid: p["label"] for pmid, p in papers.items()})},\n"studies":[\n'
                              + lines(map(dumps, records)) + "\n]}\n",
-             "papers.json": "{\n" + lines(f"{dumps(pmid)}:{dumps(paper)}" for pmid, paper in papers.items()) + "\n}\n"}
+             "papers.json": "{\n" + lines(f"{dumps(pmid)}:{dumps(paper)}" for pmid, paper in papers.items()) + "\n}\n",
+             "candidates.json": dumps(json.loads((data / "candidates.json").read_text(encoding="utf-8"))) + "\n"}
     for anc, t in rg.items():
         texts[f"rg_{anc}.json"] = "{\n" + ",\n".join(f"{dumps(k)}:{dumps(v)}" for k, v in t.items()) + "\n}\n"
     out.mkdir(parents=True, exist_ok=True)

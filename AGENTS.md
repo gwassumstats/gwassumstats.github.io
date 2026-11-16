@@ -6,9 +6,9 @@ conventions unless this file says otherwise.
 
 Status (2026-11-16): of `notebook/plans/2026-11-16-portal.md`, phase 1 is built (the catalog: Sumstats,
 Heritability, Genetic correlation, Release notes, About, a page per study, the login that shows the O2 paths), and of
-phases 2 and 3 the papers, the short names, the cart (ticked studies export as TSV and BibTeX), and the quality
-checks with the label check and the link to report a problem. Next: the candidates for the next release and their
-backtest.
+phases 2 and 3 the papers, the short names, the cart (ticked studies export as TSV and BibTeX), the quality checks
+with the label check and the link to report a problem, and the candidates for the next release with the backtest of
+their rule. Open: fixes to the studies that the checks flag wait for the owner (the review is in the notebook).
 
 ## Hard constraints
 
@@ -57,6 +57,10 @@ backtest.
 - *Label check:* the part of QC that compares a study's label (its trait name in the release) with its genetic
   correlations: a *twin* is a study with rg of 0.95 or more; a label is *confirmed* when a study of the same label
   agrees. It flags, with the best-matching studies as evidence; it never relabels.
+- *Candidate:* a GWAS of the GWAS Catalog with public sumstats, added after the last release's *window* (the days
+  of publication it took: 2024/03/01 to 2026/08/26 for 2026), that passes the *rule* of `data/candidates.toml`.
+- *Backtest:* the rule applied to the window of the last release, against the studies that release added: what it
+  finds (recall), misses, and finds beyond.
 - *Reviewed label:* a row of `data/labels.tsv`: what a study's file holds where the release's trait name is wrong,
   found by a person. Label fixes beyond that wait for the owner's approval.
 - *Release:* the collection as published on O2 in one *release folder*; the site shows one (2026: 602 studies).

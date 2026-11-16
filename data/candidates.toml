@@ -1,0 +1,11 @@
+# How candidates for the next release are found in the GWAS Catalog (candidates/). The rule was read off the 2026
+# update and is backtested on it: see data/candidates.json.
+
+since = "2024-03-01"   # the last release took GWAS published from this day...
+until = "2026-08-26"   # ...to this one; what the Catalog adds later is a candidate for the next
+
+[rule]
+journals = ["Nature", "Nat Genet", "Nat Commun", "Nat Rev Genet", "Nat Med", "Nat Hum Behav", "Science", "Sci Transl Med", "Cell", "Cell Genom", "Am J Hum Genet"]  # those StatGenPapers reads
+max_studies = 100                         # a paper with more studies with summary statistics is set aside
+ancestries = ["European", "East Asian"]   # a study of one of these, and of no other
+min_n = 50_000                            # individuals in the first stage

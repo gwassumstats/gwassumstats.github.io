@@ -20,6 +20,7 @@ with the lab's passphrase to see where they are. It costs $0.
 |---|---|---|
 | `studies.json` | The inventory with h², each study's short name, paper and quality checks, and the release's counts | Anyone |
 | `papers.json` | Every paper cited: authors, title, journal, DOI, BibTeX entry | Anyone, when first needed |
+| `candidates.json` | The candidates for the next release, and the backtest of the rule that finds them | Anyone, when first needed |
 | `rg_EUR.json`, `rg_EAS.json` | Every genetic correlation of an ancestry; the order of its heatmaps | Anyone, when first needed |
 | `paths.enc.json` | The release folder and each study's file on O2, encrypted | Whoever has the passphrase |
 
@@ -34,12 +35,21 @@ with the lab's passphrase to see where they are. It costs $0.
 | `checks.toml` | The thresholds of the quality checks | By hand |
 | `labels.tsv` | A study whose trait name in the release a person found wrong → what its file holds, and how that is known | By hand |
 | `findings.tsv` | What else a person found of a study, shown and counted like a finding of the checks | By hand |
+| `candidates.toml` | The rule that finds candidates in the GWAS Catalog, and the window of the last release | By hand |
+| `candidates.json` | The candidates, the papers set aside, and the rule's backtest | `python -m candidates` |
+| `catalog.tsv` | The GWAS Catalog's record of each study it knows: paper, N, ancestry, sex, cohorts | `python -m candidates` |
 
 **Quality checks** (`qc/checks.py`). Every study goes through the same checks: its file as measured, its LDSC
 results, its label against its genetic correlations (`qc/labels.py`), and its row against the GWAS Catalog's record.
 A fail means do not use the study as it is; a warn, use it with care; a note is worth knowing, and the study passes.
 The site shows each finding on the study's page. The label check flags a study whose label its genetic correlations
 contradict; it does not relabel it. A person who has looked adds the study to `data/labels.tsv`.
+
+**Candidates** (`candidates/`). GWAS with public summary statistics that the GWAS Catalog added after the last
+release's window, and that pass a rule read off that release: one ancestry, European or East Asian; at least 50,000
+individuals; a paper of at most 100 studies, in a journal that StatGenPapers reads. The backtest applies the rule to
+the window of the last release and counts what it finds of the studies that the release added: 202 of 205 for 2026.
+The site lists the candidates, the papers set aside and the backtest; a form on GitHub takes nominations.
 
 **Short names.** A study is called `FirstAuthor_Year_Trait` (`Speliotes_2010_BMI`) everywhere on the site: who and
 which year its paper is cited by, and its trait, abbreviated. The name is a label only. A study's ID in the release
@@ -81,9 +91,11 @@ files themselves are protected by O2.
    the study's page with what the checks found. If its label in the release is wrong and the right one is known, add
    it to `data/labels.tsv`: the label check then reads the corrected label, and the study warns with the evidence
    until the release is corrected. Then rebuild.
-5. **A new release:** rebuild, then update the Release notes in `site/index.html`: the tests say which written-in
-   numbers no longer match.
-6. **Change the passphrase:** rebuild with the new one. Every reader logs in again.
+5. **Look for candidates**, from any machine: `uv run python -m candidates --refresh` downloads the GWAS Catalog's
+   tables (to `.cache/`, not committed) and writes `data/candidates.json` and `data/catalog.tsv`; then rebuild.
+6. **A new release:** set its window in `data/candidates.toml`, run the steps above, then update the Release notes
+   in `site/index.html`: the tests say which written-in numbers no longer match.
+7. **Change the passphrase:** rebuild with the new one. Every reader logs in again.
 
 ## Checks
 
@@ -109,6 +121,7 @@ Without the two variables, the tests that need them are skipped. Run with both b
 | `papers/` | Finds each study's paper in PubMed (`python -m papers`); `cite.py`: how a paper is cited, its BibTeX entry |
 | `names/` | Drafts the short names (`python -m names`) |
 | `qc/` | Quality checks: `scan.py` measures the files on Slurm, `checks.py` judges each study, `labels.py` checks its label |
+| `candidates/` | Finds candidates for the next release in the GWAS Catalog, and backtests the rule (`python -m candidates`) |
 | `data/` | What the repository adds to a release: papers and short names, reviewable |
 | `site/` | The website; `site/data/` is written by the build |
 | `dev/` | Local only: `site_check.py` |

@@ -166,6 +166,11 @@ def test_what_a_person_found_counts_like_a_finding_of_the_checks(mini, tmp_path)
         build(mini, tmp_path / "out", "x")
 
 
+def test_the_candidates_are_passed_on_as_they_are(mini, tmp_path):
+    assert built(mini, tmp_path / "out")["candidates.json"] == json.loads((data_of(mini) / "candidates.json").read_text())
+    assert "\n" not in (tmp_path / "out" / "candidates.json").read_text().strip()  # on one line: small
+
+
 def test_release_counts(mini, tmp_path):
     release = built(mini, tmp_path / "out")["studies.json"]["release"]
     assert release == {
@@ -203,7 +208,7 @@ def test_clustering_is_average_linkage():
 def test_paths_are_only_in_the_encrypted_file(mini, tmp_path):
     out = tmp_path / "out"
     blob = built(mini, out)[BLOB]
-    assert sorted(path.name for path in out.iterdir()) == ["papers.json", BLOB, "rg_EAS.json", "rg_EUR.json", "studies.json"]
+    assert sorted(path.name for path in out.iterdir()) == ["candidates.json", "papers.json", BLOB, "rg_EAS.json", "rg_EUR.json", "studies.json"]
     for path in out.iterdir():
         assert "/lab/" not in path.read_text() and str(mini) not in path.read_text()
     private = json.loads(crypt.decrypt(blob, "correct horse"))
