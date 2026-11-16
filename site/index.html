@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GWAS Sumstats</title>
+<meta name="description" content="A catalog of GWAS summary statistics in LDSC format, with their heritability and genetic correlations.">
+<!-- the page loads nothing from elsewhere: the passphrase and the paths it decrypts stay in this browser -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Cpath%20d='M2.5%201.5h22.5l4.5%204.5v24.5H2.5z'%20fill='%23fff'%20stroke='%2310204f'%20stroke-width='1.4'%20stroke-linejoin='round'/%3E%3Cpath%20d='M25.0%201.5V6.0H29.5'%20fill='%23c9d6f7'%20stroke='%2310204f'%20stroke-width='1.4'%20stroke-linejoin='round'/%3E%3Cg%20font-family='Arial,Helvetica,sans-serif'%20font-weight='700'%20font-size='11'%20fill='%2310204f'%20text-anchor='middle'%3E%3Ctext%20x='16.0'%20y='16.2'%20textLength='22'%20lengthAdjust='spacingAndGlyphs'%3ESum%3C/text%3E%3Ctext%20x='16.0'%20y='27.2'%20textLength='20'%20lengthAdjust='spacingAndGlyphs'%3EStat%3C/text%3E%3C/g%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<link rel="preload" href="data/datasets.json" as="fetch" crossorigin>  <!-- the inventory starts with app.js, not after it -->
+</head>
+<body>
+<header class="bar">
+  <h1 class="brand"><a class="home" href="./"><svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><path d="M2.5 1.5h22.5l4.5 4.5v24.5H2.5z" fill="#fff" stroke="#10204f" stroke-width="1.4" stroke-linejoin="round"/><path d="M25.0 1.5V6.0H29.5" fill="#c9d6f7" stroke="#10204f" stroke-width="1.4" stroke-linejoin="round"/><g font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="11" fill="#10204f" text-anchor="middle"><text x="16.0" y="16.2" textLength="22" lengthAdjust="spacingAndGlyphs">Sum</text><text x="16.0" y="27.2" textLength="20" lengthAdjust="spacingAndGlyphs">Stat</text></g></svg><b>GWAS Sumstats</b></a></h1>
+  <nav class="links"><a href="./" data-tab="sumstats">sumstats</a> | <a href="?tab=h2" data-tab="h2">heritability</a> | <a href="?tab=rg" data-tab="rg">genetic correlation</a> | <a href="?tab=notes" data-tab="notes">release notes</a> | <a href="?tab=about" data-tab="about">about</a></nav>
+  <span class="account"><a href="#" id="login-open" aria-expanded="false" aria-controls="login">login</a></span>
+</header>
+
+<main>
+
+  <form id="login" class="panel" hidden novalidate>
+    <label>passphrase <input id="login-pass" type="password" required autocapitalize="none" spellcheck="false" autocomplete="off"></label>
+    <span class="actions"><button type="submit">login</button> <button type="button" id="login-cancel">cancel</button></span>
+    <p id="login-note" class="hint" role="status"></p>
+    <p class="hint">For lab members: shows where the files are on O2. This browser stays logged in until you log out.</p>
+  </form>
+
+  <noscript><p class="empty">This site needs JavaScript.</p></noscript>
+  <p id="failed" class="empty" hidden>The data did not load; check the connection and reload.</p>
+
+  <!-- the datasets shown under "sumstats" and "heritability": one search and one set of filters for both -->
+  <div id="listview" hidden>
+    <form id="filters" class="filters" role="search">
+      <input id="q" type="search" placeholder="trait, ID, release or reference" aria-label="Search the datasets" autocomplete="off" spellcheck="false">
+      <select id="f-anc" aria-label="Ancestry"><option value="">all ancestries</option></select>
+      <label title="Heritability z-score above 6"><input id="f-z6" type="checkbox"> h² z &gt; 6</label>
+      <label title="Signed sumstats: used for genetic correlation"><input id="f-signed" type="checkbox"> signed</label>
+      <label title="In the nonredundant panel of its ancestry"><input id="f-panel" type="checkbox"> nonredundant</label>
+    </form>
+    <p id="count" class="page-head" role="status"></p>
+
+    <section id="view-sumstats" hidden>
+      <div class="scroll"><table id="sumstats-table" class="data"></table></div>
+    </section>
+
+    <section id="view-h2" hidden>
+      <figure id="h2-plot" class="plot"></figure>
+      <p id="h2-caption" class="caption"></p>
+      <div class="scroll"><table id="h2-table" class="data"></table></div>
+    </section>
+  </div>
+
+  <section id="view-rg" hidden>
+    <form id="pair" class="filters" autocomplete="off">
+      <span>Genetic correlation of</span>
+      <span class="menu"><input id="rg-a" type="text" placeholder="a dataset: trait or ID" aria-label="First dataset" role="combobox" aria-expanded="false" aria-controls="rg-a-list" aria-autocomplete="list" spellcheck="false"><span id="rg-a-list" class="popover options" role="listbox" hidden></span></span>
+      <span>with</span>
+      <span class="menu"><input id="rg-b" type="text" placeholder="another, or leave empty" aria-label="Second dataset" role="combobox" aria-expanded="false" aria-controls="rg-b-list" aria-autocomplete="list" spellcheck="false"><span id="rg-b-list" class="popover options" role="listbox" hidden></span></span>
+    </form>
+    <p class="hint">Cross-trait LDSC between signed datasets of the same ancestry.</p>
+    <div id="pair-result" class="result" role="status" hidden></div>
+    <div id="neighbours" hidden>
+      <p class="page-head"><span id="neighbours-head"></span> <label class="check"><input id="rg-strict" type="checkbox" checked> |z| ≥ 3 only</label></p>
+      <div class="scroll"><table id="neighbours-table" class="data pairs"></table></div>
+      <p class="caption"><a href="#" id="neighbours-more" class="dashed" hidden></a></p>
+    </div>
+
+    <h2 class="section-head">Heatmap</h2>
+    <p class="caption"><span id="heat-tabs"></span></p>
+    <figure id="heat" class="plot"></figure>
+    <p id="heat-caption" class="caption"></p>
+  </section>
+
+  <section id="view-dataset" class="page" hidden></section>
+
+  <section id="view-notes" class="prose" hidden>
+    <h2>2026 release</h2>
+    <p>Packaged on <span data-v="packaged">2026/09/07</span>. It adds <span data-v="all.added">205</span> datasets of the GWAS Catalog,
+    from <span data-v="papers">35</span> papers published between 2024/03/01 and 2026/08/26, to the 2024 collection. The
+    <span data-v="all.before">397</span> datasets of 2024 and their results are unchanged.</p>
+    <table>
+      <thead><tr><th></th><th class="num">2024</th><th class="num">2026</th></tr></thead>
+      <tbody>
+        <tr><td>Datasets</td><td class="num" data-v="all.before">397</td><td class="num" data-v="all.datasets">602</td></tr>
+        <tr><td>EUR</td><td class="num" data-v="EUR.before">364</td><td class="num" data-v="EUR.datasets">546</td></tr>
+        <tr><td>EAS</td><td class="num" data-v="EAS.before">33</td><td class="num" data-v="EAS.datasets">56</td></tr>
+        <tr><td>Signed datasets</td><td class="num" data-v="all.signed_before">374</td><td class="num" data-v="all.signed">576</td></tr>
+        <tr><td>Genetic correlations, EUR</td><td class="num" data-v="EUR.pairs_before">57,970</td><td class="num" data-v="EUR.pairs">134,940</td></tr>
+        <tr><td>Genetic correlations, EAS</td><td class="num" data-v="EAS.pairs_before">528</td><td class="num" data-v="EAS.pairs">1,540</td></tr>
+        <tr><td>Nonredundant panel, EUR</td><td class="num" data-v="EUR.panel_before">74</td><td class="num" data-v="EUR.panel">85</td></tr>
+        <tr><td>Nonredundant panel, EAS</td><td class="num" data-v="EAS.panel_before">12</td><td class="num" data-v="EAS.panel">17</td></tr>
+      </tbody>
+    </table>
+
+    <h2>What is new in the files?</h2>
+    <ol>
+      <li>An added dataset has its GWAS Catalog accession (GCST…) as ID, and <strong>New 2026</strong> as release.</li>
+      <li>It has an h² file and, if signed, an r<sub>g</sub> file: the same without strand-ambiguous SNPs. M counts the SNPs of the h² file.</li>
+      <li>N is the sample size of the study; the N of a SNP in the file can differ.</li>
+      <li><span data-v="all.unsigned">26</span> datasets are unsigned, <span data-v="all.unsigned_added">3</span> of them added in 2026:
+      they have h² but no r<sub>g</sub>.</li>
+    </ol>
+
+    <h2>How were h² and r<sub>g</sub> updated?</h2>
+    <ol>
+      <li>h² of the added datasets was estimated as in 2024. GCST90503316 uses a corrected estimate (h² 0.0945, SE 0.009).</li>
+      <li>r<sub>g</sub> of the pairs of 2024 is unchanged. Every other pair of signed datasets of the same ancestry was estimated
+      in the same way. No pair has one dataset of each ancestry.</li>
+    </ol>
+
+    <h2>Which pairs have no r<sub>g</sub>?</h2>
+    <p>LDSC gave no estimate for <span data-v="EUR.failed">821</span> of the <span data-v="EUR.pairs">134,940</span> EUR pairs and
+    <span data-v="EAS.failed">55</span> of the <span data-v="EAS.pairs">1,540</span> EAS pairs; the site shows them as not estimated.
+    A few datasets account for most: <span data-v="EUR.worst.id">GCST90705031</span> lacks an estimate with
+    <span data-v="EUR.worst.failed">518</span> of the <span data-v="EUR.worst.pairs">519</span> other EUR datasets, and
+    <span data-v="EAS.worst.id">GCST90320065</span> with <span data-v="EAS.worst.failed">55</span> of the
+    <span data-v="EAS.worst.pairs">55</span> other EAS datasets.</p>
+
+    <h2>How were the nonredundant panels chosen?</h2>
+    <ol>
+      <li>The dataset with the most pairs without an estimate is removed, again and again, until every pair left has one:
+      22 EUR datasets and 1 EAS dataset go, 498 and 55 stay.</li>
+      <li>Of those, the datasets with h² z &gt; 6 are taken from the highest z down. One enters the panel if its squared
+      r<sub>g</sub> with every dataset already in it is at most 0.1.</li>
+    </ol>
+    <p>The EUR panel keeps <span data-v="EUR.panel_kept">66</span> of its <span data-v="EUR.panel_before">74</span> datasets of 2024, and
+    <span data-v="EUR.panel_added">16</span> of its datasets were added in 2026. The EAS panel keeps <span data-v="EAS.panel_kept">11</span> of
+    <span data-v="EAS.panel_before">12</span>, with <span data-v="EAS.panel_added">6</span> added in 2026. Step 1 is new: the rule of 2024
+    dropped any dataset with a pair without an estimate, which now is every dataset.</p>
+
+    <h2>What is not in it?</h2>
+    <p>GWAS whose sumstats are outside the GWAS Catalog, and papers with more than 100 accessions, are not added yet.</p>
+
+    <div id="o2-release" hidden></div>
+  </section>
+
+  <section id="view-about" class="prose" hidden>
+    <h2>About GWAS Sumstats</h2>
+    <p>A catalog of the Price lab's collection of GWAS summary statistics: <span data-v="all.datasets">602</span> datasets in the
+    format of LDSC, with their heritability (h²) and their genetic correlations (r<sub>g</sub>). The files are on the O2 cluster;
+    lab members log in to see where. The code is in the
+    <a href="https://github.com/gwassumstats/gwassumstats.github.io">public repository</a>.</p>
+
+    <h2>What is in a file?</h2>
+    <p>One row per SNP, tab-separated, in the <code>.sumstats</code> format of LDSC. Only HapMap3 SNPs.</p>
+    <table>
+      <thead><tr><th>Column</th><th>Content</th></tr></thead>
+      <tbody>
+        <tr><td>SNP</td><td>rsID</td></tr>
+        <tr><td>A1, A2</td><td>The two alleles; the sign of Z is for A1</td></tr>
+        <tr><td>N</td><td>Sample size</td></tr>
+        <tr><td>Z</td><td>Z-score of the association</td></tr>
+      </tbody>
+    </table>
+    <p>In the <span data-v="all.unsigned">26</span> unsigned datasets, Z has no direction;
+    <span data-v="all.no_alleles">3</span> of them have no A1 and A2.</p>
+
+    <h2>Which file do I use for h² and for r<sub>g</sub>?</h2>
+    <ol>
+      <li><strong>Datasets of 2024 and before</strong>: one file, for both.</li>
+      <li><strong>Datasets added in 2026</strong>: the h² file for h², the r<sub>g</sub> file for r<sub>g</sub>. The r<sub>g</sub> file is
+      the h² file without strand-ambiguous SNPs (A/T and C/G).</li>
+      <li><strong>Unsigned datasets</strong>: h² only.</li>
+    </ol>
+    <p>A dataset's page lists its files after login.</p>
+    <div id="o2-folders" hidden></div>
+
+    <h2>How were h² and r<sub>g</sub> estimated?</h2>
+    <ol>
+      <li><strong>h²</strong>: stratified LD score regression (S-LDSC) with the baseline-LD model v2.2, on the observed scale.
+      Its z is h² over its standard error. The intercept is that of the regression.</li>
+      <li><strong>r<sub>g</sub></strong>: cross-trait LD score regression, for every pair of signed datasets of the same ancestry.</li>
+      <li>Both use LD scores of 1000 Genomes Phase 3 for the dataset's ancestry, EUR or EAS.</li>
+    </ol>
+
+    <h2>What is the nonredundant panel?</h2>
+    <p><span data-v="EUR.panel">85</span> EUR and <span data-v="EAS.panel">17</span> EAS datasets with h² z &gt; 6 and a squared
+    r<sub>g</sub> of at most 0.1 between any two: traits that are close to independent. The
+    <a href="?tab=notes">release notes</a> say how they were chosen.</p>
+
+    <h2>How do I cite it?</h2>
+    <p>Cite the paper of each dataset you use: its reference. For h² and r<sub>g</sub>, cite LDSC
+    (<a href="https://doi.org/10.1038/ng.3211">Bulik-Sullivan et al. 2015</a>), cross-trait LDSC
+    (<a href="https://doi.org/10.1038/ng.3406">Bulik-Sullivan et al. 2015</a>), S-LDSC
+    (<a href="https://doi.org/10.1038/ng.3404">Finucane et al. 2015</a>) and the baseline-LD model
+    (<a href="https://doi.org/10.1038/ng.3954">Gazal et al. 2017</a>).</p>
+
+    <h2>Who made it?</h2>
+    <p>Gaspard Kerner made the 2026 update. Ben Strober made the 2024 collection, which the update extends.</p>
+
+    <h2>Who can see where the files are?</h2>
+    <p>Lab members, after login with the lab's passphrase. The paths are stored encrypted; the browser decrypts them and
+    keeps the key until logout. Everything else here is public.</p>
+
+    <h2>How do I give feedback?</h2>
+    <p>Open an issue on <a href="https://github.com/gwassumstats/gwassumstats.github.io/issues">GitHub</a>.</p>
+  </section>
+</main>
+
+<footer>
+  <a href="?tab=about" data-tab="about">about</a>
+</footer>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<div id="tip" class="tip float" aria-hidden="true" hidden></div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
