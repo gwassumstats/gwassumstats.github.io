@@ -1,0 +1,287 @@
+phrase	short
+# How a trait is written in a short name (names/): a phrase of a trait name, in lower case, and what stands for it.
+# The longest phrase that fits is taken first; words that no phrase covers are kept, each with a capital.
+# An empty `short` drops the phrase.
+body mass index	BMI
+bmi	BMI
+waist-hip ratio	WHR
+basal metabolic rate	BMR
+lean body mass	LeanMass
+abdominal subcutaneous adipose tissue volume	ASATVol
+visceral adipose tissue volume	VATVol
+gluteofemoral adipose tissue volume	GFATVol
+change in body mass index over time	BMIChange
+change in weight over time	WeightChange
+high-gain bmi trajectory (probability of belonging to cluster)	BMITrajHigh
+high-gain or medium-gain bmi trajectory (probability of belonging to cluster)	BMITrajHighMedium
+high-gain, medium-gain or stable bmi trajectory (probability of belonging to cluster)	BMITrajHighMediumStable
+high-gain weight trajectory (probability of belonging to cluster)	WeightTrajHigh
+high-gain or medium-gain weight trajectory (probability of belonging to cluster)	WeightTrajHighMedium
+high-gain, medium-gain or stable weight trajectory (probability of belonging to cluster)	WeightTrajHighMediumStable
+low density lipoprotein	LDL
+ldl direct adjusted by medication	LDLAdjMed
+ldldirect	LDL
+ldl	LDL
+high density lipoprotein	HDL
+hdlcholesterol	HDL
+hdl	HDL
+total cholesterol	TC
+high cholesterol	HighCholesterol
+triglyceride to hdl cholesterol ratio	TGHDLRatio
+triglycerides	TG
+triglyceride	TG
+lipoproteina	LpA
+apolipoproteina	ApoA
+apolipoproteinb	ApoB
+glycated haemoglobin (hba1c)	HbA1c
+glycated hemoglobin levels	HbA1c
+hemoglobin a1c	HbA1c
+hba1c	HbA1c
+fasting plasma glucose	FastingGlucose
+oral glucose tolerance test-0h	OGTT0h
+oral glucose tolerance test-1h	OGTT1h
+oral glucose tolerance test-2h	OGTT2h
+estimated glomerular filtration rate (creatinine, cystatin c)	eGFRCreatCys
+estimated glomerular filtration rate (creatinine)	eGFRCreat
+estimated glomerular filtration rate (cystatin c)	eGFRCys
+estimated glomerular filtration rate	eGFR
+alanineaminotransferase	ALT
+aspartateaminotransferase	AST
+alkaline phosphatase	ALP
+alkalinephosphatase	ALP
+gamma glutamyltransferase	GGT
+gammaglutamyltransferase	GGT
+creactiveprotein	CRP
+cystatinc	CystatinC
+directbilirubin	DirectBilirubin
+totalbilirubin	TotalBilirubin
+totalprotein	TotalProtein
+vitamind	VitaminD
+vitamin d levels x ambient ultraviolet b radiation dose interaction	VitaminDxUVB
+vitamin d levels in ambient ultraviolet b radiation dose quintile	VitaminDUVBQ
+vitamin d levels in normal bmi	VitaminDNormalBMI
+vitamin d levels in obese bmi	VitaminDObeseBMI
+vitamin d levels in overweight bmi	VitaminDOverweightBMI
+vitamin d levels in spending 3 or more hours per day outdoors	VitaminDOutdoors
+vitamin d levels	VitaminD
+igf 1	IGF1
+serum urate levels	Urate
+testosteronemale	TestosteroneMale
+total testosterone levels	TotalTestosterone
+testosterone levels	Testosterone
+thyroid stimulating hormone levels	TSH
+thyroxine levels	Thyroxine
+follicle stimulating hormone levels	FSH
+estradiol levels	Estradiol
+systolic blood pressure	SBP
+diastolic blood pressure	DBP
+pulse pressure	PP
+mean arterial pressure	MAP
+pulse rate automated reading	PulseRate
+x sex interaction (sexually dimorphic effects)	xSexDimorphic
+x sex interaction	xSex
+(bmi adjusted)	AdjBMI
+(bmi unadjusted)	UnadjBMI
+combined automated manual reading	Combined
+automated reading adjusted by medication	AdjMed
+coronary artery disease	CAD
+atrial fibrillation and flutter	AFFlutter
+atrial fibrillation	AF
+atrial fibrilation	AF
+heart failure with preserved ejection fraction	HFpEF
+heart failure with reduced ejection fraction	HFrEF
+non-ischemic heart failure	NonIschemicHF
+heart failure	HF
+venous thromboembolism	VTE
+abdominal aortic aneurysm	AAA
+calcific aortic valve stenosis	CAVS
+hyperthension	Hypertension
+cardiovascular diseases	CVD
+forced expiratory volume in one second forced vital capacity ratio	FEV1FVC
+fev1-fvc ratio	FEV1FVC
+fev1/fvc ratio	FEV1FVC
+forced expiratory volume in one second	FEV1
+forced expiratory volume in 1 second (fev1)	FEV1
+forced expiratory volume in 1 second	FEV1
+forced vital capacity (fvc)	FVC
+forced vital capacity	FVC
+peak expiratory flow	PEF
+chronic obstructive pulmonary disease	COPD
+asthma or chronic rhinosinusitis	AsthmaOrCRS
+chronic rhinosinusitis with nasal polyposis	CRSwNP
+chronic rhinosinusitis without nasal polyposis	CRSsNP
+attention deficit hyperactivity disorder	ADHD
+early onset major depressive disorder	EarlyOnsetMDD
+late onset major depressive disorder	LateOnsetMDD
+major depressive disorder	MDD
+subject well being	SWB
+bipolar and/or schizophrenia	BipolarOrSchizophrenia
+schizophrenia vs bipolar	SchizophreniaVsBipolar
+bipolar disorder	Bipolar
+autism spectrum (grove et al)	Autism
+autism spectrum	Autism
+maternal alzheimer's disease	AlzheimersMaternal
+paternal alzheimer's disease	AlzheimersPaternal
+alzheimer's disease proxy	AlzheimersProxy
+alzheimer's disease	Alzheimers
+alzheimers disease	Alzheimers
+parkinsons	Parkinsons
+parkinson	Parkinsons
+multiple sclerosis	MS
+tourette syndrome	Tourette
+genetic generalized epilepsy	GGE
+juvenile myoclonic epilepsy	JME
+epillepsy	Epilepsy
+anorexia nervosa	Anorexia
+general risk tolerance	RiskTolerance
+verbal numeric reasoning	VNR
+fluid intelligence score	FluidIntelligence
+years of education	EduYears
+college education	College
+cigarattes per day	CigsPerDay
+multisite chronic pain	MCP
+strong opioid use (>90 days vs <90 days)	OpioidOver90VsUnder90Days
+strong opioid use (>90 days vs never)	OpioidOver90DaysVsNever
+strong opioid use (> 90 days)	OpioidOver90Days
+strong opioid use	OpioidUse
+time on analgesics	AnalgesicTime
+time to cessation of analgesic treatment	AnalgesicCessation
+(quartile 4 vs healthy)	Q4VsHealthy
+(quartile 4 vs quartile 1-quartile 3)	Q4VsQ1to3
+(quartile 4 vs quartile 1)	Q4VsQ1
+amygdala volume	AmygdalaVol
+brainste volume	BrainstemVol
+caudate nucleus volume	CaudateVol
+globus pallidus volume	PallidumVol
+nucleus accumbens volume	AccumbensVol
+putamen volume	PutamenVol
+thalamus volume	ThalamusVol
+average thickness (th) of the human cerebral cortex	CorticalThickness
+total surface area (sa) of the human cerebral cortex	CorticalSurfaceArea
+average axial diffusivity (ad)	AxialDiffusivity
+average fractional anisotropy (fa)	FractionalAnisotropy
+average mean diffusivity (md)	MeanDiffusivity
+average mode of anisotropy (mo)	ModeOfAnisotropy
+average radial diffusivity (rd)	RadialDiffusivity
+structural connectivity	StructConn
+morning person (chronotype)	MorningPerson
+long sleep duation	LongSleep
+short sleep duration	ShortSleep
+rheumatoid arthritis	RA
+systemic lupus erythematosus	SLE
+ibd	IBD
+crohn's disease	Crohns
+ulcerative colitis	UC
+celiac disease	Celiac
+primary biliary cirrhosis	PBC
+type 1 diabetes	T1D
+type 2 diabetes	T2D
+gestational diabetes mellitus	GDM
+metabolic syndrome	MetS
+primary open angle glaucoma	POAG
+primary apen angle glaucoma	POAG
+auto immune traits (sure)	AutoimmuneSure
+auto immune traits	Autoimmune
+gastroesophagal reflux disease	GERD
+gastrointestinal disease	GIDisease
+dermatologic diseases	DermatologicDisease
+endocrine and diabetes diseases	EndocrineDiabetes
+respiratory and ear-nose-throat diseases	RespiratoryENT
+blood clot dvt bronchitis emphysema asthma rhinitis eczema allergy diagnosed by doctor	DoctorDiagnosedConditions
+c44 other malignant neoplasms of skin	SkinCancerC44
+cancer (all)	AnyCancer
+cancer esophageal	EsophagealCancer
+cancer lung adenocarcinoma	LungAdenocarcinoma
+cancer lung	LungCancer
+clear cell epithelial ovarian cancer	OvarianCancerClearCell
+endometrioid epithelial ovarian cancer	OvarianCancerEndometrioid
+high-grade serous epithelial ovarian cancer	OvarianCancerHGSerous
+low-grade serous epithelial ovarian cancer	OvarianCancerLGSerous
+non-mucinous epithelial ovarian cancer	OvarianCancerNonMucinous
+mucinous epithelial ovarian cancer	OvarianCancerMucinous
+clear cell renal cell carcinoma	ccRCC
+papillary renal cell carcinoma	pRCC
+all osteoarthritis	AllOA
+knee and or hip osteoarthritis	KneeHipOA
+hip osteoarthritis	HipOA
+knee osteoarthritis	KneeOA
+spine osteoarthritis	SpineOA
+thumb osteoarthritis	ThumbOA
+total hip replacement	HipReplacement
+total knee replacement	KneeReplacement
+total joint replacement	JointReplacement
+diverticulosis and diverticulitis	Diverticular
+operation tonsillectomy adenoids	Tonsillectomy
+operative procedures opcs4 normal delivery	NormalDelivery
+mouth teeth dental problems	DentalProblems
+black male hair	BlackHair
+childhood sunburn occasions	ChildhoodSunburn
+sunburn occasion	Sunburn
+balding type iv	BaldingType4
+balding type i	BaldingType1
+hair balding pattern	BaldingPattern
+heel bone mineral density	HeelBMD
+hand grip strength	GripStrength
+impedance of arm	ArmImpedance
+leg fat percentage	LegFatPct
+intra ocular pressure goldmann correlated	IOP
+age at menarche	Menarche
+menarche age	Menarche
+age at menopause	Menopause
+number children ever born	NumChildren
+number children even born	NumChildren
+covid19 vaccination	CovidVaccination
+breakthrough covid-19 severity after at least one dose of a covid-19 vaccine	BreakthroughCovidSeverity
+breakthrough covid-19 susceptibility after at least one dose of a covid-19 vaccine	BreakthroughCovidSusceptibility
+seroconversion induced by one dose of covid-19 vaccine	CovidVaccineSeroconversion
+aging (healthspan / parental lifespan / longevity)	Aging
+(principal component 1)	PC1
+(principal component 2)	PC2
+chip dnmt3a	CHIPDNMT3A
+chip	CHIP
+lyme disease	Lyme
+raynaud's syndrome	Raynauds
+polycystic ovary syndrome	PCOS
+female infertility (all causes)	FemaleInfertility
+female infertility (anatomical)	FemaleInfertilityAnatomical
+female infertility (anovulatory)	FemaleInfertilityAnovulatory
+female infertility (idiopathic, defined by coding in electronic health record)	FemaleInfertilityIdiopathicCoded
+female infertility (idiopathic, defined by excluding other causes)	FemaleInfertilityIdiopathicByExclusion
+nonsyndromic cleft palate	CleftPalate
+central retinal arteriolar equivalent	CRAE
+central retinal vein equivalent	CRVE
+retinal ratio central retinal equivalent	RetinalRatioCRE
+retinal vasculature number of bifurcations	RetinalBifurcations
+basophil percentage	BasoP
+eosinophil count	Eosino
+lymphocyte count	Lym
+monocyte count	Mono
+monocyte percentage	MonoP
+neutrophil count	Neutro
+platelet count	Plt
+platelet distribution width	PDW
+mean platelet volume	MPV
+mean sphered cell volume	MSCV
+mean corpular hemoglobin	MCH
+mean corpuscular hemoglobin	MCH
+red blood cell distribution width	RDW
+red blood cell count	RBC
+white blood cell count	WBC
+high light scatter reticulocyte count	HLR
+hematocrit	HCT
+haemoglobin	HGB
+sex hormone binding globulin	SHBG
+shbg	SHBG
+(mtag)	MTAG
+(uk biobank)	
+(ukbb)	
+(ukbb; pooled)	
+(ukbb; female)	Female
+(female)	Female
+(male)	Male
+(left)	
+(right)	
+(speliotes 2010)	
+(lango allen 2010)	
+(okbay 2016)	
+(rietveld 2013)	

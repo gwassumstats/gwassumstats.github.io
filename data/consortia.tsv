@@ -1,0 +1,11 @@
+group	short
+# A paper that PubMed files under a group, without a first author, is cited by the group's short name: PGC 2014 Nature.
+# `group` is the name as PubMed gives it. For a group that is not listed, the person the inventory's reference names is
+# cited (Ruderfer et al. 2018 Cell).
+Schizophrenia Working Group of the Psychiatric Genomics Consortium	PGC
+Psychiatric GWAS Consortium Bipolar Disorder Working Group	PGC
+Cross-Disorder Group of the Psychiatric Genomics Consortium	PGC
+International Multiple Sclerosis Genetics Consortium	IMSGC
+Tobacco and Genetics Consortium	TAG
+CONVERGE consortium	CONVERGE
+International League Against Epilepsy Consortium on Complex Epilepsies	ILAE
