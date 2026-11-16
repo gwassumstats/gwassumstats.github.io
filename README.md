@@ -1,6 +1,6 @@
 # GWAS Sumstats
 
-<https://gwassumstats.github.io> is a catalog of the Price lab's collection of GWAS summary statistics: 602 datasets
+<https://gwassumstats.github.io> is a catalog of the Price lab's collection of GWAS summary statistics: 602 studies
 in LDSC format, with their heritability and genetic correlations. The files stay on the O2 cluster; lab members log in
 with the lab's passphrase to see where they are. It costs $0.
 
@@ -15,9 +15,9 @@ with the lab's passphrase to see where they are. It costs $0.
 
 | File in `site/data/` | Content | Read by |
 |---|---|---|
-| `datasets.json` | The inventory with h², and the release's counts | Anyone |
+| `studies.json` | The inventory with h², and the release's counts | Anyone |
 | `rg_EUR.json`, `rg_EAS.json` | Every genetic correlation of an ancestry; the order of its heatmaps | Anyone, when first needed |
-| `paths.enc.json` | The release folder and each dataset's files on O2, encrypted | Whoever has the passphrase |
+| `paths.enc.json` | The release folder and each study's file on O2, encrypted | Whoever has the passphrase |
 
 **Login.** `paths.enc.json` is encrypted with AES-256-GCM under a key derived from the passphrase (PBKDF2-HMAC-SHA256,
 1,000,000 rounds, a random salt). The browser derives the key, decrypts the paths, and keeps the key in `localStorage`

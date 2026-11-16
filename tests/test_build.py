@@ -19,28 +19,28 @@ def built(release, out, passphrase="correct horse"):
     return {path.name: json.loads(path.read_text()) for path in out.iterdir()}
 
 
-def test_datasets_carry_the_inventory_h2_panel_and_paper(mini, tmp_path):
-    data = built(mini, tmp_path / "out")["datasets.json"]
-    old, *_, new = data["datasets"][:4]
-    assert [d["id"] for d in data["datasets"]] == ["A_unsigned", "B", "C", "GCST0001", "D_EAS", "GCST0002", "GCST0003"]
+def test_studies_carry_the_inventory_h2_panel_and_paper(mini, tmp_path):
+    data = built(mini, tmp_path / "out")["studies.json"]
+    old, *_, new = data["studies"][:4]
+    assert [d["id"] for d in data["studies"]] == ["A_unsigned", "B", "C", "GCST0001", "D_EAS", "GCST0002", "GCST0003"]
     assert old == {"id": "A_unsigned", "trait": "Height (old)", "anc": "EUR", "n": 1000, "m": 900, "origin": "Old 2015", "ref": "Smith et al., 2010 Nature",
                    "signed": False, "alleles": True, "cross": False, "release": 2024, "h2": 0.2, "h2_se": 0.02, "h2_z": 10.0, "intercept": 1.01}
     assert new == {"id": "GCST0001", "trait": "Trait new", "anc": "EUR", "n": 4000, "m": 930, "origin": "New 2026", "ref": "Ortín et al. 2025 Nat Genet",
                    "signed": True, "alleles": True, "cross": True, "release": 2026, "h2": 0.1461, "h2_se": 0.009, "h2_z": 16.23333, "intercept": 0.7683,
                    "panel": 1, "m_rg": 926, "pmid": "111", "paper": "https://pubmed.ncbi.nlm.nih.gov/111/",
                    "catalog": "https://www.ebi.ac.uk/gwas/studies/GCST0001", "paper_id": "NG_Ortin_2025_x"}
-    assert {d["id"]: d["panel"] for d in data["datasets"] if "panel" in d} == {"GCST0001": 1, "C": 2, "GCST0002": 1}  # the panels' own order
-    assert data["datasets"][1]["trait"] == "Alzheimer’s disease" and data["datasets"][1]["h2"] == -0.0058
+    assert {d["id"]: d["panel"] for d in data["studies"] if "panel" in d} == {"GCST0001": 1, "C": 2, "GCST0002": 1}  # the panels' own order
+    assert data["studies"][1]["trait"] == "Alzheimer’s disease" and data["studies"][1]["h2"] == -0.0058
 
 
 def test_release_counts(mini, tmp_path):
-    release = built(mini, tmp_path / "out")["datasets.json"]["release"]
+    release = built(mini, tmp_path / "out")["studies.json"]["release"]
     assert release == {
         "year": 2026, "packaged": "2026-09-07", "papers": 2, "ancestries": ["EUR", "EAS"],
-        "all": {"datasets": 7, "before": 4, "added": 3, "signed": 6, "signed_before": 3, "unsigned": 1, "unsigned_added": 0, "no_alleles": 0},
-        "EUR": {"datasets": 4, "before": 3, "added": 1, "signed": 3, "signed_before": 2, "pairs": 3, "failed": 1,
+        "all": {"studies": 7, "before": 4, "added": 3, "signed": 6, "signed_before": 3, "unsigned": 1, "unsigned_added": 0, "no_alleles": 0},
+        "EUR": {"studies": 4, "before": 3, "added": 1, "signed": 3, "signed_before": 2, "pairs": 3, "failed": 1,
                 "worst": {"id": "C", "failed": 1, "pairs": 2}, "panel": 2, "panel_added": 1, "pairs_before": 1, "panel_before": 2, "panel_kept": 1},
-        "EAS": {"datasets": 3, "before": 1, "added": 2, "signed": 3, "signed_before": 1, "pairs": 3, "failed": 1,
+        "EAS": {"studies": 3, "before": 1, "added": 2, "signed": 3, "signed_before": 1, "pairs": 3, "failed": 1,
                 "worst": {"id": "GCST0002", "failed": 1, "pairs": 2}, "panel": 1, "panel_added": 1, "pairs_before": 0}}
 
 
@@ -74,11 +74,10 @@ def test_paths_are_only_in_the_encrypted_file(mini, tmp_path):
         assert "/lab/" not in path.read_text() and str(mini) not in path.read_text()
     private = json.loads(crypt.decrypt(blob, "correct horse"))
     assert private["release"] == str(mini) and "summary_statistics_2026.txt" in private["tables"]
-    assert private["folders"] == ["/lab/old/sumstats", "/lab/new/sumstats/EUR", "/lab/new/sumstats/EAS", "/lab/new/sumstats_rg/EUR", "/lab/new/sumstats_rg/EAS"]
-    assert private["files"]["A_unsigned"] == [[0, "A_unsigned.sumstats"], None]  # unsigned: no rg file
-    assert private["files"]["B"] == [[0, "B.sumstats"], [0, "B.sumstats"]]
-    assert private["files"]["GCST0003"] == [[2, "GCST0003.sumstats"], [4, "renamed.txt"]]
-    assert len(private["files"]) == 7
+    assert private["folders"] == ["/lab/old/sumstats", "/lab/new/sumstats/EUR", "/lab/new/sumstats/EAS"]
+    assert private["files"]["A_unsigned"] == [0, "A_unsigned.sumstats"] and private["files"]["B"] == [0, "B.sumstats"]
+    assert private["files"]["GCST0003"] == [2, "GCST0003.sumstats"]  # its file, not the copy that rg was estimated on
+    assert len(private["files"]) == 7 and "sumstats_rg" not in json.dumps(private) and "renamed.txt" not in json.dumps(private)
     with pytest.raises(InvalidTag):
         crypt.decrypt(blob, "correct horse ")
 
@@ -98,9 +97,9 @@ def test_a_rebuild_changes_nothing_and_a_new_passphrase_only_the_blob(mini, tmp_
 @pytest.mark.parametrize("rows, problem", [
     ([["B", "C", *NAN], ["B", "GCST0001", *NAN]], "a pair is missing"),
     ([["B", "C", *NAN], ["C", "B", *NAN], ["B", "GCST0001", *NAN]], "a pair is there twice"),
-    ([["B", "C", *NAN], ["B", "GCST0001", *NAN], ["C", "A_unsigned", *NAN]], "an unsigned dataset"),
-    ([["B", "C", *NAN], ["B", "GCST0001", *NAN], ["C", "D_EAS", *NAN]], "a dataset of the other ancestry"),
-    ([["B", "C", *NAN], ["B", "GCST0001", *NAN], ["C", "C", *NAN]], "a dataset with itself"),
+    ([["B", "C", *NAN], ["B", "GCST0001", *NAN], ["C", "A_unsigned", *NAN]], "an unsigned study"),
+    ([["B", "C", *NAN], ["B", "GCST0001", *NAN], ["C", "D_EAS", *NAN]], "a study of the other ancestry"),
+    ([["B", "C", *NAN], ["B", "GCST0001", *NAN], ["C", "C", *NAN]], "a study with itself"),
 ])
 def test_a_pair_table_that_is_not_every_pair_once_stops_the_build(mini, tmp_path, rows, problem):
     write(mini / "ldsc_genetic_correlations_trait_pairs_EUR_2026.txt", RG, rows)
@@ -109,9 +108,9 @@ def test_a_pair_table_that_is_not_every_pair_once_stops_the_build(mini, tmp_path
 
 
 @pytest.mark.parametrize("name, old, new, problem", [
-    ("sldsc_heritabilities_EAS_2026.txt", "GCST0003", "GCST0009", "heritability"),  # an h² for a dataset that is not in the inventory
+    ("sldsc_heritabilities_EAS_2026.txt", "GCST0003", "GCST0009", "heritability"),  # an h² for a study that is not in the inventory
     ("summary_statistics_2026.txt", "\tD_EAS\t", "\tC\t", "occurs twice"),
-    ("non_redundent_traits_EAS_2026.txt", "GCST0002", "B", "panel"),  # an EUR dataset in the EAS panel
+    ("non_redundent_traits_EAS_2026.txt", "GCST0002", "B", "panel"),  # an EUR study in the EAS panel
     ("_audit/sumstats_file_index.tsv", "GCST0002\t2026", "GCST0009\t2026", "file index"),
     ("_audit/new_study_provenance.tsv", "https://www.ebi.ac.uk/gwas/studies/GCST0003", "javascript:alert(1)", "link"),
 ])

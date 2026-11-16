@@ -3,7 +3,7 @@
 :root {
   --bg: #f6f6ef; --surface: #fff; --subtle: #eeeee6; --text: #15171c; --body: #333843; --muted: #6b6f78; --border: #dcdcd2;
   --accent: #2355d8; --accent-strong: #0f2a73; --accent-soft: #e9effd; --error: #c0392b;
-  --mark: #2355d8; --neg: #c0392b;  /* chart marks: bars and positive rg; negative rg. Told apart by colour-blind readers, in both modes */
+  --mark: #2355d8; --pos: #c0392b; --neg: #2355d8;  /* chart marks: bars; positive rg (red) and negative rg (blue), told apart by colour-blind readers in both modes */
   --shadow: 0 4px 16px rgba(0, 0, 0, .12);
   --radius: 4px;
   --fs-small: 12px; --fs-meta: 13px; --fs-body: 14px; --fs-title: 15px;  /* type scale: 12 / 13 / 14 (body) / 15 (headings of a list); prose adds 16 and 19 */
@@ -14,7 +14,7 @@
   :root {
     --bg: #121418; --surface: #181b21; --subtle: #1d2129; --text: #eceef2; --body: #c9cdd6; --muted: #98a0af; --border: #2a2f3a;
     --accent: #86a6ff; --accent-strong: #d3deff; --accent-soft: #1d2947; --error: #ff8a7a;
-    --mark: #4f7ff0; --neg: #e66767;  /* darker than the text colours: a filled mark, not a line of text */
+    --mark: #4f7ff0; --pos: #e66767; --neg: #4f7ff0;  /* darker than the text colours: a filled mark, not a line of text */
     --shadow: 0 4px 16px rgba(0, 0, 0, .5);
   }
 }
@@ -58,7 +58,7 @@ sub { font-size: .75em; line-height: 0; }
 .popover { position: absolute; top: calc(100% + .35rem); left: 0; z-index: 5; display: flex; flex-direction: column; padding: .3rem 0; }
 .popover a { padding: .3rem .8rem; white-space: nowrap; font-size: var(--fs-meta); }
 .popover a:hover, .popover a.active { background: var(--subtle); text-decoration: none; }
-.options { width: max-content; max-width: min(34rem, calc(100vw - 2rem)); max-height: min(22rem, 60vh); overflow-y: auto; }  /* the datasets a field may pick */
+.options { width: max-content; max-width: min(34rem, calc(100vw - 2rem)); max-height: min(22rem, 60vh); overflow-y: auto; }  /* the studies a field may pick */
 .options a { color: var(--text); white-space: normal; }
 .options .hint { padding: .3rem .8rem; }
 .panel { margin: .9rem 0 0; padding: .6rem .8rem; }
@@ -81,7 +81,7 @@ sub { font-size: .75em; line-height: 0; }
 .tip.float { position: fixed; z-index: 6; max-width: min(24rem, calc(100vw - 1rem)); pointer-events: none; }  /* follows the pointer over a chart */
 .tip b { color: var(--text); }
 
-/* the datasets: search and filters, then a table */
+/* the studies: search and filters, then a table */
 main:has(#listview:not([hidden]) table:empty) { min-height: 100vh; }  /* the footer stays put while the data loads */
 .filters { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .9rem; margin: .9rem 0 0; color: var(--muted); }
 .filters label, .check { display: inline-flex; align-items: center; gap: .35rem; white-space: nowrap; }
@@ -112,13 +112,15 @@ main:has(#listview:not([hidden]) table:empty) { min-height: 100vh; }  /* the foo
 .pairs { max-width: 56rem; }  /* few columns: kept together */
 .pairs .id, #h2-table .id { width: auto; }  /* and room for the ID on one line */
 .data .short { white-space: nowrap; }
-.data .sub td { padding-top: 0; }  /* a dataset's files, under its row, once logged in */
+/* an estimate ± its standard error: the ± signs stand one under the other, the header's too */
+.data .pm { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.data .pm .est { display: inline-block; min-width: 7ch; text-align: right; }
+.data .pm .se { display: inline-block; min-width: 6ch; text-align: left; }  /* a header's button centres its text */
+.data .sub td { padding-top: 0; }  /* a study's path, under its row, once logged in */
 .paths { color: var(--muted); font-size: var(--fs-small); }
 .paths .path { color: var(--body); overflow-wrap: anywhere; }
 .paths a { margin-left: .3em; }
-/* h² as the share of the variance it is: a thin bar on a track of the same blue */
-.meter { display: inline-block; width: 5rem; height: 8px; margin-right: .6rem; border-radius: 4px; background: color-mix(in srgb, var(--mark) 16%, var(--bg)); vertical-align: baseline; overflow: hidden; }
-.meter i { display: block; height: 100%; border-radius: 4px; background: var(--mark); }
+.fields .paths { font-size: inherit; }  /* on a study's page, a value like the others */
 
 /* charts */
 #view-h2 { max-width: 60rem; }  /* few columns: the chart and the table kept together */
@@ -137,12 +139,12 @@ main:has(#listview:not([hidden]) table:empty) { min-height: 100vh; }  /* the foo
 .scale .steps { display: inline-flex; }
 #heat-tabs a.current { color: var(--accent-strong); }
 
-/* a pair's result, and a dataset's page: label and value in two columns, starting at the bar's left edge */
+/* a pair's result, and a study's page: label and value in two columns, starting at the bar's left edge */
 .page, .result { margin-top: .9rem; }
 .page h2, .result h3 { margin: 0 0 .3rem; font-size: 1.2rem; font-weight: 600; color: var(--text); }
 .result h3 { font-size: var(--fs-title); }
 .result h3 a, .page h2 a { color: inherit; }
-.fields .row { display: grid; grid-template-columns: 10rem minmax(0, 1fr); padding: .15rem 0; }
+.fields .row { display: grid; grid-template-columns: 12rem minmax(0, 1fr); padding: .15rem 0; }
 .fields .label { color: var(--muted); }
 .fields .value { color: var(--body); overflow-wrap: anywhere; }
 .page .section-head { margin-top: 1.4rem; }

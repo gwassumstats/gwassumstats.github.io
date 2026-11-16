@@ -24,9 +24,9 @@ from build.__main__ import BLOB, build
 from build.release import tree
 from conftest import DATA, ROOT, SITE
 
-SITE_DATA = json.loads((DATA / "datasets.json").read_text())
-DATASETS, RELEASE = SITE_DATA["datasets"], SITE_DATA["release"]
-BY_ID = {d["id"]: d for d in DATASETS}
+SITE_DATA = json.loads((DATA / "studies.json").read_text())
+STUDIES, RELEASE = SITE_DATA["studies"], SITE_DATA["release"]
+BY_ID = {d["id"]: d for d in STUDIES}
 COLUMNS = {"rg": "genetic_correlation", "se": "genetic_correlation_se", "z": "genetic_correlation_z", "p": "genetic_correlation_p",
            "gcov": "genetic_covariance", "gcov_se": "genetic_covariance_se"}  # site name -> the release's
 # What is never published: a path on O2 or on someone's computer, and a user name there (two to four letters, then
@@ -85,21 +85,21 @@ def people():
 
 
 def test_counts_are_the_release_s():
-    count = lambda **want: sum(all(d.get(k) == v for k, v in want.items()) for d in DATASETS)
-    assert len(DATASETS) == len(BY_ID) == 602
+    count = lambda **want: sum(all(d.get(k) == v for k, v in want.items()) for d in STUDIES)
+    assert len(STUDIES) == len(BY_ID) == 602
     assert (count(anc="EUR"), count(anc="EAS")) == (546, 56)
-    assert [sum("panel" in d for d in DATASETS if d["anc"] == anc) for anc in ("EUR", "EAS")] == [85, 17]
+    assert [sum("panel" in d for d in STUDIES if d["anc"] == anc) for anc in ("EUR", "EAS")] == [85, 17]
     assert count(signed=True) == count(cross=True) == 576 and count(release=2026) == 205 and count(release=2024) == 397
     for anc, signed, failed in (("EUR", 520, 821), ("EAS", 56, 55)):
         t = correlations(anc)
-        assert t["ids"] == [d["id"] for d in DATASETS if d["anc"] == anc and d["cross"]] and len(t["ids"]) == signed
+        assert t["ids"] == [d["id"] for d in STUDIES if d["anc"] == anc and d["cross"]] and len(t["ids"]) == signed
         assert {len(t[c]) for c in COLUMNS} == {signed * (signed - 1) // 2} and t["rg"].count(None) == failed
-        assert RELEASE[anc] | {"worst": None} == RELEASE[anc] | {"worst": None, "datasets": count(anc=anc), "signed": signed, "pairs": len(t["rg"]), "failed": failed}
+        assert RELEASE[anc] | {"worst": None} == RELEASE[anc] | {"worst": None, "studies": count(anc=anc), "signed": signed, "pairs": len(t["rg"]), "failed": failed}
 
 
 def test_a_panel_is_what_about_says():
     for anc in RELEASE["ancestries"]:
-        panel = sorted((d for d in DATASETS if d["anc"] == anc and "panel" in d), key=lambda d: d["panel"])
+        panel = sorted((d for d in STUDIES if d["anc"] == anc and "panel" in d), key=lambda d: d["panel"])
         estimates = by_pair(correlations(anc))
         within = [estimates[frozenset((a["id"], b["id"]))][0] for i, a in enumerate(panel) for b in panel[i + 1:]]
         assert [d["panel"] for d in panel] == list(range(1, len(panel) + 1))
@@ -122,13 +122,13 @@ def test_a_heatmap_is_in_the_order_of_its_clustering():
 
 def test_the_data_is_small():
     sizes = {path.name: path.stat().st_size for path in DATA.iterdir()}
-    assert set(sizes) == {"datasets.json", "rg_EUR.json", "rg_EAS.json", BLOB}
+    assert set(sizes) == {"studies.json", "rg_EUR.json", "rg_EAS.json", BLOB}
     assert sum(sizes.values()) < 20e6  # the plan: well under 100 MB
 
 
 def test_the_site_data_is_a_build_of_the_release(release, tmp_path):
     build(release, tmp_path, "not the passphrase", 1000)
-    differ = [name for name in ("datasets.json", "rg_EUR.json", "rg_EAS.json") if (tmp_path / name).read_bytes() != (DATA / name).read_bytes()]
+    differ = [name for name in ("studies.json", "rg_EUR.json", "rg_EAS.json") if (tmp_path / name).read_bytes() != (DATA / name).read_bytes()]
     assert not differ, "rebuild the site: python -m build"
 
 
@@ -139,9 +139,9 @@ def test_every_value_is_the_release_s(release):
     inventory = rows(one("summary_statistics_*.txt"))
     assert [(r["Trait Identifier"], r["Trait Name"].strip(), r["Population"], int(r["N"]), int(r["M"]), r["Origin"].strip(), r["Reference"].strip(),
              yes(r["Signed SumStat"]), yes(r["Allele Info"]), yes(r["Cross-Trait LDSC"])) for r in inventory] \
-        == [(d["id"], d["trait"], d["anc"], d["n"], d["m"], d["origin"], d["ref"], d["signed"], d["alleles"], d["cross"]) for d in DATASETS]
+        == [(d["id"], d["trait"], d["anc"], d["n"], d["m"], d["origin"], d["ref"], d["signed"], d["alleles"], d["cross"]) for d in STUDIES]
     for anc in ("EUR", "EAS"):
-        mine = [d for d in DATASETS if d["anc"] == anc]
+        mine = [d for d in STUDIES if d["anc"] == anc]
         h2 = rows(one(f"sldsc_heritabilities_{anc}_*.txt"))
         assert {r["trait_identifier"]: tuple(float(r[c]) for c in ("h2", "h2_se", "h2_z", "intercept")) for r in h2} \
             == {d["id"]: (d["h2"], d["h2_se"], d["h2_z"], d["intercept"]) for d in mine}
@@ -157,10 +157,10 @@ def test_every_value_is_the_release_s(release):
         assert reasons == {pair: t["notes"][str(k)] for k, pair in enumerate(ours) if str(k) in t["notes"]} and len(reasons) == len(t["notes"])
     index = rows(release / "_audit" / "sumstats_file_index.tsv")
     assert [(r["Trait Identifier"], int(r["Release"][:4]), int(r["M in RG input"]) if r["M in RG input"] else None) for r in index] \
-        == [(d["id"], d["release"], d.get("m_rg")) for d in DATASETS]
+        == [(d["id"], d["release"], d.get("m_rg")) for d in STUDIES]
     papers = rows(release / "_audit" / "new_study_provenance.tsv")
     assert {r["Trait Identifier"]: (r["PMID"], r["Paper Link"], r["Catalog Study Link"], r["Target Paper Identifier"]) for r in papers} \
-        == {d["id"]: (d["pmid"], d["paper"], d["catalog"], d["paper_id"]) for d in DATASETS if "pmid" in d}
+        == {d["id"]: (d["pmid"], d["paper"], d["catalog"], d["paper_id"]) for d in STUDIES if "pmid" in d}
     assert len(papers) == RELEASE["all"]["added"] and len({r["Target Paper Identifier"] for r in papers}) == RELEASE["papers"]
 
 
@@ -168,7 +168,7 @@ def test_the_texts_quote_the_release(release):
     notes = re.sub(r"<[^>]+>|\s+", " ", (SITE / "index.html").read_text())
     kept = {r["Check"]: int(r["Details"]) for r in rows(release / "_audit" / "validation_results.tsv") if r["Check"].endswith("complete subgraph")}
     eur, eas = kept["EUR complete subgraph"], kept["EAS complete subgraph"]
-    assert re.sub(r"\s+", " ", f"{RELEASE['EUR']['signed'] - eur} EUR datasets and {RELEASE['EAS']['signed'] - eas} EAS dataset go, {eur} and {eas} stay.") in re.sub(r"\s+", " ", notes)
+    assert re.sub(r"\s+", " ", f"{RELEASE['EUR']['signed'] - eur} EUR studies and {RELEASE['EAS']['signed'] - eas} EAS study go, {eur} and {eas} stay.") in re.sub(r"\s+", " ", notes)
 
 
 def test_the_numbers_in_the_texts_are_the_data_s():
@@ -192,7 +192,7 @@ def test_the_blob_opens_with_the_passphrase_only(passphrase):
     assert (blob["kdf"], blob["cipher"]) == ("PBKDF2-HMAC-SHA256", "AES-256-GCM") and blob["iterations"] >= 600_000
     assert [len(crypt.base64.b64decode(blob[k])) for k in ("salt", "iv")] == [16, 12]
     private = json.loads(crypt.decrypt(blob, passphrase))
-    assert set(private["files"]) == set(BY_ID) and all(private["files"][d["id"]][0] and bool(private["files"][d["id"]][1]) == d["cross"] for d in DATASETS)
+    assert set(private["files"]) == set(BY_ID) and all(private["folders"][folder] and name for folder, name in private["files"].values())
     for wrong in (passphrase + " ", passphrase[:-1], passphrase.upper(), ""):
         with pytest.raises(InvalidTag):
             crypt.decrypt(blob, wrong)
@@ -202,10 +202,11 @@ def test_the_blob_holds_the_file_index_and_every_file_is_there(release, passphra
     private = json.loads(crypt.decrypt(json.loads((DATA / BLOB).read_text()), passphrase))
     build(release, tmp_path, "not the passphrase", 1000)
     assert private == json.loads(crypt.decrypt(json.loads((tmp_path / BLOB).read_text()), "not the passphrase")), "rebuild the site: python -m build"
-    where = lambda file: file and f"{private['folders'][file[0]]}/{file[1]}"
+    where = lambda file: f"{private['folders'][file[0]]}/{file[1]}"
     index = rows(release / "_audit" / "sumstats_file_index.tsv")
-    assert [(r["Trait Identifier"], r["H2 Sumstats"], r["RG Sumstats"] or None) for r in index] \
-        == [(d["id"], where(private["files"][d["id"]][0]), where(private["files"][d["id"]][1])) for d in DATASETS]
+    assert [(r["Trait Identifier"], r["H2 Sumstats"]) for r in index] == [(d["id"], where(private["files"][d["id"]])) for d in STUDIES]
+    copies = {r["RG Sumstats"] for r in index} - {r["H2 Sumstats"] for r in index} - {""}  # what rg was estimated on, where it is another file
+    assert copies and not {path.rpartition("/")[0] for path in copies} & set(private["folders"])  # one path per study: these are not listed
     assert private["release"] == str(release) and all((release / name).is_file() for name in private["tables"])
     head = lambda path: Path(path).open().readline().rstrip("\n").split("\t")  # About: "What is in a file?"
     wrong = [r["Trait Identifier"] for r in index for path in {r["H2 Sumstats"], r["RG Sumstats"]} - {""}
@@ -244,6 +245,13 @@ def test_the_history_is_clean():
     passphrase = os.environ.get("SUMSTATS_PASSPHRASE")
     leaked = bool(passphrase) and passphrase.lower() in everything.lower()
     assert not leaked  # said without printing it
+
+
+def test_a_row_is_a_study():
+    """Never a "dataset": in the page's text, and in the script but for the old address ?dataset=ID and the DOM's own word."""
+    html, script = ((SITE / name).read_text().lower() for name in ("index.html", "app.js"))
+    assert "dataset" not in html and "dataset" not in re.sub(r'\.dataset\b|"dataset"', "", script)
+    assert 'q.set("study", q.get("dataset"))' in script  # the old address still opens the study
 
 
 def test_the_page_loads_nothing_from_elsewhere():

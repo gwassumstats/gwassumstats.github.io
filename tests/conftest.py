@@ -36,7 +36,7 @@ def write(path: Path, header, rows):
 
 @pytest.fixture
 def mini(tmp_path):
-    """A release folder of seven datasets, laid out as a real one: four EUR (one unsigned, one added in 2026) and
+    """A release folder of seven studies, laid out as a real one: four EUR (one unsigned, one added in 2026) and
     three EAS (two added). The pair tables name the pairs in no particular order."""
     release = tmp_path / "release_2026_20260907"
     inventory = [
@@ -56,7 +56,7 @@ def mini(tmp_path):
     write(release / "non_redundent_traits_EUR_2026.txt", H2, [["GCST0001", "0.1461", "0.009", "16.23333", "0.7683"], ["C", "0.393", "0.0674", "5.83086", "1.0297"]])
     write(release / "non_redundent_traits_EAS_2026.txt", H2, [["GCST0002", "0.3", "0.03", "10.0", "1.1"]])
     write(release / "ldsc_genetic_correlations_trait_pairs_EUR_2026.txt", RG, [
-        ["GCST0001", "B", "-0.048", "0.0826", "-0.5809", "0.5613", "-0.0037", "0.0065"],  # the later dataset first
+        ["GCST0001", "B", "-0.048", "0.0826", "-0.5809", "0.5613", "-0.0037", "0.0065"],  # the later study first
         ["C", "GCST0001", "nan", "nan", "nan (nan) (rg out of bounds)", "nan (nan) (rg out of bounds)", "-0.0023", "0.0007"],
         ["B", "C", "7.6455e-06", "0.096", "7.9634e-05", "0.", "1.3498e-06", "0.0169"]])
     write(release / "ldsc_genetic_correlations_trait_pairs_EAS_2026.txt", RG, [

@@ -3,7 +3,7 @@
 
 const TITLE = "GWAS Sumstats";
 const TABS = { sumstats: "", h2: "Heritability", rg: "Genetic correlation", notes: "Release notes", about: "About" };  // tab → its page title
-const STRONG_Z = 3;  // a genetic correlation is listed among a dataset's strongest if its |z| is at least this
+const STRONG_Z = 3;  // a genetic correlation is listed among a study's strongest if its |z| is at least this
 const TOP = 10;      // the strongest shown before "show all"
 const PANEL_MAX = Math.sqrt(0.1);  // a panel's heatmap: its colours end at the panels' bound, rg² = 0.1
 const $ = (id) => document.getElementById(id);
@@ -15,16 +15,16 @@ const svg = (tag, attrs = {}) => {
 };
 
 const state = {
-  loaded: false, datasets: [], byId: new Map(), release: null,
-  view: "sumstats",   // a tab, or "dataset": the page of state.dataset
-  dataset: null,
-  filter: { q: "", anc: "", z6: false, signed: false, panel: false },  // of the datasets under "sumstats" and "heritability"
+  loaded: false, studies: [], byId: new Map(), release: null,
+  view: "sumstats",   // a tab, or "study": the page of state.study
+  study: null,
+  filter: { q: "", anc: "", z6: false, signed: false, panel: false },  // of the studies under "sumstats" and "heritability"
   sort: { sumstats: null, h2: { key: "h2", dir: -1 }, neighbours: null },  // null: the release's order; for neighbours, the strongest first
   rg: { a: null, b: null, strict: true, all: false, heat: null },  // the pair looked up, the neighbours listed, the heatmap drawn ({ anc, kind })
   paths: null,        // where the files are, once logged in
 };
 const tables = new Map();  // ancestry → promise of its genetic correlations
-const rows = { sumstats: new Map(), h2: new Map() };  // dataset id → its <tbody>, per table
+const rows = { sumstats: new Map(), h2: new Map() };  // study id → its <tbody>, per table
 let blob;  // promise of the encrypted paths
 
 // ---------------------------------------------------------------- helpers
@@ -58,15 +58,32 @@ function store(key, value) {
 
 const int = (n) => n.toLocaleString("en-US");
 const fixed = (digits) => (x) => (x == null ? "–" : x.toFixed(digits));
+// A number to two significant digits, written out in full: 0.146 → 0.15, 16.2 → 16, −0.00824 → −0.0082
+function sig(x) {
+  if (x == null) return "–";
+  if (x === 0) return "0";
+  const [mantissa, exponent] = x.toExponential(1).split("e");  // rounded here: 0.0996 → 1.0e-1
+  return Number(`${mantissa}e${exponent}`).toFixed(Math.max(0, 1 - Number(exponent))).replace("-", "−");
+}
+// An estimate and its standard error, each to two significant digits: as text, and as a table cell whose ± signs
+// stand one under the other
+const plusMinus = (value, se) => (value == null ? "–" : `${sig(value)} ± ${sig(se)}`);
+const plusMinusCell = (value, se) => (value == null ? ["–"] : [el("span", "est", sig(value)), " ± ", el("span", "se", sig(se))]);
+const plusMinusLabel = (name) => () => [el("span", "est", name), " ± ", el("span", "se", "SE")];
 const pValue = (p) => (p == null ? "–" : p === 0 ? "<1e-300" : p < 1e-4 ? p.toExponential(2) : p.toFixed(4));  // LDSC prints 0 below about 1e-308
 const yesNo = (flag) => (flag ? "yes" : "no");
-const plural = (n, noun) => `${int(n)} ${noun}${n === 1 ? "" : "s"}`;
+const howMany = (n, one, many = `${one}s`) => `${int(n)} ${n === 1 ? one : many}`;
 const words = (text) => text.toLowerCase().split(/\s+/).filter(Boolean);
 const httpUrl = (url) => (/^https:\/\/\S+$/.test(url ?? "") ? url : null);
 const rgLabel = () => {
   const label = el("span", "", "r");
   label.append(el("sub", "", "g"));
   return label;
+};
+const rgPlusMinusLabel = () => {
+  const [name, ...rest] = plusMinusLabel("")();
+  name.append(rgLabel());
+  return [name, ...rest];
 };
 // A long name in parts (PASS_Height_Yengo2022, NG_Kanai_2018_BBJ): it may wrap after an underscore
 const parts = (text) => text.split("_").flatMap((part, k, all) => (k < all.length - 1 ? [`${part}_`, el("wbr")] : [part]));
@@ -75,7 +92,7 @@ const outside = (url, ...content) => {
   a.append(...content);
   return a;
 };
-const datasetLink = (d) => Object.assign(el("a", "", d.trait), { href: `?dataset=${encodeURIComponent(d.id)}` });
+const studyLink = (d) => Object.assign(el("a", "", d.trait), { href: `?study=${encodeURIComponent(d.id)}` });
 const reference = (d) => (httpUrl(d.paper) ? outside(d.paper, ...parts(d.ref)) : parts(d.ref));
 
 const load = (name) => fetch(`data/${name}`, { cache: "no-cache" }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(`${name}: ${r.status}`))));
@@ -93,14 +110,14 @@ function correlations(anc) {
   return tables.get(anc);
 }
 
-const position = (t, i, j) => (i > j ? position(t, j, i) : i * (2 * t.n - i - 1) / 2 + j - i - 1);  // of the pair of datasets i and j in the lists
+const position = (t, i, j) => (i > j ? position(t, j, i) : i * (2 * t.n - i - 1) / 2 + j - i - 1);  // of the pair of studies i and j in the lists
 
 function estimate(t, i, j) {
   const k = position(t, i, j);
   return { rg: t.rg[k], se: t.se[k], z: t.z[k], p: t.p[k], gcov: t.gcov[k], gcov_se: t.gcov_se[k], note: t.notes[k] };
 }
 
-// Every other dataset of d's ancestry with its estimate against d
+// Every other study of d's ancestry with its estimate against d
 function neighbours(t, d) {
   const i = t.at.get(d.id);
   return t.ids.flatMap((id, j) => (j === i ? [] : [{ d: state.byId.get(id), ...estimate(t, i, j) }]));
@@ -127,7 +144,7 @@ async function decrypt({ iv, data }, key) {
 
 function setPaths(paths) {
   state.paths = paths;
-  for (const cache of Object.values(rows)) cache.clear();  // the rows gain or lose their files
+  for (const cache of Object.values(rows)) cache.clear();  // the rows gain or lose their paths
   render();
 }
 
@@ -190,9 +207,9 @@ function closeLogin() {
   renderBar();
 }
 
-// A dataset's h² file (kind 0) or rg file (kind 1) on O2; null when logged out or when it has none
-function filePath(d, kind) {
-  const file = state.paths?.files[d.id]?.[kind];
+// Where a study's file is on O2; null when logged out
+function filePath(d) {
+  const file = state.paths?.files[d.id];
   return file ? `${state.paths.folders[file[0]]}/${file[1]}` : null;
 }
 
@@ -200,25 +217,20 @@ function copy(text) {
   navigator.clipboard.writeText(text).then(() => toast("Copied."), () => toast("Could not copy; select the path instead."));
 }
 
-// A dataset's files, each with "copy"; null when logged out
-function fileList(d) {
-  const h2 = filePath(d, 0), rg = filePath(d, 1);
-  if (!h2) return null;
-  const list = el("div", "paths");
-  for (const [label, path] of rg === h2 ? [["h² and rg file", h2]] : [["h² file", h2], ["rg file", rg]]) {
-    if (!path) continue;
-    const row = el("div");
-    row.append(`${label}: `, el("span", "path", path), action("copy", () => copy(path)));
-    list.append(row);
-  }
-  return list;
+// A study's path with "copy", after `label`; null when logged out
+function pathLine(d, label = "") {
+  const path = filePath(d);
+  if (!path) return null;
+  const line = el("div", "paths");
+  line.append(label, el("span", "path", path), action("copy", () => copy(path)));
+  return line;
 }
 
-// ---------------------------------------------------------------- the datasets: filters, tables
+// ---------------------------------------------------------------- the studies: filters, tables
 
 function shown() {
   const f = state.filter, sought = words(f.q);
-  return state.datasets.filter((d) => (!f.anc || d.anc === f.anc) && (!f.z6 || d.h2_z > 6) && (!f.signed || d.signed) && (!f.panel || d.panel)
+  return state.studies.filter((d) => (!f.anc || d.anc === f.anc) && (!f.z6 || d.h2_z > 6) && (!f.signed || d.signed) && (!f.panel || d.panel)
     && sought.every((w) => d.text.includes(w)));
 }
 
@@ -226,52 +238,40 @@ const compare = (x, y) => (typeof x === "string" ? x.localeCompare(y, "en", { nu
 // `list` by a column, in the direction asked; ties, and no sort at all, keep the order of `list`
 const sorted = (list, sort, value = (item) => item[sort.key]) => (sort ? [...list].sort((a, b) => sort.dir * compare(value(a), value(b))) : list);
 
-function meter(h2) {  // h² as a share of 1; an estimate outside 0 to 1 shows as the nearer end
-  const track = el("span", "meter"), fill = el("i");
-  fill.style.width = `${Math.max(0, Math.min(1, h2)) * 100}%`;
-  track.append(fill);
-  return track;
-}
-
 // A column: key (the field it shows and sorts by), label, title (what the label means), num (a format: right-aligned,
-// largest first), show (the cell's content, if not the field itself), cls.
-const TRAIT = { key: "trait", label: "Trait", cls: "trait", show: datasetLink };
+// largest first), show (the cell's content, if not the field itself), cls, first (-1: a click sorts the largest first).
+const TRAIT = { key: "trait", label: "Trait", cls: "trait", show: studyLink };
 const ID = { key: "id", label: "ID", cls: "id", show: (d) => parts(d.id) };
 const ANCESTRY = { key: "anc", label: "Ancestry", cls: "short" };
+const H2 = { key: "h2", label: plusMinusLabel("h²"), title: "Heritability and its standard error: S-LDSC, observed scale", cls: "pm", first: -1, show: (d) => plusMinusCell(d.h2, d.h2_se) };
+const H2_Z = { key: "h2_z", label: "h² z", title: "h² over its standard error", num: sig };
 const COLUMNS = {
   sumstats: [TRAIT, ID, ANCESTRY,
     { key: "n", label: "N", title: "Sample size", num: int },
-    { key: "m", label: "M", title: "SNPs in the h² file", num: int },
-    { key: "h2", label: "h²", title: "Heritability: S-LDSC, observed scale", num: fixed(4) },
-    { key: "h2_z", label: "h² z", title: "h² over its standard error", num: fixed(2) },
-    { key: "signed", label: "Signed", title: "Signed sumstats: used for genetic correlation", cls: "short", show: (d) => yesNo(d.signed) },
-    { key: "origin", label: "Release", title: "The update that added the dataset", cls: "short" },
+    { key: "m", label: "M", title: "SNPs in the file", num: int },
+    H2, H2_Z,
     { key: "ref", label: "Reference", cls: "ref", show: reference }],
-  h2: [TRAIT, ID, ANCESTRY,
-    { key: "h2", label: "h²", title: "Heritability: S-LDSC, observed scale", num: fixed(4), show: (d) => [meter(d.h2), fixed(4)(d.h2)] },
-    { key: "h2_se", label: "SE", title: "Standard error of h²", num: fixed(4) },
-    { key: "h2_z", label: "z", title: "h² over its standard error", num: fixed(2) },
+  h2: [TRAIT, ID, ANCESTRY, H2, H2_Z,
     { key: "intercept", label: "Intercept", title: "Intercept of the LD score regression", num: fixed(4) }],
-  neighbours: [{ ...TRAIT, show: (r) => datasetLink(r.d) }, { ...ID, show: (r) => parts(r.d.id) },
-    { key: "rg", label: rgLabel, title: "Genetic correlation", num: fixed(4) },
-    { key: "se", label: "SE", title: "Standard error of the genetic correlation", num: fixed(4) },
-    { key: "z", label: "z", num: fixed(2) },
+  neighbours: [{ ...TRAIT, show: (r) => studyLink(r.d) }, { ...ID, show: (r) => parts(r.d.id) },
+    { key: "rg", label: rgPlusMinusLabel, title: "Genetic correlation and its standard error", cls: "pm", first: -1, show: (r) => plusMinusCell(r.rg, r.se) },
+    { key: "z", label: "z", num: sig },
     { key: "p", label: "p", num: pValue }],
 };
 
-const labelOf = (c) => (typeof c.label === "function" ? c.label() : c.label);
+const labelOf = (c) => [typeof c.label === "function" ? c.label() : c.label].flat();
 
 // The header row. With `onSort`, a click on a column sorts by it, a second turns the order round, a third returns to
 // the first order.
 function header(columns, sort, onSort) {
   const tr = el("tr");
   for (const c of columns) {
-    const th = el("th", c.cls || (c.num ? "num" : "")), first = c.num ? -1 : 1;
+    const th = el("th", c.cls || (c.num ? "num" : "")), first = c.first ?? (c.num ? -1 : 1);
     th.scope = "col";
     if (onSort) {
       const button = el("button");
       button.type = "button";
-      button.append(labelOf(c));
+      button.append(...labelOf(c));
       button.title = `${c.title ? `${c.title}. ` : ""}Sort by this column.`;
       if (sort?.key === c.key) {
         th.setAttribute("aria-sort", sort.dir > 0 ? "ascending" : "descending");
@@ -280,7 +280,7 @@ function header(columns, sort, onSort) {
       button.addEventListener("click", () => onSort(sort?.key !== c.key ? { key: c.key, dir: first } : sort.dir === first ? { key: c.key, dir: -first } : null));
       th.append(button);
     } else {
-      th.append(labelOf(c));
+      th.append(...labelOf(c));
       th.title = c.title ?? "";
     }
     tr.append(th);
@@ -290,7 +290,7 @@ function header(columns, sort, onSort) {
   return thead;
 }
 
-// One <tbody> per row: its cells and, under them, `below` (a dataset's files)
+// One <tbody> per row: its cells and, under them, `below` (a study's path)
 function body(columns, item, below) {
   const tbody = el("tbody"), tr = el("tr");
   for (const c of columns) {
@@ -319,12 +319,12 @@ function nothing(columns, text) {
 }
 
 function renderList() {
-  const view = state.view, columns = COLUMNS[view], list = shown(), all = state.datasets.length;
-  $("count").textContent = list.length === all ? plural(all, "dataset") : `${int(list.length)} of ${plural(all, "dataset")}`;
+  const view = state.view, columns = COLUMNS[view], list = shown(), all = state.studies.length;
+  $("count").textContent = list.length === all ? howMany(all, "study", "studies") : `${int(list.length)} of ${howMany(all, "study", "studies")}`;
   const cache = rows[view];
-  const bodies = sorted(list, state.sort[view]).map((d) => cache.get(d.id) ?? cache.set(d.id, body(columns, d, fileList(d))).get(d.id));
+  const bodies = sorted(list, state.sort[view]).map((d) => cache.get(d.id) ?? cache.set(d.id, body(columns, d, pathLine(d))).get(d.id));
   const head = header(columns, state.sort[view], (sort) => { state.sort[view] = sort; renderList(); });
-  $(`${view}-table`).replaceChildren(head, ...(bodies.length ? bodies : [nothing(columns, "No dataset matches.")]));
+  $(`${view}-table`).replaceChildren(head, ...(bodies.length ? bodies : [nothing(columns, "No study matches.")]));
   if (view === "h2") drawHistogram(list);
 }
 
@@ -340,19 +340,19 @@ function showTip(event, ...content) {
 }
 const hideTip = () => { $("tip").hidden = true; };
 
-// How many datasets have each h²: a column per bin of 0.02, in a frame that stays as the filters change
+// How many studies have each h²: a column per bin of 0.02, in a frame that stays as the filters change
 function drawHistogram(list) {
   const figure = $("h2-plot"), width = figure.clientWidth, height = 190, left = 30, right = 8, top = 8, bottom = 22;
   if (!width) return;
   const bin = (d) => Math.floor(Math.round(d.h2 * 1e4) / 200);  // h² has four decimals: in whole numbers it bins exactly
-  const all = state.datasets.map(bin), first = Math.min(...all), bins = Math.max(...all) - first + 1, w = (width - left - right) / bins;
+  const all = state.studies.map(bin), first = Math.min(...all), bins = Math.max(...all) - first + 1, w = (width - left - right) / bins;
   const counts = new Array(bins).fill(0);
   for (const d of list) counts[bin(d) - first]++;
   const peak = Math.max(1, ...counts), tick = [1, 2, 5, 10, 20, 50, 100, 200].find((t) => peak / t <= 5) ?? 500;
   const y = (count) => top + (height - top - bottom) * (1 - count / (Math.ceil(peak / tick) * tick));
   const range = (k) => `${((first + k) * 0.02).toFixed(2)} to ${((first + k + 1) * 0.02).toFixed(2)}`;
   const chart = svg("svg", { width, height, viewBox: `0 0 ${width} ${height}`, role: "img" });
-  for (let count = 0; count <= peak; count += tick) {  // a hairline and its count, every `tick` datasets
+  for (let count = 0; count <= peak; count += tick) {  // a hairline and its count, every `tick` studies
     chart.append(svg("line", { class: "grid", x1: left, x2: width - right, y1: y(count) + 0.5, y2: y(count) + 0.5 }));
     chart.append(Object.assign(svg("text", { x: left - 6, y: y(count), "text-anchor": "end", "dominant-baseline": "central" }), { textContent: count }));
   }
@@ -369,20 +369,21 @@ function drawHistogram(list) {
     const k = Math.floor((event.clientX - chart.getBoundingClientRect().left - left) / w);
     bars.forEach((bar, b) => bar.classList.toggle("on", b === k));
     if (k < 0 || k >= bins) return hideTip();
-    showTip(event, el("b", "", plural(counts[k], "dataset")), ` with h² from ${range(k)}`);
+    showTip(event, el("b", "", howMany(counts[k], "study", "studies")), ` with h² from ${range(k)}`);
   });
   chart.addEventListener("pointerleave", () => { hideTip(); bars.forEach((bar) => bar.classList.remove("on")); });
-  const label = list.length ? `h² of the ${plural(list.length, "dataset")} shown, in bins of 0.02: most often ${range(counts.indexOf(peak))}.` : "";
-  chart.setAttribute("aria-label", label || "No dataset matches.");
+  const label = list.length ? `h² of the ${howMany(list.length, "study", "studies")} shown, in bins of 0.02: most often ${range(counts.indexOf(peak))}.` : "";
+  chart.setAttribute("aria-label", label || "No study matches.");
   figure.replaceChildren(chart);
   $("h2-caption").textContent = label;
 }
 
-// The colours of a genetic correlation, as [red, green, blue]: `of(v)` for v from -1 (--neg) through 0 (--subtle) to 1
-// (--mark), and `self` for a dataset against itself. Read from the style sheet, so they follow the light or dark mode.
+// The colours of a genetic correlation, as [red, green, blue]: `of(v)` for v from -1 (--neg, blue) through 0 (--subtle)
+// to 1 (--pos, red), and `self` for a study against itself. Read from the style sheet, so they follow the light or
+// dark mode.
 function shades() {
   const css = getComputedStyle(document.documentElement);
-  const [neg, zero, pos, self] = ["--neg", "--subtle", "--mark", "--border"].map((name) => {
+  const [neg, zero, pos, self] = ["--neg", "--subtle", "--pos", "--border"].map((name) => {
     const hex = css.getPropertyValue(name).trim();
     return [1, 3, 5].map((k) => parseInt(hex.slice(k, k + 2), 16));
   });
@@ -391,8 +392,8 @@ function shades() {
 
 const heatShown = () => state.rg.heat ?? { anc: state.rg.a?.anc ?? state.release.ancestries[0], kind: "panel" };
 
-// A heatmap of the genetic correlations among the datasets of a nonredundant panel ("panel") or among all signed
-// datasets of an ancestry ("all"): blue above 0, red below. The build ordered the datasets by hierarchical clustering
+// A heatmap of the genetic correlations among the studies of a nonredundant panel ("panel") or among all signed
+// studies of an ancestry ("all"): red above 0, blue below. The build ordered the studies by hierarchical clustering
 // (build/release.py); the tree of that clustering is on the left, the leaves beside their rows.
 async function drawHeat() {
   const figure = $("heat"), shown = heatShown(), { anc, kind } = shown;
@@ -413,7 +414,7 @@ async function drawHeat() {
   const width = figure.clientWidth, now = heatShown();
   if (state.view !== "rg" || now.anc !== anc || now.kind !== kind || !width) return;  // another heatmap was asked for meanwhile
   figure.dataset.drawn = drawn;
-  const { order, merges } = t.heat[kind], n = order.length, datasets = order.map((i) => state.byId.get(t.ids[i]));
+  const { order, merges } = t.heat[kind], n = order.length, studies = order.map((i) => state.byId.get(t.ids[i]));
   const limit = kind === "panel" ? PANEL_MAX : 1, colours = shades();
   const TREE = 90, names = n <= 100 ? 230 : 0;  // the tree on the left; the traits' names on the right, where a row is tall enough to read one
   const cell = Math.max(2, Math.min(28, Math.floor((width - TREE - names) / n))), size = cell * n;
@@ -427,7 +428,7 @@ async function drawHeat() {
   }
   canvas.getContext("2d").putImageData(pixels, 0, 0);
   const chart = svg("svg", { class: "heat", width: TREE + size + names, height: size, viewBox: `0 0 ${TREE + size + names} ${size}`, role: "img",
-    "aria-label": `Genetic correlations among ${kind === "panel" ? `the ${n} datasets of the ${anc} nonredundant panel` : `the ${n} signed ${anc} datasets`}, ordered by hierarchical clustering` });
+    "aria-label": `Genetic correlations among ${kind === "panel" ? `the ${n} studies of the ${anc} nonredundant panel` : `the ${n} signed ${anc} studies`}, ordered by hierarchical clustering` });
   chart.append(svg("image", { x: TREE, y: 0, width: size, height: size, preserveAspectRatio: "none", href: canvas.toDataURL() }));
 
   const heights = merges.map((m) => m[2]), low = Math.min(...heights), high = Math.max(...heights);
@@ -441,7 +442,7 @@ async function drawHeat() {
   chart.append(svg("path", { class: "tree", d: branches.join("") }));
   if (names) {
     const font = Math.min(12, cell), fits = Math.floor((names - 8) / (font * 0.6));
-    for (const [k, d] of datasets.entries()) {
+    for (const [k, d] of studies.entries()) {
       const name = svg("text", { x: TREE + size + 8, y: (k + 0.5) * cell, "dominant-baseline": "central" });
       name.textContent = d.trait.length > fits ? `${d.trait.slice(0, fits - 1).trimEnd()}…` : d.trait;
       name.style.fontSize = `${font}px`;
@@ -461,7 +462,7 @@ async function drawHeat() {
     if (!here) return leave();
     const [i, j] = here, e = i === j ? null : estimate(t, order[i], order[j]);
     for (const [name, value] of [["x", TREE + j * cell], ["y", i * cell], ["visibility", "visible"]]) frame.setAttribute(name, value);
-    showTip(event, ...(e ? [el("b", "", e.rg == null ? "not estimated" : fixed(4)(e.rg)), e.rg == null ? "" : ` (SE ${fixed(4)(e.se)})`, el("br"), `${datasets[i].trait} × ${datasets[j].trait}`] : [datasets[i].trait]));
+    showTip(event, ...(e ? [el("b", "", e.rg == null ? "not estimated" : plusMinus(e.rg, e.se)), el("br"), `${studies[i].trait} × ${studies[j].trait}`] : [studies[i].trait]));
   });
   chart.addEventListener("pointerleave", leave);
   chart.addEventListener("click", (event) => {  // a cell's pair, looked up above
@@ -469,7 +470,7 @@ async function drawHeat() {
     if (!here || here[0] === here[1]) return;
     leave();
     state.rg.heat = shown;  // the heatmap stays, whatever the pair
-    go({ tab: "rg", a: datasets[here[0]].id, b: datasets[here[1]].id });
+    go({ tab: "rg", a: studies[here[0]].id, b: studies[here[1]].id });
     $("pair").scrollIntoView({ block: "start" });
   });
   figure.replaceChildren(chart);
@@ -477,13 +478,13 @@ async function drawHeat() {
   const scale = el("span", "scale"), steps = el("span", "steps");
   steps.append(...[-1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1].map((v) => { const swatch = el("i"); swatch.style.background = `rgb(${colours.of(v).join(" ")})`; return swatch; }));
   scale.append(rgLabel(), ` −${limit.toFixed(2)}`, steps, `+${limit.toFixed(2)}`);
-  $("heat-caption").replaceChildren(scale, ` Red below 0, blue above${kind === "panel" ? "; no pair of a panel is beyond these" : ""}. A pair without an estimate shows as 0.`
+  $("heat-caption").replaceChildren(scale, ` Blue below 0, red above${kind === "panel" ? "; no pair of a panel is beyond these" : ""}. A pair without an estimate shows as 0.`
     + " Rows and columns are in the order of the tree: hierarchical clustering on 1 − |", rgLabel(), "|, average linkage. A click on a cell looks its pair up.");
 }
 
-// ---------------------------------------------------------------- genetic correlation: a pair, a dataset's neighbours
+// ---------------------------------------------------------------- genetic correlation: a pair, a study's neighbours
 
-// A text field that picks a dataset: typing lists the matches of `among()` under it; a click, or the arrows and
+// A text field that picks a study: typing lists the matches of `among()` under it; a click, or the arrows and
 // Enter, picks one; an emptied field picks none.
 function picker(input, list, among, picked, onPick) {
   let found = [], active = -1;
@@ -508,13 +509,13 @@ function picker(input, list, among, picked, onPick) {
     const sought = words(input.value);
     found = among().filter((d) => sought.every((w) => d.text.includes(w))).slice(0, 60);
     list.replaceChildren(...(found.length ? found.map((d, k) => {
-      const option = Object.assign(el("a", "", d.trait), { href: `?dataset=${encodeURIComponent(d.id)}`, id: `${list.id}-${k}` });
+      const option = Object.assign(el("a", "", d.trait), { href: `?study=${encodeURIComponent(d.id)}`, id: `${list.id}-${k}` });
       option.setAttribute("role", "option");
       option.append(" ", el("span", "hint", `${d.id} · ${d.anc}`));
       option.addEventListener("mousedown", (event) => event.preventDefault());  // the field keeps the focus, so the click lands before the list closes
       option.addEventListener("click", link(() => pick(d)));
       return option;
-    }) : [el("span", "hint", "No signed dataset matches.")]));
+    }) : [el("span", "hint", "No signed study matches.")]));
     list.hidden = false;
     input.setAttribute("aria-expanded", "true");
     active = -1;
@@ -537,19 +538,18 @@ function picker(input, list, among, picked, onPick) {
 
 function field(label, ...value) {
   const row = el("div", "row"), name = el("span", "label"), content = el("div", "value");
-  name.append(label);
+  name.append(...[label].flat());
   content.append(...value);
   row.append(name, content);
   return row;
 }
-const withSe = (value, se) => (value == null ? "–" : `${fixed(4)(value)} (SE ${fixed(4)(se)})`);
 
 function pairResult(a, b, e) {
   const head = el("h3"), fields = el("div", "fields");
-  head.append(datasetLink(a), " and ", datasetLink(b));
+  head.append(studyLink(a), " and ", studyLink(b));
   if (e.rg == null) fields.append(field(rgLabel(), `not estimated: LDSC gave none for this pair${e.note ? ` (${e.note})` : ""}`));
-  else fields.append(field(rgLabel(), withSe(e.rg, e.se)), field("z", fixed(2)(e.z)), field("p", pValue(e.p)));
-  if (e.gcov != null) fields.append(field("Genetic covariance", withSe(e.gcov, e.gcov_se)));
+  else fields.append(field(rgPlusMinusLabel(), plusMinus(e.rg, e.se)), field("z", sig(e.z)), field("p", pValue(e.p)));
+  if (e.gcov != null) fields.append(field("Genetic covariance ± SE", plusMinus(e.gcov, e.gcov_se)));
   $("pair-result").replaceChildren(head, fields);
 }
 
@@ -577,7 +577,7 @@ async function renderRg() {
   const sort = state.sort.neighbours, columns = COLUMNS.neighbours;
   const ordered = sort ? sorted(listed, sort, (r) => (sort.key === "trait" ? r.d.trait : sort.key === "id" ? r.d.id : r[sort.key])) : [...listed].sort(strongest);
   const head = el("span");
-  head.append(datasetLink(a), ` (${a.id}): ${state.rg.strict ? `${int(listed.length)} of ` : ""}${plural(pairs.length - missing, "genetic correlation")}`
+  head.append(studyLink(a), ` (${a.id}): ${state.rg.strict ? `${int(listed.length)} of ` : ""}${howMany(pairs.length - missing, "genetic correlation")}`
     + `${missing ? `, ${int(missing)} not estimated` : ""}${sort ? "" : ", the strongest first"}`);
   $("neighbours-head").replaceChildren(head);
   $("rg-strict").checked = state.rg.strict;
@@ -589,20 +589,19 @@ async function renderRg() {
   more.textContent = state.rg.all ? `show the first ${TOP}` : `show all ${int(ordered.length)}`;
 }
 
-// ---------------------------------------------------------------- a dataset's page
+// ---------------------------------------------------------------- a study's page
 
-async function renderDataset() {
-  const d = state.dataset, page = $("view-dataset"), fields = el("div", "fields"), files = fileList(d);
+async function renderStudy() {
+  const d = state.study, page = $("view-study"), fields = el("div", "fields");
   fields.append(
     field("ID", ...parts(d.id)), field("Ancestry", d.anc), field("N", int(d.n)),
-    field("M", d.m_rg != null && d.m_rg !== d.m ? `${int(d.m)} SNPs in the h² file, ${int(d.m_rg)} in the rg file` : `${int(d.m)} SNPs`),
+    field("M", d.m_rg != null && d.m_rg !== d.m ? `${int(d.m)} SNPs; ${int(d.m_rg)} without the strand-ambiguous ones, for rg` : `${int(d.m)} SNPs`),
     field("Release", d.origin), field("Reference", ...[reference(d)].flat(), d.pmid ? ` (PMID ${d.pmid})` : ""),
-    ...(d.paper_id ? [field("Short name", ...parts(d.paper_id))] : []),
     ...(httpUrl(d.catalog) ? [field("GWAS Catalog", outside(d.catalog, d.id))] : []),
     field("Signed", yesNo(d.signed)), field("Allele info", yesNo(d.alleles)), field("Cross-trait LDSC", yesNo(d.cross)),
     field("Nonredundant panel", d.panel ? `yes: ${int(d.panel)} of ${int(state.release[d.anc].panel)} in the ${d.anc} panel, by h² z` : "no"),
-    field("h²", `${withSe(d.h2, d.h2_se)}, z ${fixed(2)(d.h2_z)}`), field("Intercept", fixed(4)(d.intercept)),
-    field("Files on O2", files ?? action("login to see them", () => openLogin(true))));
+    field("h² ± SE", plusMinus(d.h2, d.h2_se)), field("h² z", sig(d.h2_z)), field("Intercept", fixed(4)(d.intercept)),
+    field("Path", pathLine(d) ?? action("login to see it", () => openLogin(true))));
   const head = el("h2", "", d.trait), section = el("div");
   page.replaceChildren(head, fields, section);
   if (!d.cross) return section.append(el("p", "section-head", "No genetic correlations: the sumstats are unsigned."));
@@ -613,7 +612,7 @@ async function renderDataset() {
   } catch {
     return section.replaceChildren(el("p", "section-head", "The genetic correlations did not load; check the connection and reload."));
   }
-  if (state.dataset !== d || !section.isConnected) return;  // another page was opened meanwhile
+  if (state.study !== d || !section.isConnected) return;  // another page was opened meanwhile
   const pairs = neighbours(t, d), top = strong(pairs).sort(strongest).slice(0, TOP);
   const title = el("p", "section-head"), all = Object.assign(el("a", "", `all ${int(pairs.length)} pairs`), { href: `?tab=rg&a=${encodeURIComponent(d.id)}` });
   title.append(top.length ? `Strongest genetic correlations with |z| ≥ ${STRONG_Z}` : `No genetic correlation with |z| ≥ ${STRONG_Z}`, " · ", all);
@@ -642,12 +641,11 @@ function renderPrivate() {
   release.replaceChildren(el("h2", "", "Where is it on O2?"), note);
   const list = el("ol", "o2");
   list.append(...p.folders.map((folder, k) => {
-    const item = el("li"), count = (kind) => files.filter((file) => file[kind]?.[0] === k).length;
-    const kinds = [[count(0), "h²"], [count(1), "rg"]].filter(([n]) => n);
-    item.append(code(folder), `: ${kinds.map(([n, kind]) => `${int(n)} ${kind} files`).join(", ")}`);
+    const item = el("li");
+    item.append(code(folder), `: ${howMany(files.filter((file) => file[0] === k).length, "file")}`);
     return item;
   }));
-  folders.replaceChildren(el("p", "", "On O2, a file is named after its dataset's ID, in one of these folders:"), list);
+  folders.replaceChildren(el("p", "", "On O2, a file is named after its study's ID, in one of these folders:"), list);
 }
 
 function render() {
@@ -655,33 +653,38 @@ function render() {
   if (!state.loaded) return;
   if (state.view === "sumstats" || state.view === "h2") renderList();
   else if (state.view === "rg") renderRg();
-  else if (state.view === "dataset") renderDataset();
+  else if (state.view === "study") renderStudy();
   renderPrivate();
 }
 
-// The address says what to show: ?tab=h2 | rg | notes | about, ?dataset=ID, or nothing for the first tab; under
+// The address says what to show: ?tab=h2 | rg | notes | about, ?study=ID, or nothing for the first tab; under
 // ?tab=rg, a and b name the pair looked up.
 function route() {
   const q = new URLSearchParams(location.search), signed = (id) => (state.byId.get(id)?.cross ? state.byId.get(id) : null);
-  state.dataset = state.byId.get(q.get("dataset")) ?? null;
-  state.view = state.dataset || (q.has("dataset") && !state.loaded) ? "dataset" : Object.hasOwn(TABS, q.get("tab")) ? q.get("tab") : "sumstats";
+  if (q.has("dataset")) {  // a link from before a row was called a study
+    q.set("study", q.get("dataset"));
+    q.delete("dataset");
+    history.replaceState(null, "", `?${q}`);
+  }
+  state.study = state.byId.get(q.get("study")) ?? null;
+  state.view = state.study || (q.has("study") && !state.loaded) ? "study" : Object.hasOwn(TABS, q.get("tab")) ? q.get("tab") : "sumstats";
   const a = signed(q.get("a")), b = signed(q.get("b"));
   if (a !== state.rg.a) state.rg.all = false;
-  if (a && a.anc !== state.rg.heat?.anc) state.rg.heat = null;  // the heatmap follows the first dataset's ancestry
+  if (a && a.anc !== state.rg.heat?.anc) state.rg.heat = null;  // the heatmap follows the first study's ancestry
   Object.assign(state.rg, { a, b: a && b && b !== a && b.anc === a.anc ? b : null });
-  for (const name of [...Object.keys(TABS), "dataset"]) $(`view-${name}`).hidden = name !== state.view;
+  for (const name of [...Object.keys(TABS), "study"]) $(`view-${name}`).hidden = name !== state.view;
   $("listview").hidden = state.view !== "sumstats" && state.view !== "h2";
   for (const tab of document.querySelectorAll("[data-tab]")) {
     const current = tab.dataset.tab === state.view;
     tab.classList.toggle("current", current);
     current ? tab.setAttribute("aria-current", "page") : tab.removeAttribute("aria-current");
   }
-  document.title = [state.dataset?.trait ?? TABS[state.view], TITLE].filter(Boolean).join(" · ");
+  document.title = [state.study?.trait ?? TABS[state.view], TITLE].filter(Boolean).join(" · ");
   hideTip();
   render();
 }
 
-// Every navigation adds a history entry, so Back returns to the previous tab or dataset.
+// Every navigation adds a history entry, so Back returns to the previous tab or study.
 function go(params) {
   const search = String(new URLSearchParams(params));
   if (search !== location.search.slice(1)) history.pushState(null, "", search ? `?${search}` : location.pathname);
@@ -692,8 +695,8 @@ function go(params) {
 
 function start(data) {
   state.release = data.release;
-  state.datasets = data.datasets;
-  for (const d of data.datasets) {
+  state.studies = data.studies;
+  for (const d of data.studies) {
     d.text = [d.trait, d.id, d.origin, d.ref].join("\n").toLowerCase();  // what the search reads
     state.byId.set(d.id, d);
   }
@@ -715,7 +718,7 @@ function listen() {
   for (const name of ["z6", "signed", "panel"]) $(`f-${name}`).addEventListener("change", () => { f[name] = $(`f-${name}`).checked; renderList(); });
 
   $("pair").addEventListener("submit", (event) => event.preventDefault());
-  const signed = () => state.datasets.filter((d) => d.cross);
+  const signed = () => state.studies.filter((d) => d.cross);
   picker($("rg-a"), $("rg-a-list"), signed, () => state.rg.a, (d) => go(d ? { tab: "rg", a: d.id, ...(state.rg.b && state.rg.b.anc === d.anc && state.rg.b !== d ? { b: state.rg.b.id } : {}) } : { tab: "rg" }));
   picker($("rg-b"), $("rg-b-list"), () => signed().filter((d) => d.anc === state.rg.a?.anc && d !== state.rg.a), () => state.rg.b, (d) => go({ tab: "rg", a: state.rg.a.id, ...(d ? { b: d.id } : {}) }));
   $("rg-strict").addEventListener("change", () => { Object.assign(state.rg, { strict: $("rg-strict").checked, all: false }); renderRg(); });
@@ -729,7 +732,7 @@ function listen() {
   });
   addEventListener("storage", (event) => { if (event.key === "key") restore(); });  // a login or logout in another tab of this browser applies here too
 
-  // A link to another tab or dataset of this page changes the page in place; Ctrl, Cmd or Shift opens it as the browser would.
+  // A link to another tab or study of this page changes the page in place; Ctrl, Cmd or Shift opens it as the browser would.
   document.addEventListener("click", (event) => {
     const a = event.target.closest?.("a[href]");
     if (!a || event.defaultPrevented || event.button || event.ctrlKey || event.metaKey || event.shiftKey || a.target || a.getAttribute("href").startsWith("#")) return;
@@ -755,4 +758,4 @@ function listen() {
 
 listen();
 route();  // the tab the address names shows at once; its data follows
-load("datasets.json").then(start, () => { $("failed").hidden = false; });
+load("studies.json").then(start, () => { $("failed").hidden = false; });

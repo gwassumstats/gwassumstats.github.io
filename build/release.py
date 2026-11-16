@@ -1,8 +1,8 @@
 """Reads a release folder of the collection into what the site shows.
 
-A release folder holds the inventory (one row per dataset), the S-LDSC heritabilities and the nonredundant panel of
-each ancestry, the cross-trait LDSC results of every pair of signed datasets of an ancestry, and under _audit/ the
-papers of the datasets it adds and the index of the per-SNP files. Its file names end in the release year.
+A release folder holds the inventory (one row per study), the S-LDSC heritabilities and the nonredundant panel of
+each ancestry, the cross-trait LDSC results of every pair of signed studies of an ancestry, and under _audit/ the
+papers of the studies it adds and the index of the per-SNP files. Its file names end in the release year.
 """
 import csv
 import re
@@ -14,7 +14,7 @@ import pandas as pd
 # site name -> column of the release's pair tables
 RG_COLUMNS = {"rg": "genetic_correlation", "se": "genetic_correlation_se", "z": "genetic_correlation_z",
               "p": "genetic_correlation_p", "gcov": "genetic_covariance", "gcov_se": "genetic_covariance_se"}
-# a dataset's public fields; the paths of its files (h2_file, rg_file) are not among them
+# a study's public fields; the path of its file (h2_file) and of the copy rg was estimated on (rg_file) are not among them
 PUBLIC = ["trait", "anc", "n", "m", "origin", "ref", "signed", "alleles", "cross", "release", "h2", "h2_se", "h2_z", "intercept",
           "panel", "m_rg", "pmid", "paper", "catalog", "paper_id"]
 
@@ -51,10 +51,10 @@ def flag(column: pd.Series) -> pd.Series:
     return column == "YES"
 
 
-def datasets(release: Path) -> pd.DataFrame:
-    """One row per dataset, by ID, in the inventory's order: the inventory, the dataset's h², its rank in the
+def studies(release: Path) -> pd.DataFrame:
+    """One row per study, by ID, in the inventory's order: the inventory, the study's h², its rank in the
     nonredundant panel of its ancestry, the release it came with, its paper if the release names one, and the paths
-    of its files (`h2_file`, `rg_file`: never public)."""
+    of its file and of the copy that rg was estimated on (`h2_file`, `rg_file`: never public)."""
     inventory = table(one(release, "summary_statistics_*.txt"))
     d = pd.DataFrame({
         "id": inventory["Trait Identifier"], "trait": inventory["Trait Name"], "anc": inventory["Population"],
@@ -62,7 +62,7 @@ def datasets(release: Path) -> pd.DataFrame:
         "signed": flag(inventory["Signed SumStat"]), "alleles": flag(inventory["Allele Info"]), "cross": flag(inventory["Cross-Trait LDSC"]),
     }).pipe(by, "id")
     if list(table(one(release, "signed_summary_statistics_*.txt"))["Trait Identifier"]) != list(d.index[d["signed"]]):
-        raise ValueError("the signed inventory is not the inventory's signed datasets")
+        raise ValueError("the signed inventory is not the inventory's signed studies")
     ancestries = d["anc"].unique()
 
     h2 = per_ancestry(release, "sldsc_heritabilities_{}_*.txt", ancestries).pipe(by, "trait_identifier")
@@ -70,22 +70,22 @@ def datasets(release: Path) -> pd.DataFrame:
     if set(h2.index) != set(d.index) or not (h2["anc"] == d["anc"].reindex(h2.index)).all():
         raise ValueError("the heritability files do not cover the inventory, ancestry by ancestry")
     if not (panel["anc"] == d["anc"].reindex(panel.index)).all():
-        raise ValueError("a nonredundant panel lists a dataset of another ancestry, or an unknown one")
+        raise ValueError("a nonredundant panel lists a study of another ancestry, or an unknown one")
     d = d.join(h2[["h2", "h2_se", "h2_z", "intercept"]].astype(float))
     d["panel"] = (panel.groupby("anc").cumcount() + 1).astype("Int64")  # the panel files are in selection order
 
     files = table(release / "_audit" / "sumstats_file_index.tsv").pipe(by, "Trait Identifier")
     if list(files.index) != list(d.index):
-        raise ValueError("the file index does not list the inventory's datasets")
+        raise ValueError("the file index does not list the inventory's studies")
     d["release"] = files["Release"].str.extract(r"(\d{4})", expand=False).astype(int)  # "2024", "2026 addition"
     d["m_rg"] = pd.to_numeric(files["M in RG input"].where(files["M in RG input"] != "")).astype("Int64")
     d["h2_file"], d["rg_file"] = files["H2 Sumstats"], files["RG Sumstats"].where(files["RG Sumstats"] != "")
     if d["h2_file"].eq("").any() or (d["rg_file"].notna() != d["cross"]).any():
-        raise ValueError("the file index lacks an h² file, or its rg files are not those of the cross-trait LDSC datasets")
+        raise ValueError("the file index lacks an h² file, or its rg files are not those of the cross-trait LDSC studies")
 
     papers = table(release / "_audit" / "new_study_provenance.tsv").pipe(by, "Trait Identifier")
     if not papers.index.isin(d.index).all():
-        raise ValueError("the provenance table names a dataset that the inventory lacks")
+        raise ValueError("the provenance table names a study that the inventory lacks")
     d["pmid"], d["paper"], d["catalog"], d["paper_id"] = (papers[c] for c in ("PMID", "Paper Link", "Catalog Study Link", "Target Paper Identifier"))
     if not pd.concat([d["paper"], d["catalog"]]).dropna().str.fullmatch(r"https://\S+").all():
         raise ValueError("a paper or catalog link is not an https address")
@@ -93,17 +93,17 @@ def datasets(release: Path) -> pd.DataFrame:
 
 
 def correlations(release: Path, d: pd.DataFrame, anc: str) -> dict:
-    """The cross-trait LDSC results of an ancestry: `ids`, its datasets in the inventory's order, and one list per
+    """The cross-trait LDSC results of an ancestry: `ids`, its studies in the inventory's order, and one list per
     column over the pairs i < j of `ids`, row by row: (0,1), (0,2), ..., (1,2), ... A pair without an estimate
     holds null; `notes` gives LDSC's reason where the release keeps one, by the pair's position. `heat` orders the
-    datasets, by their place in `ids`, for a heatmap: hierarchical clustering on the distance 1 - |rg| (see tree)."""
+    studies, by their place in `ids`, for a heatmap: hierarchical clustering on the distance 1 - |rg| (see tree)."""
     ids = d.index[(d["anc"] == anc) & d["cross"]]
     pairs = table(one(release, f"ldsc_genetic_correlations_trait_pairs_{anc}_*.txt"))
     n = len(ids)
     i, j = np.sort([ids.get_indexer_for(pairs["trait1"]), ids.get_indexer_for(pairs["trait2"])], axis=0)
     position = i * (2 * n - i - 1) // 2 + j - i - 1
     if i.min() < 0 or (i == j).any() or len(position) != n * (n - 1) // 2 or len(np.unique(position)) != len(position):
-        raise ValueError(f"the {anc} pair table is not every pair of the {n} {anc} cross-trait LDSC datasets, once")
+        raise ValueError(f"the {anc} pair table is not every pair of the {n} {anc} cross-trait LDSC studies, once")
     out = {"ids": list(ids)}
     for name, column in RG_COLUMNS.items():
         values = np.full(len(position), np.nan)
@@ -111,7 +111,7 @@ def correlations(release: Path, d: pd.DataFrame, anc: str) -> dict:
         out[name] = np.where(np.isnan(values), None, values).tolist()
     reason = pairs["genetic_correlation_z"].str.extract(r"\((\w+)\s+out of bounds\)", expand=False)  # "nan (nan) (rg out of bounds)"
     out["notes"] = {str(k): f"{r} out of bounds" for k, r in sorted(zip(position[reason.notna().to_numpy()].tolist(), reason.dropna()))}
-    # The order of the heatmaps: of every dataset of the table, and of the nonredundant panel, each clustered on its own
+    # The order of the heatmaps: of every study of the table, and of the nonredundant panel, each clustered on its own
     rg = np.zeros((n, n))
     rg[np.triu_indices(n, 1)] = np.nan_to_num(np.array(out["rg"], dtype=float))  # a pair without an estimate counts as rg = 0
     distance = 1 - np.minimum(np.abs(rg + rg.T), 1)  # an estimate beyond ±1 counts as ±1
@@ -147,7 +147,7 @@ def summary(release: Path, d: pd.DataFrame, rg: dict) -> dict:
     new = d["release"] == year
 
     def count(rows):
-        return {"datasets": len(rows), "before": int((~new[rows.index]).sum()), "added": int(new[rows.index].sum()),
+        return {"studies": len(rows), "before": int((~new[rows.index]).sum()), "added": int(new[rows.index].sum()),
                 "signed": int(rows["cross"].sum()), "signed_before": int((rows["cross"] & ~new[rows.index]).sum())}
 
     out = {"year": year, "packaged": "-".join(packaged.groups()) if packaged else None,
@@ -158,10 +158,10 @@ def summary(release: Path, d: pd.DataFrame, rg: dict) -> dict:
         rows, n = d[d["anc"] == anc], len(t["ids"])
         failed = np.isnan(np.array(t["rg"], dtype=float))
         i, j = np.triu_indices(n, 1)  # the pairs, in the order of the lists
-        per_dataset = np.bincount(np.concatenate([i[failed], j[failed]]), minlength=n)
+        per_study = np.bincount(np.concatenate([i[failed], j[failed]]), minlength=n)
         panel = rows.index[rows["panel"].notna()]
         out[anc] = count(rows) | {"pairs": len(failed), "failed": int(failed.sum()),
-                                  "worst": {"id": t["ids"][per_dataset.argmax()], "failed": int(per_dataset.max()), "pairs": n - 1},
+                                  "worst": {"id": t["ids"][per_study.argmax()], "failed": int(per_study.max()), "pairs": n - 1},
                                   "panel": len(panel), "panel_added": int(new[panel].sum())}
         out[anc]["pairs_before"] = out[anc]["signed_before"] * (out[anc]["signed_before"] - 1) // 2
         previous = sorted((release / "_audit" / "inputs").glob(f"non_redundent_traits_{anc}_*.txt"))
@@ -172,11 +172,10 @@ def summary(release: Path, d: pd.DataFrame, rg: dict) -> dict:
 
 
 def private(release: Path, d: pd.DataFrame) -> dict:
-    """What only a logged-in reader sees: the release folder with its tables, and where each dataset's files are, as
-    [folder number, file name] for its h² file and for its rg file (null if it has none)."""
-    parts = {kind: d[f"{kind}_file"].str.rpartition("/") for kind in ("h2", "rg")}  # folder, "/", name
-    folders = pd.unique(pd.concat([parts["h2"][0], parts["rg"][0]]).dropna()).tolist()
-    number = {folder: k for k, folder in enumerate(folders)}
-    where = lambda kind: [None if pd.isna(name) else [number[folder], name] for folder, name in zip(parts[kind][0], parts[kind][2])]
+    """What only a logged-in reader sees: the release folder with its tables, and where each study's file is, as
+    [folder number, file name]. It is the file h² was estimated on; the copy without strand-ambiguous SNPs that rg
+    was estimated on, where the release keeps one, is not listed."""
+    folder, _, name = (d["h2_file"].str.rpartition("/")[part] for part in range(3))
+    folders = pd.unique(folder).tolist()
     return {"release": str(release), "tables": sorted(p.name for p in release.iterdir() if p.is_file()), "folders": folders,
-            "files": dict(zip(d.index, zip(where("h2"), where("rg"))))}
+            "files": dict(zip(d.index, zip(folder.map(folders.index).tolist(), name)))}

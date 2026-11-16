@@ -5,9 +5,9 @@
 RELEASE defaults to $SUMSTATS_RELEASE; without $SUMSTATS_PASSPHRASE the build asks for the passphrase. Neither is
 ever written to the repository. The build writes, in site/data/:
 
-  datasets.json        the inventory with h², and the release's counts      public
+  studies.json         the inventory with h², and the release's counts     public
   rg_{ancestry}.json   every genetic correlation of an ancestry            public
-  paths.enc.json       where the files are, encrypted (crypt.py)           readable after login
+  paths.enc.json       where each study's file is, encrypted (crypt.py)    readable after login
 
 A release that has not changed rewrites the same files, and keeps the encrypted one as it is, so readers stay logged in.
 """
@@ -41,11 +41,11 @@ def holds(path: Path, plain: bytes, passphrase: str, iterations: int) -> bool:
 
 def build(release: Path, out: Path, passphrase: str, iterations: int = crypt.ITERATIONS) -> list[Path]:
     """Writes the site's data for the release at `release` into `out`; returns the files."""
-    d = rel.datasets(release)
+    d = rel.studies(release)
     rg = {anc: rel.correlations(release, d, anc) for anc in d["anc"].unique()}
     public = d[rel.PUBLIC].reset_index()
     records = public.astype(object).where(public.notna(), None).to_dict("records")
-    texts = {"datasets.json": f'{{\n"release":{dumps(rel.summary(release, d, rg))},\n"datasets":[\n'  # a dataset a line, for readable diffs
+    texts = {"studies.json": f'{{\n"release":{dumps(rel.summary(release, d, rg))},\n"studies":[\n'  # a study a line, for readable diffs
                               + ",\n".join(dumps({k: v for k, v in r.items() if v is not None}) for r in records) + "\n]}\n"}
     for anc, t in rg.items():
         texts[f"rg_{anc}.json"] = "{\n" + ",\n".join(f"{dumps(k)}:{dumps(v)}" for k, v in t.items()) + "\n}\n"
