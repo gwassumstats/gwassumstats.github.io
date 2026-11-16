@@ -265,17 +265,18 @@ def test_short_names_are_drafted_from_paper_and_trait_and_told_apart():
     studies = [study("a", "Body Mass Index"), study("b", "Body mass index"), study("c", "BMI", n=3000), study("d", "Body Mass Index", anc="EAS"),
                study("e", "Type 2 Diabetes"), study("f", "Type 2 Diabetes", n=500), study("g", "Type 2 Diabetes", n=700),
                study("h", "Fasting Glucose", anc="EAS"), study("i", "Height", ref="Smith et al., 2010 Nature"), study("j", "Height", ref="PAN UKBB"),
-               study("k", "Breast Cancer (female)"), study("l", "Height")]
+               study("k", "Breast Cancer (female)"), study("l", "Height"), study("m", "Preeclampsia"), study("n", "Prostate cancer")]
     cited = {s["id"]: ("Li", "2024") for s in studies} | {"i": None, "j": None}
     catalog = {"a": {"sex": "F", "sample": ""}, "b": {"sex": "", "sample": "1,000 European ancestry male cases"}, "c": {"sex": "combined", "sample": "500 female cases, 500 male cases"},
-               "h": {"sex": "F", "sample": ""}, "k": {"sex": "F", "sample": ""}, "l": {"sex": "M", "sample": ""}}
+               "h": {"sex": "F", "sample": ""}, "k": {"sex": "F", "sample": ""}, "l": {"sex": "M", "sample": ""}, "m": {"sex": "F", "sample": ""}, "n": {"sex": "M", "sample": ""}}
     women, men = "drafted: of women only, by the GWAS Catalog", "drafted: of men only, by the GWAS Catalog"
     assert draft(studies, cited, PHRASES, catalog) == {
         "a": ("Li_2024_BMIFemale", women), "b": ("Li_2024_BMIMale", men), "c": ("Li_2024_BMI", "drafted"),  # of one sex: by the submitters' word, or else the sample's
         "d": ("Li_2024_BMIEAS", "drafted"), "h": ("Li_2024_FastingGlucoseFemaleEAS", women),  # an East Asian study ends in EAS
         "e": ("Li_2024_T2D", "drafted"), "f": ("Li_2024_T2DN0k", "check: told apart by its sample size only"), "g": ("Li_2024_T2DN1k", "check: told apart by its sample size only"),
         "i": ("Smith_2010_Height", "check: no paper found"), "j": ("Unknown_0000_Height", "check: no paper found"),  # without a paper: whom and when the inventory names
-        "k": ("Li_2024_BreastCancerFemale", "drafted"), "l": ("Li_2024_HeightMale", men)}  # a name that says so already; a single-sex study alone of its trait says so too
+        "k": ("Li_2024_BreastCancerFemale", "drafted"), "l": ("Li_2024_HeightMale", men),  # a name that says so already; a single-sex study alone of its trait says so too
+        "m": ("Li_2024_Preeclampsia", "drafted"), "n": ("Li_2024_ProstateCancer", "drafted")}  # but not of a trait that one sex only has
 
 
 def test_encryption_round_trip():

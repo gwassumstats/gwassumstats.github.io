@@ -4,9 +4,9 @@
 
 RELEASE defaults to $SUMSTATS_RELEASE. The first author and the year are those the study's paper is cited by
 (papers/cite.py; run python -m papers first). The trait is the release's trait name, shortened with
-data/abbreviations.tsv. A study of women or of men only says so, Female or Male, unless its trait already does: the
-GWAS Catalog's record of the study tells (data/catalog.tsv, if python -m candidates wrote it). An East Asian study
-ends in EAS.
+data/abbreviations.tsv. A study of women or of men only says so, Female or Male, if its trait is one that both
+have (fasting glucose, not preeclampsia): the GWAS Catalog's record of the study tells (data/catalog.tsv, if
+python -m candidates wrote it). An East Asian study ends in EAS.
 
 The names are kept in data/names.tsv: study ID, short name, and how the name was made. The build merges them into the
 site's data after checking that every study has one, of that form, and no two the same. A row that says "check" was a
@@ -27,6 +27,8 @@ from papers import cite
 
 DATA = merge.DATA
 SMALL = {"of", "the", "and", "in", "at", "for", "to", "by", "with", "a", "an", "or", "on", "level", "levels"}  # words a trait's short form leaves out
+# A trait that one sex only has, by a word of its name: its studies need no Female or Male
+ONE_SEX = re.compile(r"female|\bmale|ovar|uter|cervi|endometri|menstr|menarche|menopaus|eclampsia|gestation|pregnan|prostat|testic", re.I)
 
 
 def trait(name: str, phrases: dict[str, str]) -> str:
@@ -73,7 +75,7 @@ def draft(studies: list[dict], cited: dict[str, tuple[str, str] | None], phrases
         named = cite.NAMED.match(s["ref"]) or cite.CODED.fullmatch(s["ref"])
         who, year = paper or (named[1] if named else "Unknown", (cite.YEAR.search(s["ref"]) or ["0000"])[0])
         short, sex = trait(s["trait"], phrases), one_sex(catalog.get(s["id"], {}))
-        says = bool(sex) and not re.search("Female|Male", short)  # a name never hides that a study is of one sex
+        says = bool(sex) and not ONE_SEX.search(s["trait"])  # a name never hides that a study is of one sex, where the trait is of both
         parts[s["id"]] = [cite.plain(who), year, short + (sex if says else "") + ("EAS" if s["anc"] == "EAS" else "")]
         how[s["id"]] = ("drafted" + (f": of {'women' if sex == 'Female' else 'men'} only, by the GWAS Catalog" if says else "")) if paper else "check: no paper found"
     same = defaultdict(list)

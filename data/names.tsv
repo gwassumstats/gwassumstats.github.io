@@ -432,7 +432,7 @@ GCST90668011	Enzan_2025_HFpEFEAS	drafted
 GCST90668012	Enzan_2025_NonIschemicHFEAS	drafted
 GCST90668013	Enzan_2025_HFMTAG	drafted
 GCST90668016	Enzan_2025_NonIschemicHFMTAG	drafted
-GCST90566419	Gu_2025_GDMFemaleEAS	drafted: of women only, by the GWAS Catalog
+GCST90566419	Gu_2025_GDMEAS	drafted
 GCST90566420	Gu_2025_FastingGlucoseFemaleEAS	drafted: of women only, by the GWAS Catalog
 GCST90566421	Gu_2025_OGTT0hFemaleEAS	drafted: of women only, by the GWAS Catalog
 GCST90566422	Gu_2025_OGTT1hFemaleEAS	drafted: of women only, by the GWAS Catalog
@@ -580,9 +580,9 @@ GCST90483483	Venkatesh_2025_Estradiol	drafted
 GCST90483486	Venkatesh_2025_TestosteroneFemale	drafted: of women only, by the GWAS Catalog
 GCST90483487	Venkatesh_2025_TestosteroneMale	drafted: of men only, by the GWAS Catalog
 GCST90483488	Venkatesh_2025_Testosterone	drafted
-GCST90483500	Venkatesh_2025_PCOSFemale	drafted: of women only, by the GWAS Catalog
-GCST90483501	Venkatesh_2025_HeavyMenstrualBleedingFemale	drafted: of women only, by the GWAS Catalog
-GCST90483502	Venkatesh_2025_UterineFibroidsFemale	drafted: of women only, by the GWAS Catalog
+GCST90483500	Venkatesh_2025_PCOS	drafted
+GCST90483501	Venkatesh_2025_HeavyMenstrualBleeding	drafted
+GCST90483502	Venkatesh_2025_UterineFibroids	drafted
 GCST90568440	vanderLaan_2025_ADHDSymptoms	by hand: the GWAS of ADHD symptom counts (N 73,483), by the author notes in the GWAS Catalog's metadata
 GCST90568441	vanderLaan_2025_ADHD	by hand: the meta-analysis of ADHD symptom counts and diagnosis (N 299,017), by the author notes in the GWAS Catalog's metadata
 GCST90301695	Yang_2024_SBP	drafted
@@ -594,7 +594,7 @@ GCST90301700	Yang_2024_DBPMale	drafted: of men only, by the GWAS Catalog
 GCST90301701	Yang_2024_PP	drafted
 GCST90301702	Yang_2024_PPFemale	drafted: of women only, by the GWAS Catalog
 GCST90301703	Yang_2024_PPMale	drafted: of men only, by the GWAS Catalog
-GCST90301704	Yang_2024_PreeclampsiaFemale	drafted: of women only, by the GWAS Catalog
+GCST90301704	Yang_2024_Preeclampsia	drafted
 GCST90335174	Yang_2024_SBPxSex	drafted
 GCST90335175	Yang_2024_DBPxSex	drafted
 GCST90335176	Yang_2024_PPxSex	drafted
