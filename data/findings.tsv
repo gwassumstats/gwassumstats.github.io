@@ -8,4 +8,4 @@ PANUKBB_PulsePressureAutomatedReadingAdjustedByMedication	fail	its N, 368,642, i
 PANUKBB_PulsePressureCombinedAutomatedManualReading	note	its N, 393,858, is that of the Pan-UK Biobank's pulse pressure by automated reading, adjusted by medication; the combined reading of its label has 420,134
 PANUKBB_HairBaldingPattern	note	pattern 1 of the Pan-UK Biobank's four hair/balding patterns, by its N and its rg of 1.01 with {UKB_460K.body_BALDING1}
 PANUKBB_HairBaldingPattern2	note	pattern 2 of the Pan-UK Biobank's four hair/balding patterns, by its N and its h²
-PASS_Stroke_Malik2018	fail	its N, 198,048, is that of small vessel stroke in the Europeans of Malik 2018 (5,386 cases, 192,662 controls), where any stroke has 446,696: it holds the file of {PASS_SmallVesselStroke_Malik2018}
+PASS_Stroke_Malik2018	fail	its N, 198,048, is that of {PASS_SmallVesselStroke_Malik2018}, whose file it is; for any stroke in Europeans the GWAS Catalog records 446,696 in Malik 2018 (GCST006906: 40,585 cases, 406,111 controls)

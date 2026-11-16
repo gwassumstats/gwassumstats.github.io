@@ -1,5 +1,5 @@
 id	label	why
 # A study whose trait name in the release a person found wrong: the trait its file holds, and how that is known.
 # The label check reads `label` in place of the release's trait name, and the study warns with `why`.
-PASS_PCT_Vuckovic2020	Plateletcrit (PCT)	PCT is plateletcrit among the blood cell indices of Vuckovic 2020, which has no procalcitonin; rg 0.84 with the paper's platelet count
+PASS_PCT_Vuckovic2020	Plateletcrit (PCT)	the GWAS Catalog lists plateletcrit (GCST90002400) among the 29 blood cell traits of Vuckovic 2020, and no procalcitonin; rg 0.84 with the paper's platelet count
 UKB_460K.repro_AgeFirstBirth_Female	Age first birth (female)	as its ID says; rg 0.99 with Barban 2016's age at first birth, -0.59 with UK Biobank's number of children; N 169,434

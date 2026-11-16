@@ -209,7 +209,7 @@ PASS_MRV_Vuckovic2020	Vuckovic_2020_MRV	drafted
 PASS_MSCV_Vuckovic2020	Vuckovic_2020_MSCV	drafted
 PASS_Neutro_Vuckovic2020	Vuckovic_2020_Neutro	drafted
 PASS_NeutroP_Vuckovic2020	Vuckovic_2020_NeutroP	drafted
-PASS_PCT_Vuckovic2020	Vuckovic_2020_Plateletcrit	by hand: PCT is plateletcrit, a blood cell index of Vuckovic 2020 (rg 0.84 with its platelet count, N 563,085 as its other indices); the release's trait name, Procalcitonin, is wrong
+PASS_PCT_Vuckovic2020	Vuckovic_2020_Plateletcrit	by hand: PCT is plateletcrit: the GWAS Catalog lists plateletcrit (GCST90002400) among the 29 blood cell traits of Vuckovic 2020, and no procalcitonin; rg 0.84 with its platelet count. The release's trait name, Procalcitonin, is wrong
 PASS_PDW_Vuckovic2020	Vuckovic_2020_PDW	drafted
 PASS_Plt_Vuckovic2020	Vuckovic_2020_Plt	drafted
 PASS_RBC_Vuckovic2020	Vuckovic_2020_RBC	drafted
