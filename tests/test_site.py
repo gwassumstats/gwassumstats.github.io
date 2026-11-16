@@ -318,8 +318,9 @@ def test_the_history_is_clean():
     """Nothing private in an earlier commit or in a commit message either."""
     if not (ROOT / ".git").exists():
         pytest.skip("not a git checkout")
-    everything = git("log", "--all", "-p", "--format=%B")  # every line a commit added or removed, and every message
-    readable = git("log", "--all", "-p", "--format=%B", "--", ".", f":(exclude)site/data/{BLOB}")  # without the ciphertext
+    # every line a commit added or removed, and every message; --full-index: a short blob hash can take the shape of a user name
+    everything = git("log", "--all", "-p", "--full-index", "--format=%B")
+    readable = git("log", "--all", "-p", "--full-index", "--format=%B", "--", ".", f":(exclude)site/data/{BLOB}")  # without the ciphertext
     assert not PATH.findall(readable)[:3]
     assert not sorted(set(USER.findall(DOI.sub("", readable))) - NOT_USERS)[:5]
     assert not [k for k, person in enumerate(sorted(people())) if person in readable]
