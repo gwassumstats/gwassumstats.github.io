@@ -35,6 +35,7 @@ PATH = re.compile(r"/n/[a-z0-9_]+|/(?:home|Users)/\w")
 NAME = r"[a-z]{2,4}[0-9]{2,4}"
 USER = re.compile(rf"(?<![A-Za-z0-9_#.-]){NAME}(?![A-Za-z0-9_-])")
 NOT_USERS = {"base64", "sha256", "win32"}
+DOI = re.compile(r"\b10\.\d{4,9}/[^\s\"<>]+")  # a paper's DOI can end in the shape of a user name: it is not one
 
 
 def correlations(anc):
@@ -219,7 +220,7 @@ def test_no_path_and_no_user_name_is_committed():
     assert len(files) > 10
     del files[f"site/data/{BLOB}"]  # ciphertext: a few of its letters, digits and slashes can look like a path or a name
     paths = {name: PATH.findall(text)[:3] for name, text in files.items() if PATH.search(text)}
-    shaped = {name: sorted(set(USER.findall(text)) - NOT_USERS)[:5] for name, text in files.items()}
+    shaped = {name: sorted(set(USER.findall(DOI.sub("", text))) - NOT_USERS)[:5] for name, text in files.items()}
     named = [name for name, text in files.items() if any(person in text for person in known)]
     assert not paths and not {name: found for name, found in shaped.items() if found} and not named
 
@@ -240,7 +241,7 @@ def test_the_history_is_clean():
     everything = git("log", "--all", "-p", "--format=%B")  # every line a commit added or removed, and every message
     readable = git("log", "--all", "-p", "--format=%B", "--", ".", f":(exclude)site/data/{BLOB}")  # without the ciphertext
     assert not PATH.findall(readable)[:3]
-    assert not sorted(set(USER.findall(readable)) - NOT_USERS)[:5]
+    assert not sorted(set(USER.findall(DOI.sub("", readable))) - NOT_USERS)[:5]
     assert not [k for k, person in enumerate(sorted(people())) if person in readable]
     passphrase = os.environ.get("SUMSTATS_PASSPHRASE")
     leaked = bool(passphrase) and passphrase.lower() in everything.lower()
