@@ -1,0 +1,77 @@
+"""Builds the site's data from a release folder.
+
+  SUMSTATS_PASSPHRASE=... uv run python -m build RELEASE
+
+RELEASE defaults to $SUMSTATS_RELEASE; without $SUMSTATS_PASSPHRASE the build asks for the passphrase. Neither is
+ever written to the repository. The build writes, in site/data/:
+
+  datasets.json        the inventory with h², and the release's counts      public
+  rg_{ancestry}.json   every genetic correlation of an ancestry            public
+  paths.enc.json       where the files are, encrypted (crypt.py)           readable after login
+
+A release that has not changed rewrites the same files, and keeps the encrypted one as it is, so readers stay logged in.
+"""
+import argparse
+import getpass
+import gzip
+import json
+import os
+from pathlib import Path
+
+from cryptography.exceptions import InvalidTag
+
+from build import crypt, release as rel
+
+SITE_DATA = Path(__file__).parents[1] / "site" / "data"
+BLOB = "paths.enc.json"
+
+
+def dumps(value) -> str:
+    return json.dumps(value, ensure_ascii=False, allow_nan=False, separators=(",", ":"))
+
+
+def holds(path: Path, plain: bytes, passphrase: str, iterations: int) -> bool:
+    """Whether the blob at `path` already encrypts `plain` under this passphrase."""
+    try:
+        blob = json.loads(path.read_text())
+        return blob["iterations"] == iterations and crypt.decrypt(blob, passphrase) == plain
+    except (FileNotFoundError, InvalidTag, KeyError, ValueError):
+        return False
+
+
+def build(release: Path, out: Path, passphrase: str, iterations: int = crypt.ITERATIONS) -> list[Path]:
+    """Writes the site's data for the release at `release` into `out`; returns the files."""
+    d = rel.datasets(release)
+    rg = {anc: rel.correlations(release, d, anc) for anc in d["anc"].unique()}
+    public = d[rel.PUBLIC].reset_index()
+    records = public.astype(object).where(public.notna(), None).to_dict("records")
+    texts = {"datasets.json": f'{{\n"release":{dumps(rel.summary(release, d, rg))},\n"datasets":[\n'  # a dataset a line, for readable diffs
+                              + ",\n".join(dumps({k: v for k, v in r.items() if v is not None}) for r in records) + "\n]}\n"}
+    for anc, t in rg.items():
+        texts[f"rg_{anc}.json"] = "{\n" + ",\n".join(f"{dumps(k)}:{dumps(v)}" for k, v in t.items()) + "\n}\n"
+    out.mkdir(parents=True, exist_ok=True)
+    for name, text in texts.items():
+        (out / name).write_text(text, encoding="utf-8")
+    plain = dumps(rel.private(release, d)).encode()
+    if not holds(out / BLOB, plain, passphrase, iterations):
+        (out / BLOB).write_text(json.dumps(crypt.encrypt(plain, passphrase, iterations), indent=1) + "\n")
+    return [out / name for name in [*texts, BLOB]]
+
+
+def main():
+    parser = argparse.ArgumentParser(prog="python -m build", description="Builds the site's data from a release folder.")
+    parser.add_argument("release", nargs="?", default=os.environ.get("SUMSTATS_RELEASE"), help="the release folder (default: $SUMSTATS_RELEASE)")
+    parser.add_argument("--out", type=Path, default=SITE_DATA, help="where to write (default: site/data)")
+    args = parser.parse_args()
+    if not args.release:
+        parser.error("name the release folder, or set SUMSTATS_RELEASE")
+    passphrase = os.environ.get("SUMSTATS_PASSPHRASE") or getpass.getpass("Passphrase: ")
+    if not passphrase:
+        parser.error("the passphrase is empty")
+    for path in build(Path(os.path.abspath(args.release)), args.out, passphrase):
+        size = path.stat().st_size
+        print(f"{path.name:<16} {size / 1e3:>8,.0f} kB  ({len(gzip.compress(path.read_bytes(), 6)) / 1e3:,.0f} kB gzipped)")
+
+
+if __name__ == "__main__":
+    main()
