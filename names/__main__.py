@@ -4,8 +4,9 @@
 
 RELEASE defaults to $SUMSTATS_RELEASE. The first author and the year are those the study's paper is cited by
 (papers/cite.py; run python -m papers first). The trait is the release's trait name, shortened with
-data/abbreviations.tsv. What tells the studies of one paper and one trait apart is added: EAS for an East Asian
-study; Female or Male, from the GWAS Catalog's record of the study (data/catalog.tsv, if python -m candidates wrote it).
+data/abbreviations.tsv. A study of women or of men only says so, Female or Male, unless its trait already does: the
+GWAS Catalog's record of the study tells (data/catalog.tsv, if python -m candidates wrote it). An East Asian study
+ends in EAS.
 
 The names are kept in data/names.tsv: study ID, short name, and how the name was made. The build merges them into the
 site's data after checking that every study has one, of that form, and no two the same. A row that says "check" was a
@@ -26,7 +27,6 @@ from papers import cite
 
 DATA = merge.DATA
 SMALL = {"of", "the", "and", "in", "at", "for", "to", "by", "with", "a", "an", "or", "on", "level", "levels"}  # words a trait's short form leaves out
-ONE_SEX = re.compile(r"female|male|ovar|uter|menstr|eclampsia|gestation|pregnan|prostat|testic", re.I)  # a trait name that says whose it is
 
 
 def trait(name: str, phrases: dict[str, str]) -> str:
@@ -53,6 +53,16 @@ def trait(name: str, phrases: dict[str, str]) -> str:
     return cite.plain("".join([*out, *words(text[at:])]))
 
 
+def one_sex(record: dict) -> str:
+    """Whose statistics a study holds, by the GWAS Catalog's record of it: "Female", "Male", or "" for both or unknown.
+    The submitters' word goes first; without it, a sample of female or of male cases and controls tells."""
+    told = {"F": "Female", "M": "Male", "combined": ""}.get(record.get("sex", ""))
+    if told is not None:
+        return told
+    sample = record.get("sample", "").lower()
+    return "Female" if re.search(r"\b(female|women)", sample) else "Male" if re.search(r"\b(male|men)\b|\bmales\b", sample) else ""
+
+
 def draft(studies: list[dict], cited: dict[str, tuple[str, str] | None], phrases: dict[str, str], catalog: dict[str, dict]) -> dict[str, tuple[str, str]]:
     """{study ID: (short name, how it was made)}. `studies`: id, trait, anc, n and ref of each; `cited`: who and which
     year each study's paper is cited by, or None for a study without a paper; `catalog`: the GWAS Catalog's `sex` and
@@ -62,27 +72,17 @@ def draft(studies: list[dict], cited: dict[str, tuple[str, str] | None], phrases
         paper = cited.get(s["id"])
         named = cite.NAMED.match(s["ref"]) or cite.CODED.fullmatch(s["ref"])
         who, year = paper or (named[1] if named else "Unknown", (cite.YEAR.search(s["ref"]) or ["0000"])[0])
-        parts[s["id"]] = [cite.plain(who), year, trait(s["trait"], phrases) + ("EAS" if s["anc"] == "EAS" else "")]
-        how[s["id"]] = "drafted" if paper else "check: no paper found"
+        short, sex = trait(s["trait"], phrases), one_sex(catalog.get(s["id"], {}))
+        says = bool(sex) and not re.search("Female|Male", short)  # a name never hides that a study is of one sex
+        parts[s["id"]] = [cite.plain(who), year, short + (sex if says else "") + ("EAS" if s["anc"] == "EAS" else "")]
+        how[s["id"]] = ("drafted" + (f": of {'women' if sex == 'Female' else 'men'} only, by the GWAS Catalog" if says else "")) if paper else "check: no paper found"
     same = defaultdict(list)
     for study, name in parts.items():
         same["_".join(name).lower()].append(study)
-    for group in (g for g in same.values() if len(g) > 1):  # studies of one paper and one trait: what tells them apart?
-        sex = {}
-        for study in group:
-            record = catalog.get(study, {})
-            sample = record.get("sample", "").lower()
-            sex[study] = ("Female" if record.get("sex") == "F" or re.search(r"\b(female|women)", sample) else
-                          "Male" if record.get("sex") == "M" or re.search(r"\b(male|men)\b|\bmales\b", sample) else "")
-            parts[study][2] += sex[study]
-        rest = sorted((study for study in group if not sex[study]), key=lambda study: -by_id[study]["n"])
-        for study in rest[1:]:  # nothing tells it from the largest but its size
+    for group in (g for g in same.values() if len(g) > 1):  # studies of one paper and one trait: nothing tells them apart but their size
+        for study in sorted(group, key=lambda study: -by_id[study]["n"])[1:]:
             parts[study][2] += f"N{round(by_id[study]['n'] / 1000)}k"
             how[study] = "check: told apart by its sample size only"
-    for study, name in parts.items():  # a study of women or of men only whose name does not say so, nor its trait
-        sex = {"F": "women", "M": "men"}.get(catalog.get(study, {}).get("sex"))
-        if sex and how[study] == "drafted" and not name[2].endswith(("Female", "Male")) and not ONE_SEX.search(by_id[study]["trait"]):
-            how[study] = f"check: of {sex} only, by the GWAS Catalog; the name does not say so"
     return {study: ("_".join(name), how[study]) for study, name in parts.items()}
 
 

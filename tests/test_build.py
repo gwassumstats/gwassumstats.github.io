@@ -264,15 +264,18 @@ def test_short_names_are_drafted_from_paper_and_trait_and_told_apart():
     study = lambda i, name, anc="EUR", n=1000, ref="Li et al. 2024 Nat Genet": {"id": i, "trait": name, "anc": anc, "n": n, "ref": ref}
     studies = [study("a", "Body Mass Index"), study("b", "Body mass index"), study("c", "BMI", n=3000), study("d", "Body Mass Index", anc="EAS"),
                study("e", "Type 2 Diabetes"), study("f", "Type 2 Diabetes", n=500), study("g", "Type 2 Diabetes", n=700),
-               study("h", "Fasting Glucose"), study("i", "Height", ref="Smith et al., 2010 Nature"), study("j", "Height", ref="PAN UKBB")]
-    cited = {s["id"]: ("Li", "2024") for s in studies[:8]} | {"i": None, "j": None}
-    catalog = {"a": {"sex": "F", "sample": ""}, "b": {"sex": "", "sample": "1,000 European ancestry male cases"}, "c": {"sex": "combined", "sample": ""}, "h": {"sex": "F", "sample": ""}}
+               study("h", "Fasting Glucose", anc="EAS"), study("i", "Height", ref="Smith et al., 2010 Nature"), study("j", "Height", ref="PAN UKBB"),
+               study("k", "Breast Cancer (female)"), study("l", "Height")]
+    cited = {s["id"]: ("Li", "2024") for s in studies} | {"i": None, "j": None}
+    catalog = {"a": {"sex": "F", "sample": ""}, "b": {"sex": "", "sample": "1,000 European ancestry male cases"}, "c": {"sex": "combined", "sample": "500 female cases, 500 male cases"},
+               "h": {"sex": "F", "sample": ""}, "k": {"sex": "F", "sample": ""}, "l": {"sex": "M", "sample": ""}}
+    women, men = "drafted: of women only, by the GWAS Catalog", "drafted: of men only, by the GWAS Catalog"
     assert draft(studies, cited, PHRASES, catalog) == {
-        "a": ("Li_2024_BMIFemale", "drafted"), "b": ("Li_2024_BMIMale", "drafted"), "c": ("Li_2024_BMI", "drafted"),  # one paper, one trait: by sex, from the Catalog
-        "d": ("Li_2024_BMIEAS", "drafted"),  # an East Asian study says so
+        "a": ("Li_2024_BMIFemale", women), "b": ("Li_2024_BMIMale", men), "c": ("Li_2024_BMI", "drafted"),  # of one sex: by the submitters' word, or else the sample's
+        "d": ("Li_2024_BMIEAS", "drafted"), "h": ("Li_2024_FastingGlucoseFemaleEAS", women),  # an East Asian study ends in EAS
         "e": ("Li_2024_T2D", "drafted"), "f": ("Li_2024_T2DN0k", "check: told apart by its sample size only"), "g": ("Li_2024_T2DN1k", "check: told apart by its sample size only"),
-        "h": ("Li_2024_FastingGlucose", "check: of women only, by the GWAS Catalog; the name does not say so"),
-        "i": ("Smith_2010_Height", "check: no paper found"), "j": ("Unknown_0000_Height", "check: no paper found")}  # without a paper: whom and when the inventory names
+        "i": ("Smith_2010_Height", "check: no paper found"), "j": ("Unknown_0000_Height", "check: no paper found"),  # without a paper: whom and when the inventory names
+        "k": ("Li_2024_BreastCancerFemale", "drafted"), "l": ("Li_2024_HeightMale", men)}  # a name that says so already; a single-sex study alone of its trait says so too
 
 
 def test_encryption_round_trip():

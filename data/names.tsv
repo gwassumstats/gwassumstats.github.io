@@ -161,7 +161,7 @@ PASS_VerbalNumericReasoning_Davies2018	Davies_2018_VNR	drafted
 PASS_Worry_Nagel2018	Nagel_2018_Worry	drafted
 UKB_460K.repro_NumberChildrenEverBorn_Pooled	Loh_2018_NumChildren	drafted
 UKB_460K.cancer_ALL	Loh_2018_AnyCancer	drafted
-UKB_460K.repro_AgeFirstBirth_Female	Loh_2018_NumChildrenFemale	drafted
+UKB_460K.repro_AgeFirstBirth_Female	Loh_2018_AgeFirstBirthFemale	by hand: age at first birth in women, as the ID says (rg 0.99 with Barban 2016's age at first birth, -0.59 with UK Biobank's number of children; N 169,434); the release's trait name, Number children ever born, is wrong
 UKB_460K.cancer_PROSTATE	Loh_2018_ProstateCancer	drafted
 UKB_460K.cancer_BREAST	Loh_2018_BreastCancer	drafted
 PASS_Autism_Grove2019	Grove_2019_Autism	drafted
@@ -209,7 +209,7 @@ PASS_MRV_Vuckovic2020	Vuckovic_2020_MRV	drafted
 PASS_MSCV_Vuckovic2020	Vuckovic_2020_MSCV	drafted
 PASS_Neutro_Vuckovic2020	Vuckovic_2020_Neutro	drafted
 PASS_NeutroP_Vuckovic2020	Vuckovic_2020_NeutroP	drafted
-PASS_PCT_Vuckovic2020	Vuckovic_2020_PCT	drafted
+PASS_PCT_Vuckovic2020	Vuckovic_2020_Plateletcrit	by hand: PCT is plateletcrit, a blood cell index of Vuckovic 2020 (rg 0.84 with its platelet count, N 563,085 as its other indices); the release's trait name, Procalcitonin, is wrong
 PASS_PDW_Vuckovic2020	Vuckovic_2020_PDW	drafted
 PASS_Plt_Vuckovic2020	Vuckovic_2020_Plt	drafted
 PASS_RBC_Vuckovic2020	Vuckovic_2020_RBC	drafted
@@ -415,8 +415,8 @@ GCST90651075	Kany_2025_AorticValvePeakVelocity	drafted
 GCST90651076	Kany_2025_AorticValveMeanGradient	drafted
 GCST90651077	Kany_2025_AorticValveArea	drafted
 GCST90295949	Oliveri_2024_TGHDLRatio	drafted
-GCST90295950	Oliveri_2024_TGHDLRatioMale	drafted
-GCST90295951	Oliveri_2024_TGHDLRatioFemale	drafted
+GCST90295950	Oliveri_2024_TGHDLRatioMale	drafted: of men only, by the GWAS Catalog
+GCST90295951	Oliveri_2024_TGHDLRatioFemale	drafted: of women only, by the GWAS Catalog
 GCST90726344	Shorter_2025_MDD	drafted
 GCST90726345	Shorter_2025_EarlyOnsetMDD	drafted
 GCST90726346	Shorter_2025_LateOnsetMDD	drafted
@@ -432,38 +432,38 @@ GCST90668011	Enzan_2025_HFpEFEAS	drafted
 GCST90668012	Enzan_2025_NonIschemicHFEAS	drafted
 GCST90668013	Enzan_2025_HFMTAG	drafted
 GCST90668016	Enzan_2025_NonIschemicHFMTAG	drafted
-GCST90566419	Gu_2025_GDMEAS	drafted
-GCST90566420	Gu_2025_FastingGlucoseEAS	check: of women only, by the GWAS Catalog; the name does not say so
-GCST90566421	Gu_2025_OGTT0hEAS	check: of women only, by the GWAS Catalog; the name does not say so
-GCST90566422	Gu_2025_OGTT1hEAS	check: of women only, by the GWAS Catalog; the name does not say so
-GCST90566423	Gu_2025_OGTT2hEAS	check: of women only, by the GWAS Catalog; the name does not say so
-GCST90566424	Gu_2025_HbA1cEAS	check: of women only, by the GWAS Catalog; the name does not say so
+GCST90566419	Gu_2025_GDMFemaleEAS	drafted: of women only, by the GWAS Catalog
+GCST90566420	Gu_2025_FastingGlucoseFemaleEAS	drafted: of women only, by the GWAS Catalog
+GCST90566421	Gu_2025_OGTT0hFemaleEAS	drafted: of women only, by the GWAS Catalog
+GCST90566422	Gu_2025_OGTT1hFemaleEAS	drafted: of women only, by the GWAS Catalog
+GCST90566423	Gu_2025_OGTT2hFemaleEAS	drafted: of women only, by the GWAS Catalog
+GCST90566424	Gu_2025_HbA1cFemaleEAS	drafted: of women only, by the GWAS Catalog
 GCST90705000	Harlow_2026_ChronicPain	drafted
-GCST90705001	Harlow_2026_ChronicPainMale	drafted
-GCST90705002	Harlow_2026_ChronicPainFemale	drafted
+GCST90705001	Harlow_2026_ChronicPainMale	drafted: of men only, by the GWAS Catalog
+GCST90705002	Harlow_2026_ChronicPainFemale	drafted: of women only, by the GWAS Catalog
 GCST90705003	Harlow_2026_AnalgesicTimeQ4VsHealthy	drafted
-GCST90705004	Harlow_2026_AnalgesicTimeQ4VsHealthyMale	drafted
-GCST90705005	Harlow_2026_AnalgesicTimeQ4VsHealthyFemale	drafted
+GCST90705004	Harlow_2026_AnalgesicTimeQ4VsHealthyMale	drafted: of men only, by the GWAS Catalog
+GCST90705005	Harlow_2026_AnalgesicTimeQ4VsHealthyFemale	drafted: of women only, by the GWAS Catalog
 GCST90705006	Harlow_2026_AnalgesicCessationQ4VsHealthy	drafted
-GCST90705007	Harlow_2026_AnalgesicCessationQ4VsHealthyMale	drafted
-GCST90705008	Harlow_2026_AnalgesicCessationQ4VsHealthyFemale	drafted
+GCST90705007	Harlow_2026_AnalgesicCessationQ4VsHealthyMale	drafted: of men only, by the GWAS Catalog
+GCST90705008	Harlow_2026_AnalgesicCessationQ4VsHealthyFemale	drafted: of women only, by the GWAS Catalog
 GCST90705009	Harlow_2026_OpioidUse	drafted
-GCST90705010	Harlow_2026_OpioidUseMale	drafted
-GCST90705011	Harlow_2026_OpioidUseFemale	drafted
+GCST90705010	Harlow_2026_OpioidUseMale	drafted: of men only, by the GWAS Catalog
+GCST90705011	Harlow_2026_OpioidUseFemale	drafted: of women only, by the GWAS Catalog
 GCST90705012	Harlow_2026_OpioidOver90Days	drafted
-GCST90705013	Harlow_2026_OpioidOver90DaysMale	drafted
-GCST90705014	Harlow_2026_OpioidOver90DaysFemale	drafted
+GCST90705013	Harlow_2026_OpioidOver90DaysMale	drafted: of men only, by the GWAS Catalog
+GCST90705014	Harlow_2026_OpioidOver90DaysFemale	drafted: of women only, by the GWAS Catalog
 GCST90705015	Harlow_2026_OpioidOver90DaysVsNever	drafted
-GCST90705017	Harlow_2026_OpioidOver90DaysVsNeverFemale	drafted
+GCST90705017	Harlow_2026_OpioidOver90DaysVsNeverFemale	drafted: of women only, by the GWAS Catalog
 GCST90705018	Harlow_2026_OpioidOver90VsUnder90Days	drafted
 GCST90705021	Harlow_2026_AnalgesicTimeQ4VsQ1	drafted
 GCST90705024	Harlow_2026_AnalgesicTimeQ4VsQ1to3	drafted
-GCST90705025	Harlow_2026_AnalgesicTimeQ4VsQ1to3Male	drafted
-GCST90705026	Harlow_2026_AnalgesicTimeQ4VsQ1to3Female	drafted
+GCST90705025	Harlow_2026_AnalgesicTimeQ4VsQ1to3Male	drafted: of men only, by the GWAS Catalog
+GCST90705026	Harlow_2026_AnalgesicTimeQ4VsQ1to3Female	drafted: of women only, by the GWAS Catalog
 GCST90705027	Harlow_2026_AnalgesicCessationQ4VsQ1	drafted
 GCST90705030	Harlow_2026_AnalgesicCessationQ4VsQ1to3	drafted
-GCST90705031	Harlow_2026_AnalgesicCessationQ4VsQ1to3Male	drafted
-GCST90705032	Harlow_2026_AnalgesicCessationQ4VsQ1to3Female	drafted
+GCST90705031	Harlow_2026_AnalgesicCessationQ4VsQ1to3Male	drafted: of men only, by the GWAS Catalog
+GCST90705032	Harlow_2026_AnalgesicCessationQ4VsQ1to3Female	drafted: of women only, by the GWAS Catalog
 GCST90446758	OrtinVela_2024_RetinalArterialTemporalAngle	drafted
 GCST90446759	OrtinVela_2024_RetinalVenularTemporalAngle	drafted
 GCST90446760	OrtinVela_2024_RetinalArteriolarTortuosity	drafted
@@ -481,8 +481,8 @@ GCST90446771	OrtinVela_2024_RetinalArterialMedianDiameter	drafted
 GCST90446772	OrtinVela_2024_RetinalVenularMedianDiameter	drafted
 GCST90446773	OrtinVela_2024_RetinalRatioMedianDiameter	drafted
 GCST90446774	OrtinVela_2024_RetinalBifurcations	drafted
-GCST90503313	Pagadala_2025_TotalTestosterone	check: of men only, by the GWAS Catalog; the name does not say so
-GCST90503316	Pagadala_2025_Hypogonadism	check: of men only, by the GWAS Catalog; the name does not say so
+GCST90503313	Pagadala_2025_TotalTestosteroneMale	drafted: of men only, by the GWAS Catalog
+GCST90503316	Pagadala_2025_HypogonadismMale	drafted: of men only, by the GWAS Catalog
 GCST90335162	Pozarickij_2024_SBPUnadjBMIEAS	drafted
 GCST90335163	Pozarickij_2024_SBPAdjBMIEAS	drafted
 GCST90335164	Pozarickij_2024_DBPUnadjBMIEAS	drafted
@@ -509,38 +509,38 @@ GCST90652558	Shraim_2025_VitaminDUVBQ2	drafted
 GCST90652559	Shraim_2025_VitaminDUVBQ1	drafted
 GCST90296666	Strausz_2024_Lyme	drafted
 GCST90310293	Theriault_2024_CAVS	drafted
-GCST90429765	Venkatesh_2024_BMIFemale	drafted
-GCST90429766	Venkatesh_2024_BMIChangeFemale	drafted
-GCST90429767	Venkatesh_2024_BMITrajHighFemale	drafted
-GCST90429768	Venkatesh_2024_BMITrajHighMediumFemale	drafted
-GCST90429769	Venkatesh_2024_BMITrajHighMediumStableFemale	drafted
-GCST90429770	Venkatesh_2024_BMIMale	drafted
-GCST90429771	Venkatesh_2024_BMIChangeMale	drafted
-GCST90429772	Venkatesh_2024_BMITrajHighMale	drafted
-GCST90429773	Venkatesh_2024_BMITrajHighMediumMale	drafted
-GCST90429774	Venkatesh_2024_BMITrajHighMediumStableMale	drafted
+GCST90429765	Venkatesh_2024_BMIFemale	drafted: of women only, by the GWAS Catalog
+GCST90429766	Venkatesh_2024_BMIChangeFemale	drafted: of women only, by the GWAS Catalog
+GCST90429767	Venkatesh_2024_BMITrajHighFemale	drafted: of women only, by the GWAS Catalog
+GCST90429768	Venkatesh_2024_BMITrajHighMediumFemale	drafted: of women only, by the GWAS Catalog
+GCST90429769	Venkatesh_2024_BMITrajHighMediumStableFemale	drafted: of women only, by the GWAS Catalog
+GCST90429770	Venkatesh_2024_BMIMale	drafted: of men only, by the GWAS Catalog
+GCST90429771	Venkatesh_2024_BMIChangeMale	drafted: of men only, by the GWAS Catalog
+GCST90429772	Venkatesh_2024_BMITrajHighMale	drafted: of men only, by the GWAS Catalog
+GCST90429773	Venkatesh_2024_BMITrajHighMediumMale	drafted: of men only, by the GWAS Catalog
+GCST90429774	Venkatesh_2024_BMITrajHighMediumStableMale	drafted: of men only, by the GWAS Catalog
 GCST90429775	Venkatesh_2024_BMI	drafted
 GCST90429776	Venkatesh_2024_BMIChange	drafted
 GCST90429777	Venkatesh_2024_BMITrajHigh	drafted
 GCST90429778	Venkatesh_2024_BMITrajHighMedium	drafted
 GCST90429779	Venkatesh_2024_BMITrajHighMediumStable	drafted
-GCST90429780	Venkatesh_2024_WeightFemale	drafted
-GCST90429781	Venkatesh_2024_WeightChangeFemale	drafted
-GCST90429782	Venkatesh_2024_WeightTrajHighFemale	drafted
-GCST90429783	Venkatesh_2024_WeightTrajHighMediumFemale	drafted
-GCST90429784	Venkatesh_2024_WeightTrajHighMediumStableFemale	drafted
-GCST90429785	Venkatesh_2024_WeightMale	drafted
-GCST90429786	Venkatesh_2024_WeightChangeMale	drafted
-GCST90429787	Venkatesh_2024_WeightTrajHighMale	drafted
-GCST90429788	Venkatesh_2024_WeightTrajHighMediumMale	drafted
-GCST90429789	Venkatesh_2024_WeightTrajHighMediumStableMale	drafted
+GCST90429780	Venkatesh_2024_WeightFemale	drafted: of women only, by the GWAS Catalog
+GCST90429781	Venkatesh_2024_WeightChangeFemale	drafted: of women only, by the GWAS Catalog
+GCST90429782	Venkatesh_2024_WeightTrajHighFemale	drafted: of women only, by the GWAS Catalog
+GCST90429783	Venkatesh_2024_WeightTrajHighMediumFemale	drafted: of women only, by the GWAS Catalog
+GCST90429784	Venkatesh_2024_WeightTrajHighMediumStableFemale	drafted: of women only, by the GWAS Catalog
+GCST90429785	Venkatesh_2024_WeightMale	drafted: of men only, by the GWAS Catalog
+GCST90429786	Venkatesh_2024_WeightChangeMale	drafted: of men only, by the GWAS Catalog
+GCST90429787	Venkatesh_2024_WeightTrajHighMale	drafted: of men only, by the GWAS Catalog
+GCST90429788	Venkatesh_2024_WeightTrajHighMediumMale	drafted: of men only, by the GWAS Catalog
+GCST90429789	Venkatesh_2024_WeightTrajHighMediumStableMale	drafted: of men only, by the GWAS Catalog
 GCST90429790	Venkatesh_2024_Weight	drafted
 GCST90429791	Venkatesh_2024_WeightChange	drafted
 GCST90429792	Venkatesh_2024_WeightTrajHigh	drafted
 GCST90429793	Venkatesh_2024_WeightTrajHighMedium	drafted
 GCST90429794	Venkatesh_2024_WeightTrajHighMediumStable	drafted
 GCST90503483	Yuan_2025_Sarcoidosis	drafted
-GCST90558258	Yuan_2025_SarcoidosisUKB	by hand: the UK Biobank cohort alone; the paper's other study is the meta-analysis
+GCST90558258	Yuan_2025_SarcoidosisUKB	by hand: the UK Biobank cohort alone, by the GWAS Catalog's cohorts; the paper's other study is the meta-analysis
 GCST90435144	Burren_2024_TelomereLengthPC1	drafted
 GCST90435145	Burren_2024_TelomereLengthPC2	drafted
 GCST90624053	Foote_2025_Pneumonia	drafted
@@ -556,8 +556,8 @@ GCST90428446	Loeb_2024_eGFRCreatCys	drafted
 GCST90428447	Loeb_2024_eGFRCreat	drafted
 GCST90428448	Loeb_2024_eGFRCys	drafted
 GCST90428600	Major_2024_Gout	drafted
-GCST90428601	Major_2024_GoutMale	drafted
-GCST90428602	Major_2024_GoutFemale	drafted
+GCST90428601	Major_2024_GoutMale	drafted: of men only, by the GWAS Catalog
+GCST90428602	Major_2024_GoutFemale	drafted: of women only, by the GWAS Catalog
 GCST90444487	Park_2024_MetS	drafted
 GCST90444488	Park_2024_MetSNoUKB	by hand: the meta-analysis without UK Biobank, by the GWAS Catalog's cohorts
 GCST90320057	Purdue_2024_KidneyCancer	drafted
@@ -573,28 +573,28 @@ GCST90483465	Venkatesh_2025_FemaleInfertilityAnovulatory	drafted
 GCST90483466	Venkatesh_2025_FemaleInfertilityIdiopathicByExclusion	drafted
 GCST90483467	Venkatesh_2025_FemaleInfertilityIdiopathicCoded	drafted
 GCST90483468	Venkatesh_2025_MaleInfertility	drafted
-GCST90483475	Venkatesh_2025_FSHFemale	drafted
+GCST90483475	Venkatesh_2025_FSHFemale	drafted: of women only, by the GWAS Catalog
 GCST90483477	Venkatesh_2025_FSH	drafted
-GCST90483481	Venkatesh_2025_EstradiolFemale	drafted
+GCST90483481	Venkatesh_2025_EstradiolFemale	drafted: of women only, by the GWAS Catalog
 GCST90483483	Venkatesh_2025_Estradiol	drafted
-GCST90483486	Venkatesh_2025_TestosteroneFemale	drafted
-GCST90483487	Venkatesh_2025_TestosteroneMale	drafted
+GCST90483486	Venkatesh_2025_TestosteroneFemale	drafted: of women only, by the GWAS Catalog
+GCST90483487	Venkatesh_2025_TestosteroneMale	drafted: of men only, by the GWAS Catalog
 GCST90483488	Venkatesh_2025_Testosterone	drafted
-GCST90483500	Venkatesh_2025_PCOS	drafted
-GCST90483501	Venkatesh_2025_HeavyMenstrualBleeding	drafted
-GCST90483502	Venkatesh_2025_UterineFibroids	drafted
-GCST90568440	vanderLaan_2025_ADHDSymptoms	check: by hand, the smaller of the paper's two studies taken for the GWAS of symptoms, the other for symptoms and diagnosis
-GCST90568441	vanderLaan_2025_ADHD	drafted
+GCST90483500	Venkatesh_2025_PCOSFemale	drafted: of women only, by the GWAS Catalog
+GCST90483501	Venkatesh_2025_HeavyMenstrualBleedingFemale	drafted: of women only, by the GWAS Catalog
+GCST90483502	Venkatesh_2025_UterineFibroidsFemale	drafted: of women only, by the GWAS Catalog
+GCST90568440	vanderLaan_2025_ADHDSymptoms	by hand: the GWAS of ADHD symptom counts (N 73,483), by the author notes in the GWAS Catalog's metadata
+GCST90568441	vanderLaan_2025_ADHD	by hand: the meta-analysis of ADHD symptom counts and diagnosis (N 299,017), by the author notes in the GWAS Catalog's metadata
 GCST90301695	Yang_2024_SBP	drafted
-GCST90301696	Yang_2024_SBPFemale	drafted
-GCST90301697	Yang_2024_SBPMale	drafted
+GCST90301696	Yang_2024_SBPFemale	drafted: of women only, by the GWAS Catalog
+GCST90301697	Yang_2024_SBPMale	drafted: of men only, by the GWAS Catalog
 GCST90301698	Yang_2024_DBP	drafted
-GCST90301699	Yang_2024_DBPFemale	drafted
-GCST90301700	Yang_2024_DBPMale	drafted
+GCST90301699	Yang_2024_DBPFemale	drafted: of women only, by the GWAS Catalog
+GCST90301700	Yang_2024_DBPMale	drafted: of men only, by the GWAS Catalog
 GCST90301701	Yang_2024_PP	drafted
-GCST90301702	Yang_2024_PPFemale	drafted
-GCST90301703	Yang_2024_PPMale	drafted
-GCST90301704	Yang_2024_Preeclampsia	drafted
+GCST90301702	Yang_2024_PPFemale	drafted: of women only, by the GWAS Catalog
+GCST90301703	Yang_2024_PPMale	drafted: of men only, by the GWAS Catalog
+GCST90301704	Yang_2024_PreeclampsiaFemale	drafted: of women only, by the GWAS Catalog
 GCST90335174	Yang_2024_SBPxSex	drafted
 GCST90335175	Yang_2024_DBPxSex	drafted
 GCST90335176	Yang_2024_PPxSex	drafted

@@ -130,6 +130,11 @@ def test_every_study_has_a_short_name():
     assert {row["id"]: row["name"] for row in kept} == {d["id"]: d["name"] for d in STUDIES} and all(row["how"] for row in kept)
     assert BY_ID["PASS_BMI1"]["name"] == "Speliotes_2010_BMI" and BY_ID["GCST90651074"]["name"] == "Kany_2025_AorticStenosis"  # the owner's examples
     assert sum(d["name"].endswith("EAS") for d in STUDIES) == sum(d["anc"] == "EAS" for d in STUDIES) == 56  # an East Asian study says so, and no other
+    # a study of one sex says so: where the GWAS Catalog knows, and where the release's own trait name or ID does
+    assert BY_ID["GCST90566420"]["name"] == "Gu_2025_FastingGlucoseFemaleEAS" and BY_ID["GCST90503313"]["name"] == "Pagadala_2025_TotalTestosteroneMale"
+    assert not [d["name"] for d in STUDIES if re.search(r"\(female\)|_Female$", d["trait"] + d["id"]) and "Female" not in d["name"]]
+    # two names say what the file is, not what the release calls it
+    assert BY_ID["PASS_PCT_Vuckovic2020"]["name"] == "Vuckovic_2020_Plateletcrit" and BY_ID["UKB_460K.repro_AgeFirstBirth_Female"]["name"] == "Loh_2018_AgeFirstBirthFemale"
 
 
 def test_every_study_cites_its_paper():
