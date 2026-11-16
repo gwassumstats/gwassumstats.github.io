@@ -155,6 +155,40 @@ def test_every_study_cites_its_paper():
     assert {row["reference"] for row in references} == {d["ref"] for d in STUDIES if "pmid" not in d} and not [row for row in references if "check" in row["how"] or not row["pmid"]]
 
 
+def test_the_checks_catch_the_known_mislabels():
+    """Four studies of the Pan-UK Biobank whose label and genetic correlations disagree: the label check finds each."""
+    doubts = lambda study: [note for note in BY_ID[study].get("notes", []) if note[1].startswith("label in doubt")]
+    ldl = "PANUKBB_LDLDirectAdjustedByMedication"
+    assert BY_ID[ldl]["qc"] == "fail" and any(level == "fail" and "FEV1" in text for level, text in doubts(ldl))  # its best match is FEV1/FVC
+    assert BY_ID["PANUKBB_IndirectBilirubin"]["qc"] == "fail" and doubts("PANUKBB_IndirectBilirubin")
+    for study in ("PANUKBB_OperationTonsillectomyAdenoids", "PANUKBB_AtrialFibrillationAndFlutter"):
+        assert BY_ID[study]["qc"] in ("warn", "fail") and doubts(study)
+
+
+def test_what_the_checks_say_of_the_release():
+    counts = {level: sum(d["qc"] == level for d in STUDIES) for level in ("pass", "warn", "fail")}
+    assert RELEASE["qc"] == counts and sum(counts.values()) == 602 and counts["pass"] > 500  # the thresholds are set so that a study with nothing wrong passes
+    for d in STUDIES:
+        levels = [level for level, _ in d.get("notes", [])]
+        assert set(levels) <= {"fail", "warn", "note"} and levels == sorted(levels, key=["fail", "warn", "note"].index)  # the worst first
+        assert d["qc"] == ("fail" if "fail" in levels else "warn" if "warn" in levels else "pass")
+        assert all(study in BY_ID and study != d["id"] for _, text in d.get("notes", []) for study in re.findall(r"\{([^}]+)\}", text))  # a finding names studies as {ID}
+        assert 0 < d["hm3"] <= 1 and d["chi2"] > 0 and d["lambda"] > 0
+    # the largest GWAS of height passes; so does a classic whose statistics were corrected for inflation, with a note
+    assert BY_ID["PASS_Height_Yengo2022"]["qc"] == "pass" and BY_ID["PASS_BMI1"]["qc"] == "pass" and BY_ID["PASS_BMI1"]["notes"][0][0] == "note"
+    # the two labels that a person found wrong warn, and say what the file holds
+    for study, holds in (("PASS_PCT_Vuckovic2020", "Plateletcrit"), ("UKB_460K.repro_AgeFirstBirth_Female", "Age first birth")):
+        assert BY_ID[study]["qc"] == "warn" and any(text.startswith("the release calls it") and holds in text for _, text in BY_ID[study]["notes"])
+    metrics = cite.table(merge.DATA / "metrics.tsv")
+    assert {row["id"] for row in metrics if row["file"] == "h2"} == set(BY_ID) and {row["id"] for row in metrics if row["file"] == "rg"} < set(BY_ID)
+    assert not [d["id"] for d in STUDIES for _, text in d.get("notes", []) if "was not measured" in text or "SNPs in the file; the inventory says" in text]
+
+
+def test_a_problem_is_reported_through_a_form_that_warns_it_is_public():
+    form, script = (ROOT / ".github" / "ISSUE_TEMPLATE" / "study.yml").read_text(), (SITE / "app.js").read_text()
+    assert "id: study" in form and "public" in form and 'template: "study.yml"' in script and "study: `${d.name} (${d.id})`" in script  # the page fills in the study
+
+
 def test_the_data_is_small():
     sizes = {path.name: path.stat().st_size for path in DATA.iterdir()}
     assert set(sizes) == {"studies.json", "papers.json", "rg_EUR.json", "rg_EAS.json", BLOB}
@@ -297,5 +331,5 @@ def test_the_page_loads_nothing_from_elsewhere():
     assert all(rule in html for rule in ("default-src 'none'", "script-src 'self'", "style-src 'self'", "connect-src 'self'", "form-action 'none'"))
     loaded = re.findall(r'<(?:script|link|img|iframe|source)\b[^>]*?\b(?:src|href)="([^"]+)"', html)
     assert len(loaded) == 4 and not [url for url in loaded if re.match(r"(?:[a-z]+:)?//", url)]  # the icon (data:), the style, the inventory, the script
-    assert re.findall(r"https?://[\w./-]+", script) == ["https://pubmed.ncbi.nlm.nih.gov/", "https://doi.org/", "http://www.w3.org/2000/svg"]  # two links and a name: no request
+    assert re.findall(r"https?://[\w./-]+", script) == ["https://pubmed.ncbi.nlm.nih.gov/", "https://doi.org/", "https://github.com/gwassumstats/gwassumstats.github.io/issues/new", "http://www.w3.org/2000/svg"]  # three links and a name: no request
     assert "url(" not in style and "@import" not in style and " style=" not in html

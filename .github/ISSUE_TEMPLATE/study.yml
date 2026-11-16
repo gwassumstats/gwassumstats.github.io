@@ -1,0 +1,26 @@
+name: A problem with a study
+description: A wrong label, a doubtful file or result, a wrong paper or short name.
+title: "Study: "
+body:
+  - type: markdown
+    attributes:
+      value: This issue is public. Do not paste a path on O2, the passphrase, or anything from the lab's mailing list.
+  - type: input
+    id: study
+    attributes:
+      label: Study
+      description: Its short name and ID, as on its page of the site.
+      placeholder: Speliotes_2010_BMI (PASS_BMI1)
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: For example the genetic correlations that disagree with the label, or the paper's own numbers.

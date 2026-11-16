@@ -35,6 +35,7 @@
     <form id="filters" class="filters" role="search" autocomplete="off">
       <input id="q" type="search" placeholder="name, ID, trait or reference" aria-label="Search the studies" autocomplete="off" spellcheck="false">
       <select id="f-anc" aria-label="Ancestry"><option value="">all ancestries</option></select>
+      <select id="f-qc" aria-label="Quality checks"><option value="">any QC</option><option>pass</option><option>warn</option><option>fail</option></select>
       <label title="Heritability z-score above 6"><input id="f-z6" type="checkbox"> h² z &gt; 6</label>
       <label title="Signed sumstats: used for genetic correlation"><input id="f-signed" type="checkbox"> signed</label>
       <label title="In the nonredundant panel of its ancestry"><input id="f-panel" type="checkbox"> nonredundant</label>
@@ -179,6 +180,23 @@
       <li>Both use LD scores of 1000 Genomes Phase 3 for the study's ancestry, EUR or EAS.</li>
     </ol>
 
+    <h2>How is a study checked?</h2>
+    <p>Every study goes through the same checks, and its page says what they found. Of the <span data-v="all.studies">602</span>
+    studies, <span data-v="qc.pass">537</span> pass, <span data-v="qc.warn">56</span> warn and <span data-v="qc.fail">9</span> fail.</p>
+    <ol>
+      <li><strong>Its file</strong>, read SNP by SNP: the columns, SNPs listed twice, Z that are not numbers, and how many of
+      the HapMap3 SNPs that LDSC regresses on it has. Fewer than 200,000 fails; fewer than half warns.</li>
+      <li><strong>Its statistics</strong>: a mean χ² below 1.02, an h² within 2 standard errors of 0 or above 1, and an
+      LDSC intercept of 1.1 or more that explains most of the inflation, each warn. An h² of 0 or less fails.</li>
+      <li><strong>Its label</strong>, against its genetic correlations: a study warns if its r<sub>g</sub> is 0.95 or more with
+      a study of another trait, or stays below 0.6 with a study of the same trait. It fails if other studies confirm the
+      other label and none its own.</li>
+      <li><strong>Its row</strong>, against the GWAS Catalog's record of the study: N, ancestry and paper.</li>
+      <li><strong>By hand</strong>: what someone who looked at a flagged study found, with the evidence.</li>
+    </ol>
+    <p>A fail means: do not use the study as it is. A warn: use it with care. A note is worth knowing, and the study passes.
+    The checks and their thresholds are in the <a href="https://github.com/gwassumstats/gwassumstats.github.io">repository</a>.</p>
+
     <h2>What is the nonredundant panel?</h2>
     <p><span data-v="EUR.panel">85</span> EUR and <span data-v="EAS.panel">17</span> EAS studies with h² z &gt; 6 and a squared
     r<sub>g</sub> of at most 0.1 between any two: traits that are close to independent. The
@@ -203,8 +221,10 @@
     <p>Lab members, after login with the lab's passphrase. The paths are stored encrypted; the browser decrypts them and
     keeps the key until logout. Everything else here is public.</p>
 
-    <h2>How do I give feedback?</h2>
-    <p>Open an issue on <a href="https://github.com/gwassumstats/gwassumstats.github.io/issues">GitHub</a>.</p>
+    <h2>How do I report a problem or give feedback?</h2>
+    <p>A study's page has a link to report a problem with it: a wrong label, a doubtful file or result. For anything else,
+    open an issue on <a href="https://github.com/gwassumstats/gwassumstats.github.io/issues">GitHub</a>. Issues are public:
+    no paths, and nothing from the lab's mailing list.</p>
   </section>
 </main>
 

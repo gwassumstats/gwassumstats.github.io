@@ -48,6 +48,41 @@ NAMES = [["A_unsigned", "Smith_2010_Height", "drafted"], ["B", "TEC_2021_Alzheim
          ["GCST0003", "Ito_2024_TraitFEAS", "drafted"]]
 
 
+MEASURED = ["id", "file", "columns", "rows", "duplicates", "not_rs", "in_hm3", "hm3", "bad_alleles", "ambiguous", "n_missing", "n_min", "n_median", "n_max",
+            "z_missing", "z_mean", "z_sd", "z_max", "z_positive", "chi2_mean", "lambda_gc"]
+RULES = """
+[file]
+min_snps = 300
+min_coverage = 0.5
+max_bad = 0.01
+n_within = 0.2
+[statistics]
+unsigned_positive = 0.9
+signed_positive = [0.4, 0.6]
+min_mean_chi2 = 1.02
+deflated_chi2 = 0.95
+min_intercept = 0.9
+high_intercept = 1.1
+max_ratio = 0.5
+min_h2_z = 2
+[label]
+twin_rg = 0.95
+twin_se = 0.05
+agree_rg = 0.7
+conflict_rg = 0.6
+conflict_h2_z = 4
+ignore = ["trait", "old", "new"]
+related = []
+"""
+
+
+def measured(study, rows, kind="h2", n=1000, **other):
+    """A row of the made-up metrics.tsv: a file with nothing wrong, but for `other`."""
+    row = {"id": study, "file": kind, "columns": "SNP A1 A2 N Z", "rows": rows, "duplicates": 0, "not_rs": 0, "in_hm3": rows, "hm3": 1000, "bad_alleles": 0, "ambiguous": 0,
+           "n_missing": 0, "n_min": n, "n_median": n, "n_max": n, "z_missing": 0, "z_mean": 0.0, "z_sd": 1.1, "z_max": 9.0, "z_positive": 0.5, "chi2_mean": 1.3, "lambda_gc": 1.2}
+    return [(row | other)[column] for column in MEASURED]
+
+
 def data_of(release: Path) -> Path:
     """The folder that plays data/ for a made-up release."""
     return release.parent / "data"
@@ -68,6 +103,14 @@ def mini(tmp_path):
     (data / "papers.json").write_text(json.dumps(PAPERS, ensure_ascii=False), encoding="utf-8")
     write(data / "consortia.tsv", ["group", "short"], [["# a comment line", ""], ["The Example Consortium", "TEC"]])
     write(data / "names.tsv", ["id", "name", "how"], NAMES)
+    write(data / "metrics.tsv", MEASURED, [  # what a scan of the files would have measured: see test_the_checks_judge_every_study
+        measured("A_unsigned", 900, z_positive=1.0), measured("B", 910, n=2000), measured("C", 920, n=3000, in_hm3=400),
+        measured("GCST0001", 930, n=4000), measured("GCST0001", 926, "rg", n=4000), measured("D_EAS", 940, n=5000),
+        measured("GCST0002", 950, n=6000, duplicates=5), measured("GCST0002", 950, "rg", n=6000),
+        measured("GCST0003", 960, n=4000, chi2_mean=1.25), measured("GCST0003", 958, "rg", n=4000)])
+    (data / "checks.toml").write_text(RULES)
+    write(data / "labels.tsv", ["id", "label", "why"], [["# a study whose label in the release is wrong", "", ""]])
+    write(data / "findings.tsv", ["id", "level", "finding"], [["# what a person found of a study", "", ""]])
     inventory = [
         ["Height (old)", "A_unsigned", "Old 2015", "Smith et al., 2010 Nature ", 1000, 900, "EUR", "NO", "YES", "NO"],
         ["Alzheimer’s disease", "B", "New 2024", "NG_Lee_2021_x", 2000, 910, "EUR", "YES", "YES", "YES"],

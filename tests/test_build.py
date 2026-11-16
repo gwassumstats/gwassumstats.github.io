@@ -1,19 +1,22 @@
 """The build, on a made-up release (conftest.mini): what it writes, what it refuses, and the encryption. And what
-finds the papers and drafts the short names that the build merges in."""
+finds the papers, drafts the short names and judges the studies, which the build merges in."""
 import json
 
 import pytest
 from cryptography.exceptions import InvalidTag
 
 import numpy as np
+import pandas as pd
 
 from build import crypt
 from build.__main__ import BLOB, build as build_with
 from build.release import tree
-from conftest import NAMES, NAN, PAPERS, RG, data_of, write
+from conftest import MEASURED, NAMES, NAN, PAPERS, RG, data_of, measured, write
 from names.__main__ import draft, trait
 from papers import cite
 from papers.__main__ import choose, parse
+from qc import labels
+from qc.scan import measure
 
 FAST = 1000  # PBKDF2 rounds, for tests that do not need the real cost
 
@@ -34,11 +37,12 @@ def test_studies_carry_the_inventory_h2_panel_and_paper(mini, tmp_path):
     assert [d["id"] for d in data["studies"]] == ["A_unsigned", "B", "C", "GCST0001", "D_EAS", "GCST0002", "GCST0003"]
     assert old == {"id": "A_unsigned", "name": "Smith_2010_Height", "trait": "Height (old)", "anc": "EUR", "n": 1000, "m": 900, "origin": "Old 2015",
                    "ref": "Smith et al., 2010 Nature", "signed": False, "alleles": True, "cross": False, "release": 2024, "h2": 0.2, "h2_se": 0.02, "h2_z": 10.0,
-                   "intercept": 1.01, "cite": ["1"]}
+                   "intercept": 1.01, "qc": "pass", "hm3": 0.9, "chi2": 1.3, "lambda": 1.2, "cite": ["1"]}
     assert new == {"id": "GCST0001", "name": "OrtinVela_2025_TraitNew", "trait": "Trait new", "anc": "EUR", "n": 4000, "m": 930, "origin": "New 2026",
                    "ref": "Ortín et al. 2025 Nat Genet", "signed": True, "alleles": True, "cross": True, "release": 2026, "h2": 0.1461, "h2_se": 0.009,
                    "h2_z": 16.23333, "intercept": 0.7683, "panel": 1, "m_rg": 926, "pmid": "111", "paper": "https://pubmed.ncbi.nlm.nih.gov/111/",
-                   "catalog": "https://www.ebi.ac.uk/gwas/studies/GCST0001", "paper_id": "NG_Ortin_2025_x", "cite": ["111"]}
+                   "catalog": "https://www.ebi.ac.uk/gwas/studies/GCST0001", "paper_id": "NG_Ortin_2025_x", "qc": "pass", "hm3": 0.93, "chi2": 1.3, "lambda": 1.2,
+                   "cite": ["111"], "notes": [["note", "LDSC intercept 0.77: the statistics look corrected for inflation (genomic control), which lowers h²"]]}
     assert {d["id"]: d["panel"] for d in data["studies"] if "panel" in d} == {"GCST0001": 1, "C": 2, "GCST0002": 1}  # the panels' own order
     assert data["studies"][1]["trait"] == "Alzheimer’s disease" and data["studies"][1]["h2"] == -0.0058
 
@@ -92,10 +96,80 @@ def test_short_names_that_are_missing_odd_or_shared_stop_the_build(mini, tmp_pat
         build(mini, tmp_path / "out", "x")
 
 
+def test_the_checks_judge_every_study(mini, tmp_path):
+    studies = built(mini, tmp_path / "out")["studies.json"]["studies"]
+    assert {d["id"]: d["qc"] for d in studies} == {"A_unsigned": "pass", "B": "fail", "C": "warn", "GCST0001": "pass", "D_EAS": "warn", "GCST0002": "warn", "GCST0003": "warn"}
+    assert {d["id"]: d["notes"] for d in studies if "notes" in d} == {
+        "B": [["fail", "h² -0.0058: not above 0, so nothing for LDSC to work with"]],
+        "C": [["warn", "40% of the HapMap3 SNPs that LDSC regresses on"]],
+        "GCST0001": [["note", "LDSC intercept 0.77: the statistics look corrected for inflation (genomic control), which lowers h²"]],  # a note: it passes
+        # rg 1.10 between Trait D and Trait F: one of the two labels is wrong, and each names the other as {ID}
+        "D_EAS": [["warn", "label in doubt: rg 1.10 with {GCST0003} (Trait F), a study of another trait by its label; one of the two labels is wrong"],
+                  ["note", "nearly identical to 1 other study (rg of at least 0.95): {GCST0003}, N 7,000"]],
+        "GCST0002": [["warn", "5 SNPs listed twice"]],
+        "GCST0003": [["warn", "LDSC intercept 1.20 with a mean χ² of 1.25: most of the inflation is not polygenic"],  # the worst first; then in the order of the checks
+                     ["warn", "label in doubt: rg 1.10 with {D_EAS} (Trait D), a study of another trait by its label; one of the two labels is wrong"],
+                     ["note", "the median N of its SNPs is 4,000; the inventory says 7,000"],
+                     ["note", "nearly identical to 1 other study (rg of at least 0.95): {D_EAS}"]]}
+    assert [(d["hm3"], d["chi2"], d["lambda"]) for d in studies[2:4]] == [(0.4, 1.3, 1.2), (0.93, 1.3, 1.2)]
+
+
+@pytest.mark.parametrize("row, finding", [
+    (measured("B", 910, n=2000, columns="SNP N Z"), ["fail", "its columns are SNP N Z, not SNP A1 A2 N Z"]),  # the inventory says it has alleles
+    (measured("B", 910, n=2000, z_positive=0.97), ["fail", "signed in the inventory, but 97% of its Z are positive: it holds |Z|"]),
+    (measured("B", 910, n=2000, z_positive=0.7), ["warn", "70% of its Z are positive"]),
+    (measured("B", 910, n=2000, z_missing=100), ["fail", "100 SNPs with a Z that is not a number"]),  # more than 1% of its rows
+    (measured("B", 910, n=2000, z_missing=3), ["warn", "3 SNPs with a Z that is not a number"]),
+    (measured("B", 910, n=2000, bad_alleles=2), ["fail", "2 SNPs with alleles that are not two of A, C, G, T"]),
+    (measured("B", 910, n=2000, not_rs=7), ["warn", "7 SNPs without an rsID"]),
+    (measured("B", 911, n=2000), ["warn", "911 SNPs in the file; the inventory says 910"]),
+    (measured("B", 910, n=2000, in_hm3=299), ["fail", "only 299 of the 1,000 HapMap3 SNPs that LDSC regresses on: too few for LDSC"]),
+    (measured("B", 910, n=2000, chi2_mean=1.01), ["warn", "mean χ² 1.01: no signal above chance"]),
+    (measured("B", 910, n=2000, chi2_mean=0.8), ["warn", "mean χ² 0.80: no signal above chance; the statistics are deflated"]),
+    (measured("B", 910, "rg", n=2000, ambiguous=4), ["warn", "its copy for rg: 4 strand-ambiguous SNPs"]),
+    (measured("A_unsigned", 900, z_positive=0.5), ["warn", "unsigned in the inventory, but 50% of its Z are positive: they look signed"]),
+    (None, ["warn", "its file was not measured"]),
+    (measured("B", 920, n=3000, in_hm3=400), ["warn", "by every number measured, its file is that of {C}: one file under two IDs"]),  # C's numbers
+])
+def test_what_the_checks_find_in_a_file(mini, tmp_path, row, finding):
+    study = row[0] if row else "B"
+    rows = [line.split("\t") for line in (data_of(mini) / "metrics.tsv").read_text().splitlines()[1:]]
+    write(data_of(mini) / "metrics.tsv", MEASURED, [r for r in rows if (r[0], r[1]) != (study, row[1] if row else "h2")] + ([row] if row else []))
+    notes = {d["id"]: d["notes"] for d in built(mini, tmp_path / "out")["studies.json"]["studies"] if "notes" in d}
+    assert finding in notes[study]
+
+
+def test_the_catalog_s_record_is_compared_where_there_is_one(mini, tmp_path):
+    record = lambda study, n, ancestry, author, published: [study, "1", author, published, "Nat Genet", n, ancestry, "", "A trait", "", "", "A title"]
+    write(data_of(mini) / "catalog.tsv", ["id", "pmid", "author", "published", "journal", "n", "ancestry", "sex", "trait", "sample", "cohort", "title"], [
+        record("GCST0001", 4000, "European", "Ortin S", "2025-03-01"),  # as the inventory has it, but for an accent: nothing to say
+        record("GCST0002", 6500, "European", "Ito K", "2023-12-30")])
+    notes = {d["id"]: d.get("notes", []) for d in built(mini, tmp_path / "out")["studies.json"]["studies"]}
+    assert [note for note in notes["GCST0001"] if "Catalog" in note[1]] == []
+    assert [note for note in notes["GCST0002"] if "Catalog" in note[1]] == [["fail", "ancestry EAS; the GWAS Catalog says European"], ["warn", "N 6,000; the GWAS Catalog says 6,500"],
+                                                                         ["warn", "reference Ito et al. 2024 Nat Commun; the GWAS Catalog says Ito K 2023"]]
+
+
+def test_a_label_that_a_person_found_wrong_warns_and_is_read_as_corrected(mini, tmp_path):
+    write(data_of(mini) / "labels.tsv", ["id", "label", "why"], [["GCST0003", "Trait D", "its N is that of Trait D"]])
+    studies = {d["id"]: d for d in built(mini, tmp_path / "out")["studies.json"]["studies"]}
+    assert ["warn", "the release calls it Trait F; its file holds Trait D: its N is that of Trait D"] in studies["GCST0003"]["notes"]
+    assert not [note for d in studies.values() for note in d.get("notes", []) if "label in doubt" in note[1]] and studies["D_EAS"]["qc"] == "pass"  # the two agree now
+
+
+def test_what_a_person_found_counts_like_a_finding_of_the_checks(mini, tmp_path):
+    write(data_of(mini) / "findings.tsv", ["id", "level", "finding"], [["A_unsigned", "fail", "its N is that of {B}"], ["A_unsigned", "note", "looked at by hand"], ["Gone", "fail", "of a study that left"]])
+    studies = {d["id"]: d for d in built(mini, tmp_path / "out")["studies.json"]["studies"]}
+    assert studies["A_unsigned"]["qc"] == "fail" and studies["A_unsigned"]["notes"] == [["fail", "its N is that of {B}"], ["note", "looked at by hand"]]
+    write(data_of(mini) / "findings.tsv", ["id", "level", "finding"], [["A_unsigned", "bad", "of no level"]])
+    with pytest.raises(ValueError, match="made by hand is a bad"):
+        build(mini, tmp_path / "out", "x")
+
+
 def test_release_counts(mini, tmp_path):
     release = built(mini, tmp_path / "out")["studies.json"]["release"]
     assert release == {
-        "year": 2026, "packaged": "2026-09-07", "papers": 2, "ancestries": ["EUR", "EAS"],
+        "year": 2026, "packaged": "2026-09-07", "papers": 2, "ancestries": ["EUR", "EAS"], "qc": {"pass": 2, "warn": 4, "fail": 1},
         "all": {"studies": 7, "before": 4, "added": 3, "signed": 6, "signed_before": 3, "unsigned": 1, "unsigned_added": 0, "no_alleles": 0},
         "EUR": {"studies": 4, "before": 3, "added": 1, "signed": 3, "signed_before": 2, "pairs": 3, "failed": 1,
                 "worst": {"id": "C", "failed": 1, "pairs": 2}, "panel": 2, "panel_added": 1, "pairs_before": 1, "panel_before": 2, "panel_kept": 1},
@@ -277,6 +351,66 @@ def test_short_names_are_drafted_from_paper_and_trait_and_told_apart():
         "i": ("Smith_2010_Height", "check: no paper found"), "j": ("Unknown_0000_Height", "check: no paper found"),  # without a paper: whom and when the inventory names
         "k": ("Li_2024_BreastCancerFemale", "drafted"), "l": ("Li_2024_HeightMale", men),  # a name that says so already; a single-sex study alone of its trait says so too
         "m": ("Li_2024_Preeclampsia", "drafted"), "n": ("Li_2024_ProstateCancer", "drafted")}  # but not of a trait that one sex only has
+
+
+# ---------------------------------------------------------------- the checks: a study's label, a file's numbers
+
+
+LABEL_RULES = {"twin_rg": 0.95, "twin_se": 0.05, "agree_rg": 0.7, "conflict_rg": 0.6, "conflict_h2_z": 4, "ignore": ["adjusted", "by", "medication", "uk", "biobank"],
+               "related": [["hemoglobin", "hematocrit"]]}
+
+
+def label_check(traits, rg, se=0.02, h2_z=10):
+    """The findings for studies a, b, c, ... with these traits, of one ancestry, and these rg by pair ("ab": 0.99)."""
+    ids = list("abcdefgh"[:len(traits)])
+    pairs = [x + y for i, x in enumerate(ids) for y in ids[i + 1:]]
+    table = {"ids": ids, "rg": [rg.get(pair) for pair in pairs], "se": [se if pair in rg else None for pair in pairs]}
+    return labels.check({i: {"trait": trait, "h2_z": h2_z} for i, trait in zip(ids, traits)}, {"EUR": table}, LABEL_RULES)
+
+
+def test_a_study_that_is_another_trait_s_twin_fails_when_that_trait_is_confirmed():
+    found = label_check(["LDL Direct Adjusted By Medication", "FEV1-FVC Ratio", "FEV1/FVC ratio", "LDLdirect"], {"ab": 0.99, "ac": 1.0, "bc": 0.98, "ad": 0.08, "bd": 0.01, "cd": 0.02})
+    assert found == {"a": [("fail", "label in doubt: rg 0.99 with {b} (FEV1-FVC Ratio), a study of another trait by its label; other studies confirm that label, none this study's"),
+                           ("fail", "label in doubt: rg 1.00 with {c} (FEV1/FVC ratio), a study of another trait by its label; other studies confirm that label, none this study's"),
+                           ("warn", "label in doubt: rg 0.08 only with {d} (LDLdirect), a study of the same trait by its label")]}  # d is not blamed: a failed one explains it
+
+
+def test_two_twins_of_different_labels_both_warn_when_nothing_confirms_either():
+    found = label_check(["Operation Tonsillectomy Adenoids", "Varicose Veins"], {"ab": 1.03})
+    assert found == {"a": [("warn", "label in doubt: rg 1.03 with {b} (Varicose Veins), a study of another trait by its label; one of the two labels is wrong")],
+                     "b": [("warn", "label in doubt: rg 1.03 with {a} (Operation Tonsillectomy Adenoids), a study of another trait by its label; one of the two labels is wrong")]}
+
+
+def test_two_studies_of_one_label_that_disagree_warn_unless_another_confirms_one():
+    two = label_check(["Atrial Fibrillation And Flutter", "Atrial Fibrilation"], {"ab": -0.19})  # one label, but for a slip of the pen and a longer name
+    assert {study: [level for level, _ in findings] for study, findings in two.items()} == {"a": ["warn"], "b": ["warn"]}
+    three = label_check(["Pulse Pressure Adjusted By Medication", "Pulse pressure", "Pulse pressure (UK Biobank)"], {"ab": 0.11, "ac": 0.09, "bc": 0.97})
+    assert set(three) == {"a"} and [level for level, _ in three["a"]] == ["warn", "warn"]  # b and c confirm each other
+    assert label_check(["Height", "Height"], {"ab": 0.3}, se=0.2) == {}  # too uncertain to say they disagree
+    assert label_check(["Height", "Height"], {"ab": 0.3}, h2_z=3) == {}  # too weak a study to say so
+    assert label_check(["Height", "Height"], {}) == {}  # no estimate, no finding
+    assert labels.check({i: {"trait": "Height", "h2_z": 10} for i in "ab"}, {"EUR": {"ids": ["a", "b"], "rg": [0.3], "se": [0.02]}}, LABEL_RULES | {"distinct": [["b", "a"]]}) == {}  # a pair known to differ
+
+
+def test_related_labels_may_be_twins():
+    assert label_check(["Hemoglobin", "Hematocrit (HCT)"], {"ab": 0.97}) == {}  # a pair that is listed
+    assert label_check(["Knee Osteoarthritis", "Osteoarthritis in Knee (KneeOA)"], {"ab": 0.99}) == {}  # a word in common
+    assert label_check(["Thyroid", "Thyroid stimulating hormone levels"], {"ab": 0.2}) == {}  # not the same label: a word alone is a label of its own
+    assert label_check(["Hair Balding Pattern", "Hair Balding Pattern 2"], {"ab": 0.14}) == {}  # nor these: a number makes another label
+    assert label_check(["LDL", "Height"], {"ab": 0.99}, se=0.2) == {}  # too uncertain to call them twins
+
+
+def test_a_file_is_measured_snp_by_snp(tmp_path):
+    path = tmp_path / "X.sumstats"
+    path.write_text("SNP\tA1\tA2\tN\tZ\n" + "".join(f"{row}\n" for row in (
+        "rs1\tA\tG\t1000\t2.0", "rs2\tA\tT\t1000\t-1.0", "rs2\tC\tG\t900\t1.0", "rs3\tA\tA\t800\tinf", "chr1:5\tG\tT\t1000\t-3.0", "rs6\tN\tC\t\t0.5")))
+    m = measure(str(path), pd.Index(["rs1", "rs2", "rs8", "rs9"]))
+    assert (m["columns"], m["rows"], m["duplicates"], m["not_rs"], m["in_hm3"], m["hm3"]) == ("SNP A1 A2 N Z", 6, 1, 1, 2, 4)  # rs2, listed twice, counts once
+    assert (m["bad_alleles"], m["ambiguous"], m["n_missing"], m["n_median"], m["z_missing"]) == (2, 2, 1, 1000, 1)  # A/A and N/C; A/T and C/G; an infinite Z is counted and left out
+    assert m["z_positive"] == 0.6 and m["chi2_mean"] == pytest.approx((4 + 1 + 1 + 9 + 0.25) / 5) and m["lambda_gc"] == pytest.approx(1 / 0.4549364)
+    plain = tmp_path / "Y.sumstats"
+    plain.write_text("SNP\tN\tZ\nrs1\t10\t1.5\n")
+    assert measure(str(plain), pd.Index(["rs1"]))["columns"] == "SNP N Z" and "bad_alleles" not in measure(str(plain), pd.Index(["rs1"]))
 
 
 def test_encryption_round_trip():

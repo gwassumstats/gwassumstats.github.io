@@ -6,8 +6,9 @@ conventions unless this file says otherwise.
 
 Status (2026-11-16): of `notebook/plans/2026-11-16-portal.md`, phase 1 is built (the catalog: Sumstats,
 Heritability, Genetic correlation, Release notes, About, a page per study, the login that shows the O2 paths), and of
-phase 2 the papers, the short names and the cart (ticked studies export as TSV and BibTeX). Next: the label check and
-QC, then the candidates for the next release and their backtest.
+phases 2 and 3 the papers, the short names, the cart (ticked studies export as TSV and BibTeX), and the quality
+checks with the label check and the link to report a problem. Next: the candidates for the next release and their
+backtest.
 
 ## Hard constraints
 
@@ -23,6 +24,8 @@ QC, then the candidates for the next release and their backtest.
    `data/` is drafted by scripts and corrected by hand; a script never overwrites a row that is there.
 4. The site loads nothing from other sites (no analytics, fonts or scripts): the passphrase is typed into it.
 5. Before a push, run `uv run pytest` with both variables set, and `dev/site_check.py`. A skipped test did not run.
+   What a Slurm job writes besides `data/metrics.tsv` (its logs hold paths) stays outside the repository, under
+   `notebook/results/`. Cancel a Slurm job by its explicit ID only.
 6. Push workflow files over SSH (the `gh` token lacks the `workflow` scope).
 
 ## Owner's preferences
@@ -49,6 +52,13 @@ QC, then the candidates for the next release and their backtest.
   *label* is who and which year it is cited by, and its journal: `Speliotes et al. 2010 Nat Genet`.
 - *Cart:* the studies a reader ticked, kept in the browser; it exports their names, IDs and paths (TSV) and their
   papers (BibTeX).
+- *QC, checks:* what `qc/checks.py` says of a study: *pass*, *warn* or *fail*, with its *findings*, each a fail, a
+  warn or a *note* (worth knowing; the study passes). Thresholds: `data/checks.toml`.
+- *Label check:* the part of QC that compares a study's label (its trait name in the release) with its genetic
+  correlations: a *twin* is a study with rg of 0.95 or more; a label is *confirmed* when a study of the same label
+  agrees. It flags, with the best-matching studies as evidence; it never relabels.
+- *Reviewed label:* a row of `data/labels.tsv`: what a study's file holds where the release's trait name is wrong,
+  found by a person. Label fixes beyond that wait for the owner's approval.
 - *Release:* the collection as published on O2 in one *release folder*; the site shows one (2026: 602 studies).
 - *Origin:* the update that added a study (`Finucane2015`, ..., `New 2026`); "Release" on a study's page.
 - *Signed:* a study whose Z has a direction. Only signed studies have rg.

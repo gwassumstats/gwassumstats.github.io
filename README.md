@@ -8,8 +8,9 @@ with the lab's passphrase to see where they are. It costs $0.
 
 1. **Release.** The collection is published on O2 as a release folder: the inventory, the S-LDSC heritabilities, the
    cross-trait LDSC genetic correlations, the nonredundant panels and the index of the per-SNP files.
-2. **What the repository adds** (`data/`): the paper of each study and its short name. Both are drafted by a script
-   and kept as small tables that are read and corrected by hand.
+2. **What the repository adds** (`data/`): the paper of each study and its short name, both drafted by a script and
+   kept as small tables that are read and corrected by hand; and the numbers of each file, measured SNP by SNP on
+   Slurm, from which the quality checks judge the study: pass, warn or fail.
 3. **Build** (`build/`, run on O2): `python -m build` reads the release folder and `data/`, and writes `site/data/`,
    which is committed. Nothing is built on GitHub, and the site is never edited by hand to change a number.
 4. **Site.** Plain HTML, CSS and JavaScript in `site/`, for desktop screens. It loads nothing from other sites. A push
@@ -17,7 +18,7 @@ with the lab's passphrase to see where they are. It costs $0.
 
 | File in `site/data/` | Content | Read by |
 |---|---|---|
-| `studies.json` | The inventory with h², each study's short name and paper, and the release's counts | Anyone |
+| `studies.json` | The inventory with h², each study's short name, paper and quality checks, and the release's counts | Anyone |
 | `papers.json` | Every paper cited: authors, title, journal, DOI, BibTeX entry | Anyone, when first needed |
 | `rg_EUR.json`, `rg_EAS.json` | Every genetic correlation of an ancestry; the order of its heatmaps | Anyone, when first needed |
 | `paths.enc.json` | The release folder and each study's file on O2, encrypted | Whoever has the passphrase |
@@ -29,6 +30,16 @@ with the lab's passphrase to see where they are. It costs $0.
 | `consortia.tsv` | A group that PubMed names as author → the short name it is cited by | By hand |
 | `names.tsv` | A study's ID → its short name, and how the name was made | `python -m names`, then by hand |
 | `abbreviations.tsv` | A phrase of a trait name → what stands for it in a short name | By hand |
+| `metrics.tsv` | What was measured of each file: rows, SNPs listed twice, HapMap3 SNPs, N, Z, mean χ² | `python -m qc.scan` |
+| `checks.toml` | The thresholds of the quality checks | By hand |
+| `labels.tsv` | A study whose trait name in the release a person found wrong → what its file holds, and how that is known | By hand |
+| `findings.tsv` | What else a person found of a study, shown and counted like a finding of the checks | By hand |
+
+**Quality checks** (`qc/checks.py`). Every study goes through the same checks: its file as measured, its LDSC
+results, its label against its genetic correlations (`qc/labels.py`), and its row against the GWAS Catalog's record.
+A fail means do not use the study as it is; a warn, use it with care; a note is worth knowing, and the study passes.
+The site shows each finding on the study's page. The label check flags a study whose label its genetic correlations
+contradict; it does not relabel it. A person who has looked adds the study to `data/labels.tsv`.
 
 **Short names.** A study is called `FirstAuthor_Year_Trait` (`Speliotes_2010_BMI`) everywhere on the site: who and
 which year its paper is cited by, and its trait, abbreviated. The name is a label only. A study's ID in the release
@@ -56,9 +67,23 @@ files themselves are protected by O2.
 2. **Review papers and names.** A row of `data/references.tsv` or `data/names.tsv` whose `how` says "check" was a
    guess. Correct the row, write "by hand" and why in `how`, and rebuild: the scripts keep the rows that are there.
    A study whose reference still says "check" shows no paper; a study without a short name stops the build.
-3. **A new release:** rebuild, then update the Release notes in `site/index.html`: the tests say which written-in
+3. **Measure the files**, on O2, when files were added or changed. It runs on Slurm (12 tasks, a few minutes) and
+   writes `data/metrics.tsv`; then rebuild.
+
+   ```bash
+   uv run --group qc python -m qc.scan --hm3 EUR='<weights of EUR, one file per chromosome>' \
+       --hm3 EAS='<weights of EAS>' --logs <a folder outside the repository>
+   ```
+
+   The weights are those LDSC regresses with (`weights.hm3_noMHC.*.l2.ldscore.gz`). The logs hold paths: never commit
+   them. Cancel a Slurm job by its ID only.
+4. **Review a study the checks flag.** Write what you find, with its evidence, in `data/findings.tsv`: it shows on
+   the study's page with what the checks found. If its label in the release is wrong and the right one is known, add
+   it to `data/labels.tsv`: the label check then reads the corrected label, and the study warns with the evidence
+   until the release is corrected. Then rebuild.
+5. **A new release:** rebuild, then update the Release notes in `site/index.html`: the tests say which written-in
    numbers no longer match.
-4. **Change the passphrase:** rebuild with the new one. Every reader logs in again.
+6. **Change the passphrase:** rebuild with the new one. Every reader logs in again.
 
 ## Checks
 
@@ -83,6 +108,7 @@ Without the two variables, the tests that need them are skipped. Run with both b
 | `build/` | The build: `release.py` reads a release folder, `merge.py` adds what `data/` holds, `crypt.py` encrypts the paths |
 | `papers/` | Finds each study's paper in PubMed (`python -m papers`); `cite.py`: how a paper is cited, its BibTeX entry |
 | `names/` | Drafts the short names (`python -m names`) |
+| `qc/` | Quality checks: `scan.py` measures the files on Slurm, `checks.py` judges each study, `labels.py` checks its label |
 | `data/` | What the repository adds to a release: papers and short names, reviewable |
 | `site/` | The website; `site/data/` is written by the build |
 | `dev/` | Local only: `site_check.py` |

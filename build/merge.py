@@ -1,11 +1,14 @@
-"""What the repository adds to a release, from data/: the paper of each study, and its short name."""
+"""What the repository adds to a release, from data/: the paper of each study, its short name, and what the quality
+checks say of it."""
 import json
 import re
+import tomllib
 from pathlib import Path
 
 import pandas as pd
 
 from papers import cite
+from qc import checks
 
 DATA = Path(__file__).parents[1] / "data"
 NAMED = 3  # the authors of a paper that the site names before "et al."
@@ -62,3 +65,20 @@ def names(d: pd.DataFrame, data: Path) -> pd.Series:
     if len(twice):
         raise ValueError(f"data/names.tsv: {twice.iloc[0]} names two studies")
     return named
+
+
+def quality(d: pd.DataFrame, tables: dict, data: Path) -> pd.DataFrame:
+    """What the quality checks say of each study (qc/checks.py): `qc` (pass, warn or fail) and `notes`, its findings;
+    and what was measured of its file (data/metrics.tsv): `hm3`, the share it has of the HapMap3 SNPs that LDSC
+    regresses on, `chi2`, the mean of Z², and `lambda`, the median of Z² over its expectation. `tables`: the genetic
+    correlations of each ancestry. The GWAS Catalog's records (data/catalog.tsv) are compared if they are there. What
+    a person found is counted too: a label of the release that is wrong (data/labels.tsv), and any other finding
+    (data/findings.tsv)."""
+    metrics = pd.read_csv(data / "metrics.tsv", sep="\t").set_index(["id", "file"])
+    known = data / "catalog.tsv"
+    catalog = pd.read_csv(known, sep="\t", dtype=str, keep_default_na=False).set_index("id") if known.exists() else pd.DataFrame(columns=["n", "ancestry", "author", "published"])
+    reviewed = {row["id"]: (row["label"], row["why"]) for row in cite.table(data / "labels.tsv")}
+    by_hand = [(row["id"], row["level"], row["finding"]) for row in cite.table(data / "findings.tsv")]
+    judged = checks.judge(d, tables, metrics, catalog, reviewed, by_hand, tomllib.loads((data / "checks.toml").read_text(encoding="utf-8")))
+    file = metrics.xs("h2", level="file").reindex(d.index)
+    return judged.assign(hm3=(file["in_hm3"] / file["hm3"]).clip(upper=1).round(3), chi2=file["chi2_mean"].round(3), **{"lambda": file["lambda_gc"].round(3)})

@@ -1,0 +1,47 @@
+# The thresholds of the quality checks (qc/checks.py), set on the 602 studies of the 2026 release so that a study
+# with nothing wrong passes. A study fails if a check fails, warns if one warns, and passes otherwise; a note is
+# worth knowing and leaves the study passing.
+
+[file]
+min_snps = 200_000        # fail: fewer of the HapMap3 SNPs that LDSC regresses on (LDSC itself warns below this)
+min_coverage = 0.5        # warn: a smaller share of those SNPs
+max_bad = 0.01            # fail: a larger share of rows listed twice, or with a Z that is not a number
+n_within = 0.2            # note: the median N of the SNPs differs from the inventory's N by more than this share
+
+[statistics]
+unsigned_positive = 0.9   # a file with a larger share of positive Z holds |Z|: it is unsigned
+signed_positive = [0.4, 0.6]  # warn: a signed file with a share of positive Z outside this
+min_mean_chi2 = 1.02      # warn: a smaller mean of Z² (LDSC: "mean chi^2 may be too small")
+deflated_chi2 = 0.95      # ...and below this, the statistics are deflated
+min_intercept = 0.9       # note: a smaller LDSC intercept; the statistics look corrected for inflation
+high_intercept = 1.1      # warn: an LDSC intercept of at least this...
+max_ratio = 0.5           # ...with (intercept - 1) / (mean Z² - 1) above this: the inflation is mostly not polygenic
+min_h2_z = 2              # warn: h² within this many standard errors of 0
+
+[label]
+twin_rg = 0.95            # two studies are nearly identical if their rg is at least this...
+twin_se = 0.05            # ...with a standard error of at most this
+agree_rg = 0.7            # two studies with the same label agree if |rg| is at least this...
+conflict_rg = 0.6         # ...and disagree if |rg| + 2 SE is below this,
+conflict_h2_z = 4         # both with an h² z above this
+# Words that do not make a label: a study, a side, a way of measuring
+ignore = ["a", "an", "and", "or", "of", "the", "in", "by", "for", "to", "with", "vs", "x", "on", "at", "per", "level", "levels",
+          "uk", "ukb", "ukbb", "biobank", "adjusted", "unadjusted", "medication", "automated", "manual", "reading", "combined",
+          "right", "left", "female", "male", "females", "males", "pooled", "self", "reported", "diagnosed", "doctor"]
+# Labels that may be nearly identical though they share no word: two names of one trait, or a trait and its close
+# relative. Each pair was looked at by hand; a label has a pair if it contains one part and its twin the other.
+related = [
+  ["attention deficit hyperactivity disorder", "adhd"], ["body mass index", "bmi"], ["glycated hemoglobin", "hba1c"],
+  ["hemoglobin", "hematocrit"], ["cholesterol", "ldl"], ["urate", "gout"], ["hypothyroidism", "thyroid"],
+  ["osteoarthritis", "replacement"], ["kidney cancer", "renal cell carcinoma"], ["gestational diabetes", "glucose tolerance"],
+  ["smoked", "smoking"], ["fluid intelligence", "verbal numeric reasoning"], ["intelligence", "verbal numeric reasoning"],
+  ["spherical power", "myopia"], ["allergic rhinitis", "eczema"], ["cardiovascular", "hyperthension"], ["respiratory", "asthma"],
+  ["basal metabolic rate", "weight"], ["chronic pain", "opioid"], ["chronic pain", "analgesic"], ["opioid", "analgesic"],
+  ["mood disturbance", "depress"], ["mood disturbance", "mania"], ["mood disturbance", "psychosis"], ["mania", "psychosis"],
+  ["depress", "psychosis"], ["depress", "mania"], ["serious mental illness", "schizophrenia"], ["serious mental illness", "bipolar"],
+]
+# Two studies that share a label and are known to measure different things: their low rg is no doubt on either label.
+# A pair is the two IDs; each was looked at by hand.
+distinct = [
+  ["GBMI_ChronicObstructivePulmonaryDisease", "PASS_ChronicObstructivePulmonaryDisease_Consentino2023"],  # a diagnosis; a deep-learning liability from spirograms (rg -0.87 with FEV1/FVC)
+]

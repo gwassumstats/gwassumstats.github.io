@@ -3,3 +3,5 @@ notebook/
 __pycache__/
 *.pyc
 .env
+submitit-logs/
+.cache/

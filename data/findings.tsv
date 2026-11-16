@@ -1,0 +1,11 @@
+id	level	finding
+# What a person found of a study, shown with what the checks find and counted like it. `level`: fail, warn or note.
+# A finding names another study as {ID}. The Pan-UK Biobank's own numbers are those of its public phenotype manifest.
+PANUKBB_IndirectBilirubin	fail	its N, 401,570, is that of the Pan-UK Biobank's eGFR from creatinine and cystatin C; its indirect bilirubin has 342,781
+PANUKBB_LDLDirectAdjustedByMedication	fail	its N, 316,932, is that of the Pan-UK Biobank's FEV1/FVC ratio; its LDL direct adjusted by medication has 398,402
+PANUKBB_MeanArterialPressureAutomatedReadingAdjustedByMedication	fail	label in doubt: its N, 398,402, is that of the Pan-UK Biobank's LDL direct adjusted by medication, and its rg is 0.91 with {UKB_460K.biochemistry_LDLdirect}; the mean arterial pressure of its label has 393,858
+PANUKBB_PulsePressureAutomatedReadingAdjustedByMedication	fail	its N, 368,642, is that of the Pan-UK Biobank's non-albumin protein and of its albumin/globulin ratio, and its rg is 0.79 with {UKB_460K.biochemistry_TotalProtein}; the pulse pressure of its label has 393,858
+PANUKBB_PulsePressureCombinedAutomatedManualReading	note	its N, 393,858, is that of the Pan-UK Biobank's pulse pressure by automated reading, adjusted by medication; the combined reading of its label has 420,134
+PANUKBB_HairBaldingPattern	note	pattern 1 of the Pan-UK Biobank's four hair/balding patterns, by its N and its rg of 1.01 with {UKB_460K.body_BALDING1}
+PANUKBB_HairBaldingPattern2	note	pattern 2 of the Pan-UK Biobank's four hair/balding patterns, by its N and its h²
+PASS_Stroke_Malik2018	fail	its N, 198,048, is that of small vessel stroke in the Europeans of Malik 2018 (5,386 cases, 192,662 controls), where any stroke has 446,696: it holds the file of {PASS_SmallVesselStroke_Malik2018}

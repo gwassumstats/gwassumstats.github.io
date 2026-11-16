@@ -2,7 +2,7 @@
    footer, in a wider column for tables. */
 :root {
   --bg: #f6f6ef; --surface: #fff; --subtle: #eeeee6; --text: #15171c; --body: #333843; --muted: #6b6f78; --border: #dcdcd2;
-  --accent: #2355d8; --accent-strong: #0f2a73; --accent-soft: #e9effd; --error: #c0392b;
+  --accent: #2355d8; --accent-strong: #0f2a73; --accent-soft: #e9effd; --error: #c0392b; --caution: #8a5a00;
   --mark: #2355d8; --pos: #c0392b; --neg: #2355d8;  /* chart marks: bars; positive rg (red) and negative rg (blue), told apart by colour-blind readers in both modes */
   --shadow: 0 4px 16px rgba(0, 0, 0, .12);
   --radius: 4px;
@@ -13,7 +13,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #121418; --surface: #181b21; --subtle: #1d2129; --text: #eceef2; --body: #c9cdd6; --muted: #98a0af; --border: #2a2f3a;
-    --accent: #86a6ff; --accent-strong: #d3deff; --accent-soft: #1d2947; --error: #ff8a7a;
+    --accent: #86a6ff; --accent-strong: #d3deff; --accent-soft: #1d2947; --error: #ff8a7a; --caution: #e0b040;
     --mark: #4f7ff0; --pos: #e66767; --neg: #4f7ff0;  /* darker than the text colours: a filled mark, not a line of text */
     --shadow: 0 4px 16px rgba(0, 0, 0, .5);
   }
@@ -116,6 +116,14 @@ main:has(#listview:not([hidden]) table:empty) { min-height: 100vh; }  /* the foo
 .data .pm { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .data .pm .est { display: inline-block; min-width: 7ch; text-align: right; }
 .data .pm .se { display: inline-block; min-width: 6ch; text-align: left; }  /* a header's button centres its text */
+/* what the quality checks say: the word says it, the colour repeats it */
+.qc { color: var(--muted); }
+.qc.warn { color: var(--caution); }
+.qc.fail { color: var(--error); font-weight: 600; }
+.qc[title] { cursor: help; }
+.finding { margin-top: .25rem; }
+.finding .qc { display: inline-block; min-width: 2.6rem; }
+.fields .hint { margin-top: .25rem; }
 .data .sub td { padding-top: 0; }  /* a study's path, under its row, once logged in */
 .paths { color: var(--muted); font-size: var(--fs-small); }
 .paths .path { color: var(--body); overflow-wrap: anywhere; }

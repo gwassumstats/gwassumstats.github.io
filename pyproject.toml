@@ -7,6 +7,7 @@ dependencies = ["cryptography>=44", "numpy>=2", "pandas>=2.2"]
 
 [dependency-groups]
 dev = ["pytest>=8"]
+qc = ["submitit>=1.5"]  # on O2 only: qc/scan.py
 
 [tool.uv]
 package = false

@@ -8,6 +8,8 @@ const STRONG_Z = 3;  // a genetic correlation is listed among a study's stronges
 const TOP = 10;      // the strongest shown before "show all"
 const PANEL_MAX = Math.sqrt(0.1);  // a panel's heatmap: its colours end at the panels' bound, rg² = 0.1
 const PUBMED = "https://pubmed.ncbi.nlm.nih.gov/", DOI = "https://doi.org/";  // where a paper's links lead
+const ISSUES = "https://github.com/gwassumstats/gwassumstats.github.io/issues/new";  // where a problem is reported
+const QC = ["pass", "warn", "fail"];  // what the quality checks say of a study, the best first
 const $ = (id) => document.getElementById(id);
 const el = (tag, cls, text) => Object.assign(document.createElement(tag), { className: cls || "", textContent: text ?? "" });
 const svg = (tag, attrs = {}) => {
@@ -21,7 +23,7 @@ const state = {
   papers: {},         // PMID → the label of a paper: "Speliotes et al. 2010 Nat Genet"
   view: "sumstats",   // a tab, or "study": the page of state.study
   study: null,
-  filter: { q: "", anc: "", z6: false, signed: false, panel: false, ticked: false },  // of the studies under "sumstats" and "heritability"
+  filter: { q: "", anc: "", qc: "", z6: false, signed: false, panel: false, ticked: false },  // of the studies under "sumstats" and "heritability"
   cart: new Set(),    // the IDs of the studies ticked, for the exports; kept in this browser
   sort: { sumstats: null, h2: { key: "h2", dir: -1 }, neighbours: null },  // null: the release's order; for neighbours, the strongest first
   rg: { a: null, b: null, strict: true, all: false, heat: null },  // the pair looked up, the neighbours listed, the heatmap drawn ({ anc, kind })
@@ -101,6 +103,14 @@ const studyLink = (d) => {
   const a = Object.assign(el("a"), { href: `?study=${encodeURIComponent(d.id)}` });
   a.append(...parts(d.name));
   return a;
+};
+// A finding of the quality checks names another study as {ID}: its parts, that study as its short name, linked or not
+const finding = (text, linked) => text.split(/\{([^}]+)\}/).map((part, k) => (k % 2 && state.byId.has(part) ? (linked ? studyLink(state.byId.get(part)) : state.byId.get(part).name) : part));
+// What the checks say of a study, in a word; the fails and warns show when the pointer rests on it
+const verdict = (d) => {
+  const word = el("span", `qc ${d.qc}`, d.qc), reasons = (d.notes ?? []).filter(([level]) => level !== "note");
+  if (reasons.length) word.title = reasons.map(([level, text]) => `${level}: ${finding(text).join("")}`).join("\n");
+  return word;
 };
 // A study's paper, by its label, linked to PubMed; the inventory's own words for a study whose paper is not known
 const reference = (d) => (d.cite ? outside(`${PUBMED}${d.cite[0]}/`, state.papers[d.cite[0]]) : parts(d.ref));
@@ -251,7 +261,7 @@ function pathLine(d, label = "") {
 
 function shown() {
   const f = state.filter, sought = words(f.q);
-  return state.studies.filter((d) => (!f.anc || d.anc === f.anc) && (!f.z6 || d.h2_z > 6) && (!f.signed || d.signed) && (!f.panel || d.panel)
+  return state.studies.filter((d) => (!f.anc || d.anc === f.anc) && (!f.qc || d.qc === f.qc) && (!f.z6 || d.h2_z > 6) && (!f.signed || d.signed) && (!f.panel || d.panel)
     && (!f.ticked || state.cart.has(d.id)) && sought.every((w) => d.text.includes(w)));
 }
 
@@ -344,14 +354,15 @@ const STUDY = { key: "name", label: "Study", title: "Short name: first author, y
 const ANCESTRY = { key: "anc", label: "Ancestry", cls: "short" };
 const H2 = { key: "h2", label: plusMinusLabel("h²"), title: "Heritability and its standard error: S-LDSC, observed scale", cls: "pm", first: -1, show: (d) => plusMinusCell(d.h2, d.h2_se) };
 const H2_Z = { key: "h2_z", label: "h² z", title: "h² over its standard error", num: sig };
+const CHECKS = { key: "rank", label: "QC", title: "Quality checks: pass, warn or fail; a study's page says why", cls: "short", first: -1, show: verdict };
 const COLUMNS = {
   sumstats: [TICK, STUDY, ANCESTRY,
     { key: "n", label: "N", title: "Sample size", num: int },
     { key: "m", label: "M", title: "SNPs in the file", num: int },
-    H2, H2_Z,
+    H2, H2_Z, CHECKS,
     { key: "label", label: "Reference", title: "The study's paper", cls: "ref", show: reference }],
   h2: [TICK, STUDY, ANCESTRY, H2, H2_Z,
-    { key: "intercept", label: "Intercept", title: "Intercept of the LD score regression", num: fixed(4) }],
+    { key: "intercept", label: "Intercept", title: "Intercept of the LD score regression", num: fixed(4) }, CHECKS],
   neighbours: [{ ...STUDY, show: (r) => studyLink(r.d) },
     { key: "rg", label: rgPlusMinusLabel, title: "Genetic correlation and its standard error", cls: "pm", first: -1, show: (r) => plusMinusCell(r.rg, r.se) },
     { key: "z", label: "z", num: sig },
@@ -700,6 +711,23 @@ function citation(pmid, paper) {
   return line;
 }
 
+// What the quality checks found of a study, the worst first; what was measured of its file; where to report a problem
+function checked(d) {
+  const block = el("div"), head = el("div"), measured = el("div", "hint");
+  const report = outside(`${ISSUES}?${new URLSearchParams({ template: "study.yml", title: `${d.name}: `, study: `${d.name} (${d.id})` })}`, "report a problem");
+  head.append(verdict(d), " · ", report);
+  block.append(head, ...(d.notes ?? []).map(([level, text]) => {
+    const line = el("div", "finding");
+    line.append(el("span", `qc ${level}`, level), " ", ...finding(text, true));
+    return line;
+  }));
+  if (d.hm3 != null) {
+    measured.textContent = `Its file: ${Math.floor(d.hm3 * 100)}% of the HapMap3 SNPs that LDSC regresses on; mean χ² ${d.chi2.toFixed(2)}; λGC ${d.lambda.toFixed(2)}.`;
+    block.append(measured);
+  }
+  return block;
+}
+
 async function renderStudy() {
   const d = state.study, page = $("view-study"), fields = el("div", "fields"), cited = el("div"), ticking = el("label", "check");
   cited.append(...(d.cite ? d.cite.map((pmid) => { const line = el("div", "citation"); line.append(outside(`${PUBMED}${pmid}/`, state.papers[pmid])); return line; }) : [d.ref]));
@@ -713,6 +741,7 @@ async function renderStudy() {
     field("Signed", yesNo(d.signed)), field("Allele info", yesNo(d.alleles)), field("Cross-trait LDSC", yesNo(d.cross)),
     field("Nonredundant panel", d.panel ? `yes: ${int(d.panel)} of ${int(state.release[d.anc].panel)} in the ${d.anc} panel, by h² z` : "no"),
     field("h² ± SE", plusMinus(d.h2, d.h2_se)), field("h² z", sig(d.h2_z)), field("Intercept", fixed(4)(d.intercept)),
+    field("QC", checked(d)),
     field("Path", pathLine(d) ?? action("login to see it", () => openLogin(true))));
   const head = el("h2"), section = el("div");
   head.append(...parts(d.name));
@@ -812,6 +841,7 @@ function start(data) {
   state.papers = data.papers;
   for (const d of data.studies) {
     d.label = d.cite ? state.papers[d.cite[0]] : d.ref;  // its paper, as the table lists and sorts it
+    d.rank = QC.indexOf(d.qc);  // the worst sorts first
     d.text = [d.name, d.id, d.trait, d.origin, d.ref, ...(d.cite ?? []).map((pmid) => state.papers[pmid])].join("\n").toLowerCase();  // what the search reads
     state.byId.set(d.id, d);
   }
@@ -834,7 +864,7 @@ function listen() {
   const f = state.filter;
   $("filters").addEventListener("submit", (event) => event.preventDefault());
   $("q").addEventListener("input", () => { f.q = $("q").value; renderList(); });
-  $("f-anc").addEventListener("change", () => { f.anc = $("f-anc").value; renderList(); });
+  for (const name of ["anc", "qc"]) $(`f-${name}`).addEventListener("change", () => { f[name] = $(`f-${name}`).value; renderList(); });
   for (const name of ["z6", "signed", "panel", "ticked"]) $(`f-${name}`).addEventListener("change", () => { f[name] = $(`f-${name}`).checked; renderList(); });
 
   $("pair").addEventListener("submit", (event) => event.preventDefault());

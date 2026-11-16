@@ -17,6 +17,7 @@ import re
 import sys
 import threading
 import time
+import urllib.parse
 from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 
@@ -100,6 +101,11 @@ def label(d):
     return LABELS[d["cite"][0]] if "cite" in d else d["ref"]
 
 
+def said(finding):
+    """A finding of the checks as the site words it: another study, {ID} in the data, by its short name."""
+    return re.sub(r"\{([^}]+)\}", lambda found: BY_ID[found[1]]["name"], finding)
+
+
 def text(d):
     """What the search reads of a study: its short name, its ID and name in the release, its release, its paper."""
     return "\n".join([d["name"], d["id"], d["trait"], d["origin"], d["ref"], *(LABELS[pmid] for pmid in d.get("cite", []))]).lower()
@@ -159,9 +165,9 @@ def run(pw, url, name, **context):
     show("", "#sumstats-table tbody")
     check(f"[{name}] the table lists every study", bodies("sumstats-table").count() == len(STUDIES) == 602 and count() == "602 studies", count)
     d = STUDIES[0]
-    check(f"[{name}] its columns: a study by its short name; h² ± SE and h² z to two significant digits; no ID, no trait, no Signed, no Release",
-          heads("sumstats-table") == ["", "Study", "Ancestry", "N", "M", "h² ± SE", "h² z", "Reference"]
-          and cells("sumstats-table") == ["", d["name"], d["anc"], f"{d['n']:,}", f"{d['m']:,}", plus_minus(d["h2"], d["h2_se"]), sig(d["h2_z"]), label(d)],
+    check(f"[{name}] its columns: a study by its short name; h² ± SE and h² z to two significant digits; what the checks say; no ID, no trait, no Signed, no Release",
+          heads("sumstats-table") == ["", "Study", "Ancestry", "N", "M", "h² ± SE", "h² z", "QC", "Reference"]
+          and cells("sumstats-table") == ["", d["name"], d["anc"], f"{d['n']:,}", f"{d['m']:,}", plus_minus(d["h2"], d["h2_se"]), sig(d["h2_z"]), d["qc"], label(d)],
           lambda: (heads("sumstats-table"), cells("sumstats-table")))
     links = page.locator("#sumstats-table td.ref a").evaluate_all("list => list.map((a) => [a.textContent, a.href, a.target, a.rel])")
     check(f"[{name}] every study's reference names its paper and leads to PubMed, in a new tab",
@@ -188,6 +194,20 @@ def run(pw, url, name, **context):
     page.uncheck("#f-panel")
     page.select_option("#f-anc", "")
     check(f"[{name}] the filters count as the data does: ancestry, h² z > 6, signed, nonredundant", ok and count() == "602 studies", count)
+    ok = True
+    for level in ("pass", "warn", "fail"):
+        page.select_option("#f-qc", level)
+        ok &= count() == f"{RELEASE['qc'][level]} of 602 studies" and set(page.locator("#sumstats-table td .qc").all_inner_texts()) == {level}
+    page.select_option("#f-qc", "")
+    page.locator("#sumstats-table th", has_text="QC").locator("button").click()  # the worst first
+    failing = [d for d in STUDIES if d["qc"] == "fail"]
+    ok &= page.locator("#sumstats-table td.study").all_inner_texts()[:len(failing) + 1] == [d["name"] for d in failing] + [next(d["name"] for d in STUDIES if d["qc"] == "warn")]
+    why = bodies("sumstats-table").first.locator(".qc").get_attribute("title")
+    ok &= why == "\n".join(f"{level}: {said(text)}" for level, text in failing[0]["notes"] if level != "note")
+    for _ in range(2):
+        page.locator("#sumstats-table th", has_text="QC").locator("button").click()
+    check(f"[{name}] the checks' verdict filters and sorts the studies, the worst first, and says why under the pointer", ok and first("sumstats-table") == STUDIES[0]["name"],
+          lambda: (count(), why))
     by_n = sorted(STUDIES, key=lambda d: d["n"])
     sort_n = page.locator("#sumstats-table th:nth-child(4) button")  # N
     order = []
@@ -294,8 +314,8 @@ def run(pw, url, name, **context):
           and first("h2-table") == top["name"] and page.locator("#h2-plot .bar").count() == len(set(bins)) and fits(),
           lambda: page.inner_text("#h2-caption"))
     check(f"[{name}] its table: h² ± SE in one column, sorted by h², without bars",
-          heads("h2-table") == ["", "Study", "Ancestry", "h² ± SE ▼", "h² z", "Intercept"] and page.locator(".meter").count() == 0
-          and cells("h2-table") == ["", top["name"], top["anc"], plus_minus(top["h2"], top["h2_se"]), sig(top["h2_z"]), f"{top['intercept']:.4f}"],
+          heads("h2-table") == ["", "Study", "Ancestry", "h² ± SE ▼", "h² z", "Intercept", "QC"] and page.locator(".meter").count() == 0
+          and cells("h2-table") == ["", top["name"], top["anc"], plus_minus(top["h2"], top["h2_se"]), sig(top["h2_z"]), f"{top['intercept']:.4f}", top["qc"]],
           lambda: (heads("h2-table"), cells("h2-table")))
     shot("h2", full=False)
     box = page.locator("#h2-plot svg").bounding_box()
@@ -443,6 +463,22 @@ def run(pw, url, name, **context):
     ok &= page.text_content("#cart").startswith(" · 1 ticked") and page.locator("#sumstats-table td.tick input:checked").count() == 1
     page.locator("#cart a", has_text="untick all").click()
     check(f"[{name}] a study is ticked on its page too", ok and kept() == [], kept)
+    doubted = BY_ID["PANUKBB_LDLDirectAdjustedByMedication"]  # a label that its genetic correlations contradict
+    show(f"?study={doubted['id']}", "#view-study .finding")
+    block = page.locator("#view-study .row", has=page.locator(".finding")).locator(".value")
+    findings = [" ".join(line.split()) for line in block.locator(".finding").all_inner_texts()]
+    named_there = block.locator(".finding a").evaluate_all("list => list.map((a) => [a.textContent, a.getAttribute('href')])")
+    report = block.locator("a", has_text="report a problem").get_attribute("href")
+    check(f"[{name}] a study's page says what the checks found, the worst first, naming other studies by their short names, with what was measured of its file",
+          block.locator("div div").first.inner_text() == "fail · report a problem" and findings == [f"{level} {said(text)}" for level, text in doubted["notes"]]
+          and named_there == [[BY_ID[study]["name"], f"?study={study}"] for _, text in doubted["notes"] for study in re.findall(r"\{([^}]+)\}", text)]
+          and block.locator(".hint").inner_text() == f"Its file: {int(doubted['hm3'] * 100)}% of the HapMap3 SNPs that LDSC regresses on; mean χ² {doubted['chi2']:.2f}; λGC {doubted['lambda']:.2f}."
+          and findings[0].startswith("fail ") and any("FEV1FVC" in finding for finding in findings), lambda: (findings, named_there))
+    check(f"[{name}] its link to report a problem opens the repository's form with the study filled in, and no path",
+          report.startswith("https://github.com/gwassumstats/gwassumstats.github.io/issues/new?template=study.yml&")
+          and dict(urllib.parse.parse_qsl(report.split("?", 1)[1])) == {"template": "study.yml", "title": f"{doubted['name']}: ", "study": f"{doubted['name']} ({doubted['id']})"},
+          lambda: report)
+    shot("study-qc", full=False)
     unsigned = next(d for d in STUDIES if not d["cross"])
     show(f"?study={unsigned['id']}", "#view-study .section-head")
     check(f"[{name}] an unsigned study's page says it has no genetic correlations", "unsigned" in page.inner_text("#view-study .section-head"))

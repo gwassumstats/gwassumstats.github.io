@@ -5,14 +5,15 @@
 RELEASE defaults to $SUMSTATS_RELEASE; without $SUMSTATS_PASSPHRASE the build asks for the passphrase. Neither is
 ever written to the repository. The build writes, in site/data/:
 
-  studies.json         the inventory with h², each study's short name and the paper it cites, and
-                       the release's counts                                              public
+  studies.json         the inventory with h², each study's short name, the paper it cites and
+                       what the quality checks say of it, and the release's counts       public
   papers.json          every paper cited: authors, title, journal, DOI, BibTeX entry     public
   rg_{ancestry}.json   every genetic correlation of an ancestry                          public
   paths.enc.json       where each study's file is, encrypted (crypt.py)                  readable after login
 
 The papers are those of data/references.tsv and data/papers.json (python -m papers); the short names, those of
-data/names.tsv (python -m names). A study without a short name stops the build.
+data/names.tsv (python -m names). A study without a short name stops the build. The quality checks (qc/checks.py)
+judge each study from its file as measured (data/metrics.tsv: python -m qc.scan), its results and its label.
 
 A release that has not changed rewrites the same files, and keeps the encrypted one as it is, so readers stay logged in.
 """
@@ -49,11 +50,14 @@ def build(release: Path, out: Path, passphrase: str, iterations: int = crypt.ITE
     d = rel.studies(release)
     rg = {anc: rel.correlations(release, d, anc) for anc in d["anc"].unique()}
     cited, papers = merge.citations(d, data)
-    public = d.assign(name=merge.names(d, data))[["name", *rel.PUBLIC]].reset_index()
+    judged = merge.quality(d, rg, data)
+    public = d.assign(name=merge.names(d, data)).join(judged[["qc", "hm3", "chi2", "lambda"]])[["name", *rel.PUBLIC, "qc", "hm3", "chi2", "lambda"]].reset_index()
     records = public.astype(object).where(public.notna(), None).to_dict("records")
-    records = [{k: v for k, v in r.items() if v is not None} | ({"cite": pmids} if pmids else {}) for r, pmids in zip(records, cited)]
+    records = [{k: v for k, v in r.items() if v is not None} | ({"cite": pmids} if pmids else {}) | ({"notes": notes} if notes else {})
+               for r, pmids, notes in zip(records, cited, judged["notes"])]
+    summary = rel.summary(release, d, rg) | {"qc": {level: int((judged["qc"] == level).sum()) for level in ("pass", "warn", "fail")}}
     lines = lambda items: ",\n".join(items)  # a study, a paper a line, for readable diffs
-    texts = {"studies.json": f'{{\n"release":{dumps(rel.summary(release, d, rg))},\n"papers":{dumps({pmid: p["label"] for pmid, p in papers.items()})},\n"studies":[\n'
+    texts = {"studies.json": f'{{\n"release":{dumps(summary)},\n"papers":{dumps({pmid: p["label"] for pmid, p in papers.items()})},\n"studies":[\n'
                              + lines(map(dumps, records)) + "\n]}\n",
              "papers.json": "{\n" + lines(f"{dumps(pmid)}:{dumps(paper)}" for pmid, paper in papers.items()) + "\n}\n"}
     for anc, t in rg.items():
