@@ -1,0 +1,23 @@
+id	fix	value	why
+# What is corrected of a study, and why (corrections/). `fix`: flip (Z was signed for A2: its sign is turned), clean
+# (rows listed twice, or with a Z that is not a number, are dropped), n (each SNP's N is scaled so that the most
+# frequent N becomes `value`), relabel (the file is sound; `value` is the trait it holds). The corrected copies are
+# written outside this repository, each with a record of its source, its checksums and what changed.
+PASS_SmokingInitiation_Liu2019	flip		its Z is opposite to that of two other studies of smoking at all of the 1,727 and 1,939 SNPs with |Z| > 4 in both; rg -1.00 and -0.99
+PASS_DrinksPerWeek_Liu2019	flip		of the paper of PASS_SmokingInitiation_Liu2019: opposite to ever smoked at 127 of 132 strong SNPs; rg -0.55 with cirrhosis
+PASS_CigarettesPerDay_Liu2019	flip		of the paper of PASS_SmokingInitiation_Liu2019: opposite to COPD at all 20 strong SNPs; rg -0.61 with COPD and with lung cancer
+PASS_SmokingCessation_Liu2019	flip		of the paper of PASS_SmokingInitiation_Liu2019: rg -0.57 with lung cancer, -0.56 with COPD
+PASS_AgeOfInitiation_Liu2019	flip		of the paper of PASS_SmokingInitiation_Liu2019: rg -0.75 with that study, yet +0.72 with ever smoked
+PASS_Alcoholuse_SanchezRoige2018	flip		its Z follows that of PASS_DrinksPerWeek_Liu2019, which is reversed, at all 153 strong SNPs; rg -0.33 with cirrhosis, -0.37 with ever smoked
+PASS_Type1Diabetes_Chiou2021	clean		2,722 SNPs listed twice
+PASS_PhysicalActivity_Wang2022	clean		518 SNPs listed twice
+PASS_BMI_Yengo2018	clean		2 SNPs listed twice
+PASS_IBD	clean		152 SNPs with a Z that is not a number
+PASS_Type_1_Diabetes	clean		102 SNPs with a Z that is not a number
+PASS_Schizophrenia_Lam2019_EAS	n	58140	the file's N is an effective N, 14,916.61 for most SNPs, a quarter of the paper's: the GWAS Catalog records 22,778 cases and 35,362 controls (GCST009336)
+PANUKBB_IndirectBilirubin	relabel	Estimated glomerular filtration rate (creatinine, cystatin C)	its N, 401,570, is that phenotype's in the Pan-UK Biobank's manifest; rg 0.98 with another study of it
+PANUKBB_LDLDirectAdjustedByMedication	relabel	FEV1/FVC ratio	its N, 316,932, is that phenotype's in the Pan-UK Biobank's manifest; rg 1.00 with another study of it
+PANUKBB_MeanArterialPressureAutomatedReadingAdjustedByMedication	relabel	LDL direct, adjusted by medication	its N, 398,402, is that phenotype's in the Pan-UK Biobank's manifest; rg 0.91 with LDL
+PANUKBB_PulsePressureAutomatedReadingAdjustedByMedication	relabel	Non-albumin protein	its N, 368,642, is that phenotype's in the Pan-UK Biobank's manifest; rg 0.79 with total protein, and against albumin
+PANUKBB_PulsePressureCombinedAutomatedManualReading	relabel	Pulse pressure, automated reading, adjusted by medication	its N, 393,858, is that phenotype's in the Pan-UK Biobank's manifest; the combined reading has 420,134
+PANUKBB_OperationTonsillectomyAdenoids	relabel	Varicose vein surgery	the sign of a study of varicose veins at all 2,564 strong SNPs; rg 1.03

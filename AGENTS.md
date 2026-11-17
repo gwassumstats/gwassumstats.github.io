@@ -27,6 +27,10 @@ their rule. Open: fixes to the studies that the checks flag wait for the owner (
    What a Slurm job writes besides `data/metrics.tsv` (its logs hold paths) stays outside the repository, under
    `notebook/results/`. Cancel a Slurm job by its explicit ID only.
 6. Push workflow files over SSH (the `gh` token lacks the `workflow` scope).
+7. On O2, write only inside this repository (with its notebook) and under the folder named by
+   `SUMSTATS_CORRECTIONS`. The release folders and the older collections are read only. Data never enters the
+   repository; that folder's path is an O2 path with a user name in it: in the encrypted blob only, never in a
+   committed file, a commit message or a page.
 
 ## Owner's preferences
 
@@ -61,6 +65,9 @@ their rule. Open: fixes to the studies that the checks flag wait for the owner (
   agrees. It flags, with the best-matching studies as evidence; it never relabels.
 - *Trait:* the complex trait a study is of (`data/traits.tsv`): one per study, shared by studies of the trait
   whatever their paper, ancestry, sex or adjustment; with the EFO term that fits, if one does, and a broad *category*.
+- *Correction:* a row of `data/corrections.tsv`: a *flip* (Z was signed for A2), a *clean* (rows dropped), an *n*,
+  or a *relabel*. A *corrected copy* is the study's file with its corrections applied, written outside the
+  repository with its *provenance* (source, checksums, what changed). The release itself is never changed.
 - *Candidate:* a GWAS of the GWAS Catalog with public sumstats, added after the last release's *window* (the days
   of publication it took: 2024/03/01 to 2026/08/26 for 2026), that passes the *rule* of `data/candidates.toml`.
 - *Backtest:* the rule applied to the window of the last release, against the studies that release added: what it

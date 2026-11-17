@@ -37,6 +37,7 @@ with the lab's passphrase to see where they are. It costs $0.
 | `checks.toml` | The thresholds of the quality checks | By hand |
 | `labels.tsv` | A study whose trait name in the release a person found wrong → what its file holds, and how that is known | By hand |
 | `findings.tsv` | What else a person found of a study, shown and counted like a finding of the checks | By hand |
+| `corrections.tsv` | What is corrected of a study, and why: a sign to turn, rows to drop, an N, a label | By hand |
 | `candidates.toml` | The rule that finds candidates in the GWAS Catalog, and the window of the last release | By hand |
 | `candidates.json` | The candidates, the papers set aside, and the rule's backtest | `python -m candidates` |
 | `catalog.tsv` | The GWAS Catalog's record of each study it knows: paper, N, ancestry, sex, cohorts | `python -m candidates` |
@@ -52,6 +53,11 @@ release's window, and that pass a rule read off that release: one ancestry, Euro
 individuals; a paper of at most 100 studies, in a journal that StatGenPapers reads. The backtest applies the rule to
 the window of the last release and counts what it finds of the studies that the release added: 202 of 205 for 2026.
 The site lists the candidates, the papers set aside and the backtest; a form on GitHub takes nominations.
+
+**Corrections** (`corrections/`). The release is never changed. A study that the review found at fault gets a
+corrected copy outside this repository, in the folder named by `SUMSTATS_CORRECTIONS`: `python -m corrections` reads
+the release's file and `data/corrections.tsv`, and writes the copy with a record of its source, the checksums of both
+and what changed. That folder may be purged: a run writes everything again.
 
 **Short names.** A study is called `FirstAuthor_Year_Trait` (`Speliotes_2010_BMI`) everywhere on the site: who and
 which year its paper is cited by, and its trait, abbreviated. The name is a label only. A study's ID in the release
@@ -94,11 +100,17 @@ files themselves are protected by O2.
    the study's page with what the checks found. If its label in the release is wrong and the right one is known, add
    it to `data/labels.tsv`: the label check then reads the corrected label, and the study warns with the evidence
    until the release is corrected. Then rebuild.
-5. **Look for candidates**, from any machine: `uv run python -m candidates --refresh` downloads the GWAS Catalog's
+5. **Write the corrected copies**, on O2 (one Slurm task, a few minutes):
+
+   ```bash
+   SUMSTATS_CORRECTIONS=<a folder outside the repository> uv run --group qc python -m corrections
+   ```
+
+6. **Look for candidates**, from any machine: `uv run python -m candidates --refresh` downloads the GWAS Catalog's
    tables (to `.cache/`, not committed) and writes `data/candidates.json` and `data/catalog.tsv`; then rebuild.
-6. **A new release:** set its window in `data/candidates.toml`, run the steps above, then update the Release notes
+7. **A new release:** set its window in `data/candidates.toml`, run the steps above, then update the Release notes
    in `site/index.html`: the tests say which written-in numbers no longer match.
-7. **Change the passphrase:** rebuild with the new one. Every reader logs in again.
+8. **Change the passphrase:** rebuild with the new one. Every reader logs in again.
 
 ## Checks
 
@@ -125,6 +137,7 @@ Without the two variables, the tests that need them are skipped. Run with both b
 | `names/` | Drafts the short names (`python -m names`) |
 | `traits/` | Drafts each study's complex trait, EFO term and category (`python -m traits`) |
 | `qc/` | Quality checks: `scan.py` measures the files on Slurm, `checks.py` judges each study, `labels.py` checks its label |
+| `corrections/` | Writes corrected copies of the studies of `data/corrections.tsv`, outside the repository, with provenance |
 | `candidates/` | Finds candidates for the next release in the GWAS Catalog, and backtests the rule (`python -m candidates`) |
 | `data/` | What the repository adds to a release: papers and short names, reviewable |
 | `site/` | The website; `site/data/` is written by the build |
