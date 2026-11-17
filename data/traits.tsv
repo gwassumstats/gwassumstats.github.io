@@ -17,13 +17,13 @@ PASS_Years_of_Education1	Years of education	EFO_0011015	behaviour and cognition	
 PASS_IBD	Inflammatory bowel disease	EFO_0003767	immune	the EFO term of this name in the GWAS Catalog
 PASS_Autism	Autism spectrum disorder	EFO_0003756	psychiatric	the EFO term of this name in the GWAS Catalog
 PASS_Alzheimer	Alzheimer's disease	MONDO_0004975	neurological and aging	the EFO term that the GWAS Catalog maps a trait of this name to
-PASS_Type_1_Diabetes	Type 1 diabetes		metabolic	check: no EFO term found
+PASS_Type_1_Diabetes	Type 1 diabetes	MONDO_0005147	metabolic	by hand: the GWAS Catalog's term type 1 diabetes mellitus
 PASS_Multiple_sclerosis	Multiple sclerosis	MONDO_0005301	neurological and aging	the EFO term of this name in the GWAS Catalog
 PASS_Celiac	Celiac disease	EFO_0001060	immune	the EFO term of this name in the GWAS Catalog
 PASS_Primary_biliary_cirrhosis	Primary biliary cirrhosis	EFO_1001486	cancer	the EFO term of this name in the GWAS Catalog
 PASS_Lupus	Systemic lupus erythematosus	MONDO_0007915	immune	the EFO term of this name in the GWAS Catalog
 PASS_SWB	Subjective well-being	EFO_0007869	psychiatric	the EFO term of this name in the GWAS Catalog
-PASS_DS	Depressive symptoms		psychiatric	check: no EFO term found
+PASS_DS	Depressive symptoms	EFO_0007006	psychiatric	by hand: the GWAS Catalog's term depressive symptom measurement
 PASS_Neuroticism	Neuroticism	EFO_0007660	psychiatric	the EFO term of this name in the GWAS Catalog
 PASS_Years_of_Education2	Years of education	EFO_0011015	behaviour and cognition	the EFO term of this name in the GWAS Catalog
 PASS_FastingGlucose_Manning	Fasting plasma glucose	OBA_VT0000188	metabolic	the GWAS Catalog's term for its studies
@@ -32,7 +32,7 @@ PASS_ENIGMA2_MeanPutamen	Putamen volume	OBA_2050016	brain imaging	the EFO term o
 PASS_AgeFirstBirth	Age at first birth	EFO_0009101	reproductive	the EFO term of this name in the GWAS Catalog
 PASS_NumberChildrenEverBorn	Number of children ever born	EFO_0009102	reproductive	the EFO term of this name in the GWAS Catalog
 PASS_Menarche2017	Age at menarche	EFO_0004703	reproductive	the EFO term of this name in the GWAS Catalog
-UKB_460K.cov_EDU_COLLEGE	College education		behaviour and cognition	check: no EFO term found
+UKB_460K.cov_EDU_COLLEGE	College education	EFO_0004784	behaviour and cognition	by hand: the GWAS Catalog's term self reported educational attainment
 UKB_460K.cov_SMOKING_STATUS	Smoking status	EFO_0006527	behaviour and cognition	the EFO term of this name in the GWAS Catalog
 UKB_460K.disease_ALLERGY_ECZEMA_DIAGNOSED	Eczema	HP_0000964	immune	the EFO term that the GWAS Catalog maps a trait of this name to
 UKB_460K.disease_ASTHMA_DIAGNOSED	Asthma	MONDO_0004979	respiratory	the EFO term of this name in the GWAS Catalog
@@ -55,39 +55,39 @@ UKB_460K.blood_HIGH_LIGHT_SCATTER_RETICULOCYTE_COUNT	High light scatter reticulo
 UKB_460K.blood_LYMPHOCYTE_COUNT	Lymphocyte count	EFO_0004587	blood	the EFO term of this name in the GWAS Catalog
 UKB_460K.blood_MEAN_CORPUSCULAR_HEMOGLOBIN	Mean corpuscular hemoglobin	EFO_0004527	blood	the EFO term of this name in the GWAS Catalog
 UKB_460K.blood_MEAN_PLATELET_VOL	Mean platelet volume	OBA_0003277	blood	the EFO term that the GWAS Catalog maps a trait of this name to
-UKB_460K.blood_MEAN_SPHERED_CELL_VOL	Mean sphered cell volume		blood	check: no EFO term found
+UKB_460K.blood_MEAN_SPHERED_CELL_VOL	Mean sphered cell volume	OBA_0003460	blood	by hand: the GWAS Catalog's term erythrocyte volume
 UKB_460K.blood_MONOCYTE_COUNT	Monocyte count	EFO_0005091	blood	the EFO term of this name in the GWAS Catalog
 UKB_460K.blood_PLATELET_COUNT	Platelet count	EFO_0004309	blood	the EFO term of this name in the GWAS Catalog
 UKB_460K.blood_PLATELET_DISTRIB_WIDTH	Platelet distribution width	EFO_0007984	blood	the EFO term that the GWAS Catalog maps a trait of this name to
 UKB_460K.blood_RBC_DISTRIB_WIDTH	Red blood cell distribution width	EFO_0009188	blood	the EFO term that the GWAS Catalog maps a trait of this name to
 UKB_460K.blood_RED_COUNT	Red blood cell count	EFO_0004305	blood	the EFO term of this name in the GWAS Catalog
-UKB_460K.blood_WHITE_COUNT	White blood cell count		blood	check: no EFO term found
+UKB_460K.blood_WHITE_COUNT	White blood cell count	OBA_VT0000217	blood	by hand: the GWAS Catalog's term leukocyte quantity
 UKB_460K.disease_HYPOTHYROIDISM_SELF_REP	Hypothyroidism	EFO_0004705	immune	the EFO term of this name in the GWAS Catalog
 UKB_460K.disease_THYROID_ANY_SELF_REP	Thyroid disease	EFO_1000627	immune	the EFO term of this name in the GWAS Catalog
 UKB_460K.impedance_BASAL_METABOLIC_RATEz	Basal metabolic rate	EFO_0007777	anthropometric	the EFO term that the GWAS Catalog maps a trait of this name to
-UKB_460K.disease_ENDOCRINE_DIABETES	Endocrine and diabetes diseases		metabolic	check: no EFO term found
-UKB_460K.disease_CARDIOVASCULAR	Cardiovascular diseases		cardiovascular	check: no EFO term found
-UKB_460K.disease_RESPIRATORY_ENT	Respiratory and ear-nose-throat diseases		respiratory	check: no EFO term found
+UKB_460K.disease_ENDOCRINE_DIABETES	Endocrine and diabetes diseases	EFO_0001379	metabolic	by hand: the GWAS Catalog's term endocrine system disease
+UKB_460K.disease_CARDIOVASCULAR	Cardiovascular diseases	EFO_0000319	cardiovascular	by hand: the GWAS Catalog's term cardiovascular disease
+UKB_460K.disease_RESPIRATORY_ENT	Respiratory and ear-nose-throat diseases	EFO_0000684	respiratory	by hand: the GWAS Catalog's term respiratory system disease
 UKB_460K.disease_PSORIASIS	Psoriasis	EFO_0000676	immune	the EFO term of this name in the GWAS Catalog
-UKB_460K.disease_DERMATOLOGY	Dermatologic diseases		skin and hair	check: no EFO term found
+UKB_460K.disease_DERMATOLOGY	Dermatologic diseases	EFO_0000701	skin and hair	by hand: the GWAS Catalog's term skin disease
 UKB_460K.disease_RA	Rheumatoid arthritis	EFO_0000685	immune	the EFO term of this name in the GWAS Catalog
-UKB_460K.disease_AID_ALL	Auto immune traits		immune	check: no EFO term found
-UKB_460K.disease_AID_SURE	Auto immune traits		immune	check: no EFO term found
+UKB_460K.disease_AID_ALL	Auto immune traits	EFO_0005140	immune	by hand: the GWAS Catalog's term autoimmune disease
+UKB_460K.disease_AID_SURE	Auto immune traits	EFO_0005140	immune	by hand: the GWAS Catalog's term autoimmune disease
 UKB_460K.pigment_HAIR	Hair color	EFO_0003924	skin and hair	the EFO term of this name in the GWAS Catalog
-UKB_460K.pigment_HAIR_darkbrown	Dark brown hair		skin and hair	check: no EFO term found
-UKB_460K.pigment_HAIR_red	Red hair		skin and hair	check: no EFO term found
-UKB_460K.pigment_HAIR_blonde	Blonde hair		skin and hair	check: no EFO term found
-UKB_460K.pigment_HAIR_blackmale	Black male hair		skin and hair	check: no EFO term found
+UKB_460K.pigment_HAIR_darkbrown	Dark brown hair	OBA_0002313	skin and hair	by hand: the GWAS Catalog's term strand of hair color
+UKB_460K.pigment_HAIR_red	Red hair	OBA_0002313	skin and hair	by hand: the GWAS Catalog's term strand of hair color
+UKB_460K.pigment_HAIR_blonde	Blonde hair	OBA_0002313	skin and hair	by hand: the GWAS Catalog's term strand of hair color
+UKB_460K.pigment_HAIR_blackmale	Black male hair	OBA_0002313	skin and hair	by hand: the GWAS Catalog's term strand of hair color
 UKB_460K.body_BALDING1	Balding pattern 1	EFO_0007825	skin and hair	the EFO term of this name in the GWAS Catalog
 UKB_460K.body_BALDING4	Balding pattern 4	EFO_0007825	skin and hair	the EFO term of this name in the GWAS Catalog
 UKB_460K.pigment_SKIN	Skin color	OBA_VT0002095	skin and hair	the EFO term that the GWAS Catalog maps a trait of this name to
 UKB_460K.pigment_TANNING	Tanning	EFO_0004279	skin and hair	the EFO term that the GWAS Catalog maps a trait of this name to
 UKB_460K.pigment_SUNBURN	Sunburn	EFO_0003958	skin and hair	the EFO term of this name in the GWAS Catalog
 UKB_460K.mental_NEUROTICISM	Neuroticism	EFO_0007660	psychiatric	the EFO term of this name in the GWAS Catalog
-UKB_460K.other_NO_WHEAT	Never eat wheat		behaviour and cognition	check: no EFO term found
+UKB_460K.other_NO_WHEAT	Never eat wheat	EFO_0008111	behaviour and cognition	by hand: the GWAS Catalog's term diet measurement
 UKB_460K.other_MORNINGPERSON	Chronotype (morning person)	EFO_0008328	behaviour and cognition	the EFO term of this name in the GWAS Catalog
 UKB_460K.cov_EDU_YEARS	Years of education	EFO_0011015	behaviour and cognition	the EFO term of this name in the GWAS Catalog
-UKB_460K.biochemistry_AlanineAminotransferase	Alanine aminotransferase		biochemistry	check: no EFO term found
+UKB_460K.biochemistry_AlanineAminotransferase	Alanine aminotransferase	OBA_2050062	biochemistry	by hand: the GWAS Catalog's term serum alanine aminotransferase amount
 UKB_460K.biochemistry_Albumin	Albumin	OBA_2050068	biochemistry	the EFO term of this name in the GWAS Catalog
 UKB_460K.biochemistry_AlkalinePhosphatase	Alkaline phosphatase	EFO_0004533	biochemistry	the EFO term of this name in the GWAS Catalog
 UKB_460K.biochemistry_ApolipoproteinA	Apolipoprotein A1	EFO_0004614	metabolic	the EFO term of this name in the GWAS Catalog
@@ -96,9 +96,9 @@ UKB_460K.biochemistry_AspartateAminotransferase	Aspartate aminotransferase	EFO_0
 UKB_460K.biochemistry_Calcium	Calcium	EFO_0004838	biochemistry	the EFO term of this name in the GWAS Catalog
 UKB_460K.biochemistry_Cholesterol	Total cholesterol	EFO_0004574	metabolic	the EFO term of this name in the GWAS Catalog
 UKB_460K.biochemistry_CreactiveProtein	C-reactive protein	EFO_0004458	immune	the EFO term of this name in the GWAS Catalog
-UKB_460K.biochemistry_Creatinine	Creatinine		renal	check: no EFO term found
+UKB_460K.biochemistry_Creatinine	Creatinine	OBA_2050096	renal	by hand: the GWAS Catalog's term serum creatinine amount
 UKB_460K.biochemistry_CystatinC	Cystatin C	EFO_0004617	renal	the EFO term of this name in the GWAS Catalog
-UKB_460K.biochemistry_DirectBilirubin	Direct bilirubin		biochemistry	check: no EFO term found
+UKB_460K.biochemistry_DirectBilirubin	Direct bilirubin	EFO_0004570	biochemistry	by hand: the GWAS Catalog's term bilirubin measurement
 UKB_460K.biochemistry_GammaGlutamyltransferase	Gamma-glutamyl transferase	EFO_0004532	biochemistry	the EFO term of this name in the GWAS Catalog
 UKB_460K.biochemistry_Glucose	Glucose	EFO_0004468	metabolic	the EFO term of this name in the GWAS Catalog
 UKB_460K.biochemistry_HbA1c	Glycated hemoglobin (HbA1c)	EFO_0004541	metabolic	the EFO term of this name in the GWAS Catalog
@@ -117,21 +117,21 @@ UKB_460K.biochemistry_Urea	Urea	EFO_0011005	renal	the EFO term of this name in t
 UKB_460K.biochemistry_VitaminD	Vitamin D	OBA_1000968	biochemistry	the GWAS Catalog's term for its studies
 PASS_ADHD_Demontis2018	Attention deficit hyperactivity disorder	EFO_0003888	psychiatric	the EFO term of this name in the GWAS Catalog
 PASS_AdultOnsetAsthma_Ferreira2019	Adult onset asthma	EFO_1002011	respiratory	the EFO term of this name in the GWAS Catalog
-PASS_AgeOfInitiation_Liu2019	Age of smoking initiation		behaviour and cognition	check: no EFO term found
+PASS_AgeOfInitiation_Liu2019	Age of smoking initiation	EFO_0021784	behaviour and cognition	by hand: the GWAS Catalog's term age at initiation of smoking
 PASS_Alzheimers_Jansen2019	Alzheimer's disease	MONDO_0004975	neurological and aging	the EFO term that the GWAS Catalog maps a trait of this name to
-PASS_AlzheimersMaternal_Marioni2018	Alzheimer's disease, family history		neurological and aging	check: no EFO term found
-PASS_AlzheimersPaternal_Marioni2018	Alzheimer's disease, family history		neurological and aging	check: no EFO term found
-PASS_AlzheimersProxy_Marioni2018	Alzheimer's disease, family history		neurological and aging	check: no EFO term found
+PASS_AlzheimersMaternal_Marioni2018	Alzheimer's disease, family history	EFO_0009268	neurological and aging	by hand: the GWAS Catalog's term family history of Alzheimer's disease
+PASS_AlzheimersPaternal_Marioni2018	Alzheimer's disease, family history	EFO_0009268	neurological and aging	by hand: the GWAS Catalog's term family history of Alzheimer's disease
+PASS_AlzheimersProxy_Marioni2018	Alzheimer's disease, family history	EFO_0009268	neurological and aging	by hand: the GWAS Catalog's term family history of Alzheimer's disease
 PASS_AtrialFibrillation_Nielsen2018	Atrial fibrillation	EFO_0000275	cardiovascular	the EFO term of this name in the GWAS Catalog
-PASS_BDSCZ_Ruderfer2018	Bipolar and/or schizophrenia		psychiatric	check: no EFO term found
+PASS_BDSCZ_Ruderfer2018	Bipolar and/or schizophrenia		psychiatric	by hand: no EFO term fits: it joins two disorders, each with a term of its own
 PASS_BipolarDisorder_Ruderfer2018	Bipolar disorder	MONDO_0004985	psychiatric	the EFO term of this name in the GWAS Catalog
 PASS_BIP_Stahl2019	Bipolar disorder	MONDO_0004985	psychiatric	the EFO term of this name in the GWAS Catalog
 PASS_CardioembolicStroke_Malik2018	Cardioembolic stroke	EFO_1001976	cardiovascular	the EFO term of this name in the GWAS Catalog
 PASS_CD_deLange2017	Crohn's disease	EFO_0000384	immune	the EFO term of this name in the GWAS Catalog
-PASS_ChildOnsetAsthma_Ferreira2019	Child onset asthma		respiratory	check: no EFO term found
+PASS_ChildOnsetAsthma_Ferreira2019	Child onset asthma	MONDO_0005405	respiratory	by hand: the GWAS Catalog's term childhood onset asthma
 PASS_CigarettesPerDay_Liu2019	Cigarettes per day	EFO_0006525	behaviour and cognition	the EFO term of this name in the GWAS Catalog
-PASS_DepressedAffect_Nagel2018	Depressed affect		psychiatric	check: no EFO term found
-PASS_Depression_Nagel2018	Depression		psychiatric	check: no EFO term found
+PASS_DepressedAffect_Nagel2018	Depressed affect		psychiatric	by hand: no EFO term fits: a part of neuroticism; the GWAS Catalog files it once under major depressive disorder and once under mood disorder
+PASS_Depression_Nagel2018	Depression	MONDO_0002050	psychiatric	by hand: the GWAS Catalog's term depressive disorder
 PASS_DrinksPerWeek_Liu2019	Drinks per week	OBA_1000840	behaviour and cognition	the EFO term that the GWAS Catalog maps a trait of this name to
 PASS_GeneralRiskTolerance_KarlssonLinner2019	Risk tolerance	EFO_0008579	behaviour and cognition	the EFO term of this name in the GWAS Catalog
 PASS_IBD_deLange2017	Inflammatory bowel disease	EFO_0003767	immune	the EFO term of this name in the GWAS Catalog
@@ -139,18 +139,18 @@ PASS_Insomnia_Jansen2019	Insomnia	EFO_0004698	behaviour and cognition	the EFO te
 PASS_Intelligence_SavageJansen2018	Intelligence	EFO_0004337	behaviour and cognition	the EFO term of this name in the GWAS Catalog
 PASS_IschemicStroke_Malik2018	Ischemic stroke	HP_0002140	cardiovascular	the EFO term of this name in the GWAS Catalog
 PASS_LargeArteryStroke_Malik2018	Large artery stroke	EFO_0005524	cardiovascular	the EFO term of this name in the GWAS Catalog
-PASS_LongSleepDuration_Dashti2019	Long sleep duration		behaviour and cognition	check: no EFO term found
+PASS_LongSleepDuration_Dashti2019	Long sleep duration	OBA_2040171	behaviour and cognition	by hand: the GWAS Catalog's term sleep duration trait
 PASS_MDD_Howard2019	Major depressive disorder	MONDO_0002009	psychiatric	the EFO term of this name in the GWAS Catalog
 PASS_MDD_Wray2018	Major depressive disorder	MONDO_0002009	psychiatric	the EFO term of this name in the GWAS Catalog
-PASS_MedicationUse_Wu2019	Medication use		behaviour and cognition	check: no EFO term found
+PASS_MedicationUse_Wu2019	Medication use	EFO_0007010	behaviour and cognition	by hand: the GWAS Catalog's term drug use measurement
 PASS_Neuroticism_Nagel2018	Neuroticism	EFO_0007660	psychiatric	the EFO term of this name in the GWAS Catalog
 PASS_OvarianCancer	Ovarian cancer	MONDO_0008170	cancer	the EFO term of this name in the GWAS Catalog
 PASS_ProstateCancer	Prostate cancer	MONDO_0008315	cancer	the EFO term of this name in the GWAS Catalog
 PASS_ReactionTime_Davies2018	Reaction time	EFO_0008393	behaviour and cognition	the EFO term of this name in the GWAS Catalog
 PASS_Schizophrenia_Pardinas2018	Schizophrenia	MONDO_0005090	psychiatric	the EFO term of this name in the GWAS Catalog
 PASS_Schizophrenia_Ruderfer2018	Schizophrenia	MONDO_0005090	psychiatric	the EFO term of this name in the GWAS Catalog
-PASS_SCZvsBD_Ruderfer2018	Schizophrenia vs bipolar		psychiatric	check: no EFO term found
-PASS_ShortSleepDuration_Dashti2019	Short sleep duration		behaviour and cognition	check: no EFO term found
+PASS_SCZvsBD_Ruderfer2018	Schizophrenia vs bipolar		psychiatric	by hand: no EFO term fits: it sets two disorders against each other
+PASS_ShortSleepDuration_Dashti2019	Short sleep duration	EFO_0004807	behaviour and cognition	by hand: the GWAS Catalog's term short sleep
 PASS_SleepDuration_Dashti2019	Sleep duration	OBA_2040171	behaviour and cognition	the EFO term that the GWAS Catalog maps a trait of this name to
 PASS_SmallVesselStroke_Malik2018	Small vessel stroke	EFO_1001504	cardiovascular	the EFO term of this name in the GWAS Catalog
 PASS_SmokingCessation_Liu2019	Smoking cessation	EFO_0004319	behaviour and cognition	the EFO term of this name in the GWAS Catalog
@@ -160,7 +160,7 @@ PASS_UC_deLange2017	Ulcerative colitis	EFO_0000729	immune	the EFO term of this n
 PASS_VerbalNumericReasoning_Davies2018	Intelligence	EFO_0004337	behaviour and cognition	the EFO term of this name in the GWAS Catalog
 PASS_Worry_Nagel2018	Worry	EFO_0009589	psychiatric	the EFO term of this name in the GWAS Catalog
 UKB_460K.repro_NumberChildrenEverBorn_Pooled	Number of children ever born	EFO_0009102	reproductive	the EFO term of this name in the GWAS Catalog
-UKB_460K.cancer_ALL	Any cancer		cancer	check: no EFO term found
+UKB_460K.cancer_ALL	Any cancer	MONDO_0004992	cancer	by hand: the GWAS Catalog's term cancer
 UKB_460K.repro_AgeFirstBirth_Female	Age at first birth	EFO_0009101	reproductive	the EFO term of this name in the GWAS Catalog
 UKB_460K.cancer_PROSTATE	Prostate cancer	MONDO_0008315	cancer	the EFO term of this name in the GWAS Catalog
 UKB_460K.cancer_BREAST	Breast cancer	MONDO_0007254	cancer	the EFO term of this name in the GWAS Catalog
@@ -176,11 +176,11 @@ PASS_MCPmale_Johnston2021	Multisite chronic pain	EFO_0010100	musculoskeletal	the
 PASS_MCPfemale_Johnston2021	Multisite chronic pain	EFO_0010100	musculoskeletal	the EFO term of this name in the GWAS Catalog
 PASS_SA_Grasby2020	Cortical surface area	EFO_0008381	brain imaging	the EFO term of this name in the GWAS Catalog
 PASS_TH_Grasby2020	Cortical thickness	EFO_0004840	brain imaging	the EFO term of this name in the GWAS Catalog
-PASS_FA_Zhao2021	Average fractional anisotropy		brain imaging	check: no EFO term found
-PASS_MD_Zhao2021	Average mean diffusivity		brain imaging	check: no EFO term found
-PASS_AD_Zhao2021	Average axial diffusivity		brain imaging	check: no EFO term found
-PASS_RD_Zhao2021	Average radial diffusivity		brain imaging	check: no EFO term found
-PASS_MO_Zhao2021	Average mode of anisotropy		brain imaging	check: no EFO term found
+PASS_FA_Zhao2021	Average fractional anisotropy	EFO_0008399	brain imaging	by hand: the GWAS Catalog's term mean fractional anisotropy measurement
+PASS_MD_Zhao2021	Average mean diffusivity	EFO_0005674	brain imaging	by hand: the GWAS Catalog's term white matter microstructure measurement
+PASS_AD_Zhao2021	Average axial diffusivity	EFO_0005674	brain imaging	by hand: the GWAS Catalog's term white matter microstructure measurement
+PASS_RD_Zhao2021	Average radial diffusivity	EFO_0005674	brain imaging	by hand: the GWAS Catalog's term white matter microstructure measurement
+PASS_MO_Zhao2021	Average mode of anisotropy	EFO_0005674	brain imaging	by hand: the GWAS Catalog's term white matter microstructure measurement
 PASS_AccumbensVol_Satizabal2019	Nucleus accumbens volume	OBA_2050020	brain imaging	the EFO term of this name in the GWAS Catalog
 PASS_AmygdalaVol_Satizabal2019	Amygdala volume	OBA_2050034	brain imaging	the EFO term of this name in the GWAS Catalog
 PASS_BrainstemVol_Satizabal2019	Brainstem volume	OBA_2050021	brain imaging	the EFO term that the GWAS Catalog maps a trait of this name to
@@ -195,7 +195,7 @@ PASS_EosinoP_Vuckovic2020	Eosinophil percentage	EFO_0007991	blood	the EFO term o
 PASS_HCT_Vuckovic2020	Hematocrit	EFO_0004348	blood	the EFO term of this name in the GWAS Catalog
 PASS_HGB_Vuckovic2020	Hemoglobin	EFO_0004509	blood	the EFO term of this name in the GWAS Catalog
 PASS_HLR_Vuckovic2020	High light scatter reticulocyte count	EFO_0007986	blood	the EFO term that the GWAS Catalog maps a trait of this name to
-PASS_HLRP_Vuckovic2020	High light scatter reticulocyte percentage		blood	check: no EFO term found
+PASS_HLRP_Vuckovic2020	High light scatter reticulocyte percentage	OBA_0002272	blood	by hand: the GWAS Catalog's term reticulocyte amount
 PASS_IRF_Vuckovic2020	Immature reticulocyte fraction	EFO_0803545	blood	the EFO term of this name in the GWAS Catalog
 PASS_Lym_Vuckovic2020	Lymphocyte count	EFO_0004587	blood	the EFO term of this name in the GWAS Catalog
 PASS_LymP_Vuckovic2020	Lymphocyte percentage	EFO_0007993	blood	the EFO term of this name in the GWAS Catalog
@@ -206,7 +206,7 @@ PASS_Mono_Vuckovic2020	Monocyte count	EFO_0005091	blood	the EFO term of this nam
 PASS_MonoP_Vuckovic2020	Monocyte percentage	EFO_0007989	blood	the EFO term of this name in the GWAS Catalog
 PASS_MPV_Vuckovic2020	Mean platelet volume	OBA_0003277	blood	the EFO term that the GWAS Catalog maps a trait of this name to
 PASS_MRV_Vuckovic2020	Mean reticulocyte volume	EFO_0010701	blood	the EFO term of this name in the GWAS Catalog
-PASS_MSCV_Vuckovic2020	Mean sphered cell volume		blood	check: no EFO term found
+PASS_MSCV_Vuckovic2020	Mean sphered cell volume	OBA_0003460	blood	by hand: the GWAS Catalog's term erythrocyte volume
 PASS_Neutro_Vuckovic2020	Neutrophil count	EFO_0004833	blood	the EFO term of this name in the GWAS Catalog
 PASS_NeutroP_Vuckovic2020	Neutrophil percentage	EFO_0007990	blood	the EFO term of this name in the GWAS Catalog
 PASS_PCT_Vuckovic2020	Plateletcrit	EFO_0007985	blood	the EFO term that the GWAS Catalog maps a trait of this name to
@@ -215,15 +215,15 @@ PASS_Plt_Vuckovic2020	Platelet count	EFO_0004309	blood	the EFO term of this name
 PASS_RBC_Vuckovic2020	Red blood cell count	EFO_0004305	blood	the EFO term of this name in the GWAS Catalog
 PASS_RDWCV_Vuckovic2020	Red blood cell distribution width	EFO_0009188	blood	the EFO term that the GWAS Catalog maps a trait of this name to
 PASS_RTC_Vuckovic2020	Reticulocyte count	EFO_0007986	blood	the EFO term of this name in the GWAS Catalog
-PASS_RTCP_Vuckovic2020	Reticulocyte percentage		blood	check: no EFO term found
-PASS_WBC_Vuckovic2020	White blood cell count		blood	check: no EFO term found
+PASS_RTCP_Vuckovic2020	Reticulocyte percentage	OBA_0002272	blood	by hand: the GWAS Catalog's term reticulocyte amount
+PASS_WBC_Vuckovic2020	White blood cell count	OBA_VT0000217	blood	by hand: the GWAS Catalog's term leukocyte quantity
 PASS_Glaucoma_Craig2020	Glaucoma	MONDO_0005041	eye	the EFO term of this name in the GWAS Catalog
-PASS_FetalBirthWeight_Warrington2019	Fetal birth weight		reproductive	check: no EFO term found
-PASS_MaternalBirthWeight_Warrington2019	Maternal birth weight		reproductive	check: no EFO term found
+PASS_FetalBirthWeight_Warrington2019	Fetal birth weight	EFO_0004344	reproductive	by hand: the GWAS Catalog's term birth weight
+PASS_MaternalBirthWeight_Warrington2019	Maternal birth weight	EFO_0004344	reproductive	by hand: the GWAS Catalog's term birth weight
 PASS_Myopia_Hysi2020	Myopia	HP_0000545	eye	the EFO term of this name in the GWAS Catalog
 PASS_HipOA_Tachmazidou2019	Hip osteoarthritis	EFO_1000786	musculoskeletal	the EFO term of this name in the GWAS Catalog
 PASS_KneeOA_Tachmazidou2019	Knee osteoarthritis	EFO_0004616	musculoskeletal	the EFO term of this name in the GWAS Catalog
-PASS_HipKneeOA_Tachmazidou2019	Hip or knee osteoarthritis		musculoskeletal	check: no EFO term found
+PASS_HipKneeOA_Tachmazidou2019	Hip or knee osteoarthritis		musculoskeletal	by hand: no EFO term fits: the GWAS Catalog maps it to two terms, osteoarthritis of the hip and of the knee
 PASS_OA_Tachmazidou2019	Osteoarthritis	MONDO_0005178	musculoskeletal	the EFO term of this name in the GWAS Catalog
 PASS_LiverVol_Liu2021	Liver volume	OBA_2050033	biochemistry	the EFO term of this name in the GWAS Catalog
 PASS_SpleenVol_Liu2021	Spleen volume	OBA_2050204	biochemistry	the EFO term of this name in the GWAS Catalog
@@ -233,9 +233,9 @@ PASS_KidneyVol_Liu2021	Kidney volume	OBA_2050015	renal	the EFO term of this name
 PASS_ViscAdiposeVol_Liu2021	Visceral adipose tissue volume	OBA_2045224	anthropometric	the EFO term that the GWAS Catalog maps a trait of this name to
 PASS_SubAdiposeVol_Liu2021	Abdominal subcutaneous adipose tissue volume	OBA_1000023	anthropometric	the EFO term that the GWAS Catalog maps a trait of this name to
 PASS_LiverFat_Liu2021	Liver fat	EFO_0010821	anthropometric	the EFO term of this name in the GWAS Catalog
-PASS_LiverIron_Liu2021	Liver iron		biochemistry	check: no EFO term found
-PASS_PancreasFat_Liu2021	Pancreas fat		anthropometric	check: no EFO term found
-PASS_PancreasIron_Liu2021	Pancreas iron		biochemistry	check: no EFO term found
+PASS_LiverIron_Liu2021	Liver iron	OBA_VT0001770	biochemistry	by hand: the GWAS Catalog's term iron amount
+PASS_PancreasFat_Liu2021	Pancreas fat	OBA_2050196	anthropometric	by hand: the GWAS Catalog's term pancreatic fat pad amount
+PASS_PancreasIron_Liu2021	Pancreas iron	EFO_0004461	biochemistry	by hand: the GWAS Catalog's term iron biomarker measurement
 PASS_FEV1_Shrine2019	FEV1	EFO_0004314	respiratory	the EFO term of this name in the GWAS Catalog
 PASS_FVC_Shrine2019	Forced vital capacity	EFO_0004312	respiratory	the EFO term of this name in the GWAS Catalog
 PASS_FEV1FVC_Shrine2019	FEV1/FVC ratio	EFO_0004713	respiratory	the EFO term of this name in the GWAS Catalog
@@ -263,7 +263,7 @@ PASS_RBC_Kanai2018_EAS	Red blood cell count	EFO_0004305	blood	the EFO term of th
 PASS_SBP_Kanai2018_EAS	Systolic blood pressure	EFO_0006335	cardiovascular	the EFO term of this name in the GWAS Catalog
 PASS_TC_Kanai_EAS	Total cholesterol	EFO_0004574	metabolic	the EFO term of this name in the GWAS Catalog
 PASS_TG_Kanai2018_EAS	Triglycerides	EFO_0004530	metabolic	the EFO term of this name in the GWAS Catalog
-PASS_WBC_Kanai2018_EAS	White blood cell count		blood	check: no EFO term found
+PASS_WBC_Kanai2018_EAS	White blood cell count	OBA_VT0000217	blood	by hand: the GWAS Catalog's term leukocyte quantity
 PASS_AtrialFibrillation_Low2017_EAS	Atrial fibrillation	EFO_0000275	cardiovascular	the EFO term of this name in the GWAS Catalog
 PASS_BMI_Akiyama2017_EAS	Body mass index	EFO_0004340	anthropometric	the EFO term of this name in the GWAS Catalog
 PASS_ColorectalCancer_Tanikawa_EAS	Colorectal cancer	MONDO_0005575	cancer	the EFO term of this name in the GWAS Catalog
@@ -290,9 +290,9 @@ PANUKBB_AlkalinePhosphatase	Alkaline phosphatase	EFO_0004533	biochemistry	the EF
 PANUKBB_AtrialFibrillationAndFlutter	Atrial fibrillation	EFO_0000275	cardiovascular	the EFO term of this name in the GWAS Catalog
 PANUKBB_BasophilPercentage	Basophil percentage	EFO_0007992	blood	the EFO term of this name in the GWAS Catalog
 PANUKBB_BirthWeight	Birth weight	EFO_0004344	reproductive	the EFO term of this name in the GWAS Catalog
-PANUKBB_BloodClotDVTBronchitisEmphysemaAsthmaRhinitisEczemaAllergyDiagnosedByDoctor	Allergic disease (hay fever, rhinitis or eczema, diagnosed by doctor)		immune	check: no EFO term found
+PANUKBB_BloodClotDVTBronchitisEmphysemaAsthmaRhinitisEczemaAllergyDiagnosedByDoctor	Allergic disease (hay fever, rhinitis or eczema, diagnosed by doctor)	MONDO_0005271	immune	by hand: the GWAS Catalog's term allergic disease
 PANUKBB_BreastCancerFemale	Breast cancer	MONDO_0007254	cancer	the EFO term of this name in the GWAS Catalog
-PANUKBB_C44OtherMalignantNeoplasmsOfSkin	Non-melanoma skin cancer (ICD-10 C44)		cancer	check: no EFO term found
+PANUKBB_C44OtherMalignantNeoplasmsOfSkin	Non-melanoma skin cancer (ICD-10 C44)	EFO_0009260	cancer	by hand: the GWAS Catalog's term non-melanoma skin carcinoma
 PANUKBB_ChildhoodSunburnOccasions	Sunburn	EFO_0003958	skin and hair	the EFO term of this name in the GWAS Catalog
 PANUKBB_DiastolicBloodPressureCombinedAutomatedManualReading	Diastolic blood pressure	EFO_0006336	cardiovascular	the EFO term of this name in the GWAS Catalog
 PANUKBB_DiverticulosisAndDiverticulitis	Diverticular disease	EFO_0009959	digestive	the EFO term of this name in the GWAS Catalog
@@ -308,32 +308,32 @@ PANUKBB_HandGripStrengthLeft	Hand grip strength	EFO_0006941	anthropometric	the E
 PANUKBB_HeelBoneMineralDensity	Heel bone mineral density	EFO_0009270	musculoskeletal	the EFO term of this name in the GWAS Catalog
 PANUKBB_HypothyroidismNOS	Hypothyroidism	EFO_0004705	immune	the EFO term of this name in the GWAS Catalog
 PANUKBB_IGF1	IGF-1	EFO_0004627	metabolic	the EFO term of this name in the GWAS Catalog
-PANUKBB_ImpedanceOfArmRight	Impedance of arm		anthropometric	check: no EFO term found
+PANUKBB_ImpedanceOfArmRight	Impedance of arm		anthropometric	by hand: no EFO term fits: the GWAS Catalog files it under abnormality of the skeletal system, which it is not
 PANUKBB_IndirectBilirubin	Estimated glomerular filtration rate	OBA_0003747	renal	by hand: its file holds eGFR from creatinine and cystatin C, by its N in the Pan-UK Biobank's manifest and rg 0.98 with that trait
 PANUKBB_InguinalHernia	Inguinal hernia	HP_0000023	digestive	the EFO term of this name in the GWAS Catalog
 PANUKBB_IntraOcularPressureGoldmannCorrelatedLeft	Intraocular pressure	EFO_0004695	eye	the EFO term of this name in the GWAS Catalog
 PANUKBB_LDLDirectAdjustedByMedication	FEV1/FVC ratio	EFO_0004713	respiratory	by hand: its file holds the FEV1/FVC ratio, by its N in the Pan-UK Biobank's manifest and rg 1.00 with that trait
-PANUKBB_LegFatPercentageRight	Leg fat percentage		anthropometric	check: no EFO term found
+PANUKBB_LegFatPercentageRight	Leg fat percentage	EFO_0007800	anthropometric	by hand: the GWAS Catalog's term body fat percentage
 PANUKBB_MeanArterialPressureAutomatedReadingAdjustedByMedication	LDL cholesterol	EFO_0004611	metabolic	by hand: its file holds LDL direct adjusted by medication, by its N in the Pan-UK Biobank's manifest and rg 0.91 with LDL
-PANUKBB_MeanSpheredCellVolume	Mean sphered cell volume		blood	check: no EFO term found
+PANUKBB_MeanSpheredCellVolume	Mean sphered cell volume	OBA_0003460	blood	by hand: the GWAS Catalog's term erythrocyte volume
 PANUKBB_MenarcheAge	Age at menarche	EFO_0004703	reproductive	the EFO term of this name in the GWAS Catalog
 PANUKBB_MonocytePercentage	Monocyte percentage	EFO_0007989	blood	the EFO term of this name in the GWAS Catalog
 PANUKBB_MorningPerson	Chronotype (morning person)	EFO_0008328	behaviour and cognition	the EFO term of this name in the GWAS Catalog
-PANUKBB_MouthTeethDentalProblems	Mouth teeth dental problems		digestive	check: no EFO term found
+PANUKBB_MouthTeethDentalProblems	Mouth teeth dental problems		digestive	by hand: no EFO term fits: several problems in one question; the GWAS Catalog has a term for each
 PANUKBB_NeutrophilCount	Neutrophil count	EFO_0004833	blood	the EFO term of this name in the GWAS Catalog
 PANUKBB_OperationTonsillectomyAdenoids	Varicose veins	HP_0002619	cardiovascular	by hand: its file holds varicose vein surgery: the sign of the varicose veins study at all 2,564 strong SNPs, rg 1.03
-PANUKBB_OperativeProceduresOPCS4NormalDelivery	Normal delivery (OPCS-4)		reproductive	check: no EFO term found
+PANUKBB_OperativeProceduresOPCS4NormalDelivery	Normal delivery (OPCS-4)		reproductive	by hand: no EFO term fits: a code of procedures, not a trait
 PANUKBB_Phosphate	Phosphate	EFO_0010968	biochemistry	the EFO term of this name in the GWAS Catalog
 PANUKBB_PlateletCount	Platelet count	EFO_0004309	blood	the EFO term of this name in the GWAS Catalog
 PANUKBB_ProstateCancer	Prostate cancer	MONDO_0008315	cancer	the EFO term of this name in the GWAS Catalog
-PANUKBB_PulsePressureAutomatedReadingAdjustedByMedication	Non-albumin protein		biochemistry	by hand: its file holds non-albumin protein, by its N in the Pan-UK Biobank's manifest and rg 0.79 with total protein; check: no EFO term found
+PANUKBB_PulsePressureAutomatedReadingAdjustedByMedication	Non-albumin protein	OBA_2045206	biochemistry	by hand: the GWAS Catalog's term level of serum globulin type protein
 PANUKBB_PulsePressureCombinedAutomatedManualReading	Pulse pressure	EFO_0005763	cardiovascular	the EFO term of this name in the GWAS Catalog
 PANUKBB_PulseRateAutomatedReading	Pulse rate	OBA_1001087	cardiovascular	the EFO term of this name in the GWAS Catalog
 PANUKBB_SphericalPowerRight	Spherical power	EFO_0007814	eye	the EFO term of this name in the GWAS Catalog
 PANUKBB_Testosterone	Testosterone	EFO_0004908	reproductive	the EFO term of this name in the GWAS Catalog
 PANUKBB_TotalBilirubin	Total bilirubin	EFO_0004570	biochemistry	the EFO term of this name in the GWAS Catalog
 PANUKBB_Urate	Urate	EFO_0004531	renal	the EFO term of this name in the GWAS Catalog
-PANUKBB_VaricoseVeinSurgery	Operation, not identified		other	check: by hand, its file does not hold varicose veins (rg 0.08); which operation of the Pan-UK Biobank it holds is not known
+PANUKBB_VaricoseVeinSurgery	Operation, not identified		other	by hand: no EFO term fits: what the file holds is not known
 PANUKBB_VitaminD	Vitamin D	OBA_1000968	biochemistry	the GWAS Catalog's term for its studies
 PASS_AbdominalSubcutaneousAdiposeTissueVolume_Agrawal2022	Abdominal subcutaneous adipose tissue volume	OBA_1000023	anthropometric	the EFO term that the GWAS Catalog maps a trait of this name to
 PASS_AcneVulgaris_TederLaving2023	Acne vulgaris	EFO_0003894	skin and hair	the EFO term that the GWAS Catalog maps a trait of this name to
@@ -348,31 +348,31 @@ PASS_CHIPDNMT3A_Kessler2022	Clonal hematopoiesis (CHIP), DNMT3A	EFO_0010819	bloo
 PASS_CancerEsophageal_Gharahkhani2016	Esophageal cancer	MONDO_0007576	cancer	the EFO term of this name in the GWAS Catalog
 PASS_CancerLung_McKay2017	Lung cancer	EFO_0001071	cancer	the EFO term of this name in the GWAS Catalog
 PASS_CancerLungAdenocarcinoma_McKay2017	Lung adenocarcinoma	EFO_0000571	cancer	the EFO term of this name in the GWAS Catalog
-PASS_CannabisUseDisorder_Johnson2020	Cannabis use disorder		psychiatric	check: no EFO term found
+PASS_CannabisUseDisorder_Johnson2020	Cannabis use disorder	EFO_0007191	psychiatric	by hand: the GWAS Catalog's term cannabis dependence
 PASS_ChronicObstructivePulmonaryDisease_Consentino2023	Chronic obstructive pulmonary disease	EFO_0000341	respiratory	the EFO term of this name in the GWAS Catalog
 PASS_CoronaryArteryDisease_Aragam2022	Coronary artery disease	EFO_0001645	cardiovascular	the EFO term of this name in the GWAS Catalog
-PASS_Covid19Vaccination_Hartonen2023	Covid19 vaccination		immune	check: no EFO term found
-PASS_Depression_Mallard2022	Depression		psychiatric	check: no EFO term found
+PASS_Covid19Vaccination_Hartonen2023	Covid19 vaccination	EFO_0004292	immune	by hand: the GWAS Catalog's term vaccination
+PASS_Depression_Mallard2022	Depression	MONDO_0002050	psychiatric	by hand: the GWAS Catalog's term depressive disorder
 PASS_Endometriosis_Rahmioglu2023	Endometriosis	EFO_0001065	reproductive	the EFO term of this name in the GWAS Catalog
 PASS_Epillepsy_Berkovic2022	Epilepsy	EFO_0000474	neurological and aging	the EFO term of this name in the GWAS Catalog
-PASS_F1mooddisturbance_Mallard2022	F1 mood disturbance		psychiatric	check: no EFO term found
-PASS_F2seriousmentalillness_Mallard2022	F2 serious mental illness		psychiatric	check: no EFO term found
+PASS_F1mooddisturbance_Mallard2022	F1 mood disturbance		psychiatric	by hand: no EFO term fits: a factor of several disorders, of one paper
+PASS_F2seriousmentalillness_Mallard2022	F2 serious mental illness		psychiatric	by hand: no EFO term fits: a factor of several disorders, of one paper
 PASS_ForcedExpiratoryVolumeInOneSecond_Shrine2023	FEV1	EFO_0004314	respiratory	the EFO term of this name in the GWAS Catalog
 PASS_ForcedExpiratoryVolumeInOneSecondForcedVitalCapacityRatio_Shrine2023	FEV1/FVC ratio	EFO_0004713	respiratory	the EFO term of this name in the GWAS Catalog
 PASS_ForcedVitalCapacity_Shrine2023	Forced vital capacity	EFO_0004312	respiratory	the EFO term of this name in the GWAS Catalog
 PASS_GastroesophagalRefluxDisease_Donertas2021	Gastroesophageal reflux disease	EFO_0003948	digestive	the EFO term of this name in the GWAS Catalog
 PASS_GastrointestinalDisease_Donertas2021	Gastrointestinal disease	EFO_0010282	digestive	the EFO term of this name in the GWAS Catalog
 PASS_GeneticGeneralizedEpilepsy_Berkovic2022	Genetic generalized epilepsy	EFO_0005917	neurological and aging	the EFO term that the GWAS Catalog maps a trait of this name to
-PASS_GluteofemoralAdiposeTissueVolume_Agrawal2022	Gluteofemoral adipose tissue volume		anthropometric	check: no EFO term found
+PASS_GluteofemoralAdiposeTissueVolume_Agrawal2022	Gluteofemoral adipose tissue volume	EFO_0803317	anthropometric	by hand: the GWAS Catalog's term gluteofemoral adipose tissue measurement
 PASS_Gout_Donertas2021	Gout	EFO_0004274	renal	the EFO term of this name in the GWAS Catalog
 PASS_HeartFailure_Shah2020	Heart failure	EFO_0003144	cardiovascular	the EFO term of this name in the GWAS Catalog
 PASS_Height_Yengo2022	Height	OBA_VT0001253	anthropometric	the EFO term of this name in the GWAS Catalog
 PASS_HipOsteoarthritis_Boer2021	Hip osteoarthritis	EFO_1000786	musculoskeletal	the EFO term of this name in the GWAS Catalog
 PASS_Insomnia_Watanabe2022	Insomnia	EFO_0004698	behaviour and cognition	the EFO term of this name in the GWAS Catalog
 PASS_JuvenileMyoclonicEpilepsy_Berkovic2022	Juvenile myoclonic epilepsy	MONDO_0009696	neurological and aging	the EFO term of this name in the GWAS Catalog
-PASS_KneeAndOrHipOsteoarthritis_Boer2021	Hip or knee osteoarthritis		musculoskeletal	check: no EFO term found
+PASS_KneeAndOrHipOsteoarthritis_Boer2021	Hip or knee osteoarthritis		musculoskeletal	by hand: no EFO term fits: the GWAS Catalog maps it to two terms, osteoarthritis of the hip and of the knee
 PASS_KneeOsteoarthritis_Boer2021	Knee osteoarthritis	EFO_0004616	musculoskeletal	the EFO term of this name in the GWAS Catalog
-PASS_Mania_Mallard2022	Mania		psychiatric	check: no EFO term found
+PASS_Mania_Mallard2022	Mania	EFO_0007705	psychiatric	by hand: the GWAS Catalog's term manic episode measurement
 PASS_MetabolicSyndrome_VanWalree2022	Metabolic syndrome	EFO_0000195	metabolic	the EFO term of this name in the GWAS Catalog
 PASS_MultipleSclerosis_IMSGC2019	Multiple sclerosis	MONDO_0005301	neurological and aging	the EFO term of this name in the GWAS Catalog
 PASS_Parkinson_Nalls2019	Parkinson's disease	MONDO_0005180	neurological and aging	the EFO term of this name in the GWAS Catalog
@@ -384,15 +384,15 @@ PASS_RheumatoidArthritis_Saevarsdottir2022	Rheumatoid arthritis	EFO_0000685	immu
 PASS_Schizophrenia_Trubetskoy2022	Schizophrenia	MONDO_0005090	psychiatric	the EFO term of this name in the GWAS Catalog
 PASS_Snoring_Campos2020	Snoring	HP_0025267	behaviour and cognition	the EFO term of this name in the GWAS Catalog
 PASS_SpineOsteoarthritis_Boer2021	Spine osteoarthritis	EFO_1000787	musculoskeletal	the EFO term that the GWAS Catalog maps a trait of this name to
-PASS_StructuralConnectivityGlobal_Tissink2023	Structural connectivity global		brain imaging	check: no EFO term found
-PASS_StructuralConnectivitySomatomotor_Tissink2023	Structural connectivity somatomotor		brain imaging	check: no EFO term found
+PASS_StructuralConnectivityGlobal_Tissink2023	Structural connectivity global	OBA_2045295	brain imaging	by hand: the GWAS Catalog's term brain connectivity attribute
+PASS_StructuralConnectivitySomatomotor_Tissink2023	Structural connectivity somatomotor	OBA_2045295	brain imaging	by hand: the GWAS Catalog's term brain connectivity attribute
 PASS_TelomereLength_Codd2021	Telomere length	OBA_0003784	blood	the GWAS Catalog's term for its studies
 PASS_ThumbOsteoarthritis_Boer2021	Thumb osteoarthritis	EFO_1000789	musculoskeletal	the EFO term that the GWAS Catalog maps a trait of this name to
-PASS_TotalHipReplacement_Boer2021	Total hip replacement		musculoskeletal	check: no EFO term found
-PASS_TotalJointReplacement_Boer2021	Total joint replacement		musculoskeletal	check: no EFO term found
-PASS_TotalKneeReplacement_Boer2021	Total knee replacement		musculoskeletal	check: no EFO term found
+PASS_TotalHipReplacement_Boer2021	Total hip replacement	EFO_0009806	musculoskeletal	by hand: the GWAS Catalog's term total hip arthroplasty
+PASS_TotalJointReplacement_Boer2021	Total joint replacement	EFO_0010726	musculoskeletal	by hand: the GWAS Catalog's term total joint arthroplasty
+PASS_TotalKneeReplacement_Boer2021	Total knee replacement	EFO_0020975	musculoskeletal	by hand: the GWAS Catalog's term total knee arthroplasty
 PASS_TouretteSyndrome_Yu2019	Tourette syndrome	EFO_0004895	psychiatric	the EFO term of this name in the GWAS Catalog
-PASS_Type1Diabetes_Chiou2021	Type 1 diabetes		metabolic	check: no EFO term found
+PASS_Type1Diabetes_Chiou2021	Type 1 diabetes	MONDO_0005147	metabolic	by hand: the GWAS Catalog's term type 1 diabetes mellitus
 PASS_Type2Diabetes_Xue2018	Type 2 diabetes	MONDO_0005148	metabolic	the EFO term that the GWAS Catalog maps a trait of this name to
 PASS_VaricoseVeins_Ahmed2022	Varicose veins	HP_0002619	cardiovascular	the EFO term of this name in the GWAS Catalog
 PASS_VisceralAdiposeTissueVolume_Agrawal2022	Visceral adipose tissue volume	OBA_2045224	anthropometric	the EFO term that the GWAS Catalog maps a trait of this name to
@@ -420,9 +420,9 @@ GCST90295951	Triglyceride to HDL cholesterol ratio	EFO_0007929	metabolic	the GWA
 GCST90726344	Major depressive disorder	MONDO_0002009	psychiatric	the EFO term of this name in the GWAS Catalog
 GCST90726345	Early onset major depressive disorder	MONDO_0002009	psychiatric	the GWAS Catalog's term for its studies
 GCST90726346	Late onset major depressive disorder	MONDO_0002009	psychiatric	the GWAS Catalog's term for its studies
-GCST90448693	Seroconversion induced by one dose of COVID-19 vaccine		immune	check: no EFO term found
-GCST90448695	Breakthrough COVID-19 susceptibility after at least one dose of a COVID-19 vaccine		immune	check: no EFO term found
-GCST90448696	Breakthrough COVID-19 severity after at least one dose of a COVID-19 vaccine		immune	check: no EFO term found
+GCST90448693	Seroconversion induced by one dose of COVID-19 vaccine		immune	by hand: no EFO term fits: the GWAS Catalog maps it to two terms, SARS-CoV-2 antibody measurement and response to COVID-19 vaccine
+GCST90448695	Breakthrough COVID-19 susceptibility after at least one dose of a COVID-19 vaccine		immune	by hand: no EFO term fits: the GWAS Catalog maps it to two terms, response to COVID-19 vaccine and COVID-19
+GCST90448696	Breakthrough COVID-19 severity after at least one dose of a COVID-19 vaccine		immune	by hand: no EFO term fits: the GWAS Catalog maps it to two terms, response to COVID-19 vaccine and COVID-19
 GCST90432156	Myasthenia gravis	EFO_0004991	neurological and aging	the EFO term of this name in the GWAS Catalog
 GCST90319905	Urate	EFO_0004531	renal	the EFO term of this name in the GWAS Catalog
 GCST90319906	Urate	EFO_0004531	renal	the EFO term of this name in the GWAS Catalog
@@ -492,12 +492,12 @@ GCST90335167	Pulse pressure	EFO_0005763	cardiovascular	the EFO term of this name
 GCST90335168	Mean arterial pressure	EFO_0006340	cardiovascular	the EFO term of this name in the GWAS Catalog
 GCST90335169	Mean arterial pressure	EFO_0006340	cardiovascular	the EFO term of this name in the GWAS Catalog
 GCST90448960	Nonsyndromic cleft palate	EFO_0003959	other	the GWAS Catalog's term for its studies; check: no category
-GCST90652529	Asthma or chronic rhinosinusitis		respiratory	check: no EFO term found
+GCST90652529	Asthma or chronic rhinosinusitis		respiratory	by hand: no EFO term fits: the GWAS Catalog maps it to two terms, chronic rhinosinusitis and asthma
 GCST90652530	Asthma	MONDO_0004979	respiratory	the EFO term of this name in the GWAS Catalog
 GCST90652531	Chronic rhinosinusitis with nasal polyposis	EFO_1002029	respiratory	the GWAS Catalog's term for its studies
 GCST90652532	Chronic rhinosinusitis without nasal polyposis	EFO_1002030	respiratory	the GWAS Catalog's term for its studies
 GCST90652548	Vitamin D	OBA_1000968	biochemistry	the GWAS Catalog's term for its studies
-GCST90652549	Vitamin D x ultraviolet B interaction		biochemistry	check: no EFO term found
+GCST90652549	Vitamin D x ultraviolet B interaction		biochemistry	by hand: no EFO term fits: the GWAS Catalog maps it to two terms, vitamin D level and ultraviolet radiation exposure measurement
 GCST90652551	Vitamin D	OBA_1000968	biochemistry	the GWAS Catalog's term for its studies
 GCST90652552	Vitamin D	OBA_1000968	biochemistry	the GWAS Catalog's term for its studies
 GCST90652553	Vitamin D	OBA_1000968	biochemistry	the GWAS Catalog's term for its studies
@@ -595,9 +595,9 @@ GCST90301701	Pulse pressure	EFO_0005763	cardiovascular	the EFO term of this name
 GCST90301702	Pulse pressure	EFO_0005763	cardiovascular	the EFO term of this name in the GWAS Catalog
 GCST90301703	Pulse pressure	EFO_0005763	cardiovascular	the EFO term of this name in the GWAS Catalog
 GCST90301704	Preeclampsia	EFO_0000668	reproductive	the EFO term of this name in the GWAS Catalog
-GCST90335174	Systolic blood pressure x sex interaction		cardiovascular	check: no EFO term found
-GCST90335175	Diastolic blood pressure x sex interaction		cardiovascular	check: no EFO term found
-GCST90335176	Pulse pressure x sex interaction		cardiovascular	check: no EFO term found
-GCST90501670	Diastolic blood pressure x sex interaction		cardiovascular	check: no EFO term found
-GCST90501671	Pulse pressure x sex interaction		cardiovascular	check: no EFO term found
-GCST90501672	Systolic blood pressure x sex interaction		cardiovascular	check: no EFO term found
+GCST90335174	Systolic blood pressure x sex interaction		cardiovascular	by hand: no EFO term fits: the GWAS Catalog maps it to two terms, systolic blood pressure and sex interaction measurement
+GCST90335175	Diastolic blood pressure x sex interaction		cardiovascular	by hand: no EFO term fits: the GWAS Catalog maps it to two terms, diastolic blood pressure and sex interaction measurement
+GCST90335176	Pulse pressure x sex interaction		cardiovascular	by hand: no EFO term fits: the GWAS Catalog maps it to two terms, pulse pressure measurement and sex interaction measurement
+GCST90501670	Diastolic blood pressure x sex interaction		cardiovascular	by hand: no EFO term fits: the GWAS Catalog maps it to two terms, diastolic blood pressure and sex interaction measurement
+GCST90501671	Pulse pressure x sex interaction		cardiovascular	by hand: no EFO term fits: the GWAS Catalog maps it to two terms, pulse pressure measurement and sex interaction measurement
+GCST90501672	Systolic blood pressure x sex interaction		cardiovascular	by hand: no EFO term fits: the GWAS Catalog maps it to two terms, systolic blood pressure and sex interaction measurement

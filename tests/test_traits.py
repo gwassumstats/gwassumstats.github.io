@@ -52,7 +52,8 @@ def test_every_study_has_one_trait_and_a_trait_one_term_and_one_category():
         said[row["trait"]].add((row["efo"], row["category"]))
     assert not [trait for trait, values in said.items() if len(values) > 1]
     assert all(re.fullmatch(r"(EFO|MONDO|HP|OBA|GO|NCIT|Orphanet|CHEBI|UBERON)_\w+", row["efo"]) for row in rows if row["efo"])
-    assert all("check" in row["how"] for row in rows if not row["efo"])  # a trait without a term is one to look at
+    assert all("check" in row["how"] or "no EFO term fits: " in row["how"] for row in rows if not row["efo"])  # a trait without a term is one to look at, or says why none fits
+    assert sum(not row["efo"] for row in rows) == 22 and len({row["trait"] for row in rows if not row["efo"]}) == 18
     trait = {row["id"]: row["trait"] for row in rows}
     # studies of one trait whatever their paper, ancestry, sex or adjustment
     assert len({trait[study] for study in ("PASS_BMI1", "UKB_460K.body_BMIz", "PASS_BMI_Yengo2018", "PASS_BMI_Akiyama2017_EAS", "GCST90429765")}) == 1
