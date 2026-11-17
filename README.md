@@ -109,12 +109,13 @@ files themselves are protected by O2.
 2. **Review papers and names.** A row of `data/references.tsv` or `data/names.tsv` whose `how` says "check" was a
    guess. Correct the row, write "by hand" and why in `how`, and rebuild: the scripts keep the rows that are there.
    A study whose reference still says "check" shows no paper; a study without a short name stops the build.
-3. **Measure the files**, on O2, when files were added or changed. It runs on Slurm (12 tasks, a few minutes) and
-   writes `data/metrics.tsv`; then rebuild.
+3. **Measure the files**, on O2, when files were added or changed. The scan runs on Slurm (12 tasks, a few minutes)
+   and writes `data/metrics.tsv`; the sign test (one task, a quarter of an hour) writes `data/signs.tsv`; then rebuild.
 
    ```bash
    uv run --group qc python -m qc.scan --hm3 EUR='<weights of EUR, one file per chromosome>' \
-       --hm3 EAS='<weights of EAS>' --logs <a folder outside the repository>
+       --hm3 EAS='<weights of EAS>' --alleles <the HapMap3 SNPs with their alleles> --logs <a folder outside the repository>
+   uv run --group qc python -m qc.signs --alleles <the same list> --logs <the same folder>
    ```
 
    The weights are those LDSC regresses with (`weights.hm3_noMHC.*.l2.ldscore.gz`). The logs hold paths: never commit
