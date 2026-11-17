@@ -5,8 +5,11 @@
 RELEASE is the release folder (default: $SUMSTATS_RELEASE); its file index says where each study's files are. A
 PATTERN names the LD score weight files of an ancestry, one per chromosome: their SNPs are the HapMap3 SNPs that LDSC
 regresses on. FILE lists the HapMap3 SNPs with their alleles (SNP, A1, A2), as the release formats to: a file whose
-alleles are the list's at every SNP had them set from it. FOLDER takes the Slurm logs, which hold paths: keep it outside the repository. The result,
-data/metrics.tsv, holds none: a row per file, named by its study's ID.
+alleles are the list's at every SNP had them set from it. FOLDER takes the Slurm logs, which hold paths: keep it
+outside the repository. The result, data/metrics.tsv, holds none: a row per file, named by its study's ID.
+
+With --copies FOLDER, the corrected copies of that folder are measured instead (data/corrections.tsv says which
+studies have one), into data/metrics_corrected.tsv: what a corrected study is judged by.
 """
 import argparse
 import datetime
@@ -20,7 +23,11 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from corrections.__main__ import planned
+from papers import cite
+
 METRICS = Path(__file__).parents[1] / "data" / "metrics.tsv"
+CORRECTED = METRICS.with_name("metrics_corrected.tsv")  # the same, of the corrected copies
 MEDIAN_CHI2 = 0.4549364  # of a chi-square with one degree of freedom: lambda GC is the median of Z² over it
 TASKS = 12  # a file takes a second or two: many files a task
 
@@ -77,6 +84,7 @@ def main():
     parser.add_argument("release", nargs="?", default=os.environ.get("SUMSTATS_RELEASE"), help="the release folder (default: $SUMSTATS_RELEASE)")
     parser.add_argument("--hm3", action="append", required=True, metavar="ANCESTRY=PATTERN", help="the LD score weight files of an ancestry")
     parser.add_argument("--alleles", default="", metavar="FILE", help="the HapMap3 SNPs with their alleles: SNP, A1, A2")
+    parser.add_argument("--copies", type=Path, help="the folder of the corrected copies: they are measured, in place of the release's files, into data/metrics_corrected.tsv")
     parser.add_argument("--logs", type=Path, required=True, help="a folder outside the repository, for the Slurm logs")
     parser.add_argument("--account", help="the Slurm account to charge")
     parser.add_argument("--name", default=f"{datetime.date.today():%Y%m%d}_qc_scan", help="the name of the array and of its logs")
@@ -84,7 +92,10 @@ def main():
     if not args.release:
         parser.error("name the release folder, or set SUMSTATS_RELEASE")
     patterns = dict(pattern.split("=", 1) for pattern in args.hm3)
-    files = files_of(Path(args.release))
+    files, result, tasks = files_of(Path(args.release)), METRICS, TASKS
+    if args.copies:  # the studies that data/corrections.tsv gives a copy, by their copies
+        copied = planned(cite.table(METRICS.with_name("corrections.tsv")))
+        files, result, tasks = [(study, kind, anc, str(args.copies.resolve() / "sumstats" / f"{study}.sumstats")) for study, kind, anc, _ in files if kind == "h2" and study in copied], CORRECTED, 1
     missing = sorted({anc for _, _, anc, _ in files} - {anc for anc, pattern in patterns.items() if glob.glob(pattern)})
     if missing:
         parser.error(f"no --hm3 files for {', '.join(missing)}")
@@ -97,15 +108,15 @@ def main():
     executor = submitit.AutoExecutor(folder=folder)
     executor.update_parameters(name=args.name, slurm_partition="short", cpus_per_task=1, mem_gb=8, timeout_min=60, slurm_srun_args=["--export=ALL"],
                                slurm_additional_parameters={"account": args.account} if args.account else {})
-    chunks = [files[k::TASKS] for k in range(TASKS)]
-    jobs = executor.map_array(scan, chunks, [patterns] * TASKS, [args.alleles] * TASKS)
+    chunks = [files[k::tasks] for k in range(tasks)]
+    jobs = executor.map_array(scan, chunks, [patterns] * tasks, [args.alleles] * tasks)
 
     def note(text):
         with record.open("a") as log:
             log.write(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {text}\n")
         print(text, flush=True)
 
-    note(f"submitted {len(jobs)} tasks for {len(files)} files: jobs {', '.join(job.job_id for job in jobs)}; short, 1 CPU, 8 GB, 60 min; result: {METRICS}")
+    note(f"submitted {len(jobs)} tasks for {len(files)} files: jobs {', '.join(job.job_id for job in jobs)}; short, 1 CPU, 8 GB, 60 min; result: {result}")
     submitit.helpers.monitor_jobs(jobs)
     rows, failures = [], []
     for chunk, job in zip(chunks, jobs, strict=True):
@@ -117,8 +128,8 @@ def main():
     if failures:
         raise SystemExit("\n".join(failures))
     metrics = pd.DataFrame(rows).set_index(["id", "file"]).loc[[(study, kind) for study, kind, _, _ in files]]  # in the release's order; a missing file is an error
-    metrics.round(4).to_csv(METRICS, sep="\t")
-    note(f"wrote {len(metrics)} rows to {METRICS}")
+    metrics.round(4).to_csv(result, sep="\t")
+    note(f"wrote {len(metrics)} rows to {result}")
 
 
 if __name__ == "__main__":

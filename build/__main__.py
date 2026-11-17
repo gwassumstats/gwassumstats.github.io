@@ -14,8 +14,9 @@ ever written to the repository. The build writes, in site/data/:
 
 The papers are those of data/references.tsv and data/papers.json (python -m papers); the short names, those of
 data/names.tsv (python -m names). A study without a short name stops the build. The quality checks (qc/checks.py)
-judge each study from its file as measured (data/metrics.tsv: python -m qc.scan), its results and its label. The
-candidates are those of data/candidates.json (python -m candidates), as they are.
+judge each study from its file as measured (data/metrics.tsv: python -m qc.scan), its results and its label; a
+corrected study, as corrected (its copy as measured: data/metrics_corrected.tsv), with what they say of the release's
+file kept beside. The candidates are those of data/candidates.json (python -m candidates), as they are.
 
 A release that has not changed rewrites the same files, and keeps the encrypted one as it is, so readers stay logged in.
 """
@@ -50,9 +51,10 @@ def holds(path: Path, plain: bytes, passphrase: str, iterations: int) -> bool:
 
 def build(release: Path, out: Path, passphrase: str, iterations: int = crypt.ITERATIONS, data: Path = merge.DATA, copies: Path | None = None) -> list[Path]:
     """Writes the site's data for the release at `release` into `out`, with what `data` adds to it; returns the files.
-    The checks and the release's own counts are of the release as it is; the studies and their genetic correlations
-    are shown with the corrections laid over them (build/overlay.py). `copies`: the folder of the corrected copies,
-    for the paths that only a logged-in reader sees."""
+    The release's own counts are of the release as it is; the studies and their genetic correlations are shown with
+    the corrections laid over them (build/overlay.py), and checked so: what the checks say of a corrected study as
+    released is kept in its `was`. `copies`: the folder of the corrected copies, for the paths that only a logged-in
+    reader sees."""
     theirs = rel.studies(release)
     pairs = {anc: rel.pairs_of(release, anc) for anc in theirs["anc"].unique()}
     as_released = {anc: rel.correlations(table, theirs, anc) for anc, table in pairs.items()}
@@ -61,6 +63,12 @@ def build(release: Path, out: Path, passphrase: str, iterations: int = crypt.ITE
     of, traits = merge.traits(theirs, data)
     d, tables, fixed, was = overlay.laid(theirs, pairs, data, copies)
     rg = {anc: rel.correlations(table, d, anc) for anc, table in tables.items()}
+    released = judged  # what the checks say of the release as it is; then of the studies as shown: the corrected ones as corrected
+    if was:
+        judged = merge.quality(d, rg, data, fixed)
+        for study in fixed:
+            if (released.at[study, "qc"], released.at[study, "notes"]) != (judged.at[study, "qc"], judged.at[study, "notes"]):
+                was[study] = was.get(study, {}) | {"qc": released.at[study, "qc"], "notes": released.at[study, "notes"]}
     for anc, t in rg.items():  # the release's rg and its standard error, for the pairs estimated again: by the pair's position
         place, n = {study: k for k, study in enumerate(t["ids"])}, len(t["ids"])
         before = {min(place[a], place[b]) * (2 * n - min(place[a], place[b]) - 1) // 2 + abs(place[a] - place[b]) - 1: value for (a, b), value in ((pair.split(" "), value) for pair, value in was.get(anc, {}).items())}
@@ -77,6 +85,7 @@ def build(release: Path, out: Path, passphrase: str, iterations: int = crypt.ITE
                                                           "traits": {"all": len(traits), "efo": sum(bool(efo) for efo, _ in traits.values())}}
     if fixed:
         summary["corrected"] = {"studies": len(fixed), "copies": sum(any(kind != "relabel" for kind, _, _ in fixes) for fixes in fixed.values()),
+                                "qc": {level: int((released["qc"] == level).sum()) for level in ("pass", "warn", "fail")},  # of the release's files
                                 "signed": int((d["cross"] & ~theirs["cross"]).sum()), "pairs": sum(len(was.get(anc, {})) for anc in rg),
                                 "panel": {anc: {"out": list(theirs.index[(theirs["anc"] == anc) & theirs["panel"].notna() & d["panel"].isna()]),
                                                 "in": list(d.index[(d["anc"] == anc) & d["panel"].notna() & theirs["panel"].isna()])} for anc in rg}}

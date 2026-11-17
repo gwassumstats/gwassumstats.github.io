@@ -68,21 +68,32 @@ def test_the_corrections_are_laid_over_the_release_which_is_kept_beside(mini, tm
     write(data / "corrected_h2.tsv", ["trait_identifier", "h2", "h2_se", "h2_z", "intercept", "m"], [["A_unsigned", "0.25", "0.02", "12.5", "1.01", "905"], ["B", "0.1", "0.01", "10.0", "0.99", "910"]])
     write(data / "corrected_rg.tsv", RG, [["A_unsigned", "B", "0.2", "0.05", "4.0", "0.0001", "0.01", "0.002"], ["A_unsigned", "C", "0.9", "0.05", "18.0", "0.0", "0.05", "0.002"], ["A_unsigned", "GCST0001", *["nan"] * 6],
                                           ["B", "C", "0.5", "0.1", "5.0", "0.001", "0.02", "0.004"], ["B", "GCST0001", "-0.048", "0.0826", "-0.5809", "0.5613", "-0.0037", "0.0065"]])
+    write(data / "metrics_corrected.tsv", MEASURED, [measured("A_unsigned", 905, n=1500), measured("B", 910, n=3000)])  # what a scan of the two copies would have measured
+    write(data / "findings.tsv", ["id", "level", "finding", "of"], [["B", "warn", "its N is an effective N", ""], ["B", "note", "its authors ask to be cited", "study"]])
     files = built(mini, tmp_path / "out")
     by = {d["id"]: d for d in files["studies.json"]["studies"]}
     a, b = by["A_unsigned"], by["B"]
     assert (a["n"], a["m"], a["h2"], a["h2_z"], a["signed"], a["cross"], a["panel"]) == (1500, 905, 0.25, 12.5, True, True, 1)  # its source signs it: it has genetic correlations now
-    assert a["was"] == {"n": 1000, "m": 900, "signed": False, "cross": False, "h2": 0.2, "h2_z": 10.0, "panel": None}  # what the release has, where it differs
-    assert (b["n"], b["h2"], b["h2_se"], b["panel"]) == (4000, 0.1, 0.01, 2) and b["was"] == {"n": 2000, "m_rg": 910, "h2": -0.0058, "h2_z": -0.58, "panel": None} and "m_rg" not in b
-    assert by["C"]["was"] == {"panel": 2} and "panel" not in by["C"] and by["GCST0001"]["was"] == {"panel": 1} and "fixed" not in by["GCST0001"]  # the panel, chosen again by the release's rule
+    assert a["was"] == {"n": 1000, "m": 900, "signed": False, "cross": False, "h2": 0.2, "h2_z": 10.0, "panel": None}  # what the release has, where it differs: the checks say the same of both
+    assert (b["n"], b["h2"], b["h2_se"], b["panel"]) == (4000, 0.1, 0.01, 2) and "m_rg" not in b
+    assert b["was"] == {"n": 2000, "m_rg": 910, "h2": -0.0058, "h2_z": -0.58, "panel": None, "qc": "fail",
+                        "notes": [["fail", "h² -0.0058: not above 0, so nothing for LDSC to work with"], ["warn", "its N is an effective N"], ["note", "its authors ask to be cited"]]}
+    # the copies are judged for themselves: B's h² is above 0 now, what a person found of its file no longer holds, and what holds of the study stays
+    assert (a["qc"], a.get("notes")) == ("pass", None) and (b["qc"], b["notes"]) == ("pass", [["note", "the median N of its SNPs is 3,000; the inventory says 4,000"], ["note", "its authors ask to be cited"]])
+    # a corrected label is no copy: the release's file is judged, under the trait it holds, and warns for the name it keeps
+    low = ["warn", "40% of the HapMap3 SNPs that LDSC regresses on"]
+    assert by["C"]["notes"] == [low, ["warn", "the release calls it Trait C; its file holds Trait Z: its N is that of Trait Z"]] and by["C"]["was"] == {"panel": 2, "qc": "warn", "notes": [low]}
+    assert "panel" not in by["C"] and by["GCST0001"]["was"] == {"panel": 1} and "fixed" not in by["GCST0001"]  # the panel, chosen again by the release's rule
     t = files["rg_EUR.json"]
     assert t["ids"] == ["A_unsigned", "B", "C", "GCST0001"] and t["rg"] == [0.2, 0.9, None, 0.5, -0.048, None] and t["notes"] == {"5": "rg out of bounds"}
     assert t["was"] == {"3": [7.6455e-06, 0.096], "4": [-0.048, 0.0826]}  # the release's rg and SE of the pairs estimated again; A_unsigned had none
     assert files["rg_EAS.json"] == unchanged["rg_EAS.json"] and "was" not in files["rg_EAS.json"]
     release = files["studies.json"]["release"]
-    assert release["corrected"] == {"studies": 3, "copies": 2, "signed": 1, "pairs": 2, "panel": {"EUR": {"out": ["C", "GCST0001"], "in": ["A_unsigned", "B"]}, "EAS": {"out": [], "in": []}}}
-    assert {k: v for k, v in release.items() if k != "corrected"} == unchanged["studies.json"]["release"]  # the release's own counts stand
-    assert [d["qc"] for d in files["studies.json"]["studies"]] == [d["qc"] for d in unchanged["studies.json"]["studies"]]  # the checks are of the release's files
+    assert release["corrected"] == {"studies": 3, "copies": 2, "qc": {"pass": 2, "warn": 4, "fail": 1}, "signed": 1, "pairs": 2,
+                                    "panel": {"EUR": {"out": ["C", "GCST0001"], "in": ["A_unsigned", "B"]}, "EAS": {"out": [], "in": []}}}
+    assert {k: v for k, v in release.items() if k not in ("corrected", "qc")} == {k: v for k, v in unchanged["studies.json"]["release"].items() if k != "qc"}  # the release's own counts stand
+    assert [d["qc"] for d in files["studies.json"]["studies"]][2:] == [d["qc"] for d in unchanged["studies.json"]["studies"]][2:]  # the other studies are judged as before
+    assert release["qc"] == {"pass": 3, "warn": 4, "fail": 0} and release["corrected"]["qc"] == {"pass": 2, "warn": 4, "fail": 1}  # as shown; and of the release's files
     build(mini, tmp_path / "out", "correct horse", copies=tmp_path / "scratch")
     private = json.loads(crypt.decrypt(json.loads((tmp_path / "out" / BLOB).read_text()), "correct horse"))
     where = lambda study: f"{private['folders'][private['files'][study][0]]}/{private['files'][study][1]}"

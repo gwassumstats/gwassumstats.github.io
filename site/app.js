@@ -119,8 +119,8 @@ const verdict = (d) => {
 };
 // Whether a study has a corrected copy: its file was taken again, mended or given another N (a label alone is no copy)
 const copied = (d) => (d.fixed ?? []).some(([kind]) => kind !== "relabel");
-// What the checks say, and "corrected" beside it for a study that is shown by its corrected copy
-const verdictOf = (d) => (copied(d) ? [verdict(d), " ", el("span", "fixed", "corrected")] : verdict(d));
+// What the checks say, and "corrected" beside it for a study that is shown, and judged, as corrected
+const verdictOf = (d) => (d.fixed ? [verdict(d), " ", el("span", "fixed", "corrected")] : verdict(d));
 // What a correction did, in a few words: [kind, what it gives, why] of data/corrections.tsv
 const DONE = {
   source: (value) => { const from = value.split(";")[0].trim(); return ["taken again from its source, ", /^GCST\d+$/.test(from) ? outside(`${CATALOG}${from}`, from) : httpUrl(from) ? outside(from, "the authors' file") : from, ", and formatted as the release formats"]; },
@@ -283,7 +283,7 @@ function pathLine(d, label = "") {
 
 function shown() {
   const f = state.filter, sought = words(f.q);
-  return state.studies.filter((d) => (!f.anc || d.anc === f.anc) && (!f.qc || (f.qc === "corrected" ? copied(d) : d.qc === f.qc)) && (!f.z6 || d.h2_z > 6) && (!f.signed || d.signed) && (!f.panel || d.panel)
+  return state.studies.filter((d) => (!f.anc || d.anc === f.anc) && (!f.qc || (f.qc === "corrected" ? Boolean(d.fixed) : d.qc === f.qc)) && (!f.z6 || d.h2_z > 6) && (!f.signed || d.signed) && (!f.panel || d.panel)
     && (!f.ticked || state.cart.has(d.id)) && sought.every((w) => d.text.includes(w)));
 }
 
@@ -345,10 +345,12 @@ function renderCart() {
   tickAll.indeterminate = on > 0 && on < list.length;
 }
 
-// The studies ticked as a table: short name, ID, and what a script needs to find and cite each; the path after login
+// The studies ticked as a table: short name, ID, and what a script needs to find and cite each; the path after login.
+// `corrected`: "copy" for a study shown by its corrected copy, whose path this is; "label" for one whose file holds
+// another trait than its name says: `trait` is what it holds
 function exportStudies() {
-  const columns = [["short_name", (d) => d.name], ["id", (d) => d.id], ["release_name", (d) => d.trait], ["ancestry", (d) => d.anc], ["n", (d) => d.n],
-    ["reference", (d) => d.label], ["published", (d) => d.published], ["pmid", (d) => (d.cite ?? []).join(";")], ["corrected", (d) => (copied(d) ? "yes" : "")],
+  const columns = [["short_name", (d) => d.name], ["id", (d) => d.id], ["release_name", (d) => d.trait], ["trait", (d) => d.of], ["ancestry", (d) => d.anc], ["n", (d) => d.n],
+    ["reference", (d) => d.label], ["published", (d) => d.published], ["pmid", (d) => (d.cite ?? []).join(";")], ["qc", (d) => d.qc], ["corrected", (d) => (copied(d) ? "copy" : d.fixed ? "label" : "")],
     ...(state.paths ? [["path", filePath]] : [])];
   const cell = (value) => String(value ?? "").replace(/[\t\r\n]+/g, " ");
   const lines = [columns.map(([name]) => name), ...ticked().map((d) => columns.map(([, value]) => cell(value(d))))];
@@ -379,7 +381,7 @@ const STUDY = { key: "name", label: "Study", title: "Short name: first author, y
 const ANCESTRY = { key: "anc", label: "Ancestry", cls: "short" };
 const H2 = { key: "h2", label: plusMinusLabel("h²"), title: "Heritability and its standard error: S-LDSC, observed scale", cls: "pm", first: -1, show: (d) => plusMinusCell(d.h2, d.h2_se) };
 const H2_Z = { key: "h2_z", label: "h² z", title: "h² over its standard error", num: sig };
-const CHECKS = { key: "rank", label: "QC", title: "Quality checks of the release's file: pass, warn or fail; \"corrected\": the numbers shown are of a corrected copy. A study's page says why", cls: "short", first: -1, show: verdictOf };
+const CHECKS = { key: "rank", label: "QC", title: "Quality checks: pass, warn or fail. \"corrected\": the study is shown, and checked, as corrected. A study's page says why, and what the checks say of it as released", cls: "short", first: -1, show: verdictOf };
 const COLUMNS = {
   sumstats: [TICK, STUDY, ANCESTRY,
     { key: "n", label: "N", title: "Sample size", num: int },
@@ -755,20 +757,29 @@ function corrected(d) {
   return block;
 }
 
-// What the quality checks found of a study, the worst first; what was measured of its file; where to report a problem
+// What the quality checks found, the worst first: a line a finding
+const findings = (notes) => (notes ?? []).map(([level, text]) => {
+  const line = el("div", "finding");
+  line.append(el("span", `qc ${level}`, level), " ", ...finding(text, true));
+  return line;
+});
+// What the quality checks say of a study as it is shown; what was measured of its file; where to report a problem
 function checked(d) {
   const block = el("div"), head = el("div"), measured = el("div", "hint");
   const report = outside(`${ISSUES}?${new URLSearchParams({ template: "study.yml", title: `${d.name}: `, study: `${d.name} (${d.id})` })}`, "report a problem");
   head.append(verdict(d), " · ", report);
-  block.append(head, ...(d.notes ?? []).map(([level, text]) => {
-    const line = el("div", "finding");
-    line.append(el("span", `qc ${level}`, level), " ", ...finding(text, true));
-    return line;
-  }));
+  block.append(head, ...findings(d.notes));
   if (d.hm3 != null) {
-    measured.textContent = `Its file: ${Math.floor(d.hm3 * 100)}% of the HapMap3 SNPs that LDSC regresses on; mean χ² ${d.chi2.toFixed(2)}; λGC ${d.lambda.toFixed(2)}.`;
+    measured.textContent = `Its ${copied(d) ? "corrected copy" : "file"}: ${Math.floor(d.hm3 * 100)}% of the HapMap3 SNPs that LDSC regresses on; mean χ² ${d.chi2.toFixed(2)}; λGC ${d.lambda.toFixed(2)}.`;
     block.append(measured);
   }
+  return block;
+}
+// What the checks say of a corrected study as the release has it
+function released(d) {
+  const block = el("div"), head = el("div");
+  head.append(el("span", `qc ${d.was.qc}`, d.was.qc));
+  block.append(head, ...findings(d.was.notes));
   return block;
 }
 
@@ -788,8 +799,9 @@ async function renderStudy() {
     field("Nonredundant panel", (d.panel ? `yes: ${int(d.panel)} of ${int(state.count[d.anc].panel)} in the ${d.anc} panel, by h² z` : "no")
       + (d.was && "panel" in d.was ? `; in the release's panel: ${d.was.panel ? "yes" : "no"}` : "")),
     field("h² ± SE", plusMinus(d.h2, d.h2_se)), field("h² z", sig(d.h2_z)), field("Intercept", fixed(4)(d.intercept)),
-    field(copied(d) ? "QC of the release's file" : "QC", checked(d)),
+    field(d.was?.qc ? "QC as corrected" : "QC", checked(d)),
     ...(d.fixed ? [field("Corrected", corrected(d))] : []),
+    ...(d.was?.qc ? [field("QC as released", released(d))] : []),
     field("Path", pathLine(d) ?? action("login to see it", () => openLogin(true))));
   const head = el("h2"), section = el("div");
   head.append(...parts(d.name));

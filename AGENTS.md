@@ -24,7 +24,7 @@ their rule. Open: fixes to the studies that the checks flag wait for the owner (
    `data/` is drafted by scripts and corrected by hand; a script never overwrites a row that is there.
 4. The site loads nothing from other sites (no analytics, fonts or scripts): the passphrase is typed into it.
 5. Before a push, run `uv run pytest` with both variables set, and `dev/site_check.py`. A skipped test did not run.
-   What a Slurm job writes besides `data/metrics.tsv` (its logs hold paths) stays outside the repository, under
+   What a Slurm job writes besides the tables of `data/` (its logs hold paths) stays outside the repository, under
    `notebook/results/`. Cancel a Slurm job by its explicit ID only.
 6. Push workflow files over SSH (the `gh` token lacks the `workflow` scope).
 7. On O2, write only inside this repository (with its notebook) and under the folder named by
@@ -76,6 +76,11 @@ their rule. Open: fixes to the studies that the checks flag wait for the owner (
   repository with its *provenance* (source, checksums, what changed). The release itself is never changed.
 - *Overlay:* the corrected copies' numbers laid over the release's on the site (`build/overlay.py`); a study's `was`
   is what the release has, its `fixed` what was corrected and why.
+- *As corrected, as released:* a corrected study has two verdicts. The site's is of the study *as corrected*: its
+  copy as measured (`data/metrics_corrected.tsv`), with the copy's LDSC results and the sign test of the copies
+  (`data/signs_corrected.tsv`); a relabel is judged under the trait its file holds, and warns for the name it keeps.
+  *As released* is what the checks say of the release's file, kept in `was`. A finding by hand is of the release's
+  file unless `data/findings.tsv` says it is `of` the *study*: then it holds whatever the file.
 - *Candidate:* a GWAS of the GWAS Catalog with public sumstats, added after the last release's *window* (the days
   of publication it took: 2024/03/01 to 2026/08/26 for 2026), that passes the *rule* of `data/candidates.toml`.
 - *Backtest:* the rule applied to the window of the last release, against the studies that release added: what it

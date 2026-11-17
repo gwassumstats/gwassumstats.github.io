@@ -119,10 +119,10 @@ def text(d):
 
 
 def table_of(studies, paths):
-    """The file of the studies ticked: a line each, saying whether it is shown by a corrected copy, with the path after login."""
-    head = ["short_name", "id", "release_name", "ancestry", "n", "reference", "published", "pmid", "corrected", *(["path"] if paths else [])]
-    copied = lambda d: "yes" if any(kind != "relabel" for kind, _, _ in d.get("fixed", [])) else ""
-    lines = [[d["name"], d["id"], d["trait"], d["anc"], str(d["n"]), label(d), published(d), ";".join(d.get("cite", [])), copied(d), *([file_path(d["id"])] if paths else [])] for d in studies]
+    """The file of the studies ticked: a line each, with its trait, what the checks say and whether it is corrected (by a copy, or its label alone), and the path after login."""
+    head = ["short_name", "id", "release_name", "trait", "ancestry", "n", "reference", "published", "pmid", "qc", "corrected", *(["path"] if paths else [])]
+    corrected = lambda d: "copy" if any(kind != "relabel" for kind, _, _ in d.get("fixed", [])) else "label" if "fixed" in d else ""
+    lines = [[d["name"], d["id"], d["trait"], d["of"], d["anc"], str(d["n"]), label(d), published(d), ";".join(d.get("cite", [])), d["qc"], corrected(d), *([file_path(d["id"])] if paths else [])] for d in studies]
     return "".join("\t".join(line) + "\n" for line in [head, *lines])
 
 
@@ -480,41 +480,51 @@ def run(pw, url, name, **context):
     ok &= page.text_content("#cart").startswith(" · 1 ticked") and page.locator("#sumstats-table td.tick input:checked").count() == 1
     page.locator("#cart a", has_text="untick all").click()
     check(f"[{name}] a study is ticked on its page too", ok and kept() == [], kept)
-    doubted = BY_ID["PANUKBB_LDLDirectAdjustedByMedication"]  # a label that its genetic correlations contradict
+    doubted = BY_ID["PANUKBB_LDLDirectAdjustedByMedication"]  # a label that its genetic correlations contradict; corrected since, so that its page has both verdicts
     show(f"?study={doubted['id']}", "#view-study .finding")
-    block = page.locator("#view-study .row", has=page.locator(".finding")).locator(".value")
-    findings = [" ".join(line.split()) for line in block.locator(".finding").all_inner_texts()]
-    named_there = block.locator(".finding a").evaluate_all("list => list.map((a) => [a.textContent, a.getAttribute('href')])")
+
+    def told(label, notes):
+        """The block of a verdict on the page, and its findings if they are these, each naming other studies by their short names, linked."""
+        block = page.locator("#view-study .row", has=page.locator(".label", has_text=re.compile(f"^{label}$"))).locator(".value")
+        findings = [" ".join(line.split()) for line in block.locator(".finding").all_inner_texts()]
+        named_there = block.locator(".finding a").evaluate_all("list => list.map((a) => [a.textContent, a.getAttribute('href')])")
+        right = findings == [f"{level} {said(text)}" for level, text in notes] and named_there == [[BY_ID[study]["name"], f"?study={study}"] for _, text in notes for study in re.findall(r"\{([^}]+)\}", text)]
+        return block, findings if right else []
+
+    block, findings = told("QC as corrected", doubted["notes"])
+    before, released = told("QC as released", doubted["was"]["notes"])
     report = block.locator("a", has_text="report a problem").get_attribute("href")
     check(f"[{name}] a study's page says what the checks found, the worst first, naming other studies by their short names, with what was measured of its file",
-          block.locator("div div").first.inner_text() == "fail · report a problem" and findings == [f"{level} {said(text)}" for level, text in doubted["notes"]]
-          and named_there == [[BY_ID[study]["name"], f"?study={study}"] for _, text in doubted["notes"] for study in re.findall(r"\{([^}]+)\}", text)]
+          block.locator("div div").first.inner_text() == "warn · report a problem" and before.locator("div div").first.inner_text() == "fail" and before.locator(".hint").count() == 0
           and block.locator(".hint").inner_text() == f"Its file: {int(doubted['hm3'] * 100)}% of the HapMap3 SNPs that LDSC regresses on; mean χ² {doubted['chi2']:.2f}; λGC {doubted['lambda']:.2f}."
-          and findings[0].startswith("fail ") and any("FEV1FVC" in finding for finding in findings), lambda: (findings, named_there))
+          and findings and findings[0].startswith("warn the release calls it ") and released and released[0].startswith("fail ") and any("FEV1FVC" in finding for finding in released), lambda: (findings, released))
     check(f"[{name}] its link to report a problem opens the repository's form with the study filled in, and no path",
           report.startswith("https://github.com/gwassumstats/gwassumstats.github.io/issues/new?template=study.yml&")
           and dict(urllib.parse.parse_qsl(report.split("?", 1)[1])) == {"template": "study.yml", "title": f"{doubted['name']}: ", "study": f"{doubted['name']} ({doubted['id']})"},
           lambda: report)
     shot("study-qc", full=False)
-    # the corrections: studies shown by a corrected copy, with what the release has beside
-    copied = [d for d in STUDIES if any(kind != "relabel" for kind, _, _ in d.get("fixed", []))]
+    # the corrections: studies shown, and checked, as corrected, with what the release has beside
+    corrected = [d for d in STUDIES if "fixed" in d]
     show("", "#sumstats-table tbody")
     page.select_option("#f-qc", "corrected")
     tags = page.locator("#sumstats-table tbody tr:first-child td:nth-child(8)").all_inner_texts()
-    check(f"[{name}] the studies shown by a corrected copy are listed on demand, each with what the checks say of the release's file",
-          tags == [f"{d['qc']} corrected" for d in copied] and len(copied) == RELEASE["corrected"]["copies"] == 30 and page.inner_text("#count") == "30 of 602 studies", lambda: tags[:3])
+    check(f"[{name}] the corrected studies are listed on demand, each with what the checks say of it as corrected",
+          tags == [f"{d['qc']} corrected" for d in corrected] and len(corrected) == RELEASE["corrected"]["studies"] == 36 and page.inner_text("#count") == "36 of 602 studies"
+          and len({d["qc"] for d in corrected}) == 3, lambda: tags[:3])
     shot("corrected", full=False)
     page.select_option("#f-qc", "")
     row = lambda label: " ".join(page.locator("#view-study .row", has=page.locator(".label", has_text=re.compile(f"^{re.escape(label)}$"))).locator(".value").inner_text().split())
     d = BY_ID["PASS_AtrialFibrillation_Nielsen2018"]
     show(f"?study={d['id']}", "#view-study .fix")
     told, w = row("Corrected"), d["was"]
-    check(f"[{name}] a corrected study's page says what was done and why, and what the release has; its checks are named as those of the release's file",
+    check(f"[{name}] a corrected study's page says what was done and why, and what the release has; the checks of the copy and of the release's file are told apart",
           told.startswith("taken again from its source, GCST006414, and formatted as the release formats: the alleles of the release's file do not go with its Z")
           and told.endswith(f"The numbers on this page are of the corrected copy. In the release: h² {plus_minus(w['h2'], w['h2_se'])}, z {sig(w['h2_z'])}; {w['m']:,} SNPs.")
           and page.locator("#view-study .fix a", has_text="GCST006414").get_attribute("href") == "https://www.ebi.ac.uk/gwas/studies/GCST006414"
           and row("Nonredundant panel") == f"yes: {d['panel']} of {sum('panel' in s for s in STUDIES if s['anc'] == 'EUR')} in the EUR panel, by h² z; in the release's panel: yes"
-          and row("h² ± SE") == plus_minus(d["h2"], d["h2_se"]) and row("QC of the release's file").startswith("fail"), lambda: told)
+          and row("h² ± SE") == plus_minus(d["h2"], d["h2_se"]) and row("QC as corrected").startswith("pass · report a problem note nearly identical to 1 other study")
+          and "Its corrected copy: " in row("QC as corrected") and row("QC as released").startswith("fail fail its Z does not go with its alleles")
+          and page.locator("#view-study .label", has_text=re.compile("^QC$")).count() == 0, lambda: (told, row("QC as corrected"), row("QC as released")))
     shot("study-corrected", full=False)
     other, t = "PANUKBB_AtrialFibrillationAndFlutter", RG["EUR"]
     i, j = sorted((t["ids"].index(d["id"]), t["ids"].index(other)))
@@ -525,9 +535,13 @@ def run(pw, url, name, **context):
           before == f"In the release rg {plus_minus(*t['was'][str(k)])}: estimated again on a corrected copy" and t["rg"][k] > 0.9 > 0 > t["was"][str(k)][0], lambda: before)
     relabelled = BY_ID["PANUKBB_IndirectBilirubin"]
     show(f"?study={relabelled['id']}", "#view-study .fix")
-    check(f"[{name}] a study whose label alone is corrected says what its file holds, and is not shown as a corrected copy",
-          row("Corrected").startswith("its file holds another trait: Estimated glomerular filtration rate (creatinine, cystatin C): its N, 401,570,") and "was" not in relabelled
-          and page.locator("#view-study .label", has_text="QC of the release's file").count() == 0, lambda: row("Corrected"))
+    check(f"[{name}] a study whose label alone is corrected says what its file holds: it warns under that trait, where it failed under the release's",
+          row("Corrected").startswith("its file holds another trait: Estimated glomerular filtration rate (creatinine, cystatin C): its N, 401,570,") and "h2" not in relabelled["was"]
+          and "The numbers on this page" not in row("Corrected") and row("QC as corrected").startswith("warn · report a problem warn the release calls it Indirect Bilirubin; its file holds Estimated glomerular filtration rate")
+          and "Its file: " in row("QC as corrected") and row("QC as released").startswith("fail fail its N, 401,570, is that of the Pan-UK Biobank's eGFR"), lambda: (row("QC as corrected"), row("QC as released")))
+    untouched = next(d for d in STUDIES if "fixed" not in d and d["qc"] == "warn")
+    show(f"?study={untouched['id']}", "#view-study .fields")
+    check(f"[{name}] a study without a correction has one verdict", row("QC").startswith("warn") and page.locator("#view-study .label", has_text=re.compile("^QC as ")).count() == 0, lambda: row("QC"))
     # the candidates for the next release, and the rule's backtest
     show("?tab=candidates", "#cand-steps tbody tr")
     table = lambda name: [[" ".join(cell.split()) for cell in row] for row in page.locator(f"#{name} tbody tr").evaluate_all("rows => rows.map((row) => [...row.cells].map((cell) => cell.innerText))")]

@@ -44,7 +44,9 @@ DOI = re.compile(r"\b10\.\d{4,9}/[^\s\"<>]+")  # a paper's DOI can end in the sh
 
 # Each study as the release has it: a corrected study keeps the release's values of what its correction changed
 RELEASED = [{key: value for key, value in (d | d.get("was", {})).items() if value is not None} for d in STUDIES]
+WAS = {d["id"]: d for d in RELEASED}
 COPIED = {d["id"] for d in STUDIES if any(kind != "relabel" for kind, _, _ in d.get("fixed", []))}  # the studies shown by a corrected copy
+WORST = lambda notes: next((level for level, _ in notes if level != "note"), "pass")  # what a study's findings make of it
 
 
 def correlations(anc):
@@ -114,7 +116,8 @@ def test_counts_are_the_release_s():
         assert t["ids"] == [d["id"] for d in STUDIES if d["anc"] == anc and d["cross"]] and len(t["ids"]) == shown
         assert {len(t[c]) for c in COLUMNS} == {shown * (shown - 1) // 2}
         assert RELEASE[anc] | {"worst": None} == RELEASE[anc] | {"worst": None, "studies": count(anc=anc), "signed": signed, "pairs": signed * (signed - 1) // 2, "failed": failed}
-    assert RELEASE["corrected"] == {"studies": 36, "copies": len(COPIED), "signed": 4, "pairs": sum(len(correlations(anc).get("was", {})) for anc in RELEASE["ancestries"]),
+    assert RELEASE["corrected"] == {"studies": 36, "copies": len(COPIED), "qc": {level: sum(d["qc"] == level for d in RELEASED) for level in ("pass", "warn", "fail")},
+                                    "signed": 4, "pairs": sum(len(correlations(anc).get("was", {})) for anc in RELEASE["ancestries"]),
                                     "panel": {"EUR": {"out": ["PANUKBB_AtrialFibrillationAndFlutter"], "in": []}, "EAS": {"out": [], "in": []}}} and len(COPIED) == 30
 
 
@@ -188,17 +191,20 @@ def test_the_checks_catch_the_known_mislabels():
     assert any(level == "fail" and "FEV1" in text for level, text in found[ldl])  # its best match is FEV1/FVC
     assert any(level == "fail" for level, _ in found["PANUKBB_IndirectBilirubin"])
     assert found["PANUKBB_OperationTonsillectomyAdenoids"] and not found.get("PANUKBB_AtrialFibrillationAndFlutter")
-    # what the site says of them, after a person looked: three hold another trait. The fourth is what it says: the
-    # study it disagreed with in the release was the one at fault, its Z not going with its alleles, and the two agree
-    # now that that study is taken from its source
-    assert [BY_ID[study]["qc"] for study in (ldl, "PANUKBB_IndirectBilirubin", "PANUKBB_OperationTonsillectomyAdenoids")] == ["fail"] * 3
-    assert BY_ID["PANUKBB_AtrialFibrillationAndFlutter"]["qc"] == "pass" and BY_ID["PASS_AtrialFibrillation_Nielsen2018"]["qc"] == "fail"
+    # what the site says of them, after a person looked: three hold another trait, and fail as the release labels
+    # them; under the trait their file holds they warn, for the name they keep. The fourth is what it says: the study
+    # it disagreed with in the release was the one at fault, its Z not going with its alleles, and the two agree now
+    # that that study is taken from its source
+    wrong = (ldl, "PANUKBB_IndirectBilirubin", "PANUKBB_OperationTonsillectomyAdenoids")
+    assert [WAS[study]["qc"] for study in wrong] == ["fail"] * 3 and [BY_ID[study]["qc"] for study in wrong] == ["warn"] * 3
+    assert all([text.startswith(f"the release calls it {BY_ID[study]['trait']}; its file holds ") for level, text in BY_ID[study]["notes"] if level == "warn"] == [True] for study in wrong)
+    assert BY_ID["PANUKBB_AtrialFibrillationAndFlutter"]["qc"] == "pass" and WAS["PASS_AtrialFibrillation_Nielsen2018"]["qc"] == "fail" and BY_ID["PASS_AtrialFibrillation_Nielsen2018"]["qc"] == "pass"
 
 
 def test_what_the_checks_say_of_the_release():
     counts = {level: sum(d["qc"] == level for d in STUDIES) for level in ("pass", "warn", "fail")}
     assert RELEASE["qc"] == counts and sum(counts.values()) == 602 and counts["pass"] > 500  # the thresholds are set so that a study with nothing wrong passes
-    for d in STUDIES:
+    for d in [*STUDIES, *RELEASED]:  # as shown, the corrected studies as corrected; and as released
         levels = [level for level, _ in d.get("notes", [])]
         assert set(levels) <= {"fail", "warn", "note"} and levels == sorted(levels, key=["fail", "warn", "note"].index)  # the worst first
         assert d["qc"] == ("fail" if "fail" in levels else "warn" if "warn" in levels else "pass")
@@ -211,7 +217,32 @@ def test_what_the_checks_say_of_the_release():
         assert BY_ID[study]["qc"] == "warn" and any(text.startswith("the release calls it") and holds in text for _, text in BY_ID[study]["notes"])
     metrics = cite.table(merge.DATA / "metrics.tsv")
     assert {row["id"] for row in metrics if row["file"] == "h2"} == set(BY_ID) and {row["id"] for row in metrics if row["file"] == "rg"} < set(BY_ID)
+    assert [(row["id"], row["file"]) for row in cite.table(merge.DATA / "metrics_corrected.tsv")] == [(d["id"], "h2") for d in STUDIES if d["id"] in COPIED]  # every copy was measured
     assert not [d["id"] for d in STUDIES for _, text in d.get("notes", []) if "was not measured" in text or "SNPs in the file; the inventory says" in text]
+
+
+def test_a_corrected_study_is_judged_as_corrected():
+    """The checks say of a corrected study what holds of it as corrected: its copy as measured, with the copy's LDSC
+    results and the sign test of the copies. What they say of the release's file is kept beside."""
+    corrected = [d for d in STUDIES if "fixed" in d]
+    assert len(corrected) == 36 and RELEASE["qc"]["fail"] < RELEASE["corrected"]["qc"]["fail"] and RELEASE["qc"]["pass"] > RELEASE["corrected"]["qc"]["pass"]
+    by_hand = [(row["id"], [row["level"], row["finding"]], row["of"]) for row in cite.table(merge.DATA / "findings.tsv")]
+    assert {of for _, _, of in by_hand} == {"", "study"} and {study for study, _, of in by_hand if of} < {d["id"] for d in corrected}
+    for study, finding, of in by_hand:  # what a person found of the release's file is no finding of the corrected study, unless it holds whatever the file
+        assert finding in WAS[study]["notes"] and (finding in BY_ID[study].get("notes", [])) == (not (of == "" and "fixed" in BY_ID[study]))
+    # the copies of two stroke subtypes have no h² above 0, and fail for that; the five of Liu 2019 have a third of the SNPs, and warn for that alone
+    for study in ("PASS_LargeArteryStroke_Malik2018", "PASS_SmallVesselStroke_Malik2018"):
+        assert BY_ID[study]["qc"] == "fail" and [text.split(":")[0] for level, text in BY_ID[study]["notes"] if level == "fail"] == [f"h² {BY_ID[study]['h2']:.4f}"]
+    liu = [d for d in corrected if d["id"].endswith("_Liu2019")]
+    assert len(liu) == 5 and all([text.split("%")[1] for level, text in d["notes"] if level != "note" and "release calls" not in text] == [" of the HapMap3 SNPs that LDSC regresses on"] for d in liu)
+    # the others with a copy pass, but for one whose intercept warns as before; a corrected label warns
+    rest = [d for d in corrected if d["id"] in COPIED and d not in liu and BY_ID[d["id"]]["qc"] != "fail"]
+    assert [d["id"] for d in rest if d["qc"] != "pass"] == ["PASS_Type_1_Diabetes"] and all(d["qc"] == "warn" for d in corrected if d["id"] not in COPIED)
+    # the sign test with the copies in: a study whose Z was signed for the other allele agrees with a study of its trait now
+    read = lambda name: {frozenset((row["a"], row["b"])): int(row["same"]) / int(row["n"]) for row in cite.table(merge.DATA / name)}
+    pair = frozenset(("PASS_SmokingInitiation_Liu2019", "PANUKBB_EverSmoked"))
+    assert read("signs.tsv")[pair] == 0 and read("signs_corrected.tsv")[pair] == 1
+    assert not [d["id"] for d in corrected for _, text in d.get("notes", []) if "sign" in text and "SNPs with |Z| > 4" in text]  # no corrected study disagrees with another of its trait
 
 
 def test_a_problem_is_reported_through_a_form_that_warns_it_is_public():

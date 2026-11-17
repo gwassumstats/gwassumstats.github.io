@@ -9,20 +9,27 @@ not go with its alleles agrees with every other at about half: its sign carries 
 the first allele of the list, so that every pair is compared at once. FOLDER takes the Slurm logs: keep it outside
 the repository. The result, data/signs.tsv, holds no path: a line a pair, with the SNPs strong in both and those of
 the same sign; of each study's pairs, the clearest, the largest, and those with a study of its trait.
+
+With --copies FOLDER, the corrected copies of that folder take the place of the release's files, and the result goes
+to data/signs_corrected.tsv: what a corrected study, and a study compared with one, is judged by.
 """
 import argparse
 import datetime
 import os
+from concurrent.futures import ProcessPoolExecutor
+from contextlib import nullcontext
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
+from corrections.__main__ import planned
 from papers import cite
 from sources.slurm import submitted
 
 ROOT = Path(__file__).parents[1]
 SIGNS = ROOT / "data" / "signs.tsv"
+CORRECTED = SIGNS.with_name("signs_corrected.tsv")  # the same, with the corrected copies in place of the release's files
 STRONG, LEAST, KEPT = 4, 50, 3  # |Z| above which a SNP is strong; the SNPs a pair needs to count; the pairs kept of a study, of each kind
 COMPLEMENT = str.maketrans("ACGT", "TGCA")
 
@@ -40,16 +47,17 @@ def oriented(path: str, alleles: pd.DataFrame) -> pd.Series:
     return pd.Series(sign.to_numpy(), index=strong["SNP"].to_numpy(), dtype=int)[(as_listed != turned).to_numpy()]
 
 
-def compared(files: dict[str, str], snplist: str) -> pd.DataFrame:
+def compared(files: dict[str, str], snplist: str, workers: int = 1) -> pd.DataFrame:
     """One Slurm task: every pair of files with at least LEAST SNPs strong in both, as a, b, the number of those SNPs
-    (n) and the number at which the two Z have the same sign (same)."""
+    (n) and the number at which the two Z have the same sign (same). `workers`: the processes that read the files."""
     alleles = pd.read_csv(snplist, sep="\t", dtype=str).drop_duplicates("SNP").set_index("SNP")
     place = pd.Series(np.arange(len(alleles)), index=alleles.index)
     signs = np.zeros((len(files), len(alleles)), dtype=np.int8)
-    for k, (study, path) in enumerate(files.items()):
-        found = oriented(path, alleles)
-        signs[k, place[found.index].to_numpy()] = found.to_numpy()
-        print(f"[{k + 1}/{len(files)}] {study}: {len(found):,} strong SNPs", flush=True)
+    with ProcessPoolExecutor(workers) if workers > 1 else nullcontext() as pool:
+        read = pool.map(oriented, files.values(), [alleles] * len(files), chunksize=4) if pool else (oriented(path, alleles) for path in files.values())
+        for k, (study, found) in enumerate(zip(files, read)):
+            signs[k, place[found.index].to_numpy()] = found.to_numpy()
+            print(f"[{k + 1}/{len(files)}] {study}: {len(found):,} strong SNPs", flush=True)
     both, product = np.zeros((len(files), len(files))), np.zeros((len(files), len(files)))
     for start in range(0, signs.shape[1], 100_000):  # a block of SNPs at a time: the whole table as numbers would not fit
         block = signs[:, start:start + 100_000].astype(np.float32)
@@ -74,6 +82,7 @@ def main():
     parser = argparse.ArgumentParser(prog="python -m qc.signs", description="Compares the signs of every pair of signed studies at the SNPs strong in both, on Slurm.")
     parser.add_argument("release", nargs="?", default=os.environ.get("SUMSTATS_RELEASE"), help="the release folder (default: $SUMSTATS_RELEASE)")
     parser.add_argument("--alleles", required=True, metavar="FILE", help="the HapMap3 SNPs with their alleles: SNP, A1, A2")
+    parser.add_argument("--copies", type=Path, help="the folder of the corrected copies: they take the place of the release's files, and the result goes to data/signs_corrected.tsv")
     parser.add_argument("--logs", type=Path, required=True, help="a folder outside the repository, for the Slurm logs")
     parser.add_argument("--account", help="the Slurm account to charge")
     parser.add_argument("--name", default=f"{datetime.date.today():%Y%m%d}_qc_signs", help="the name of the Slurm task and of its logs")
@@ -84,10 +93,15 @@ def main():
     index = pd.read_csv(release / "_audit" / "sumstats_file_index.tsv", sep="\t", dtype=str, keep_default_na=False).set_index("Trait Identifier")["H2 Sumstats"]
     inventory = pd.read_csv(next(release.glob("signed_summary_statistics_*.txt")), sep="\t", dtype=str, keep_default_na=False)
     signed = [study.strip() for study, alleles in zip(inventory["Trait Identifier"], inventory["Allele Info"]) if alleles.strip() == "YES"]
-    pairs = submitted(args.name, args.logs.resolve(), args.account, compared, [{study: index[study] for study in signed}], [args.alleles], memory=16, minutes=120)[0]
+    files, result = {study: index[study] for study in signed}, SIGNS
+    if args.copies:  # a corrected study by its copy; a study that its source signs is among them now
+        plan = planned(cite.table(ROOT / "data" / "corrections.tsv"))
+        mended = {study: str(args.copies.resolve() / "sumstats" / f"{study}.sumstats") for study, fixes in plan.items() if study in files or fixes[0]["fix"] == "source"}
+        files, result = {study: mended.get(study, files.get(study)) for study in index.index if study in files or study in mended}, CORRECTED
+    pairs = submitted(args.name, args.logs.resolve(), args.account, compared, [files], [args.alleles], memory=16, minutes=120)[0]
     kept = chosen(pairs, {row["id"]: row["trait"] for row in cite.table(ROOT / "data" / "traits.tsv")})
-    kept.to_csv(SIGNS, sep="\t", index=False)
-    print(f"{len(signed)} signed studies: {len(pairs):,} pairs with at least {LEAST} SNPs strong in both; {len(kept):,} kept in {SIGNS.name}")
+    kept.to_csv(result, sep="\t", index=False)
+    print(f"{len(files)} signed studies: {len(pairs):,} pairs with at least {LEAST} SNPs strong in both; {len(kept):,} kept in {result.name}")
 
 
 if __name__ == "__main__":

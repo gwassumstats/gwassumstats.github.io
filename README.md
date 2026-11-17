@@ -35,9 +35,10 @@ with the lab's passphrase to see where they are. It costs $0.
 | `trait_aliases.tsv`, `categories.tsv` | Traits named by hand, with the label of their EFO term; the rule that gives a trait its category | By hand |
 | `metrics.tsv` | What was measured of each file: rows, SNPs listed twice, HapMap3 SNPs, N, Z, mean χ² | `python -m qc.scan` |
 | `signs.tsv` | The sign test: pairs of signed studies, the SNPs strong in both, and those of the same sign | `python -m qc.signs` |
+| `metrics_corrected.tsv`, `signs_corrected.tsv` | The same of the corrected copies: each copy as measured, and the sign test with the copies in place of the release's files | The same, with `--copies` |
 | `checks.toml` | The thresholds of the quality checks | By hand |
 | `labels.tsv` | A study whose trait name in the release a person found wrong → what its file holds, and how that is known | By hand |
-| `findings.tsv` | What else a person found of a study, shown and counted like a finding of the checks | By hand |
+| `findings.tsv` | What else a person found of a study, shown and counted like a finding of the checks; of the release's file, or of the study whatever its file | By hand |
 | `corrections.tsv` | What is corrected of a study, and why: a source to take it from again, a sign to turn, rows to drop, an N, a label | By hand |
 | `corrected_h2.tsv`, `corrected_rg.tsv` | What LDSC finds on the corrected copies: h², and rg of each with every other study of its ancestry | `python -m corrections.ldsc` |
 | `candidates.toml` | The rule that finds candidates in the GWAS Catalog, and the window of the last release | By hand |
@@ -55,7 +56,11 @@ a study whose Z does not go with its alleles agrees with every other at about ha
 whose alleles are those of the HapMap3 list in its order, or the other way round: a file that has them the other way
 round throughout had its alleles set from the list, without regard to the effect allele.
 A fail means do not use the study as it is; a warn, use it with care; a note is worth knowing, and the study passes.
-The site shows each finding on the study's page. The label check flags a study whose label its genetic correlations
+The site shows each finding on the study's page. A corrected study is judged twice: as released, and as corrected,
+which is the verdict the site's tables show: its copy as measured, with the copy's h² and genetic correlations and the
+sign test of the copies; a study with a corrected label, under the trait its file holds, where it warns for the name
+it keeps. What a person found of the release's file is no finding of the corrected study, unless
+`data/findings.tsv` says it holds of the study whatever its file. The label check flags a study whose label its genetic correlations
 contradict; it does not relabel it. A person who has looked adds the study to `data/labels.tsv`.
 
 **Candidates** (`candidates/`). GWAS with public summary statistics that the GWAS Catalog added after the last
@@ -145,6 +150,10 @@ files themselves are protected by O2.
    ```bash
    SUMSTATS_CORRECTIONS=<the same folder> uv run --group qc python -m corrections.ldsc --settings <file>
    ```
+
+   Then measure the copies and run the sign test with them, so that each corrected study is judged as corrected:
+   the commands of step 3 with `--copies <the same folder>` write `data/metrics_corrected.tsv` and
+   `data/signs_corrected.tsv`. Then rebuild.
 
 6. **Look for candidates**, from any machine: `uv run python -m candidates --refresh` downloads the GWAS Catalog's
    tables (to `.cache/`, not committed) and writes `data/candidates.json`, `data/catalog.tsv` and

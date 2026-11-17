@@ -80,22 +80,37 @@ def traits(d: pd.DataFrame, data: Path) -> tuple[pd.Series, dict[str, list[str]]
     return of, {rows[study]["trait"]: [rows[study]["efo"], rows[study]["category"]] for study in sorted(d.index, key=lambda study: rows[study]["trait"].lower())}
 
 
-def quality(d: pd.DataFrame, tables: dict, data: Path) -> pd.DataFrame:
+def quality(d: pd.DataFrame, tables: dict, data: Path, corrected: dict[str, list] | None = None) -> pd.DataFrame:
     """What the quality checks say of each study (qc/checks.py): `qc` (pass, warn or fail) and `notes`, its findings;
     and what was measured of its file (data/metrics.tsv): `hm3`, the share it has of the HapMap3 SNPs that LDSC
     regresses on, `chi2`, the mean of Z², and `lambda`, the median of Z² over its expectation. `tables`: the genetic
     correlations of each ancestry. The GWAS Catalog's records (data/catalog.tsv) are compared if they are there. What
     a person found is counted too: a label of the release that is wrong (data/labels.tsv), and any other finding
-    (data/findings.tsv)."""
+    (data/findings.tsv).
+
+    `corrected`: {study: its corrections as [fix, what it gives, why]}, when `d` and `tables` show the studies as
+    corrected (build/overlay.py); a corrected study is then judged as corrected. Of a study with a corrected copy, the
+    copy is judged: what was measured of it (data/metrics_corrected.tsv), and the sign test with the copies in
+    (data/signs_corrected.tsv). A study with a corrected label is judged under that label, like one of
+    data/labels.tsv: it warns, for its ID still says the other trait. Of what a person found of a corrected study,
+    only what holds whatever its file stays (`of` says "study"): the rest was of the release's file, and is why the
+    study was corrected."""
+    corrected = corrected or {}
+    copied = {study for study, fixes in corrected.items() if any(kind != "relabel" for kind, _, _ in fixes)}
     metrics = pd.read_csv(data / "metrics.tsv", sep="\t").set_index(["id", "file"])
+    if copied:
+        metrics = metrics[~metrics.index.get_level_values("id").isin(copied)]
+        if (data / "metrics_corrected.tsv").exists():
+            metrics = pd.concat([metrics, pd.read_csv(data / "metrics_corrected.tsv", sep="\t").set_index(["id", "file"])])
     known = data / "catalog.tsv"
     catalog = pd.read_csv(known, sep="\t", dtype=str, keep_default_na=False).set_index("id") if known.exists() else pd.DataFrame(columns=["n", "ancestry", "author", "published"])
     reviewed = {row["id"]: (row["label"], row["why"]) for row in cite.table(data / "labels.tsv")}
-    by_hand = [(row["id"], row["level"], row["finding"]) for row in cite.table(data / "findings.tsv")]
+    reviewed |= {study: (value, why) for study, fixes in corrected.items() for kind, value, why in fixes if kind == "relabel"}
+    by_hand = [(row["id"], row["level"], row["finding"]) for row in cite.table(data / "findings.tsv") if row["id"] not in corrected or row.get("of") == "study"]
     recorded = data / "samples.tsv"  # the samples the GWAS Catalog records for the papers cited, if python -m candidates wrote them
     samples = pd.read_csv(recorded, sep="\t", dtype=str, keep_default_na=False) if recorded.exists() else None
     cited = {study: pmids[0] for study, pmids in zip(d.index, sources(d, data)[0]) if pmids}
-    tested = data / "signs.tsv"  # the sign test, if python -m qc.signs wrote it
+    tested = data / ("signs_corrected.tsv" if corrected else "signs.tsv")  # the sign test, if python -m qc.signs wrote it
     compared = pd.read_csv(tested, sep="\t") if tested.exists() else None
     judged = checks.judge(d, tables, metrics, catalog, reviewed, by_hand, tomllib.loads((data / "checks.toml").read_text(encoding="utf-8")), samples, cited,
                           compared, traits(d, data)[0].to_dict(), names(d, data).to_dict())
