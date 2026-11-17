@@ -37,7 +37,7 @@ with the lab's passphrase to see where they are. It costs $0.
 | `checks.toml` | The thresholds of the quality checks | By hand |
 | `labels.tsv` | A study whose trait name in the release a person found wrong → what its file holds, and how that is known | By hand |
 | `findings.tsv` | What else a person found of a study, shown and counted like a finding of the checks | By hand |
-| `corrections.tsv` | What is corrected of a study, and why: a sign to turn, rows to drop, an N, a label | By hand |
+| `corrections.tsv` | What is corrected of a study, and why: a source to take it from again, a sign to turn, rows to drop, an N, a label | By hand |
 | `candidates.toml` | The rule that finds candidates in the GWAS Catalog, and the window of the last release | By hand |
 | `candidates.json` | The candidates, the papers set aside, and the rule's backtest | `python -m candidates` |
 | `catalog.tsv` | The GWAS Catalog's record of each study it knows: paper, N, ancestry, sex, cohorts | `python -m candidates` |
@@ -61,6 +61,12 @@ The site lists the candidates, the papers set aside and the backtest; a form on 
 corrected copy outside this repository, in the folder named by `SUMSTATS_CORRECTIONS`: `python -m corrections` reads
 the release's file and `data/corrections.tsv`, and writes the copy with a record of its source, the checksums of both
 and what changed. That folder may be purged: a run writes everything again.
+
+**Sources** (`sources/`). A study whose file cannot be mended is taken from its source again: its folder in the GWAS
+Catalog, or a URL. The file is downloaded, checked against the checksum its folder states, and formatted by the rules
+of the release's own scripts (`sources/format.py`): SNP, A1, A2, N and Z on the HapMap3 SNPs, A1 the effect allele.
+`python -m sources ACCESSION ...` checks the rules: it makes studies of the release again from the Catalog and
+compares them with the release's files, byte for byte.
 
 **Short names.** A study is called `FirstAuthor_Year_Trait` (`Speliotes_2010_BMI`) everywhere on the site: who and
 which year its paper is cited by, and its trait, abbreviated. The name is a label only. A study's ID in the release
@@ -103,11 +109,14 @@ files themselves are protected by O2.
    the study's page with what the checks found. If its label in the release is wrong and the right one is known, add
    it to `data/labels.tsv`: the label check then reads the corrected label, and the study warns with the evidence
    until the release is corrected. Then rebuild.
-5. **Write the corrected copies**, on O2 (one Slurm task, a few minutes):
+5. **Write the corrected copies**, on O2 (a Slurm task for each study taken from its source, one for the rest; minutes each):
 
    ```bash
-   SUMSTATS_CORRECTIONS=<a folder outside the repository> uv run --group qc python -m corrections
+   SUMSTATS_CORRECTIONS=<a folder outside the repository> uv run --group qc python -m corrections \
+       --snplist <the HapMap3 SNPs with their alleles> --bim-prefix <the reference panel's .bim files>
    ```
+
+   The two files are those the release formatted with; they are needed for the studies taken from their source.
 
 6. **Look for candidates**, from any machine: `uv run python -m candidates --refresh` downloads the GWAS Catalog's
    tables (to `.cache/`, not committed) and writes `data/candidates.json`, `data/catalog.tsv` and

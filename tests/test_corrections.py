@@ -1,10 +1,11 @@
 """Corrected copies: what each fix does to a file's rows, the record kept of it, and the table that asks for them."""
 import json
+import re
 
 import pandas as pd
 import pytest
 
-from conftest import DATA, ROOT
+from conftest import DATA, ROOT, panel
 from corrections import fix
 from corrections.__main__ import correct, planned, sha256
 from papers import cite
@@ -52,8 +53,34 @@ def test_a_copy_is_written_with_its_record_and_the_source_is_left_alone(source, 
         planned([{"id": "X", "fix": "mend", "value": "", "why": ""}])
 
 
+def test_a_source_says_where_the_statistics_are_and_how_to_read_them():
+    assert fix.sourced("GCST006906; a1=Allele1; a2 = Allele2; n=446696") == {"source": "GCST006906", "file": "", "n": 446696.0, "roles": {"a1": "Allele1", "a2": "Allele2"}}
+    assert fix.sourced("https://example.org/a.txt.gz;file=x.tsv;n=Weight;") == {"source": "https://example.org/a.txt.gz", "file": "x.tsv", "n": None, "roles": {"n": "Weight"}}
+    assert fix.sourced("GCST90292609") == {"source": "GCST90292609", "file": "", "n": None, "roles": {}}
+    with pytest.raises(ValueError, match="harmonised of the source GCST1 is not key=value"):
+        fix.sourced("GCST1; harmonised")
+    with pytest.raises(ValueError, match="the source of X comes after another fix"):
+        planned([{"id": "X", "fix": "flip", "value": "", "why": ""}, {"id": "X", "fix": "source", "value": "GCST1", "why": ""}])
+
+
+def test_a_study_is_taken_from_its_source_then_fixed(source, tmp_path):
+    theirs, out = tmp_path / "theirs.out", tmp_path / "scratch"
+    theirs.write_text("MarkerName Allele1 Allele2 Effect StdErr\nrs1 a g 0.2 0.1\nrs2 t c 0.3 0.1\nrs0 a g 0.1 0.1\n")  # as its authors gave it; rs0 is not a HapMap3 SNP
+    plan = planned([{"id": "X", "fix": "source", "value": f"{theirs.as_uri()}; a1=Allele1; a2=Allele2", "why": "the release's file has other alleles"},
+                    {"id": "X", "fix": "flip", "value": "", "why": "to show that a fix follows"}])
+    lines = correct(plan, {"X": str(source)}, out, "the commit", *panel(tmp_path), sizes={theirs.as_uri(): 5000.0})
+    copy, record = out / "sumstats" / "X.sumstats", json.loads((out / "provenance" / "X.json").read_text())
+    assert copy.read_text() == "SNP\tA1\tA2\tN\tZ\nrs1\tA\tG\t5000\t-2\nrs2\tT\tC\t5000\t-3\n" and source.read_text() == TEXT
+    assert (out / "sources" / "by-url" / "theirs.out").read_text() == theirs.read_text()  # the download is kept
+    assert record["source"]["url"] == theirs.as_uri() and record["source"]["sha256"] == sha256(theirs) and record["in_place_of"] == {"path": str(source), "sha256": sha256(source), "rows": 6}
+    assert record["formatting"]["written"] == 2 and record["formatting"]["n_from"] == "the N given for the study" and record["formatting"]["z_from"] == "Effect / StdErr"
+    assert record["changed"] == {"rows_of_the_source": 3, "snps_also_in_the_release_file": 2, "z_turned": 2} and record["copy"] == {"path": str(copy), "sha256": sha256(copy), "rows": 2}
+    assert lines == [{"id": "X", "fixes": f"source {theirs.as_uri()}; a1=Allele1; a2=Allele2; flip", "rows_before": 6, "rows": 2, "sha256": sha256(copy), **record["changed"]}]
+
+
 def test_the_table_of_corrections_names_studies_of_the_release_and_says_why():
     rows = cite.table(ROOT / "data" / "corrections.tsv")
-    assert {row["id"] for row in rows} <= STUDIES and all(row["why"] and row["fix"] in {*fix.FIXES, "relabel"} for row in rows)
-    assert all(bool(row["value"]) == (row["fix"] in ("n", "relabel")) for row in rows)
+    assert {row["id"] for row in rows} <= STUDIES and all(row["why"] and row["fix"] in {*fix.FIXES, "source", "relabel"} for row in rows)
+    assert all(bool(row["value"]) == (row["fix"] in ("n", "relabel", "source")) for row in rows)
+    assert all(re.fullmatch(r"GCST\d+|https://\S+", fix.sourced(row["value"])["source"]) for row in rows if row["fix"] == "source") and planned(rows)
     assert sum(row["fix"] == "flip" for row in rows) == 6 and sum(row["fix"] == "relabel" for row in rows) == 6

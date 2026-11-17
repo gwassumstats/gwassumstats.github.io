@@ -35,4 +35,21 @@ def rescale(rows: pd.DataFrame, n: float) -> tuple[pd.DataFrame, dict]:
     return rows.assign(N=rows["N"].map(lambda value: f"{float(value) * n / largest:.3f}")), {"n_scaled_by": round(n / largest, 6), "n_largest_before": float(largest)}
 
 
+def sourced(value: str) -> dict:
+    """What a `source` fix says, as in "GCST006906; a1=Allele1; a2=Allele2; n=446696": where the study's statistics
+    are (`source`: an accession of the GWAS Catalog, or a URL); the file's name in the study's folder, if the folder
+    has several (`file`); the N of every SNP, in place of the file's (`n`, a number); and the columns that play the
+    roles of sources/format.py, where their names do not say so (`roles`; n=Column for the column that holds N)."""
+    source, *settings = [part.strip() for part in value.split(";") if part.strip()]
+    if lone := [setting for setting in settings if "=" not in setting]:
+        raise ValueError(f"data/corrections.tsv: {lone[0]} of the source {source} is not key=value")
+    given = {key.strip(): column.strip() for key, column in (setting.split("=", 1) for setting in settings)}
+    try:
+        n = float(given.get("n", ""))
+        del given["n"]
+    except ValueError:  # no N given, or the name of the column that holds it
+        n = None
+    return {"source": source, "file": given.pop("file", ""), "n": n, "roles": given}
+
+
 FIXES = {"flip": lambda rows, value: flip(rows), "clean": lambda rows, value: clean(rows), "n": lambda rows, value: rescale(rows, float(value))}

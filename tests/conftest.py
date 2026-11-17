@@ -87,6 +87,17 @@ def measured(study, rows, kind="h2", n=1000, **other):
     return [(row | other)[column] for column in MEASURED]
 
 
+def panel(folder: Path) -> tuple[str, str]:
+    """A made-up reference to format files with: a list of eight HapMap3 SNPs with their alleles, and the .bim files of
+    a panel that has them, two at one position, and SNPs that are not of HapMap3 (rs0). Returns the list and the
+    files' prefix."""
+    write(folder / "hm3.snplist", ["SNP", "A1", "A2"], [["rs1", "A", "G"], ["rs2", "C", "T"], ["rs3", "A", "C"], ["rs4", "G", "T"], ["rs5", "A", "G"], ["rs6", "A", "G"], ["rs7", "A", "C"], ["rs8", "C", "T"]])
+    where = {1: [("rs1", 100), ("rs2", 200), ("rs3", 300), ("rs4", 400), ("rs5", 500), ("rs0", 600)], 2: [("rs6", 500), ("rs7", 500), ("rs8", 800)]}
+    for chromosome in range(1, 23):
+        (folder / f"panel.{chromosome}.bim").write_text("".join(f"{chromosome}\t{snp}\t0\t{position}\tA\tG\n" for snp, position in where.get(chromosome, [("rs0", 1)])))
+    return str(folder / "hm3.snplist"), str(folder / "panel.")
+
+
 def data_of(release: Path) -> Path:
     """The folder that plays data/ for a made-up release."""
     return release.parent / "data"

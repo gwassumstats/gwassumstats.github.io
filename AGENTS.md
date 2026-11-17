@@ -68,8 +68,9 @@ their rule. Open: fixes to the studies that the checks flag wait for the owner (
 - *N:* the number of individuals of a study, cases and controls together: the release's convention. An *effective
   N* is 4 / (1/cases + 1/controls), summed over a study's cohorts; some sources give it, or half of it (PGC's
   NEFFDIV2), in place of N.
-- *Correction:* a row of `data/corrections.tsv`: a *flip* (Z was signed for A2), a *clean* (rows dropped), an *n*,
-  or a *relabel*. A *corrected copy* is the study's file with its corrections applied, written outside the
+- *Correction:* a row of `data/corrections.tsv`: a *source* (the study is taken again from its *source*, its
+  folder in the GWAS Catalog or a URL, and formatted by the release's rules: `sources/`), a *flip* (Z was signed for
+  A2), a *clean* (rows dropped), an *n*, or a *relabel*. A *corrected copy* is the study's file with its corrections applied, written outside the
   repository with its *provenance* (source, checksums, what changed). The release itself is never changed.
 - *Candidate:* a GWAS of the GWAS Catalog with public sumstats, added after the last release's *window* (the days
   of publication it took: 2024/03/01 to 2026/08/26 for 2026), that passes the *rule* of `data/candidates.toml`.
