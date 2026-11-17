@@ -550,8 +550,13 @@ def run(pw, url, name, **context):
     show(f"?study={untouched['id']}", "#view-study .fields")
     check(f"[{name}] a study without a correction has one verdict", row("QC").startswith("warn") and page.locator("#view-study .label", has_text=re.compile("^QC as ")).count() == 0, lambda: row("QC"))
     # cases, controls and effective N; the study to use of a trait
+    def settled(study):
+        """A study's page, once its genetic correlations have loaded: leaving it earlier would break off their request."""
+        show(f"?study={study}", "#view-study .fields")
+        expect(page.locator("#view-study .section-head", has_text="Loading the genetic correlations")).to_have_count(0, timeout=20000)
+
     veins = BY_ID["PASS_VaricoseVeins_Ahmed2022"]
-    show(f"?study={veins['id']}", "#view-study .fields")
+    settled(veins["id"])
     counted = row("Cases and controls")
     check(f"[{name}] a binary study's page gives its cases and controls, its effective N and where they are from",
           counted == f"{veins['cases']:,} and {veins['controls']:,}: effective N {veins['neff']:,} · the paper The paper's 22,473 cases and 379,183 controls of UK Biobank; they sum to its N."
@@ -559,20 +564,20 @@ def run(pw, url, name, **context):
           and veins["neff"] == round(4 / (1 / veins["cases"] + 1 / veins["controls"])) and row("Recommended") == "yes: the one study of this trait and ancestry that passes the checks", lambda: (counted, row("Recommended")))
     shot("study-cases", full=False)
     stenosis = BY_ID["GCST90651074"]
-    show(f"?study={stenosis['id']}", "#view-study .fields")
+    settled(stenosis["id"])
     check(f"[{name}] cases that are those of a record of the GWAS Catalog link to it",
           row("Cases and controls") == f"{stenosis['cases']:,} and {stenosis['controls']:,}: effective N {stenosis['neff']:,} · GCST90651074"
           and page.locator("#view-study .row", has_text="Cases and controls").locator("a").get_attribute("href") == "https://www.ebi.ac.uk/gwas/studies/GCST90651074", lambda: row("Cases and controls"))
     told = {}
     for study in ("UKB_460K.cancer_PROSTATE", "PASS_ProstateCancer", "PASS_BMI1", "PASS_Celiac", "UKB_460K.body_HEIGHTz"):
-        show(f"?study={study}", "#view-study .fields")
+        settled(study)
         told[study] = (row("Recommended"), row("Cases and controls") if page.locator("#view-study .label", has_text="Cases and controls").count() else None)
         if study == "UKB_460K.cancer_PROSTATE":
             shot("study-cases-not-public", full=False)
-    check(f"[{name}] a study whose cases are not public says so, and h² z ranks it with the others of its trait; an older study is superseded; a trait of which nothing passes has no study to use",
+    check(f"[{name}] a study whose cases are not public says so, and h² z sets it against the largest of the others; an older study is superseded; a trait of which nothing passes has no study to use",
           told["UKB_460K.cancer_PROSTATE"] == ("no: the study to use is Schumacher_2018_ProstateCancer", "not known: no effective N A yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the "
                                                "paper count individuals, and no other public record of them was found.")
-          and told["PASS_ProstateCancer"][0] == "yes: of the 3 studies of this trait and ancestry that pass the checks, the largest h² z. Effective N does not rank them: the cases of at least one are not known"
+          and told["PASS_ProstateCancer"][0] == "yes: of the 3 studies of this trait and ancestry that pass the checks, the largest h² z among the one of the largest effective N and the 1 whose cases are not known, which effective N cannot rank"
           and told["PASS_BMI1"] == ("no: superseded by Yengo_2018_BMI", None) and told["PASS_Celiac"][0] == "no: no study of this trait and ancestry passes the checks"
           and told["UKB_460K.body_HEIGHTz"] == ("no: superseded by Yengo_2022_Height", None), lambda: told)
     # the candidates for the next release, and the rule's backtest

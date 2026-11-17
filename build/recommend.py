@@ -3,8 +3,8 @@
 A study of a binary trait has the power of its cases and controls, not of their sum: its effective N is
 4 / (1 / cases + 1 / controls), which is 4 v (1 - v) N for a share v of cases among N individuals. A quantitative
 study's is its N. Of the studies of one trait and one ancestry that pass the quality checks, the one of the largest
-effective N is recommended, or of the largest h² z where the effective N of one of them is not known; an older study
-of that trait and ancestry, and of the same sex, is superseded by it.
+effective N is recommended, unless a study whose effective N is not known has a larger h² z; an older study of that
+trait and ancestry, and of the same sex, is superseded by it.
 """
 import math
 
@@ -44,11 +44,11 @@ def chosen(d: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
     day its paper was published, or its month; "" if none is known).
 
     The first: by study, "neff" or "z" for a recommended study, after what it was chosen by, and None for the others.
-    Of a trait and an ancestry, the studies that pass are ranked by effective N, the largest first, then by h² z. If
-    the effective N of one of them is not known, as where a binary study's cases are not public, they are all ranked
-    by h² z instead, then by N: an effective N is no measure against a study that has none, and N alone overstates
-    the power of a study of few cases among many controls; h² z is the power that LDSC measured. The first is
-    recommended.
+    Of a trait and an ancestry, the studies that pass and have an effective N are ranked by it, the largest first,
+    then by h² z. If every study that passes has one, the first is recommended ("neff"). A study whose effective N
+    is not known, as where a binary study's cases are not public, cannot be ranked so, and its N overstates the
+    power of few cases among many controls: h² z, the power that LDSC measured, decides between the first of those
+    with an effective N and every study without one, then N ("z").
 
     The second: by study, the ID of the study that supersedes it, or None. Every other study of the trait and
     ancestry whose paper is older than the recommended study's, and which is of the same sex, is superseded by it: a
@@ -58,9 +58,10 @@ def chosen(d: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
         passing = group[group["qc"] == "pass"]
         if passing.empty:
             continue
-        known = passing["neff"].notna().all()
-        best = passing.sort_values(["neff", "h2_z"] if known else ["h2_z", "n"], ascending=False, kind="stable").index[0]
-        recommended[best] = "neff" if known else "z"
+        known, unknown = passing[passing["neff"].notna()], passing[passing["neff"].isna()]
+        finalists = pd.concat([known.sort_values(["neff", "h2_z"], ascending=False, kind="stable").head(1), unknown])
+        best = finalists.sort_values(["h2_z", "n"], ascending=False, kind="stable").index[0]
+        recommended[best] = "z" if len(unknown) else "neff"
         when, whose = d.at[best, "published"], sex(d.at[best, "name"])
         for study, row in group.iterrows():
             if study != best and older(row["published"], when) and sex(row["name"]) == whose:

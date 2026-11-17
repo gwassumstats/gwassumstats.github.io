@@ -39,7 +39,7 @@
       <label title="Heritability z-score above 6"><input id="f-z6" type="checkbox"> h² z &gt; 6</label>
       <label title="Signed sumstats: used for genetic correlation"><input id="f-signed" type="checkbox"> signed</label>
       <label title="In the nonredundant panel of its ancestry"><input id="f-panel" type="checkbox"> nonredundant</label>
-      <label title="The study to use of its trait and ancestry: of those that pass the checks, the largest effective N; the largest h² z where an effective N is not known"><input id="f-rec" type="checkbox"> recommended</label>
+      <label title="The study to use of its trait and ancestry: of those that pass the checks, the largest effective N, unless one without an effective N has a larger h² z"><input id="f-rec" type="checkbox"> recommended</label>
       <label title="The studies you ticked"><input id="f-ticked" type="checkbox"> ticked</label>
     </form>
     <p class="page-head"><span id="count" role="status"></span><span id="cart" hidden></span></p>
@@ -193,9 +193,9 @@
     <h2>Which study of a trait should I use?</h2>
     <p>The <a href="?tab=traits" data-tab="traits">traits</a> tab names one study for each trait and ancestry, and the tables can list these alone: <span data-v="recommended.studies">346</span>
       studies, for the <span data-v="recommended.of">376</span> pairs of a trait and an ancestry. It is, among the studies of the trait and ancestry that pass the checks, the one of the largest
-      effective N; h² z settles a tie. Where the cases of one of them are not known, effective N cannot rank them, and N alone would overstate a study of few cases among many controls: the
-      largest h² z is taken instead, the power that LDSC measured, with N to settle a tie. So for <span data-v="recommended.by_z">32</span> of the studies. A trait of which no study passes has none. An older study of the same trait, ancestry and sex is superseded by the recommended one:
-      <span data-v="recommended.superseded">84</span> studies are. A study of one sex, or a newer one, is another analysis, and is left unmarked.</p>
+      effective N; h² z settles a tie. A study whose cases are not known has no effective N, and its N would overstate few cases among many controls: h² z, the power that LDSC
+      measured, decides between the study of the largest effective N and each study without one, with N to settle a tie. So for <span data-v="recommended.by_z">32</span> of the studies. A trait of which no study passes has none. An older study of the same trait, ancestry and sex is superseded by the recommended one:
+      <span data-v="recommended.superseded">83</span> studies are. A study of one sex, or a newer one, is another analysis, and is left unmarked.</p>
 
     <h2>What are cases, controls and effective N?</h2>
     <p>A study of a binary trait, a disease or a yes-or-no answer, has the power of its cases and controls, not of their sum: its effective N is 4 / (1/cases + 1/controls). A study's page

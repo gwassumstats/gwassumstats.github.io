@@ -18,8 +18,8 @@ data/names.tsv (python -m names). A study without a short name stops the build. 
 judge each study from its file as measured (data/metrics.tsv: python -m qc.scan), its results and its label; a
 corrected study, as corrected (its copy as measured: data/metrics_corrected.tsv), with what they say of the release's
 file kept beside. A study's cases and controls are those of data/cases.tsv (python -m cases); of the studies of a
-trait and an ancestry that pass, the one of the largest effective N is recommended, or of the largest h² z where an
-effective N is not known (build/recommend.py). The
+trait and an ancestry that pass, the one of the largest effective N is recommended, unless one whose effective N is
+not known has a larger h² z (build/recommend.py). The
 candidates are those of data/candidates.json (python -m candidates), as they are.
 
 A release that has not changed rewrites the same files, and keeps the encrypted one as it is, so readers stay logged in.

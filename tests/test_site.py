@@ -246,8 +246,8 @@ def test_a_corrected_study_is_judged_as_corrected():
 
 
 def test_one_study_of_each_trait_and_ancestry_is_recommended():
-    """Of the studies of a trait and an ancestry that pass, the largest effective N; where the cases of one are not
-    known, the largest h² z. An older study of the same sex is superseded by it."""
+    """Of the studies of a trait and an ancestry that pass, the largest effective N, unless one whose cases are not
+    known has a larger h² z. An older study of the same sex is superseded by it."""
     groups, sex = {}, lambda d: next((word for word in ("Female", "Male") if word in d["name"].split("_", 2)[2]), "")
     for d in STUDIES:
         groups.setdefault((d["of"], d["anc"]), []).append(d)
@@ -256,9 +256,10 @@ def test_one_study_of_each_trait_and_ancestry_is_recommended():
         passing, chosen = [d for d in studies if d["qc"] == "pass"], [d for d in studies if "rec" in d]
         assert len(chosen) == bool(passing) and all(d["qc"] == "pass" for d in chosen)  # one, if any passes
         for best in chosen:
-            by = "z" if any(size(d) is None for d in passing) else "neff"
-            rank = (lambda d: (d["h2_z"], d["n"])) if by == "z" else (lambda d: (size(d), d["h2_z"]))
-            assert best["rec"] == by and rank(best) == max(map(rank, passing))
+            sized, others = [d for d in passing if size(d) is not None], [d for d in passing if size(d) is None]
+            largest = max(sized, key=lambda d: (size(d), d["h2_z"]), default=None)  # effective N ranks those that have one
+            finalists = [*([largest] if largest else []), *others]  # and h² z sets the largest of them against those that have none
+            assert best["rec"] == ("z" if others else "neff") and best in finalists and (best["h2_z"], best["n"]) == max((d["h2_z"], d["n"]) for d in finalists)
         for d in studies:
             if "sup" in d:  # by the study of its own trait and ancestry, whose paper is the later one
                 best, days = BY_ID[d["sup"]], [PAPERS[s["cite"][0]]["published"] for s in (d, BY_ID[d["sup"]])]
@@ -270,9 +271,15 @@ def test_one_study_of_each_trait_and_ancestry_is_recommended():
     # the largest study of height supersedes the two before it; of schizophrenia, the corrected copy of the largest is the one to use
     assert BY_ID["PASS_Height_Yengo2022"]["rec"] == "neff" and BY_ID["PASS_Height1"]["sup"] == BY_ID["UKB_460K.body_HEIGHTz"]["sup"] == "PASS_Height_Yengo2022"
     assert BY_ID["PASS_Schizophrenia_Trubetskoy2022"]["rec"] == "neff" and WAS["PASS_Schizophrenia_Trubetskoy2022"]["qc"] == "warn"
-    # where the cases of a study that passes are not public, h² z ranks them, not N: of prostate cancer, the consortium's 46,939 cases, not UK Biobank's 459,324 individuals
+    # a study whose cases are not public is set against the largest of the others by h² z, not by N: of prostate cancer, the consortium's 46,939 cases, not UK Biobank's 459,324 individuals
     prostate = [BY_ID[study] for study in ("PASS_ProstateCancer", "UKB_460K.cancer_PROSTATE")]
     assert prostate[0]["rec"] == "z" and "rec" not in prostate[1] and "neff" not in prostate[1] and prostate[0]["n"] < prostate[1]["n"] and prostate[0]["h2_z"] > prostate[1]["h2_z"]
+    # effective N still ranks those that have one: of rheumatoid arthritis the largest stays, though a smaller study has a larger h² z; UK Biobank's own, without cases, has less
+    ra = {key: BY_ID[study] for key, study in (("largest", "PASS_RheumatoidArthritis_Saevarsdottir2022"), ("clearer", "PASS_RheumatoidArthritis_Ishigaki2022"), ("ukb", "UKB_460K.disease_RA"))}
+    assert ra["largest"]["rec"] == "z" and ra["largest"]["neff"] > ra["clearer"]["neff"] and ra["largest"]["h2_z"] < ra["clearer"]["h2_z"] and ra["ukb"]["h2_z"] < ra["largest"]["h2_z"] and "neff" not in ra["ukb"]
+    # of type 2 diabetes, UK Biobank's own study has the larger h² z, and no public cases: it is the one, over the meta-analysis of the largest effective N
+    t2d = [BY_ID[study] for study in ("UKB_460K.disease_T2D", "PASS_Type2Diabetes_Xue2018")]
+    assert t2d[0]["rec"] == "z" and "neff" not in t2d[0] and t2d[0]["h2_z"] > t2d[1]["h2_z"] and "rec" not in t2d[1]
 
 
 def test_a_problem_is_reported_through_a_form_that_warns_it_is_public():

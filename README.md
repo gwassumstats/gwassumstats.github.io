@@ -104,9 +104,9 @@ Where the record is of a larger sample than the file holds, the file is taken to
 
 **The study to use of a trait** (`build/recommend.py`). Of the studies of one trait and one ancestry that pass the
 checks, as the site shows them, the one of the largest effective N is recommended; h² z settles a tie. If the
-effective N of one of them is not known, they are all ranked by h² z instead, then by N: an effective N is no measure
-against a study that has none, N alone overstates a study of few cases among many controls, and h² z is the power
-that LDSC measured. An older study of the same trait, ancestry and sex is superseded by the recommended one; a study
+effective N of one of them is not known, effective N cannot rank it, and its N would overstate few cases among many
+controls: h² z, the power that LDSC measured, decides between the study of the largest effective N and each study
+without one, then N. An older study of the same trait, ancestry and sex is superseded by the recommended one; a study
 of one sex, or a newer one, is another analysis and is left unmarked. A trait of which nothing passes has no
 recommended study.
 
