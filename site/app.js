@@ -24,6 +24,7 @@ const state = {
   loaded: false, studies: [], byId: new Map(), release: null,
   papers: {},         // PMID → a paper's label, "Speliotes et al. 2010 Nat Genet", and the day it was published
   traits: {},         // trait → [the EFO term that fits, or "", and its category]; a study is of the trait d.of
+  count: {},          // ancestry → its studies in the panel and with genetic correlations, as shown: with the corrections
   view: "sumstats",   // a tab, or "study": the page of state.study
   study: null,
   filter: { q: "", anc: "", qc: "", z6: false, signed: false, panel: false, ticked: false },  // of the studies under "sumstats" and "heritability"
@@ -116,6 +117,19 @@ const verdict = (d) => {
   if (reasons.length) word.title = reasons.map(([level, text]) => `${level}: ${finding(text).join("")}`).join("\n");
   return word;
 };
+// Whether a study has a corrected copy: its file was taken again, mended or given another N (a label alone is no copy)
+const copied = (d) => (d.fixed ?? []).some(([kind]) => kind !== "relabel");
+// What the checks say, and "corrected" beside it for a study that is shown by its corrected copy
+const verdictOf = (d) => (copied(d) ? [verdict(d), " ", el("span", "fixed", "corrected")] : verdict(d));
+// What a correction did, in a few words: [kind, what it gives, why] of data/corrections.tsv
+const DONE = {
+  source: (value) => { const from = value.split(";")[0].trim(); return ["taken again from its source, ", /^GCST\d+$/.test(from) ? outside(`${CATALOG}${from}`, from) : httpUrl(from) ? outside(from, "the authors' file") : from, ", and formatted as the release formats"]; },
+  flip: () => ["the sign of every Z turned"],
+  clean: () => ["rows dropped: SNPs listed twice, or with a Z that is not a number"],
+  n: (value) => [`N scaled, SNP by SNP, so that the largest is ${int(Number(value))}`],
+  alleles: () => ["each SNP given its own two alleles, from the HapMap3 list"],
+  relabel: (value) => [`its file holds another trait: ${value}`],
+};
 // A study's paper, by its label, linked to PubMed; the inventory's own words for a study whose paper is not known
 const reference = (d) => (d.cite ? outside(`${PUBMED}${d.cite[0]}/`, d.label) : parts(d.ref));
 // The order of two studies by their papers: the earlier published first; then by label, which begins with the first
@@ -152,7 +166,7 @@ const position = (t, i, j) => (i > j ? position(t, j, i) : i * (2 * t.n - i - 1)
 
 function estimate(t, i, j) {
   const k = position(t, i, j);
-  return { rg: t.rg[k], se: t.se[k], z: t.z[k], p: t.p[k], gcov: t.gcov[k], gcov_se: t.gcov_se[k], note: t.notes[k] };
+  return { rg: t.rg[k], se: t.se[k], z: t.z[k], p: t.p[k], gcov: t.gcov[k], gcov_se: t.gcov_se[k], note: t.notes[k], was: t.was?.[k] };  // was: the release's [rg, SE], for a pair estimated again
 }
 
 // Every other study of d's ancestry with its estimate against d
@@ -269,7 +283,7 @@ function pathLine(d, label = "") {
 
 function shown() {
   const f = state.filter, sought = words(f.q);
-  return state.studies.filter((d) => (!f.anc || d.anc === f.anc) && (!f.qc || d.qc === f.qc) && (!f.z6 || d.h2_z > 6) && (!f.signed || d.signed) && (!f.panel || d.panel)
+  return state.studies.filter((d) => (!f.anc || d.anc === f.anc) && (!f.qc || (f.qc === "corrected" ? copied(d) : d.qc === f.qc)) && (!f.z6 || d.h2_z > 6) && (!f.signed || d.signed) && (!f.panel || d.panel)
     && (!f.ticked || state.cart.has(d.id)) && sought.every((w) => d.text.includes(w)));
 }
 
@@ -334,7 +348,8 @@ function renderCart() {
 // The studies ticked as a table: short name, ID, and what a script needs to find and cite each; the path after login
 function exportStudies() {
   const columns = [["short_name", (d) => d.name], ["id", (d) => d.id], ["release_name", (d) => d.trait], ["ancestry", (d) => d.anc], ["n", (d) => d.n],
-    ["reference", (d) => d.label], ["published", (d) => d.published], ["pmid", (d) => (d.cite ?? []).join(";")], ...(state.paths ? [["path", filePath]] : [])];
+    ["reference", (d) => d.label], ["published", (d) => d.published], ["pmid", (d) => (d.cite ?? []).join(";")], ["corrected", (d) => (copied(d) ? "yes" : "")],
+    ...(state.paths ? [["path", filePath]] : [])];
   const cell = (value) => String(value ?? "").replace(/[\t\r\n]+/g, " ");
   const lines = [columns.map(([name]) => name), ...ticked().map((d) => columns.map(([, value]) => cell(value(d))))];
   download("gwas-sumstats-studies.tsv", `${lines.map((line) => line.join("\t")).join("\n")}\n`, "text/tab-separated-values");
@@ -364,7 +379,7 @@ const STUDY = { key: "name", label: "Study", title: "Short name: first author, y
 const ANCESTRY = { key: "anc", label: "Ancestry", cls: "short" };
 const H2 = { key: "h2", label: plusMinusLabel("h²"), title: "Heritability and its standard error: S-LDSC, observed scale", cls: "pm", first: -1, show: (d) => plusMinusCell(d.h2, d.h2_se) };
 const H2_Z = { key: "h2_z", label: "h² z", title: "h² over its standard error", num: sig };
-const CHECKS = { key: "rank", label: "QC", title: "Quality checks: pass, warn or fail; a study's page says why", cls: "short", first: -1, show: verdict };
+const CHECKS = { key: "rank", label: "QC", title: "Quality checks of the release's file: pass, warn or fail; \"corrected\": the numbers shown are of a corrected copy. A study's page says why", cls: "short", first: -1, show: verdictOf };
 const COLUMNS = {
   sumstats: [TICK, STUDY, ANCESTRY,
     { key: "n", label: "N", title: "Sample size", num: int },
@@ -519,7 +534,7 @@ const heatShown = () => state.rg.heat ?? { anc: state.rg.a?.anc ?? state.release
 // (build/release.py); the tree of that clustering is on the left, the leaves beside their rows.
 async function drawHeat() {
   const figure = $("heat"), shown = heatShown(), { anc, kind } = shown;
-  $("heat-tabs").replaceChildren(...state.release.ancestries.flatMap((name) => [["panel", `${name} nonredundant (${state.release[name].panel})`], ["all", `${name} all (${state.release[name].signed})`]]
+  $("heat-tabs").replaceChildren(...state.release.ancestries.flatMap((name) => [["panel", `${name} nonredundant (${state.count[name].panel})`], ["all", `${name} all (${state.count[name].signed})`]]
     .map(([k, label]) => {
       const current = name === anc && k === kind, tab = action(label, () => { state.rg.heat = { anc: name, kind: k }; drawHeat(); }, current ? "current" : "");
       if (current) tab.setAttribute("aria-current", "true");
@@ -672,6 +687,7 @@ function pairResult(a, b, e) {
   if (e.rg == null) fields.append(field(rgLabel(), `not estimated: LDSC gave none for this pair${e.note ? ` (${e.note})` : ""}`));
   else fields.append(field(rgPlusMinusLabel(), plusMinus(e.rg, e.se)), field("z", sig(e.z)), field("p", pValue(e.p)));
   if (e.gcov != null) fields.append(field("Genetic covariance ± SE", plusMinus(e.gcov, e.gcov_se)));
+  if (e.was) fields.append(field("In the release", ...(e.was[0] == null ? ["not estimated"] : [rgLabel(), ` ${plusMinus(e.was[0], e.was[1])}`].flat()), ": estimated again on a corrected copy"));
   $("pair-result").replaceChildren(head, fields);
 }
 
@@ -722,6 +738,23 @@ function citation(pmid, paper) {
   return line;
 }
 
+// What was corrected of a study and why, and what the release has where the corrected copy differs
+function corrected(d) {
+  const block = el("div"), w = d.was ?? {}, before = [];
+  block.append(...d.fixed.map(([kind, value, why]) => {
+    const line = el("div", "fix");
+    line.append(...DONE[kind](value), ": ", ...finding(why, true));
+    return line;
+  }));
+  if ("h2" in w) before.push(`h² ${plusMinus(w.h2, w.h2_se ?? d.h2_se)}, z ${sig(w.h2_z ?? d.h2_z)}`);
+  if ("n" in w) before.push(`N ${int(w.n)}`);
+  if ("m" in w) before.push(`${int(w.m)} SNPs`);
+  if (w.signed === false) before.push("unsigned, without genetic correlations");
+  if (before.length) block.append(el("div", "hint", `The numbers on this page are of the corrected copy. In the release: ${before.join("; ")}.`));
+  else if (copied(d)) block.append(el("div", "hint", "The numbers on this page are of the corrected copy."));
+  return block;
+}
+
 // What the quality checks found of a study, the worst first; what was measured of its file; where to report a problem
 function checked(d) {
   const block = el("div"), head = el("div"), measured = el("div", "hint");
@@ -752,9 +785,11 @@ async function renderStudy() {
     field("Release", d.origin), field("Reference", cited),
     ...(httpUrl(d.catalog) ? [field("GWAS Catalog", outside(d.catalog, d.id))] : []),
     field("Signed", yesNo(d.signed)), field("Allele info", yesNo(d.alleles)), field("Cross-trait LDSC", yesNo(d.cross)),
-    field("Nonredundant panel", d.panel ? `yes: ${int(d.panel)} of ${int(state.release[d.anc].panel)} in the ${d.anc} panel, by h² z` : "no"),
+    field("Nonredundant panel", (d.panel ? `yes: ${int(d.panel)} of ${int(state.count[d.anc].panel)} in the ${d.anc} panel, by h² z` : "no")
+      + (d.was && "panel" in d.was ? `; in the release's panel: ${d.was.panel ? "yes" : "no"}` : "")),
     field("h² ± SE", plusMinus(d.h2, d.h2_se)), field("h² z", sig(d.h2_z)), field("Intercept", fixed(4)(d.intercept)),
-    field("QC", checked(d)),
+    field(copied(d) ? "QC of the release's file" : "QC", checked(d)),
+    ...(d.fixed ? [field("Corrected", corrected(d))] : []),
     field("Path", pathLine(d) ?? action("login to see it", () => openLogin(true))));
   const head = el("h2"), section = el("div");
   head.append(...parts(d.name));
@@ -938,6 +973,7 @@ function start(data) {
   state.studies = data.studies;
   state.papers = data.papers;
   state.traits = data.traits;
+  state.count = Object.fromEntries(data.release.ancestries.map((anc) => [anc, { panel: data.studies.filter((d) => d.anc === anc && d.panel).length, signed: data.studies.filter((d) => d.anc === anc && d.cross).length }]));
   for (const d of data.studies) {
     d.label = d.cite ? state.papers[d.cite[0]].label : d.ref;  // its paper, as the table lists it
     d.published = d.cite ? state.papers[d.cite[0]].published : "";  // and the day that paper was published, by which the table sorts it

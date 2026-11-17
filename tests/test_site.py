@@ -42,8 +42,22 @@ NOT_USERS = {"base64", "sha256", "win32"}
 DOI = re.compile(r"\b10\.\d{4,9}/[^\s\"<>]+")  # a paper's DOI can end in the shape of a user name: it is not one
 
 
+# Each study as the release has it: a corrected study keeps the release's values of what its correction changed
+RELEASED = [{key: value for key, value in (d | d.get("was", {})).items() if value is not None} for d in STUDIES]
+COPIED = {d["id"] for d in STUDIES if any(kind != "relabel" for kind, _, _ in d.get("fixed", []))}  # the studies shown by a corrected copy
+
+
 def correlations(anc):
     return json.loads((DATA / f"rg_{anc}.json").read_text())
+
+
+def released_panel(anc):
+    """The release's panel of an ancestry, in its order: the studies that kept their place are shown in that order,
+    and a study whose place changed tells its place in the release."""
+    members = [d for d in RELEASED if d["anc"] == anc and "panel" in d]
+    told = {d["panel"] - 1: d["id"] for d in members if "panel" in BY_ID[d["id"]].get("was", {})}
+    others = iter(sorted((d for d in members if "panel" not in BY_ID[d["id"]].get("was", {})), key=lambda d: d["panel"]))
+    return [told[k] if k in told else next(others)["id"] for k in range(len(members))]
 
 
 def by_pair(t):
@@ -90,16 +104,18 @@ def people():
 
 
 def test_counts_are_the_release_s():
-    count = lambda **want: sum(all(d.get(k) == v for k, v in want.items()) for d in STUDIES)
+    count = lambda **want: sum(all(d.get(k) == v for k, v in want.items()) for d in RELEASED)
     assert len(STUDIES) == len(BY_ID) == 602
     assert (count(anc="EUR"), count(anc="EAS")) == (546, 56)
-    assert [sum("panel" in d for d in STUDIES if d["anc"] == anc) for anc in ("EUR", "EAS")] == [85, 17]
+    assert [sum("panel" in d for d in RELEASED if d["anc"] == anc) for anc in ("EUR", "EAS")] == [85, 17]
     assert count(signed=True) == count(cross=True) == 576 and count(release=2026) == 205 and count(release=2024) == 397
-    for anc, signed, failed in (("EUR", 520, 821), ("EAS", 56, 55)):
+    for anc, signed, failed, shown in (("EUR", 520, 821, 524), ("EAS", 56, 55, 56)):  # as released; and as shown, with the four studies that their source signs
         t = correlations(anc)
-        assert t["ids"] == [d["id"] for d in STUDIES if d["anc"] == anc and d["cross"]] and len(t["ids"]) == signed
-        assert {len(t[c]) for c in COLUMNS} == {signed * (signed - 1) // 2} and t["rg"].count(None) == failed
-        assert RELEASE[anc] | {"worst": None} == RELEASE[anc] | {"worst": None, "studies": count(anc=anc), "signed": signed, "pairs": len(t["rg"]), "failed": failed}
+        assert t["ids"] == [d["id"] for d in STUDIES if d["anc"] == anc and d["cross"]] and len(t["ids"]) == shown
+        assert {len(t[c]) for c in COLUMNS} == {shown * (shown - 1) // 2}
+        assert RELEASE[anc] | {"worst": None} == RELEASE[anc] | {"worst": None, "studies": count(anc=anc), "signed": signed, "pairs": signed * (signed - 1) // 2, "failed": failed}
+    assert RELEASE["corrected"] == {"studies": 36, "copies": len(COPIED), "signed": 4, "pairs": sum(len(correlations(anc).get("was", {})) for anc in RELEASE["ancestries"]),
+                                    "panel": {"EUR": {"out": ["PANUKBB_AtrialFibrillationAndFlutter"], "in": []}, "EAS": {"out": [], "in": []}}} and len(COPIED) == 30
 
 
 def test_a_panel_is_what_about_says():
@@ -171,9 +187,10 @@ def test_the_checks_catch_the_known_mislabels():
     ldl = "PANUKBB_LDLDirectAdjustedByMedication"
     assert any(level == "fail" and "FEV1" in text for level, text in found[ldl])  # its best match is FEV1/FVC
     assert any(level == "fail" for level, _ in found["PANUKBB_IndirectBilirubin"])
-    assert found["PANUKBB_OperationTonsillectomyAdenoids"] and found["PANUKBB_AtrialFibrillationAndFlutter"]
-    # what the site says of them, after a person looked: three hold another trait; the fourth is what it says, and the
-    # study it disagreed with is the one at fault, its Z not going with its alleles
+    assert found["PANUKBB_OperationTonsillectomyAdenoids"] and not found.get("PANUKBB_AtrialFibrillationAndFlutter")
+    # what the site says of them, after a person looked: three hold another trait. The fourth is what it says: the
+    # study it disagreed with in the release was the one at fault, its Z not going with its alleles, and the two agree
+    # now that that study is taken from its source
     assert [BY_ID[study]["qc"] for study in (ldl, "PANUKBB_IndirectBilirubin", "PANUKBB_OperationTonsillectomyAdenoids")] == ["fail"] * 3
     assert BY_ID["PANUKBB_AtrialFibrillationAndFlutter"]["qc"] == "pass" and BY_ID["PASS_AtrialFibrillation_Nielsen2018"]["qc"] == "fail"
 
@@ -223,25 +240,25 @@ def test_every_value_is_the_release_s(release):
     inventory = rows(one("summary_statistics_*.txt"))
     assert [(r["Trait Identifier"], r["Trait Name"].strip(), r["Population"], int(r["N"]), int(r["M"]), r["Origin"].strip(), r["Reference"].strip(),
              yes(r["Signed SumStat"]), yes(r["Allele Info"]), yes(r["Cross-Trait LDSC"])) for r in inventory] \
-        == [(d["id"], d["trait"], d["anc"], d["n"], d["m"], d["origin"], d["ref"], d["signed"], d["alleles"], d["cross"]) for d in STUDIES]
+        == [(d["id"], d["trait"], d["anc"], d["n"], d["m"], d["origin"], d["ref"], d["signed"], d["alleles"], d["cross"]) for d in RELEASED]
     for anc in ("EUR", "EAS"):
-        mine = [d for d in STUDIES if d["anc"] == anc]
+        mine = [d for d in RELEASED if d["anc"] == anc]
         h2 = rows(one(f"sldsc_heritabilities_{anc}_*.txt"))
         assert {r["trait_identifier"]: tuple(float(r[c]) for c in ("h2", "h2_se", "h2_z", "intercept")) for r in h2} \
             == {d["id"]: (d["h2"], d["h2_se"], d["h2_z"], d["intercept"]) for d in mine}
-        assert [r["trait_identifier"] for r in rows(one(f"non_redundent_traits_{anc}_*.txt"))] \
-            == [d["id"] for d in sorted((d for d in mine if "panel" in d), key=lambda d: d["panel"])]
+        assert [r["trait_identifier"] for r in rows(one(f"non_redundent_traits_{anc}_*.txt"))] == released_panel(anc)
         table, t = rows(one(f"ldsc_genetic_correlations_trait_pairs_{anc}_*.txt")), correlations(anc)
         theirs = {frozenset((r["trait1"], r["trait2"])): tuple(number(r[c]) for c in COLUMNS.values()) for r in table}
         ours = by_pair(t)
-        assert len(table) == len(theirs) == len(ours)
-        assert not [sorted(pair) for pair in theirs if theirs[pair] != ours.get(pair)][:5]
+        again = {pair: tuple(t["was"][str(k)]) for k, pair in enumerate(ours) if str(k) in t.get("was", {})}  # estimated again on a corrected copy: the release's rg and SE are kept
+        assert len(table) == len(theirs) and set(theirs) <= set(ours) and all(pair & COPIED for pair in again) and all(pair & COPIED for pair in set(ours) - set(theirs))
+        assert not [sorted(pair) for pair in theirs if (theirs[pair][:2] != again[pair] if pair in again else theirs[pair] != ours[pair])][:5]
         reasons = {frozenset((r["trait1"], r["trait2"])): " ".join(r["genetic_correlation_z"].split("(")[-1].rstrip(")").split())
-                   for r in table if "out of bounds" in r["genetic_correlation_z"]}
+                   for r in table if "out of bounds" in r["genetic_correlation_z"] and frozenset((r["trait1"], r["trait2"])) not in again}
         assert reasons == {pair: t["notes"][str(k)] for k, pair in enumerate(ours) if str(k) in t["notes"]} and len(reasons) == len(t["notes"])
     index = rows(release / "_audit" / "sumstats_file_index.tsv")
     assert [(r["Trait Identifier"], int(r["Release"][:4]), int(r["M in RG input"]) if r["M in RG input"] else None) for r in index] \
-        == [(d["id"], d["release"], d.get("m_rg")) for d in STUDIES]
+        == [(d["id"], d["release"], d.get("m_rg")) for d in RELEASED]
     papers = rows(release / "_audit" / "new_study_provenance.tsv")
     assert {r["Trait Identifier"]: (r["PMID"], r["Paper Link"], r["Catalog Study Link"], r["Target Paper Identifier"]) for r in papers} \
         == {d["id"]: (d["pmid"], d["paper"], d["catalog"], d["paper_id"]) for d in STUDIES if "pmid" in d}
@@ -286,11 +303,14 @@ def test_the_blob_opens_with_the_passphrase_only(passphrase):
 
 def test_the_blob_holds_the_file_index_and_every_file_is_there(release, passphrase, tmp_path):
     private = json.loads(crypt.decrypt(json.loads((DATA / BLOB).read_text()), passphrase))
-    build(release, tmp_path, "not the passphrase", 1000)
+    copies = os.environ.get("SUMSTATS_CORRECTIONS") or pytest.skip("set SUMSTATS_CORRECTIONS to the folder of the corrected copies: their paths are in the blob")
+    build(release, tmp_path, "not the passphrase", 1000, copies=Path(copies))
     assert private == json.loads(crypt.decrypt(json.loads((tmp_path / BLOB).read_text()), "not the passphrase")), "rebuild the site: python -m build"
     where = lambda file: f"{private['folders'][file[0]]}/{file[1]}"
     index = rows(release / "_audit" / "sumstats_file_index.tsv")
-    assert [(r["Trait Identifier"], r["H2 Sumstats"]) for r in index] == [(d["id"], where(private["files"][d["id"]])) for d in STUDIES]
+    assert [(r["Trait Identifier"], f"{copies}/sumstats/{r['Trait Identifier']}.sumstats" if r["Trait Identifier"] in COPIED else r["H2 Sumstats"]) for r in index] \
+        == [(d["id"], where(private["files"][d["id"]])) for d in STUDIES]  # a corrected study's path is that of its copy
+    assert all(Path(where(private["files"][study])).is_file() for study in COPIED)
     copies = {r["RG Sumstats"] for r in index} - {r["H2 Sumstats"] for r in index} - {""}  # what rg was estimated on, where it is another file
     assert copies and not {path.rpartition("/")[0] for path in copies} & set(private["folders"])  # one path per study: these are not listed
     assert private["release"] == str(release) and all((release / name).is_file() for name in private["tables"])

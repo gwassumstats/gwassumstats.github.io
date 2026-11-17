@@ -119,9 +119,10 @@ def text(d):
 
 
 def table_of(studies, paths):
-    """The file of the studies ticked: a line each, with the path after login."""
-    head = ["short_name", "id", "release_name", "ancestry", "n", "reference", "published", "pmid", *(["path"] if paths else [])]
-    lines = [[d["name"], d["id"], d["trait"], d["anc"], str(d["n"]), label(d), published(d), ";".join(d.get("cite", [])), *([file_path(d["id"])] if paths else [])] for d in studies]
+    """The file of the studies ticked: a line each, saying whether it is shown by a corrected copy, with the path after login."""
+    head = ["short_name", "id", "release_name", "ancestry", "n", "reference", "published", "pmid", "corrected", *(["path"] if paths else [])]
+    copied = lambda d: "yes" if any(kind != "relabel" for kind, _, _ in d.get("fixed", [])) else ""
+    lines = [[d["name"], d["id"], d["trait"], d["anc"], str(d["n"]), label(d), published(d), ";".join(d.get("cite", [])), copied(d), *([file_path(d["id"])] if paths else [])] for d in studies]
     return "".join("\t".join(line) + "\n" for line in [head, *lines])
 
 
@@ -197,7 +198,7 @@ def run(pw, url, name, **context):
     page.check("#f-panel")
     ok &= count() == "17 of 602 studies"
     page.select_option("#f-anc", "EUR")
-    ok &= count() == "85 of 602 studies"
+    ok &= count() == f"{sum('panel' in d for d in STUDIES if d['anc'] == 'EUR')} of 602 studies"
     page.uncheck("#f-panel")
     page.select_option("#f-anc", "")
     check(f"[{name}] the filters count as the data does: ancestry, h² z > 6, signed, nonredundant", ok and count() == "602 studies", count)
@@ -495,6 +496,38 @@ def run(pw, url, name, **context):
           and dict(urllib.parse.parse_qsl(report.split("?", 1)[1])) == {"template": "study.yml", "title": f"{doubted['name']}: ", "study": f"{doubted['name']} ({doubted['id']})"},
           lambda: report)
     shot("study-qc", full=False)
+    # the corrections: studies shown by a corrected copy, with what the release has beside
+    copied = [d for d in STUDIES if any(kind != "relabel" for kind, _, _ in d.get("fixed", []))]
+    show("", "#sumstats-table tbody")
+    page.select_option("#f-qc", "corrected")
+    tags = page.locator("#sumstats-table tbody tr:first-child td:nth-child(8)").all_inner_texts()
+    check(f"[{name}] the studies shown by a corrected copy are listed on demand, each with what the checks say of the release's file",
+          tags == [f"{d['qc']} corrected" for d in copied] and len(copied) == RELEASE["corrected"]["copies"] == 30 and page.inner_text("#count") == "30 of 602 studies", lambda: tags[:3])
+    shot("corrected", full=False)
+    page.select_option("#f-qc", "")
+    row = lambda label: " ".join(page.locator("#view-study .row", has=page.locator(".label", has_text=re.compile(f"^{re.escape(label)}$"))).locator(".value").inner_text().split())
+    d = BY_ID["PASS_AtrialFibrillation_Nielsen2018"]
+    show(f"?study={d['id']}", "#view-study .fix")
+    told, w = row("Corrected"), d["was"]
+    check(f"[{name}] a corrected study's page says what was done and why, and what the release has; its checks are named as those of the release's file",
+          told.startswith("taken again from its source, GCST006414, and formatted as the release formats: the alleles of the release's file do not go with its Z")
+          and told.endswith(f"The numbers on this page are of the corrected copy. In the release: h² {plus_minus(w['h2'], w['h2_se'])}, z {sig(w['h2_z'])}; {w['m']:,} SNPs.")
+          and page.locator("#view-study .fix a", has_text="GCST006414").get_attribute("href") == "https://www.ebi.ac.uk/gwas/studies/GCST006414"
+          and row("Nonredundant panel") == f"yes: {d['panel']} of {sum('panel' in s for s in STUDIES if s['anc'] == 'EUR')} in the EUR panel, by h² z; in the release's panel: yes"
+          and row("h² ± SE") == plus_minus(d["h2"], d["h2_se"]) and row("QC of the release's file").startswith("fail"), lambda: told)
+    shot("study-corrected", full=False)
+    other, t = "PANUKBB_AtrialFibrillationAndFlutter", RG["EUR"]
+    i, j = sorted((t["ids"].index(d["id"]), t["ids"].index(other)))
+    k = i * (2 * len(t["ids"]) - i - 1) // 2 + j - i - 1
+    show(f"?tab=rg&a={d['id']}&b={other}", "#pair-result .fields")
+    before = " ".join(page.locator("#pair-result .row", has_text="In the release").inner_text().split())
+    check(f"[{name}] a pair estimated again on a corrected copy shows the release's estimate beside the new one",
+          before == f"In the release rg {plus_minus(*t['was'][str(k)])}: estimated again on a corrected copy" and t["rg"][k] > 0.9 > 0 > t["was"][str(k)][0], lambda: before)
+    relabelled = BY_ID["PANUKBB_IndirectBilirubin"]
+    show(f"?study={relabelled['id']}", "#view-study .fix")
+    check(f"[{name}] a study whose label alone is corrected says what its file holds, and is not shown as a corrected copy",
+          row("Corrected").startswith("its file holds another trait: Estimated glomerular filtration rate (creatinine, cystatin C): its N, 401,570,") and "was" not in relabelled
+          and page.locator("#view-study .label", has_text="QC of the release's file").count() == 0, lambda: row("Corrected"))
     # the candidates for the next release, and the rule's backtest
     show("?tab=candidates", "#cand-steps tbody tr")
     table = lambda name: [[" ".join(cell.split()) for cell in row] for row in page.locator(f"#{name} tbody tr").evaluate_all("rows => rows.map((row) => [...row.cells].map((cell) => cell.innerText))")]

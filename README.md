@@ -69,6 +69,12 @@ corrected copy outside this repository, in the folder named by `SUMSTATS_CORRECT
 the release's file and `data/corrections.tsv`, and writes the copy with a record of its source, the checksums of both
 and what changed. That folder may be purged: a run writes everything again.
 
+**The overlay** (`build/overlay.py`). The site shows a corrected study by its copy: the build lays the corrected
+h², N, SNPs and genetic correlations over the release's and keeps the release's beside them (`was`), names what was
+corrected and why (`fixed`), gives genetic correlations to a study that its source signs, and chooses the panel of
+an ancestry again, by the release's rule, where one of its studies was corrected. The checks and the Release notes
+stay those of the release as it is.
+
 **Sources** (`sources/`). A study whose file cannot be mended is taken from its source again: its folder in the GWAS
 Catalog, or a URL. The file is downloaded, checked against the checksum its folder states, and formatted by the rules
 of the release's own scripts (`sources/format.py`): SNP, A1, A2, N and Z on the HapMap3 SNPs, A1 the effect allele.
@@ -100,10 +106,11 @@ files themselves are protected by O2.
    uv run python -m papers    # the papers of new references, from PubMed: data/references.tsv, data/papers.json
    uv run python -m names     # short names for new studies: data/names.tsv
    uv run python -m traits    # the trait, EFO term and category of new studies: data/traits.tsv
-   SUMSTATS_PASSPHRASE=... uv run python -m build
+   SUMSTATS_PASSPHRASE=... SUMSTATS_CORRECTIONS=<the folder of the corrected copies> uv run python -m build
    ```
 
-   Without `SUMSTATS_PASSPHRASE` the build asks for it. The folder's path shows on the site's Release notes after
+   Without `SUMSTATS_PASSPHRASE` the build asks for it. `SUMSTATS_CORRECTIONS` gives a corrected study the path of its
+   copy, behind the login; without it such a study keeps the path of the release's file. The folder's path shows on the site's Release notes after
    login. Then run the checks and commit `data/` and `site/data/`. An unchanged release rewrites nothing, and readers
    stay logged in.
 2. **Review papers and names.** A row of `data/references.tsv` or `data/names.tsv` whose `how` says "check" was a
@@ -149,13 +156,13 @@ files themselves are protected by O2.
 ## Checks
 
 ```bash
-export SUMSTATS_RELEASE=<release folder> SUMSTATS_PASSPHRASE=...   # on O2; never in a file of the repository
+export SUMSTATS_RELEASE=<release folder> SUMSTATS_PASSPHRASE=... SUMSTATS_CORRECTIONS=<folder of the copies>   # on O2; never in a file of the repository
 uv run pytest                                                      # the build; the data against the release; nothing private committed
 uv run --with playwright python dev/site_check.py                  # the site in a headless browser, with login
 python3 -m http.server -d site 8000                                # preview
 ```
 
-Without the two variables, the tests that need them are skipped. Run with both before a push.
+Without the variables, the tests that need them are skipped. Run with all three before a push.
 
 ## Setup
 

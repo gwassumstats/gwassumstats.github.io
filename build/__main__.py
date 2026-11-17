@@ -24,11 +24,12 @@ import getpass
 import gzip
 import json
 import os
+import re
 from pathlib import Path
 
 from cryptography.exceptions import InvalidTag
 
-from build import crypt, merge, release as rel
+from build import crypt, merge, overlay, release as rel
 
 SITE_DATA = Path(__file__).parents[1] / "site" / "data"
 BLOB = "paths.enc.json"
@@ -47,19 +48,38 @@ def holds(path: Path, plain: bytes, passphrase: str, iterations: int) -> bool:
         return False
 
 
-def build(release: Path, out: Path, passphrase: str, iterations: int = crypt.ITERATIONS, data: Path = merge.DATA) -> list[Path]:
-    """Writes the site's data for the release at `release` into `out`, with what `data` adds to it; returns the files."""
-    d = rel.studies(release)
-    rg = {anc: rel.correlations(release, d, anc) for anc in d["anc"].unique()}
-    cited, papers = merge.citations(d, data)
-    judged = merge.quality(d, rg, data)
-    of, traits = merge.traits(d, data)
+def build(release: Path, out: Path, passphrase: str, iterations: int = crypt.ITERATIONS, data: Path = merge.DATA, copies: Path | None = None) -> list[Path]:
+    """Writes the site's data for the release at `release` into `out`, with what `data` adds to it; returns the files.
+    The checks and the release's own counts are of the release as it is; the studies and their genetic correlations
+    are shown with the corrections laid over them (build/overlay.py). `copies`: the folder of the corrected copies,
+    for the paths that only a logged-in reader sees."""
+    theirs = rel.studies(release)
+    pairs = {anc: rel.pairs_of(release, anc) for anc in theirs["anc"].unique()}
+    as_released = {anc: rel.correlations(table, theirs, anc) for anc, table in pairs.items()}
+    cited, papers = merge.citations(theirs, data)
+    judged = merge.quality(theirs, as_released, data)
+    of, traits = merge.traits(theirs, data)
+    d, tables, fixed, was = overlay.laid(theirs, pairs, data, copies)
+    rg = {anc: rel.correlations(table, d, anc) for anc, table in tables.items()}
+    for anc, t in rg.items():  # the release's rg and its standard error, for the pairs estimated again: by the pair's position
+        place, n = {study: k for k, study in enumerate(t["ids"])}, len(t["ids"])
+        before = {min(place[a], place[b]) * (2 * n - min(place[a], place[b]) - 1) // 2 + abs(place[a] - place[b]) - 1: value for (a, b), value in ((pair.split(" "), value) for pair, value in was.get(anc, {}).items())}
+        if before:
+            t["was"] = {str(position): before[position] for position in sorted(before)}
+    named = "|".join(re.escape(study) for study in sorted(d.index, key=len, reverse=True))
+    said = lambda text: re.sub(rf"(?<![\w.])({named})(?![\w.])", r"{\1}", text)  # a study that a correction's reason names, as the site links it
     public = d.assign(name=merge.names(d, data), of=of).join(judged[["qc", "hm3", "chi2", "lambda"]])[["name", "of", *rel.PUBLIC, "qc", "hm3", "chi2", "lambda"]].reset_index()
     records = public.astype(object).where(public.notna(), None).to_dict("records")
     records = [{k: v for k, v in r.items() if v is not None} | ({"cite": pmids} if pmids else {}) | ({"notes": notes} if notes else {})
+               | ({"fixed": [[kind, value, said(why)] for kind, value, why in fixed[r["id"]]]} if r["id"] in fixed else {}) | ({"was": was[r["id"]]} if r["id"] in was else {})
                for r, pmids, notes in zip(records, cited, judged["notes"])]
-    summary = rel.summary(release, d, rg) | {"qc": {level: int((judged["qc"] == level).sum()) for level in ("pass", "warn", "fail")},
-                                            "traits": {"all": len(traits), "efo": sum(bool(efo) for efo, _ in traits.values())}}
+    summary = rel.summary(release, theirs, as_released) | {"qc": {level: int((judged["qc"] == level).sum()) for level in ("pass", "warn", "fail")},
+                                                          "traits": {"all": len(traits), "efo": sum(bool(efo) for efo, _ in traits.values())}}
+    if fixed:
+        summary["corrected"] = {"studies": len(fixed), "copies": sum(any(kind != "relabel" for kind, _, _ in fixes) for fixes in fixed.values()),
+                                "signed": int((d["cross"] & ~theirs["cross"]).sum()), "pairs": sum(len(was.get(anc, {})) for anc in rg),
+                                "panel": {anc: {"out": list(theirs.index[(theirs["anc"] == anc) & theirs["panel"].notna() & d["panel"].isna()]),
+                                                "in": list(d.index[(d["anc"] == anc) & d["panel"].notna() & theirs["panel"].isna()])} for anc in rg}}
     lines = lambda items: ",\n".join(items)  # a study, a paper a line, for readable diffs
     cited_as = {pmid: {"label": p["label"], "published": p["published"]} for pmid, p in papers.items()}  # what the table of studies needs of a paper
     texts = {"studies.json": f'{{\n"release":{dumps(summary)},\n"papers":{dumps(cited_as)},\n"traits":{{\n' + lines(f"{dumps(trait)}:{dumps(term)}" for trait, term in traits.items()) + '\n},\n"studies":[\n'
@@ -82,13 +102,14 @@ def main():
     parser.add_argument("release", nargs="?", default=os.environ.get("SUMSTATS_RELEASE"), help="the release folder (default: $SUMSTATS_RELEASE)")
     parser.add_argument("--out", type=Path, default=SITE_DATA, help="where to write (default: site/data)")
     parser.add_argument("--data", type=Path, default=merge.DATA, help="what the repository adds to the release (default: data)")
+    parser.add_argument("--copies", type=Path, default=os.environ.get("SUMSTATS_CORRECTIONS"), help="the folder of the corrected copies, for their paths (default: $SUMSTATS_CORRECTIONS)")
     args = parser.parse_args()
     if not args.release:
         parser.error("name the release folder, or set SUMSTATS_RELEASE")
     passphrase = os.environ.get("SUMSTATS_PASSPHRASE") or getpass.getpass("Passphrase: ")
     if not passphrase:
         parser.error("the passphrase is empty")
-    for path in build(Path(os.path.abspath(args.release)), args.out, passphrase, data=args.data):
+    for path in build(Path(os.path.abspath(args.release)), args.out, passphrase, data=args.data, copies=args.copies and Path(os.path.abspath(args.copies))):
         size = path.stat().st_size
         print(f"{path.name:<16} {size / 1e3:>8,.0f} kB  ({len(gzip.compress(path.read_bytes(), 6)) / 1e3:,.0f} kB gzipped)")
 

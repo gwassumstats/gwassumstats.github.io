@@ -18,8 +18,8 @@ their rule. Open: fixes to the studies that the checks flag wait for the owner (
    3. an O2 path, except encrypted in `site/data/paths.enc.json`;
    4. an O2 user name or home directory;
    5. content of the lab's mailing list: emails, or who flagged what.
-2. The passphrase and the release folder's path come from the environment (`SUMSTATS_PASSPHRASE`, `SUMSTATS_RELEASE`)
-   or a prompt. Never write them into a file of the repository, a test or a page.
+2. The passphrase, the release folder's path and that of the corrected copies come from the environment
+   (`SUMSTATS_PASSPHRASE`, `SUMSTATS_RELEASE`, `SUMSTATS_CORRECTIONS`) or a prompt. Never write them into a file of the repository, a test or a page.
 3. `site/data/` is written by `python -m build` only. The files stay on O2: the repository holds metadata, h² and rg.
    `data/` is drafted by scripts and corrected by hand; a script never overwrites a row that is there.
 4. The site loads nothing from other sites (no analytics, fonts or scripts): the passphrase is typed into it.
@@ -74,6 +74,8 @@ their rule. Open: fixes to the studies that the checks flag wait for the owner (
   folder in the GWAS Catalog or a URL, and formatted by the release's rules: `sources/`), a *flip* (Z was signed for
   A2), a *clean* (rows dropped), an *n*, or a *relabel*. A *corrected copy* is the study's file with its corrections applied, written outside the
   repository with its *provenance* (source, checksums, what changed). The release itself is never changed.
+- *Overlay:* the corrected copies' numbers laid over the release's on the site (`build/overlay.py`); a study's `was`
+  is what the release has, its `fixed` what was corrected and why.
 - *Candidate:* a GWAS of the GWAS Catalog with public sumstats, added after the last release's *window* (the days
   of publication it took: 2024/03/01 to 2026/08/26 for 2026), that passes the *rule* of `data/candidates.toml`.
 - *Backtest:* the rule applied to the window of the last release, against the studies that release added: what it

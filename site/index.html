@@ -35,7 +35,7 @@
     <form id="filters" class="filters" role="search" autocomplete="off">
       <input id="q" type="search" placeholder="name, ID, trait or reference" aria-label="Search the studies" autocomplete="off" spellcheck="false">
       <select id="f-anc" aria-label="Ancestry"><option value="">all ancestries</option></select>
-      <select id="f-qc" aria-label="Quality checks"><option value="">any QC</option><option>pass</option><option>warn</option><option>fail</option></select>
+      <select id="f-qc" aria-label="Quality checks"><option value="">any QC</option><option>pass</option><option>warn</option><option>fail</option><option>corrected</option></select>
       <label title="Heritability z-score above 6"><input id="f-z6" type="checkbox"> h² z &gt; 6</label>
       <label title="Signed sumstats: used for genetic correlation"><input id="f-signed" type="checkbox"> signed</label>
       <label title="In the nonredundant panel of its ancestry"><input id="f-panel" type="checkbox"> nonredundant</label>
@@ -233,6 +233,16 @@
     </ol>
     <p>A fail means: do not use the study as it is. A warn: use it with care. A note is worth knowing, and the study passes.
     The checks and their thresholds are in the <a href="https://github.com/gwassumstats/gwassumstats.github.io">repository</a>.</p>
+
+    <h2>What is a corrected study?</h2>
+    <p>A study whose file in the release was found at fault and could be mended. The release itself is never changed: the study has a corrected copy, and this site shows the numbers of the
+      copy, with the release's beside them on the study's page. <span data-v="corrected.copies">30</span> studies have one: their statistics were taken again from their source and formatted as
+      the release formats, or the sign of their Z was turned, or their N was scaled to the count of cases and controls, or rows were dropped, or each SNP was given its own alleles. S-LDSC and LDSC
+      were run again on the copies with the release's settings: <span data-v="corrected.pairs">11,739</span> genetic correlations of the release were estimated again, and
+      <span data-v="corrected.signed">4</span> studies that the release holds unsigned have genetic correlations now. Where a study of an ancestry was corrected, its nonredundant panel was chosen
+      again by the release's rule. The tables say <q>corrected</q> beside what the checks say of the release's file, and can list these studies alone; after login, a corrected study's path is that
+      of its copy. Of the <span data-v="corrected.studies">36</span> studies with a correction, the others have a corrected label only: their file is sound, and holds another trait than its name
+      says.</p>
 
     <h2>What is the nonredundant panel?</h2>
     <p><span data-v="EUR.panel">85</span> EUR and <span data-v="EAS.panel">17</span> EAS studies with h² z &gt; 6 and a squared

@@ -120,8 +120,9 @@ main:has(#listview:not([hidden]) table:empty) { min-height: 100vh; }  /* the foo
 .qc { color: var(--muted); }
 .qc.warn { color: var(--caution); }
 .qc.fail { color: var(--error); font-weight: 600; }
+.fixed { color: var(--muted); font-size: var(--fs-small); }  /* "corrected", beside what the checks say of the release's file */
 .qc[title] { cursor: help; }
-.finding { margin-top: .25rem; }
+.finding, .fix + .fix { margin-top: .25rem; }
 .finding .qc { display: inline-block; min-width: 2.6rem; }
 .fields .hint { margin-top: .25rem; }
 .data .sub td { padding-top: 0; }  /* a study's path, under its row, once logged in */

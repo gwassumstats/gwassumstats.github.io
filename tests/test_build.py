@@ -21,9 +21,9 @@ from qc.scan import measure
 FAST = 1000  # PBKDF2 rounds, for tests that do not need the real cost
 
 
-def build(release, out, passphrase, iterations=FAST):
+def build(release, out, passphrase, iterations=FAST, copies=None):
     """The build of a made-up release, with the made-up papers and names beside it."""
-    return build_with(release, out, passphrase, iterations, data=data_of(release))
+    return build_with(release, out, passphrase, iterations, data=data_of(release), copies=copies)
 
 
 def built(release, out, passphrase="correct horse"):
@@ -54,6 +54,41 @@ def test_a_study_is_of_a_trait_with_its_term_and_category(mini, tmp_path):
     assert {d["id"]: d["of"] for d in data["studies"]}["GCST0003"] == "Trait D" and data["release"]["traits"] == {"all": 6, "efo": 5}  # two studies of one trait; one trait without a term
     write(data_of(mini) / "traits.tsv", ["id", "trait", "efo", "category", "how"], [["A_unsigned", "Height", "EFO_1", "anthropometric", "by hand"]])
     with pytest.raises(ValueError, match="data/traits.tsv lacks the trait of B"):
+        build(mini, tmp_path / "out", "x")
+
+
+def test_the_corrections_are_laid_over_the_release_which_is_kept_beside(mini, tmp_path):
+    data, unchanged = data_of(mini), built(mini, tmp_path / "before")
+    write(data / "corrections.tsv", ["id", "fix", "value", "why"], [
+        ["A_unsigned", "source", "GCST9; n=1500", "the release's file holds |Z|; made like B"], ["B", "n", "4000", "its N was an effective N"], ["C", "relabel", "Trait Z", "its N is that of Trait Z"]])
+    listed = built(mini, tmp_path / "listed")["studies.json"]  # before LDSC has run on the copies: the corrections are named, and nothing else changes
+    assert [d.get("fixed") for d in listed["studies"][:3]] == [[["source", "GCST9; n=1500", "the release's file holds |Z|; made like {B}"]], [["n", "4000", "its N was an effective N"]],
+                                                               [["relabel", "Trait Z", "its N is that of Trait Z"]]]
+    assert [{k: v for k, v in d.items() if k != "fixed"} for d in listed["studies"]] == unchanged["studies.json"]["studies"] and listed["release"]["corrected"]["copies"] == 2
+    write(data / "corrected_h2.tsv", ["trait_identifier", "h2", "h2_se", "h2_z", "intercept", "m"], [["A_unsigned", "0.25", "0.02", "12.5", "1.01", "905"], ["B", "0.1", "0.01", "10.0", "0.99", "910"]])
+    write(data / "corrected_rg.tsv", RG, [["A_unsigned", "B", "0.2", "0.05", "4.0", "0.0001", "0.01", "0.002"], ["A_unsigned", "C", "0.9", "0.05", "18.0", "0.0", "0.05", "0.002"], ["A_unsigned", "GCST0001", *["nan"] * 6],
+                                          ["B", "C", "0.5", "0.1", "5.0", "0.001", "0.02", "0.004"], ["B", "GCST0001", "-0.048", "0.0826", "-0.5809", "0.5613", "-0.0037", "0.0065"]])
+    files = built(mini, tmp_path / "out")
+    by = {d["id"]: d for d in files["studies.json"]["studies"]}
+    a, b = by["A_unsigned"], by["B"]
+    assert (a["n"], a["m"], a["h2"], a["h2_z"], a["signed"], a["cross"], a["panel"]) == (1500, 905, 0.25, 12.5, True, True, 1)  # its source signs it: it has genetic correlations now
+    assert a["was"] == {"n": 1000, "m": 900, "signed": False, "cross": False, "h2": 0.2, "h2_z": 10.0, "panel": None}  # what the release has, where it differs
+    assert (b["n"], b["h2"], b["h2_se"], b["panel"]) == (4000, 0.1, 0.01, 2) and b["was"] == {"n": 2000, "m_rg": 910, "h2": -0.0058, "h2_z": -0.58, "panel": None} and "m_rg" not in b
+    assert by["C"]["was"] == {"panel": 2} and "panel" not in by["C"] and by["GCST0001"]["was"] == {"panel": 1} and "fixed" not in by["GCST0001"]  # the panel, chosen again by the release's rule
+    t = files["rg_EUR.json"]
+    assert t["ids"] == ["A_unsigned", "B", "C", "GCST0001"] and t["rg"] == [0.2, 0.9, None, 0.5, -0.048, None] and t["notes"] == {"5": "rg out of bounds"}
+    assert t["was"] == {"3": [7.6455e-06, 0.096], "4": [-0.048, 0.0826]}  # the release's rg and SE of the pairs estimated again; A_unsigned had none
+    assert files["rg_EAS.json"] == unchanged["rg_EAS.json"] and "was" not in files["rg_EAS.json"]
+    release = files["studies.json"]["release"]
+    assert release["corrected"] == {"studies": 3, "copies": 2, "signed": 1, "pairs": 2, "panel": {"EUR": {"out": ["C", "GCST0001"], "in": ["A_unsigned", "B"]}, "EAS": {"out": [], "in": []}}}
+    assert {k: v for k, v in release.items() if k != "corrected"} == unchanged["studies.json"]["release"]  # the release's own counts stand
+    assert [d["qc"] for d in files["studies.json"]["studies"]] == [d["qc"] for d in unchanged["studies.json"]["studies"]]  # the checks are of the release's files
+    build(mini, tmp_path / "out", "correct horse", copies=tmp_path / "scratch")
+    private = json.loads(crypt.decrypt(json.loads((tmp_path / "out" / BLOB).read_text()), "correct horse"))
+    where = lambda study: f"{private['folders'][private['files'][study][0]]}/{private['files'][study][1]}"
+    assert where("A_unsigned") == f"{tmp_path}/scratch/sumstats/A_unsigned.sumstats" and where("B") == f"{tmp_path}/scratch/sumstats/B.sumstats" and where("C") == "/lab/old/sumstats/C.sumstats"
+    write(data / "corrected_h2.tsv", ["trait_identifier", "h2", "h2_se", "h2_z", "intercept", "m"], [["B", "0.1", "0.01", "10.0", "0.99", "910"]])
+    with pytest.raises(ValueError, match="data/corrected_h2.tsv lacks A_unsigned"):
         build(mini, tmp_path / "out", "x")
 
 

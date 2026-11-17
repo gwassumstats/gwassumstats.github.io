@@ -92,13 +92,18 @@ def studies(release: Path) -> pd.DataFrame:
     return d
 
 
-def correlations(release: Path, d: pd.DataFrame, anc: str) -> dict:
-    """The cross-trait LDSC results of an ancestry: `ids`, its studies in the inventory's order, and one list per
-    column over the pairs i < j of `ids`, row by row: (0,1), (0,2), ..., (1,2), ... A pair without an estimate
-    holds null; `notes` gives LDSC's reason where the release keeps one, by the pair's position. `heat` orders the
-    studies, by their place in `ids`, for a heatmap: hierarchical clustering on the distance 1 - |rg| (see tree)."""
+def pairs_of(release: Path, anc: str) -> pd.DataFrame:
+    """The release's table of the cross-trait LDSC results of an ancestry, as text: a row a pair."""
+    return table(one(release, f"ldsc_genetic_correlations_trait_pairs_{anc}_*.txt"))
+
+
+def correlations(pairs: pd.DataFrame, d: pd.DataFrame, anc: str) -> dict:
+    """The cross-trait LDSC results of an ancestry, from its table of pairs: `ids`, its studies in the inventory's
+    order, and one list per column over the pairs i < j of `ids`, row by row: (0,1), (0,2), ..., (1,2), ... A pair
+    without an estimate holds null; `notes` gives LDSC's reason where the release keeps one, by the pair's position.
+    `heat` orders the studies, by their place in `ids`, for a heatmap: hierarchical clustering on the distance
+    1 - |rg| (see tree)."""
     ids = d.index[(d["anc"] == anc) & d["cross"]]
-    pairs = table(one(release, f"ldsc_genetic_correlations_trait_pairs_{anc}_*.txt"))
     n = len(ids)
     i, j = np.sort([ids.get_indexer_for(pairs["trait1"]), ids.get_indexer_for(pairs["trait2"])], axis=0)
     position = i * (2 * n - i - 1) // 2 + j - i - 1
