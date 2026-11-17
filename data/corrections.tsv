@@ -1,7 +1,8 @@
 id	fix	value	why
 # What is corrected of a study, and why (corrections/). `fix`: flip (Z was signed for A2: its sign is turned), clean
-# (rows listed twice, or with a Z that is not a number, are dropped), n (each SNP's N is scaled so that the most
-# frequent N becomes `value`), relabel (the file is sound; `value` is the trait it holds). The corrected copies are
+# (rows listed twice, or with a Z that is not a number, are dropped), n (the file's N is an effective N: each SNP's N
+# is scaled so that the largest becomes `value`, the paper's cases and controls, as the release counts N for its
+# other case-control studies), relabel (the file is sound; `value` is the trait it holds). The corrected copies are
 # written outside this repository, each with a record of its source, its checksums and what changed.
 PASS_SmokingInitiation_Liu2019	flip		its Z is opposite to that of two other studies of smoking at all of the 1,727 and 1,939 SNPs with |Z| > 4 in both; rg -1.00 and -0.99
 PASS_DrinksPerWeek_Liu2019	flip		of the paper of PASS_SmokingInitiation_Liu2019: opposite to ever smoked at 127 of 132 strong SNPs; rg -0.55 with cirrhosis
@@ -14,7 +15,8 @@ PASS_PhysicalActivity_Wang2022	clean		518 SNPs listed twice
 PASS_BMI_Yengo2018	clean		2 SNPs listed twice
 PASS_IBD	clean		152 SNPs with a Z that is not a number
 PASS_Type_1_Diabetes	clean		102 SNPs with a Z that is not a number
-PASS_Schizophrenia_Lam2019_EAS	n	58140	the file's N is an effective N, 14,916.61 for most SNPs, a quarter of the paper's: the GWAS Catalog records 22,778 cases and 35,362 controls (GCST009336)
+PASS_Schizophrenia_Lam2019_EAS	n	58140	the file's N is an effective N (14,916.61 for most SNPs, 25,722.77 at most), not the count of cases and controls. At the 10 published lead SNPs that the file has, its |Z| is 0.99 to 1.03 of the published: it is the paper's East Asian analysis, of 22,778 cases and 35,362 controls (GWAS Catalog GCST009336)
+PASS_Schizophrenia_Trubetskoy2022	n	130644	the file's N is an effective N (58,749.13 for most SNPs), not the count of cases and controls. At the 117 published lead SNPs that the file has, its |Z| is 0.89 of the published, as the European part of the paper's 175,799 is expected to be (0.86): 53,386 cases and 77,258 controls (GWAS Catalog GCST90128471)
 PANUKBB_IndirectBilirubin	relabel	Estimated glomerular filtration rate (creatinine, cystatin C)	its N, 401,570, is that phenotype's in the Pan-UK Biobank's manifest; rg 0.98 with another study of it
 PANUKBB_LDLDirectAdjustedByMedication	relabel	FEV1/FVC ratio	its N, 316,932, is that phenotype's in the Pan-UK Biobank's manifest; rg 1.00 with another study of it
 PANUKBB_MeanArterialPressureAutomatedReadingAdjustedByMedication	relabel	LDL direct, adjusted by medication	its N, 398,402, is that phenotype's in the Pan-UK Biobank's manifest; rg 0.91 with LDL

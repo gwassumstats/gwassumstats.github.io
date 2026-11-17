@@ -33,8 +33,8 @@ def test_a_clean_drops_what_is_no_number_then_what_is_listed_twice(source):
 
 
 def test_another_n_scales_each_snp_s_n(source):
-    rows, changed = fix.rescale(fix.read(source), 201)
-    assert list(rows["N"]) == ["201.000", "201.000", "180.000", "100.500", "201.000", "201.000"] and changed == {"n_scaled_by": 2.0, "n_most_frequent_before": 100.5}
+    rows, changed = fix.rescale(fix.read(source), 201)  # the largest N, 100.50, becomes 201: a SNP that every cohort has
+    assert list(rows["N"]) == ["201.000", "201.000", "180.000", "100.500", "201.000", "201.000"] and changed == {"n_scaled_by": 2.0, "n_largest_before": 100.5}
 
 
 def test_a_copy_is_written_with_its_record_and_the_source_is_left_alone(source, tmp_path):

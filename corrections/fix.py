@@ -29,10 +29,10 @@ def clean(rows: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
 
 
 def rescale(rows: pd.DataFrame, n: float) -> tuple[pd.DataFrame, dict]:
-    """Each SNP's N scaled so that the most frequent N becomes `n`: a SNP that every cohort has gets the paper's N,
-    and a SNP with fewer cohorts keeps its share."""
-    most = float(rows["N"].mode()[0])
-    return rows.assign(N=rows["N"].map(lambda value: f"{float(value) * n / most:.3f}")), {"n_scaled_by": round(n / most, 6), "n_most_frequent_before": most}
+    """Each SNP's N scaled so that the largest N becomes `n`: a SNP that every cohort has gets the paper's count of
+    cases and controls, and a SNP with fewer cohorts keeps its share. For a file whose N is an effective N."""
+    largest = pd.to_numeric(rows["N"]).max()
+    return rows.assign(N=rows["N"].map(lambda value: f"{float(value) * n / largest:.3f}")), {"n_scaled_by": round(n / largest, 6), "n_largest_before": float(largest)}
 
 
 FIXES = {"flip": lambda rows, value: flip(rows), "clean": lambda rows, value: clean(rows), "n": lambda rows, value: rescale(rows, float(value))}
