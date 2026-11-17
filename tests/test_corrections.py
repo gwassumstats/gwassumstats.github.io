@@ -152,11 +152,13 @@ def test_ldsc_is_run_on_a_copy_with_the_release_s_options_and_not_again_while_it
     assert ldsc.rerun("X", "EUR", files["X"], partners, scratch, settings) == found and runs() == ["h2", "rg", "h2", "rg"]
     assert ldsc.rerun("Y", "EUR", files["Y"], {}, scratch, settings)["rg"] == {} and runs()[-1] == "h2" and not (scratch / "ldsc" / "rg" / "Y.log").exists()  # no partners: h² only
     stand_in.write_text("raise SystemExit('LDSC fails')")
-    with pytest.raises(ValueError, match="LDSC did not finish the genetic correlations of X"):  # another partner, and LDSC fails
+    with pytest.raises(ValueError, match="LDSC did not finish for X"):  # another partner, and LDSC fails
         ldsc.rerun("X", "EUR", files["X"], partners | {"Y": files["Y"]}, scratch, settings)
     Path(files["Y"]).touch()
-    with pytest.raises(ValueError, match="S-LDSC did not finish"):
+    with pytest.raises(ValueError, match="LDSC did not finish for Y"):
         ldsc.rerun("Y", "EUR", files["Y"], {}, scratch, settings)
+    assert ldsc.lacking("Y", files["Y"], {}, scratch) and not ldsc.lacking("X", files["X"], partners, scratch) and ldsc.lacking("X", files["X"], partners | {"Y": files["Y"]}, scratch)
+    assert not ldsc.lacking("X", files["X"], partners | {"Y": files["Y"]}, scratch, frozenset("Y")) and ldsc.found("X", files["X"], partners | {"Y": files["Y"]}, scratch)["rg"]["Y"] is None
 
 
 def test_the_panel_takes_the_strongest_study_and_leaves_what_resembles_it():

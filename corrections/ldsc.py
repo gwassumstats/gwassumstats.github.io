@@ -20,8 +20,9 @@ study of its ancestry that has genetic correlations; another corrected study is 
 has genetic correlations if the release has them for it, or if its copy was taken from its source, where the effect
 allele is known: a file that the release held unsigned can be signed in its source. The logs stay under the folder
 (ldsc/h2/, ldsc/rg/). A log stands as long as the files it is of have not changed: what it holds is not run again.
-So the command can be given again, under another --name, after a task failed or after more studies were corrected,
-and only what is missing is run. What the logs say goes to the repository, without a path:
+So the command can be given again, under another --name, after a task failed or after more studies were corrected:
+only what is missing is run, and nothing at all if every log stands. What the logs say goes to the repository, without
+a path, once no study lacks LDSC:
 
   data/corrected_h2.tsv   a line a corrected study: h², its standard error, z and the intercept, as the release's table
   data/corrected_rg.tsv   a line a pair with a corrected study, as the release's table; a pair that LDSC could not
@@ -104,24 +105,35 @@ def standing(prefix: Path, file: str) -> dict[str, list[str]]:
     return {other: values for other, values in correlations(text).items() if Path(other).exists() and Path(other).stat().st_mtime < done}
 
 
+def lacking(study: str, file: str, partners: dict[str, str], out: Path, covered: frozenset = frozenset()) -> bool:
+    """Whether LDSC has yet to run for a study: its S-LDSC log does not stand, or its log of genetic correlations
+    lacks the pair of a partner as the files are now. Partners that are `covered`, corrected studies, do not count:
+    their own logs hold the pair."""
+    pairs = standing(out / "ldsc" / "rg" / study, file)
+    return "Total Observed scale h2" not in kept(out / "ldsc" / "h2" / study, file) or any(path not in pairs and other not in covered for other, path in partners.items())
+
+
+def found(study: str, file: str, partners: dict[str, str], out: Path) -> dict:
+    """What a study's logs say as they stand: its h², and each partner's pair, or None for a pair that they do not
+    hold as the files are now."""
+    pairs = standing(out / "ldsc" / "rg" / study, file)
+    return {"study": study, "h2": heritability(kept(out / "ldsc" / "h2" / study, file)), "rg": {other: pairs.get(path) for other, path in partners.items()}}
+
+
 def rerun(study: str, ancestry: str, file: str, partners: dict[str, str], out: Path, settings: dict, covered: frozenset = frozenset()) -> dict:
     """One Slurm task: S-LDSC on a corrected copy, then LDSC of it against each partner's file, with the release's
-    options; returns what the logs say: h², and each partner's pair, or None for a pair that this study's log does
-    not hold as the files are now. What a log that still stands holds is not run again; nor is LDSC run for the sake
-    of partners that are `covered`: corrected studies, whose own task estimates the pair."""
+    options; returns what the logs say. What a log that still stands holds is not run again."""
     run, of = [settings["python"], settings["ldsc"]], settings[ancestry]
     h2, rg = out / "ldsc" / "h2" / study, out / "ldsc" / "rg" / study
     h2.parent.mkdir(parents=True, exist_ok=True)
     rg.parent.mkdir(parents=True, exist_ok=True)
     if "Total Observed scale h2" not in kept(h2, file):
         subprocess.run([*run, "--h2", file, "--ref-ld-chr", of["baseline"], "--w-ld-chr", of["weights"], "--overlap-annot", "--print-coefficients", "--frqfile-chr", of["frequencies"], "--out", str(h2)])
-    lacking = lambda: [other for other, path in partners.items() if path not in standing(rg, file) and other not in covered]
-    if lacking():
+    if lacking(study, file, partners, out, covered):
         subprocess.run([*run, "--rg", ",".join([file, *partners.values()]), "--ref-ld-chr", of["ldscores"], "--w-ld-chr", of["weights"], "--out", str(rg)])
-    if lacking():
-        raise ValueError(f"LDSC did not finish the genetic correlations of {study}: see its log")
-    pairs = standing(rg, file)
-    return {"study": study, "h2": heritability(kept(h2, file)), "rg": {other: pairs.get(path) for other, path in partners.items()}}
+    if lacking(study, file, partners, out, covered):
+        raise ValueError(f"LDSC did not finish for {study}: see its logs")
+    return found(study, file, partners, out)
 
 
 def main():
@@ -129,6 +141,7 @@ def main():
     parser.add_argument("release", nargs="?", default=os.environ.get("SUMSTATS_RELEASE"), help="the release folder, read only (default: $SUMSTATS_RELEASE)")
     parser.add_argument("--out", default=os.environ.get("SUMSTATS_CORRECTIONS"), help="the folder of the corrected copies (default: $SUMSTATS_CORRECTIONS)")
     parser.add_argument("--settings", type=Path, required=True, help="a file outside the repository: where LDSC and its reference files are")
+    parser.add_argument("--only", nargs="+", metavar="ID", help="run LDSC for these corrected studies only, where others are being run elsewhere")
     parser.add_argument("--account", help="the Slurm account to charge")
     parser.add_argument("--name", default=f"{datetime.date.today():%Y%m%d}_corrected_ldsc", help="the name of the Slurm tasks and of their logs")
     args = parser.parse_args()
@@ -146,21 +159,25 @@ def main():
     files = theirs.to_dict() | corrected
     correlated = d["cross"] | d.index.isin([study for study, fixes in plan.items() if fixes[0]["fix"] == "source"])  # the release has rg for it, or its copy is from its source
     partners = [{other: files[other] for other in d.index[(d["anc"] == d.at[study, "anc"]) & correlated] if other != study} if correlated[study] else {} for study in corrected]
-    k = len(corrected)
-    found = submitted(args.name, out, args.account, rerun, list(corrected), [d.at[study, "anc"] for study in corrected], list(corrected.values()), partners, [out] * k, [settings] * k,
-                      [frozenset(corrected) - {study} for study in corrected], memory=16, minutes=120, strict=False)
-    if failed := [study for study, task in zip(corrected, found) if task is None]:
-        parser.exit(1, f"LDSC failed for {', '.join(failed)}: see their logs, then give the command again under another --name; nothing was written\n")
-    pd.DataFrame([[task["study"], *task["h2"].values()] for task in found], columns=H2).to_csv(ROOT / "data" / "corrected_h2.tsv", sep="\t", index=False)
+    covered = {study: frozenset(corrected) - {study} for study in corrected}
+    behind = lambda: [k for k, study in enumerate(corrected) if lacking(study, corrected[study], partners[k], out, covered[study])]
+    if todo := [k for k in behind() if not args.only or list(corrected)[k] in args.only]:
+        studies = [list(corrected)[k] for k in todo]
+        submitted(args.name, out, args.account, rerun, studies, [d.at[study, "anc"] for study in studies], [corrected[study] for study in studies], [partners[k] for k in todo], [out] * len(todo),
+                  [settings] * len(todo), [covered[study] for study in studies], memory=16, minutes=120, strict=False)
+    if left := [list(corrected)[k] for k in behind()]:
+        parser.exit(1, f"LDSC has yet to finish for {len(left)} studies ({', '.join(left[:3])}{', ...' if len(left) > 3 else ''}): see their logs, or give the command again; nothing was written\n")
+    tasks = [found(study, corrected[study], partners[k], out) for k, study in enumerate(corrected)]  # from the logs as they stand, whoever ran them
+    pd.DataFrame([[task["study"], *task["h2"].values()] for task in tasks], columns=H2).to_csv(ROOT / "data" / "corrected_h2.tsv", sep="\t", index=False)
     pairs = {}  # a pair of two corrected studies may be estimated from each: the first stands
-    for task in found:
+    for task in tasks:
         for other, values in task["rg"].items():
             if values:
                 pairs.setdefault(frozenset((task["study"], other)), [task["study"], other, *values])
     if lost := [f"{study} and {other}" for study, others in zip(corrected, partners) for other in others if frozenset((study, other)) not in pairs]:
         parser.exit(1, f"no log holds the pair of {lost[0]} as their files are now ({len(lost)} such pairs): nothing was written\n")
     pd.DataFrame(pairs.values(), columns=RG).to_csv(ROOT / "data" / "corrected_rg.tsv", sep="\t", index=False)
-    print(f"{k} corrected studies: {len(pairs)} pairs, {sum(row[2] == 'nan' for row in pairs.values())} of them not estimated")
+    print(f"{len(corrected)} corrected studies: {len(pairs)} pairs, {sum(row[2] == 'nan' for row in pairs.values())} of them not estimated")
 
 
 if __name__ == "__main__":
