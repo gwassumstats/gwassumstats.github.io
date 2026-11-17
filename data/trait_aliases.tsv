@@ -1,0 +1,167 @@
+key	trait	efo_label
+# A trait's name where the release's own spellings do not give a good one, or where studies of one trait have short
+# names that differ (traits/): `key` is the trait of a study's short name, without its qualifiers. `efo_label` is the
+# label of the EFO term that fits, as the GWAS Catalog writes it; the script looks its ID up there.
+BMI	Body mass index	body mass index
+Height	Height	body height
+LDL	LDL cholesterol	low density lipoprotein cholesterol measurement
+HDL	HDL cholesterol	high density lipoprotein cholesterol measurement
+TC	Total cholesterol	total cholesterol measurement
+Cholesterol	Total cholesterol	total cholesterol measurement
+TG	Triglycerides	triglyceride measurement
+HbA1c	Glycated hemoglobin (HbA1c)	HbA1c measurement
+HGB	Hemoglobin	hemoglobin measurement
+HCT	Hematocrit	
+Urate	Urate	urate measurement
+EverSmoked	Smoking initiation	smoking initiation
+SmokingInitiation	Smoking initiation	smoking initiation
+SmokingStatus	Smoking status	smoking status measurement
+CigsPerDay	Cigarettes per day	cigarettes per day measurement
+IBD	Inflammatory bowel disease	inflammatory bowel disease
+AllOA	Osteoarthritis	osteoarthritis
+OA	Osteoarthritis	osteoarthritis
+HipOA	Hip osteoarthritis	osteoarthritis, hip
+KneeOA	Knee osteoarthritis	osteoarthritis, knee
+KneeHipOA	Hip or knee osteoarthritis	
+HipKneeOA	Hip or knee osteoarthritis	
+HypothyroidismNOS	Hypothyroidism	hypothyroidism
+Hypothyroidism	Hypothyroidism	hypothyroidism
+Thyroid	Thyroid disease	
+FEV1FVC	FEV1/FVC ratio	FEV/FVC ratio
+FEV1	FEV1	forced expiratory volume
+FVC	Forced vital capacity	vital capacity
+PEF	Peak expiratory flow	
+EduYears	Years of education	educational attainment
+Parkinsons	Parkinson's disease	Parkinson disease
+Autism	Autism spectrum disorder	autism spectrum disorder
+Epilepsy	Epilepsy	epilepsy
+Hypertension	Hypertension	hypertension
+GERD	Gastroesophageal reflux disease	gastroesophageal reflux disease
+AST	Aspartate aminotransferase	aspartate aminotransferase measurement
+ALT	Alanine aminotransferase	
+ALP	Alkaline phosphatase	alkaline phosphatase measurement
+GGT	Gamma-glutamyl transferase	serum gamma-glutamyl transferase measurement
+CRP	C-reactive protein	
+Albumin	Albumin	serum albumin amount
+TotalBilirubin	Total bilirubin	bilirubin measurement
+Calcium	Calcium	calcium measurement
+Urea	Urea	urea measurement
+CystatinC	Cystatin C	
+ApoA	Apolipoprotein A1	apolipoprotein a 1 measurement
+ApoB	Apolipoprotein B	apolipoprotein B measurement
+LpA	Lipoprotein(a)	lipoprotein A measurement
+SHBG	SHBG	sex hormone-binding globulin measurement
+TotalProtein	Total protein	total blood protein measurement
+Testosterone	Testosterone	testosterone measurement
+TotalTestosterone	Testosterone	testosterone measurement
+Glucose	Glucose	glucose measurement
+BloodSugar	Glucose	glucose measurement
+IGF1	IGF-1	IgF-1 measurement
+VitaminD	Vitamin D	
+VitaminDNormalBMI	Vitamin D	
+VitaminDObeseBMI	Vitamin D	
+VitaminDOverweightBMI	Vitamin D	
+VitaminDOutdoors	Vitamin D	
+VitaminDUVBQ1	Vitamin D	
+VitaminDUVBQ2	Vitamin D	
+VitaminDUVBQ3	Vitamin D	
+VitaminDUVBQ4	Vitamin D	
+VitaminDUVBQ5	Vitamin D	
+VitaminDxUVB	Vitamin D x ultraviolet B interaction	
+eGFR	Estimated glomerular filtration rate	
+eGFRCreat	Estimated glomerular filtration rate	
+eGFRCys	Estimated glomerular filtration rate	
+eGFRCreatCys	Estimated glomerular filtration rate	
+AgeFirstBirth	Age at first birth	age at first birth measurement
+NumChildren	Number of children ever born	number of children ever born measurement
+Menarche	Age at menarche	
+Menopause	Age at menopause	
+PulseRate	Pulse rate	heart rate
+AF	Atrial fibrillation	atrial fibrillation
+AFFlutter	Atrial fibrillation	atrial fibrillation
+CAVS	Aortic stenosis	
+SBP	Systolic blood pressure	systolic blood pressure
+DBP	Diastolic blood pressure	diastolic blood pressure
+PP	Pulse pressure	pulse pressure measurement
+MAP	Mean arterial pressure	mean arterial pressure
+SBPxSex	Systolic blood pressure x sex interaction	
+SBPxSexDimorphic	Systolic blood pressure x sex interaction	
+DBPxSex	Diastolic blood pressure x sex interaction	
+DBPxSexDimorphic	Diastolic blood pressure x sex interaction	
+PPxSex	Pulse pressure x sex interaction	
+PPxSexDimorphic	Pulse pressure x sex interaction	
+LungAdenocarcinoma	Lung adenocarcinoma	lung adenocarcinoma
+LungCancer	Lung cancer	lung carcinoma
+EsophagealCancer	Esophageal cancer	
+AnyCancer	Any cancer	
+SkinCancerC44	Non-melanoma skin cancer (ICD-10 C44)	
+BasoP	Basophil percentage	basophil percentage of leukocytes
+EosinoP	Eosinophil percentage	eosinophil percentage of leukocytes
+LymP	Lymphocyte percentage	lymphocyte percentage of leukocytes
+MonoP	Monocyte percentage	monocyte percentage of leukocytes
+NeutroP	Neutrophil percentage	neutrophil percentage of leukocytes
+RTC	Reticulocyte count	reticulocyte count
+RTCP	Reticulocyte percentage	
+HLR	High light scatter reticulocyte count	
+HLRP	High light scatter reticulocyte percentage	
+IRF	Immature reticulocyte fraction	immature reticulocyte measurement
+RBC	Red blood cell count	erythrocyte count
+WBC	White blood cell count	
+RDW	Red blood cell distribution width	
+RDWCV	Red blood cell distribution width	
+MSCV	Mean sphered cell volume	
+IOP	Intraocular pressure	intraocular pressure measurement
+SphericalPower	Spherical power	refractive error measurement
+CorticalThickness	Cortical thickness	cortical thickness
+CorticalSurfaceArea	Cortical surface area	total cortical area measurement
+PallidumVol	Pallidum volume	pallidum volume
+BrainstemVol	Brainstem volume	
+BaldingType1	Balding pattern 1	balding measurement
+BaldingPattern	Balding pattern 1	balding measurement
+BaldingPattern2	Balding pattern 2	balding measurement
+BaldingType4	Balding pattern 4	balding measurement
+Sunburn	Sunburn	sunburn
+ChildhoodSunburn	Sunburn	sunburn
+Diverticular	Diverticular disease	diverticular disease
+CHIP	Clonal hematopoiesis (CHIP)	clonal hematopoiesis
+CHIPDNMT3A	Clonal hematopoiesis (CHIP), DNMT3A	clonal hematopoiesis
+MorningPerson	Chronotype (morning person)	chronotype measurement
+RiskTolerance	Risk tolerance	risk-taking behaviour
+AlcoholUse	Alcohol use (AUDIT)	alcohol use disorder measurement
+SWB	Subjective well-being	wellbeing measurement
+GripStrength	Hand grip strength	grip strength measurement
+HeelTScore	Heel bone mineral density	heel bone mineral density
+HeelBMD	Heel bone mineral density	heel bone mineral density
+VATVol	Visceral adipose tissue volume	
+ViscAdiposeVol	Visceral adipose tissue volume	
+ASATVol	Abdominal subcutaneous adipose tissue volume	
+SubAdiposeVol	Abdominal subcutaneous adipose tissue volume	
+AlzheimersProxy	Alzheimer's disease, family history	
+AlzheimersMaternal	Alzheimer's disease, family history	
+AlzheimersPaternal	Alzheimer's disease, family history	
+VNR	Intelligence	intelligence
+FluidIntelligence	Intelligence	intelligence
+Intelligence	Intelligence	intelligence
+DoctorDiagnosedConditions	Allergic disease (hay fever, rhinitis or eczema, diagnosed by doctor)	
+NormalDelivery	Normal delivery (OPCS-4)	
+MCP	Multisite chronic pain	
+MetS	Metabolic syndrome	
+T2D	Type 2 diabetes	
+T1D	Type 1 diabetes	
+MDD	Major depressive disorder	
+ADHD	Attention deficit hyperactivity disorder	
+MS	Multiple sclerosis	
+RA	Rheumatoid arthritis	
+SLE	Systemic lupus erythematosus	
+PBC	Primary biliary cirrhosis	
+CAD	Coronary artery disease	
+HF	Heart failure	
+VTE	Venous thromboembolism	
+AAA	Abdominal aortic aneurysm	
+COPD	Chronic obstructive pulmonary disease	
+POAG	Primary open angle glaucoma	
+PCOS	Polycystic ovary syndrome	
+GDM	Gestational diabetes mellitus	
+UC	Ulcerative colitis	
+Crohns	Crohn's disease	
+Celiac	Celiac disease	

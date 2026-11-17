@@ -29,7 +29,8 @@ def download(cache: Path, refresh: bool = False) -> str:
 
 def load(cache: Path) -> pd.DataFrame:
     """One row per study of the Catalog, by accession: its paper, its trait, whether its summary statistics are
-    public, and from the first stage of its ancestry table the number of individuals and their ancestries."""
+    public, the trait and EFO term it is mapped to, and from the first stage of its ancestry table the number of
+    individuals and their ancestries."""
     read = lambda name: pd.read_csv(cache / name, sep="\t", dtype=str, keep_default_na=False, quoting=3)
     studies, stage = read("studies.tsv"), read("ancestry.tsv")[lambda t: t["STAGE"] == "initial"]
     groups = stage.assign(group=stage["BROAD ANCESTRAL CATEGORY"].str.split(r",\s*")).explode("group")[lambda t: t["group"] != "NR"]  # NR: not reported
@@ -37,7 +38,8 @@ def load(cache: Path) -> pd.DataFrame:
         "id": studies["STUDY ACCESSION"], "pmid": studies["PUBMED ID"], "author": studies["FIRST AUTHOR"], "published": studies["DATE"],
         "added": studies["DATE ADDED TO CATALOG"], "journal": studies["JOURNAL"], "title": studies["STUDY"], "trait": studies["DISEASE/TRAIT"],
         "sample": studies["INITIAL SAMPLE SIZE"], "cohort": studies["COHORT"].str.replace(r"\s*\|\s*", ", ", regex=True),
-        "sumstats": studies["FULL SUMMARY STATISTICS"] == "yes", "location": studies["SUMMARY STATS LOCATION"]}).set_index("id")
+        "sumstats": studies["FULL SUMMARY STATISTICS"] == "yes", "location": studies["SUMMARY STATS LOCATION"],
+        "mapped": studies["MAPPED_TRAIT"], "efo": studies["MAPPED_TRAIT_URI"].str.replace(r"[^,\s]*/", "", regex=True)}).set_index("id")
     table["n"] = pd.to_numeric(stage["NUMBER OF INDIVDUALS"], errors="coerce").groupby(stage["STUDY ACCESSION"]).sum().reindex(table.index).fillna(0).astype(int)
     table["ancestry"] = groups.groupby("STUDY ACCESSION")["group"].agg(lambda g: ", ".join(sorted(set(g)))).reindex(table.index).fillna("")
     return table

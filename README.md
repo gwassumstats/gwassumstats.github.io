@@ -31,6 +31,8 @@ with the lab's passphrase to see where they are. It costs $0.
 | `consortia.tsv` | A group that PubMed names as author → the short name it is cited by | By hand |
 | `names.tsv` | A study's ID → its short name, and how the name was made | `python -m names`, then by hand |
 | `abbreviations.tsv` | A phrase of a trait name → what stands for it in a short name | By hand |
+| `traits.tsv` | A study's ID → its complex trait, the EFO term that fits, a broad category, and how they were found | `python -m traits`, then by hand |
+| `trait_aliases.tsv`, `categories.tsv` | Traits named by hand, with the label of their EFO term; the rule that gives a trait its category | By hand |
 | `metrics.tsv` | What was measured of each file: rows, SNPs listed twice, HapMap3 SNPs, N, Z, mean χ² | `python -m qc.scan` |
 | `checks.toml` | The thresholds of the quality checks | By hand |
 | `labels.tsv` | A study whose trait name in the release a person found wrong → what its file holds, and how that is known | By hand |
@@ -68,6 +70,7 @@ files themselves are protected by O2.
    export SUMSTATS_RELEASE=<release folder>
    uv run python -m papers    # the papers of new references, from PubMed: data/references.tsv, data/papers.json
    uv run python -m names     # short names for new studies: data/names.tsv
+   uv run python -m traits    # the trait, EFO term and category of new studies: data/traits.tsv
    SUMSTATS_PASSPHRASE=... uv run python -m build
    ```
 
@@ -120,6 +123,7 @@ Without the two variables, the tests that need them are skipped. Run with both b
 | `build/` | The build: `release.py` reads a release folder, `merge.py` adds what `data/` holds, `crypt.py` encrypts the paths |
 | `papers/` | Finds each study's paper in PubMed (`python -m papers`); `cite.py`: how a paper is cited, its BibTeX entry |
 | `names/` | Drafts the short names (`python -m names`) |
+| `traits/` | Drafts each study's complex trait, EFO term and category (`python -m traits`) |
 | `qc/` | Quality checks: `scan.py` measures the files on Slurm, `checks.py` judges each study, `labels.py` checks its label |
 | `candidates/` | Finds candidates for the next release in the GWAS Catalog, and backtests the rule (`python -m candidates`) |
 | `data/` | What the repository adds to a release: papers and short names, reviewable |

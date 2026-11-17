@@ -76,7 +76,7 @@ def main():
            "backtest": backtest(studies, taken, since, until, rule)}
     (DATA / "candidates.json").write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     known = studies.loc[have.intersection(studies.index)]
-    known = known.assign(sex=catalog.sexes(known, args.cache / "meta"))[["pmid", "author", "published", "journal", "n", "ancestry", "sex", "trait", "sample", "cohort", "title"]]
+    known = known.assign(sex=catalog.sexes(known, args.cache / "meta"))[["pmid", "author", "published", "journal", "n", "ancestry", "sex", "trait", "mapped", "efo", "sample", "cohort", "title"]]
     known.rename_axis("id").to_csv(DATA / "catalog.tsv", sep="\t")
     test = out["backtest"]
     print(f"Catalog fetched {fetched}: {len(studies):,} studies, published to {out['catalog']['published_to']}, added to {out['catalog']['added_to']}")

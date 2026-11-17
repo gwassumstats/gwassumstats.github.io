@@ -59,6 +59,8 @@ their rule. Open: fixes to the studies that the checks flag wait for the owner (
 - *Label check:* the part of QC that compares a study's label (its trait name in the release) with its genetic
   correlations: a *twin* is a study with rg of 0.95 or more; a label is *confirmed* when a study of the same label
   agrees. It flags, with the best-matching studies as evidence; it never relabels.
+- *Trait:* the complex trait a study is of (`data/traits.tsv`): one per study, shared by studies of the trait
+  whatever their paper, ancestry, sex or adjustment; with the EFO term that fits, if one does, and a broad *category*.
 - *Candidate:* a GWAS of the GWAS Catalog with public sumstats, added after the last release's *window* (the days
   of publication it took: 2024/03/01 to 2026/08/26 for 2026), that passes the *rule* of `data/candidates.toml`.
 - *Backtest:* the rule applied to the window of the last release, against the studies that release added: what it

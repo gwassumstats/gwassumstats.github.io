@@ -1,0 +1,22 @@
+pattern	category
+# A trait's broad category: the first pattern, a regular expression, that its name or the GWAS Catalog's parent term
+# of its EFO term contains (traits/). Names first, the most telling; then the Catalog's parent terms.
+schizophren|bipolar|depress|neurotic|attention deficit|adhd|autis|anorexia|tourette|mood|mania|psychosis|worry|well.being|mental illness|cannabis|alcohol use	psychiatric
+alzheimer|parkinson|epilep|multiple sclerosis|myasthenia|aging	neurological and aging
+cortex|cortical|nucleus|putamen|thalamus|amygdala|pallid|accumbens|caudate|brainstem|diffusivity|anisotropy|connectivity	brain imaging
+smok|cigar|drink|sleep|insomnia|snoring|chronotype|morning|education|intelligence|reasoning|reaction time|risk tolerance|physical activity|opioid|analgesic|medication use|wheat|age of smoking	behaviour and cognition
+menarche|menopause|infertility|ovary|endometri|preeclampsia|menstrual|fibroid|birth|children|delivery|testosterone|estradiol|follicle|shbg|hypogonadism|gestational	reproductive
+cancer|carcinoma|neoplasm|Cancer	cancer
+asthma|rhinosinusitis|copd|pulmonary|fev1|vital capacity|expiratory|lung|pneumonia|respiratory	respiratory
+glomerular|creatinine|cystatin|urea|urate|gout|kidney volume	renal
+gastro|diverticul|appendicitis|dental|cirrhosis|hernia	digestive
+height|body mass|bmi|weight|waist|fat|adipose|lean|impedance|basal metabolic|grip	anthropometric
+blood pressure|arterial pressure|pulse|hypertens|coronary|heart|atrial|stroke|aortic|aneurysm|thrombo|varicose|cardiovascular|retinal|raynaud	cardiovascular
+cholesterol|lipoprotein|triglycerid|ldl|hdl|apolipoprotein|glucose|hba1c|glycated|diabetes|metabolic syndrome|igf|blood sugar|Lipid or lipoprotein|Metabolic disorder	metabolic
+hemoglobin|haemoglobin|hematocrit|platelet|plateletcrit|reticulocyte|corpuscular|red blood|white blood|basophil|eosinophil|neutrophil|lymphocyte|monocyte|sphered|red cell|chip|telomere|Hematological	blood
+crohn|colitis|inflammatory bowel|celiac|biliary|lupus|rheumatoid|psoriasis|eczema|allerg|auto immune|sarcoidosis|type 1 diabetes|thyroid|lyme|covid|Immune system disorder|Inflammatory measurement	immune
+bilirubin|aminotransferase|phosphatase|glutamyl|albumin|protein|calcium|phosphate|vitamin d|liver|pancreas|spleen|thyroxine|Liver enzyme	biochemistry
+osteoarthritis|replacement|bone|heel|pain	musculoskeletal
+glaucoma|myopia|ocular|spherical|refractive	eye
+hair|balding|skin|tanning|sunburn|acne|dermatolog	skin and hair
+cleft|tonsil|operation|delivery	other
