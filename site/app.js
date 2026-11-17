@@ -3,13 +3,14 @@
 // A study is called by its short name (d.name) everywhere; its ID in the release shows on its page and in exports.
 
 const TITLE = "GWAS Sumstats";
-const TABS = { sumstats: "", h2: "Heritability", rg: "Genetic correlation", candidates: "Candidates", notes: "Release notes", about: "About" };  // tab → its page title
+const TABS = { sumstats: "", h2: "Heritability", rg: "Genetic correlation", traits: "Traits", candidates: "Candidates", notes: "Release notes", about: "About" };  // tab → its page title
 const STRONG_Z = 3;  // a genetic correlation is listed among a study's strongest if its |z| is at least this
 const TOP = 10;      // the strongest shown before "show all"
 const PANEL_MAX = Math.sqrt(0.1);  // a panel's heatmap: its colours end at the panels' bound, rg² = 0.1
 const PUBMED = "https://pubmed.ncbi.nlm.nih.gov/", DOI = "https://doi.org/";  // where a paper's links lead
 const ISSUES = "https://github.com/gwassumstats/gwassumstats.github.io/issues/new";  // where a problem is reported
 const CATALOG = "https://www.ebi.ac.uk/gwas/studies/";  // where the GWAS Catalog shows a study
+const TERM = "https://www.ebi.ac.uk/ols4/ontologies/efo/classes?short_form=";  // where a term of the Experimental Factor Ontology is shown
 const QC = ["pass", "warn", "fail"];  // what the quality checks say of a study, the best first
 const $ = (id) => document.getElementById(id);
 const el = (tag, cls, text) => Object.assign(document.createElement(tag), { className: cls || "", textContent: text ?? "" });
@@ -22,6 +23,7 @@ const svg = (tag, attrs = {}) => {
 const state = {
   loaded: false, studies: [], byId: new Map(), release: null,
   papers: {},         // PMID → a paper's label, "Speliotes et al. 2010 Nat Genet", and the day it was published
+  traits: {},         // trait → [the EFO term that fits, or "", and its category]; a study is of the trait d.of
   view: "sumstats",   // a tab, or "study": the page of state.study
   study: null,
   filter: { q: "", anc: "", qc: "", z6: false, signed: false, panel: false, ticked: false },  // of the studies under "sumstats" and "heritability"
@@ -743,7 +745,9 @@ async function renderStudy() {
   if (d.cite) papers().then((all) => { if (state.study === d) cited.replaceChildren(...d.cite.map((pmid) => citation(pmid, all[pmid]))); }, () => {});  // the labels stay if it fails
   ticking.append(tickBox(d), " ticked for export");
   fields.append(
-    field("ID", ...parts(d.id)), field("Release name", d.trait), field("Ancestry", d.anc), field("N", int(d.n)),
+    field("ID", ...parts(d.id)), field("Release name", d.trait),
+    field("Trait", action(d.of, () => { $("traits-q").value = d.of; go({ tab: "traits" }); }), ` (${state.traits[d.of][1]}${term(d.of).length ? "; " : ""}`, ...term(d.of), ")"),
+    field("Ancestry", d.anc), field("N", int(d.n)),
     field("M", d.m_rg != null && d.m_rg !== d.m ? `${int(d.m)} SNPs; ${int(d.m_rg)} without the strand-ambiguous ones, for rg` : `${int(d.m)} SNPs`),
     field("Release", d.origin), field("Reference", cited),
     ...(httpUrl(d.catalog) ? [field("GWAS Catalog", outside(d.catalog, d.id))] : []),
@@ -836,6 +840,26 @@ async function renderCandidates() {
   }));
 }
 
+// ---------------------------------------------------------------- the studies by trait
+
+// A trait's EFO term, linked to where the ontology shows it; nothing for a trait without one
+const term = (trait) => (state.traits[trait][0] ? [outside(`${TERM}${state.traits[trait][0]}`, state.traits[trait][0])] : []);
+
+// Every trait with its category, its term and its studies (data/traits.tsv); the search narrows them
+function renderTraits() {
+  const groups = new Map(), ancestries = state.release.ancestries, sought = words($("traits-q").value);
+  for (const d of state.studies) groups.set(d.of, [...(groups.get(d.of) ?? []), d]);
+  const all = [...groups].map(([trait, studies]) => ({ trait, studies, category: state.traits[trait][1], text: [trait, ...state.traits[trait], ...studies.map((d) => d.name)].join("\n").toLowerCase() }));
+  const kept = all.filter((t) => sought.every((w) => t.text.includes(w))).sort((a, b) => plainly(a.category, b.category) || compare(a.trait, b.trait));
+  const having = (anc) => all.filter((t) => t.studies.some((d) => d.anc === anc)).length;
+  $("traits-lead").textContent = `The ${int(state.studies.length)} studies are of ${howMany(all.length, "trait")}: ${ancestries.map((anc) => `${int(having(anc))} have a study of ${anc} ancestry`).join(", ")}. `
+    + `${int(state.release.traits.efo)} have a term of the Experimental Factor Ontology, as the GWAS Catalog uses it. A trait is the same whatever the paper, the ancestry, the sex or the adjustment of its studies.`;
+  $("traits-none").hidden = kept.length > 0;
+  $("traits-list").hidden = !kept.length;
+  grid($("traits-list"), ["Trait", "Category", "Term", ...ancestries, "Studies"],
+    kept.map((t) => [t.trait, t.category, term(t.trait).length ? term(t.trait) : "–", ...ancestries.map((anc) => t.studies.filter((d) => d.anc === anc).length), t.studies.flatMap((d, k) => [k ? ", " : "", studyLink(d)])]));
+}
+
 // ---------------------------------------------------------------- the bar, the tabs, the address
 
 function renderBar() {
@@ -867,6 +891,7 @@ function render() {
   if (!state.loaded) return;
   if (state.view === "sumstats" || state.view === "h2") renderList();
   else if (state.view === "rg") renderRg();
+  else if (state.view === "traits") renderTraits();
   else if (state.view === "candidates") renderCandidates();
   else if (state.view === "study") renderStudy();
   renderPrivate();
@@ -912,11 +937,12 @@ function start(data) {
   state.release = data.release;
   state.studies = data.studies;
   state.papers = data.papers;
+  state.traits = data.traits;
   for (const d of data.studies) {
     d.label = d.cite ? state.papers[d.cite[0]].label : d.ref;  // its paper, as the table lists it
     d.published = d.cite ? state.papers[d.cite[0]].published : "";  // and the day that paper was published, by which the table sorts it
     d.rank = QC.indexOf(d.qc);  // the worst sorts first
-    d.text = [d.name, d.id, d.trait, d.origin, d.ref, ...(d.cite ?? []).map((pmid) => state.papers[pmid].label)].join("\n").toLowerCase();  // what the search reads
+    d.text = [d.name, d.id, d.trait, d.of, ...state.traits[d.of], d.origin, d.ref, ...(d.cite ?? []).map((pmid) => state.papers[pmid].label)].join("\n").toLowerCase();  // what the search reads
     state.byId.set(d.id, d);
   }
   state.loaded = true;
@@ -940,6 +966,8 @@ function listen() {
   $("q").addEventListener("input", () => { f.q = $("q").value; renderList(); });
   for (const name of ["anc", "qc"]) $(`f-${name}`).addEventListener("change", () => { f[name] = $(`f-${name}`).value; renderList(); });
   for (const name of ["z6", "signed", "panel", "ticked"]) $(`f-${name}`).addEventListener("change", () => { f[name] = $(`f-${name}`).checked; renderList(); });
+
+  $("traits-q").addEventListener("input", () => { if (state.view === "traits") renderTraits(); });
 
   $("pair").addEventListener("submit", (event) => event.preventDefault());
   const signed = () => state.studies.filter((d) => d.cross);

@@ -28,7 +28,7 @@ from papers import cite
 from qc import labels
 
 SITE_DATA = json.loads((DATA / "studies.json").read_text())
-STUDIES, RELEASE = SITE_DATA["studies"], SITE_DATA["release"]
+STUDIES, RELEASE, TRAITS = SITE_DATA["studies"], SITE_DATA["release"], SITE_DATA["traits"]
 BY_ID = {d["id"]: d for d in STUDIES}
 PAPERS = json.loads((DATA / "papers.json").read_text())
 COLUMNS = {"rg": "genetic_correlation", "se": "genetic_correlation_se", "z": "genetic_correlation_z", "p": "genetic_correlation_p",
@@ -341,6 +341,12 @@ def test_a_row_is_a_study():
     assert 'q.set("study", q.get("dataset"))' in script  # the old address still opens the study
 
 
+def test_every_study_is_of_a_trait_of_the_table():
+    rows = {row["id"]: row for row in cite.table(merge.DATA / "traits.tsv")}
+    assert all(d["of"] == rows[d["id"]]["trait"] and TRAITS[d["of"]] == [rows[d["id"]]["efo"], rows[d["id"]]["category"]] for d in STUDIES)
+    assert set(TRAITS) == {d["of"] for d in STUDIES} and RELEASE["traits"] == {"all": len(TRAITS), "efo": sum(bool(term) for term, _ in TRAITS.values())} == {"all": 334, "efo": 316}
+
+
 def test_the_page_loads_nothing_from_elsewhere():
     """The passphrase is typed into this page: no script, style or request of another site."""
     html, script, style = ((SITE / name).read_text() for name in ("index.html", "app.js", "style.css"))
@@ -348,5 +354,5 @@ def test_the_page_loads_nothing_from_elsewhere():
     loaded = re.findall(r'<(?:script|link|img|iframe|source)\b[^>]*?\b(?:src|href)="([^"]+)"', html)
     assert len(loaded) == 4 and not [url for url in loaded if re.match(r"(?:[a-z]+:)?//", url)]  # the icon (data:), the style, the inventory, the script
     assert re.findall(r"https?://[\w./-]+", script) == ["https://pubmed.ncbi.nlm.nih.gov/", "https://doi.org/", "https://github.com/gwassumstats/gwassumstats.github.io/issues/new", "https://www.ebi.ac.uk/gwas/studies/",
-            "http://www.w3.org/2000/svg"]  # four links and a name: no request
+            "https://www.ebi.ac.uk/ols4/ontologies/efo/classes", "http://www.w3.org/2000/svg"]  # five links and a name: no request
     assert "url(" not in style and "@import" not in style and " style=" not in html

@@ -31,7 +31,7 @@ from build import crypt  # noqa: E402
 PASSPHRASE = os.environ.get("SUMSTATS_PASSPHRASE") or sys.exit("set SUMSTATS_PASSPHRASE: the check logs in")
 SHOTS = os.environ.get("SITE_CHECK_SHOTS")
 DATA = json.loads((SITE / "data" / "studies.json").read_text())
-STUDIES, RELEASE, LABELS = DATA["studies"], DATA["release"], DATA["papers"]
+STUDIES, RELEASE, LABELS, TRAITS = DATA["studies"], DATA["release"], DATA["papers"], DATA["traits"]
 BY_ID = {d["id"]: d for d in STUDIES}
 PAPERS = json.loads((SITE / "data" / "papers.json").read_text())
 CANDIDATES = json.loads((SITE / "data" / "candidates.json").read_text())
@@ -113,8 +113,9 @@ def said(finding):
 
 
 def text(d):
-    """What the search reads of a study: its short name, its ID and name in the release, its release, its paper."""
-    return "\n".join([d["name"], d["id"], d["trait"], d["origin"], d["ref"], *(LABELS[pmid]["label"] for pmid in d.get("cite", []))]).lower()
+    """What the search reads of a study: its short name, its ID and name in the release, its trait with its term and
+    category, its release, its paper."""
+    return "\n".join([d["name"], d["id"], d["trait"], d["of"], *TRAITS[d["of"]], d["origin"], d["ref"], *(LABELS[pmid]["label"] for pmid in d.get("cite", []))]).lower()
 
 
 def table_of(studies, paths):
@@ -184,7 +185,7 @@ def run(pw, url, name, **context):
         page.fill("#q", sought)
         found = [s for s in STUDIES if all(w in text(s) for w in sought.lower().split())]
         ok &= 0 < len(found) < 602 and bodies("sumstats-table").count() == len(found) and count() == f"{len(found)} of 602 studies"
-    check(f"[{name}] the search finds every word, in short name, ID, name in the release, release or reference", ok, count)
+    check(f"[{name}] the search finds every word, in short name, ID, name in the release, trait, release or reference", ok, count)
     page.fill("#q", "")
     page.select_option("#f-anc", "EAS")
     eas = [d for d in STUDIES if d["anc"] == "EAS"]
@@ -519,6 +520,35 @@ def run(pw, url, name, **context):
     check(f"[{name}] what the rule finds beyond the release: counted, and the papers listed on demand",
           f"{test['beyond']['studies']} studies that the release did not add" in page.inner_text("#cand-beyond") and page.locator("#cand-more li").count() == len(test["beyond"]["new_papers"])
           and page.locator("#cand-more").is_visible() and page.inner_text("#cand-beyond a") == "hide the papers", lambda: page.inner_text("#cand-beyond"))
+    # the studies by trait
+    show("?tab=traits", "#traits-list tbody tr")
+    of = {}
+    for study in STUDIES:
+        of.setdefault(study["of"], []).append(study)
+    listed = sorted(of, key=lambda trait: (TRAITS[trait][1], trait.lower()))
+    row = lambda trait: [trait, TRAITS[trait][1], TRAITS[trait][0] or "–", *(str(sum(study["anc"] == anc for study in of[trait])) for anc in RELEASE["ancestries"]), ", ".join(study["name"] for study in of[trait])]
+    rows, lead = table("traits-list"), page.inner_text("#traits-lead")
+    check(f"[{name}] traits: every trait with its category, its term and its studies by their short names, in the order of the categories",
+          [r[:2] for r in rows] == [[trait, TRAITS[trait][1]] for trait in listed] and rows[0] == row(listed[0]) and row("Body mass index") in rows and len(rows) == RELEASE["traits"]["all"] == 334
+          and lead.startswith("The 602 studies are of 334 traits: 326 have a study of EUR ancestry, 49 have a study of EAS ancestry. 316 have a term") and page.title() == "Traits · GWAS Sumstats"
+          and page.locator("#traits-list a", has_text="EFO_0004340").get_attribute("href") == "https://www.ebi.ac.uk/ols4/ontologies/efo/classes?short_form=EFO_0004340", lambda: (rows[:2], lead))
+    page.fill("#traits-q", "sleep duration")
+    check(f"[{name}] the search narrows the traits by their names, terms, categories and studies",
+          [r[0] for r in table("traits-list")] == sorted((trait for trait in of if all(w in "\n".join([trait, *TRAITS[trait], *(study["name"] for study in of[trait])]).lower() for w in ("sleep", "duration"))),
+                                                         key=lambda trait: (TRAITS[trait][1], trait.lower())) and 0 < page.locator("#traits-list tbody tr").count() < 10, lambda: table("traits-list"))
+    shot("traits")
+    page.fill("#traits-q", "no such trait")
+    check(f"[{name}] a search that finds nothing says so", page.locator("#traits-none").is_visible() and page.locator("#traits-list").is_hidden())
+    page.fill("#traits-q", "")
+    page.locator("#traits-list a", has_text=of["Body mass index"][0]["name"]).first.click()
+    expect(page.locator("#view-study .fields")).to_be_visible()
+    naming = " ".join(page.locator("#view-study .row", has_text="Trait").first.inner_text().split())
+    check(f"[{name}] a study's page names its trait, with its category and its term, and leads back to the trait's row",
+          naming == "Trait Body mass index (anthropometric; EFO_0004340)" and page.url.endswith(f"?study={of['Body mass index'][0]['id']}"), lambda: naming)
+    page.locator("#view-study .row", has_text="Trait").first.locator("a", has_text="Body mass index").click()
+    expect(page.locator("#traits-list tbody tr").first).to_be_visible()
+    check(f"[{name}] and from there the traits are searched for it", page.input_value("#traits-q") == "Body mass index" and "Body mass index" in [r[0] for r in table("traits-list")] and page.url.endswith("?tab=traits"),
+          lambda: page.input_value("#traits-q"))
     unsigned = next(d for d in STUDIES if not d["cross"])
     show(f"?study={unsigned['id']}", "#view-study .section-head")
     check(f"[{name}] an unsigned study's page says it has no genetic correlations", "unsigned" in page.inner_text("#view-study .section-head"))

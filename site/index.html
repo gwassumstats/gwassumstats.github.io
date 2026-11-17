@@ -14,7 +14,7 @@
 <body>
 <header class="bar">
   <h1 class="brand"><a class="home" href="./"><svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><path d="M2.5 1.5h22.5l4.5 4.5v24.5H2.5z" fill="#fff" stroke="#10204f" stroke-width="1.4" stroke-linejoin="round"/><path d="M25.0 1.5V6.0H29.5" fill="#c9d6f7" stroke="#10204f" stroke-width="1.4" stroke-linejoin="round"/><g font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="11" fill="#10204f" text-anchor="middle"><text x="16.0" y="16.2" textLength="22" lengthAdjust="spacingAndGlyphs">Sum</text><text x="16.0" y="27.2" textLength="20" lengthAdjust="spacingAndGlyphs">Stat</text></g></svg><b>GWAS Sumstats</b></a></h1>
-  <nav class="links"><a href="./" data-tab="sumstats">sumstats</a> | <a href="?tab=h2" data-tab="h2">heritability</a> | <a href="?tab=rg" data-tab="rg">genetic correlation</a> | <a href="?tab=candidates" data-tab="candidates">candidates</a> | <a href="?tab=notes" data-tab="notes">release notes</a> | <a href="?tab=about" data-tab="about">about</a></nav>
+  <nav class="links"><a href="./" data-tab="sumstats">sumstats</a> | <a href="?tab=h2" data-tab="h2">heritability</a> | <a href="?tab=rg" data-tab="rg">genetic correlation</a> | <a href="?tab=traits" data-tab="traits">traits</a> | <a href="?tab=candidates" data-tab="candidates">candidates</a> | <a href="?tab=notes" data-tab="notes">release notes</a> | <a href="?tab=about" data-tab="about">about</a></nav>
   <span class="account"><a href="#" id="login-open" aria-expanded="false" aria-controls="login">login</a></span>
 </header>
 
@@ -76,6 +76,15 @@
   </section>
 
   <section id="view-study" class="page" hidden></section>
+
+  <!-- the studies by the trait they are of: filled from data/studies.json -->
+  <section id="view-traits" class="prose" hidden>
+    <h2>Traits</h2>
+    <p id="traits-lead">The studies, by the trait they are of.</p>
+    <p><input id="traits-q" type="search" placeholder="search traits, terms and studies" aria-label="Search the traits" autocomplete="off"></p>
+    <p id="traits-none" hidden>No trait matches.</p>
+    <table id="traits-list"></table>
+  </section>
 
   <!-- the numbers and the lists come from data/candidates.json, when the tab is first opened -->
   <section id="view-candidates" class="prose" hidden>
@@ -173,6 +182,12 @@
     abbreviated, as in <span data-study="PASS_BMI1">Speliotes_2010_BMI</span>. <code>EAS</code> marks an East Asian study;
     <code>Female</code> or <code>Male</code>, a study of women or of men only, of a trait that both have. The name is only a label here: a
     study's page gives its ID in the release, which names its file, and its name in the release. The search finds all three.</p>
+
+    <h2>What trait is a study of?</h2>
+    <p>Each study is of one trait, and studies of the same trait share it whatever their paper, ancestry, sex or adjustment: the <a href="?tab=traits" data-tab="traits">traits</a> tab lists
+      the <span data-v="traits.all">334</span> traits with their studies. A trait has a broad category and, for <span data-v="traits.efo">316</span> of them, a term of the Experimental Factor
+      Ontology: the one the GWAS Catalog uses for traits of that name. The others have none that fits: an interaction, a contrast of two disorders, a procedure code. The trait is that of what
+      a study's file holds, where its name in the release says otherwise.</p>
 
     <h2>What is in a file?</h2>
     <p>One row per SNP, tab-separated, in the <code>.sumstats</code> format of LDSC. Only HapMap3 SNPs.</p>

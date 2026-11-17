@@ -53,14 +53,16 @@ def build(release: Path, out: Path, passphrase: str, iterations: int = crypt.ITE
     rg = {anc: rel.correlations(release, d, anc) for anc in d["anc"].unique()}
     cited, papers = merge.citations(d, data)
     judged = merge.quality(d, rg, data)
-    public = d.assign(name=merge.names(d, data)).join(judged[["qc", "hm3", "chi2", "lambda"]])[["name", *rel.PUBLIC, "qc", "hm3", "chi2", "lambda"]].reset_index()
+    of, traits = merge.traits(d, data)
+    public = d.assign(name=merge.names(d, data), of=of).join(judged[["qc", "hm3", "chi2", "lambda"]])[["name", "of", *rel.PUBLIC, "qc", "hm3", "chi2", "lambda"]].reset_index()
     records = public.astype(object).where(public.notna(), None).to_dict("records")
     records = [{k: v for k, v in r.items() if v is not None} | ({"cite": pmids} if pmids else {}) | ({"notes": notes} if notes else {})
                for r, pmids, notes in zip(records, cited, judged["notes"])]
-    summary = rel.summary(release, d, rg) | {"qc": {level: int((judged["qc"] == level).sum()) for level in ("pass", "warn", "fail")}}
+    summary = rel.summary(release, d, rg) | {"qc": {level: int((judged["qc"] == level).sum()) for level in ("pass", "warn", "fail")},
+                                            "traits": {"all": len(traits), "efo": sum(bool(efo) for efo, _ in traits.values())}}
     lines = lambda items: ",\n".join(items)  # a study, a paper a line, for readable diffs
     cited_as = {pmid: {"label": p["label"], "published": p["published"]} for pmid, p in papers.items()}  # what the table of studies needs of a paper
-    texts = {"studies.json": f'{{\n"release":{dumps(summary)},\n"papers":{dumps(cited_as)},\n"studies":[\n'
+    texts = {"studies.json": f'{{\n"release":{dumps(summary)},\n"papers":{dumps(cited_as)},\n"traits":{{\n' + lines(f"{dumps(trait)}:{dumps(term)}" for trait, term in traits.items()) + '\n},\n"studies":[\n'
                              + lines(map(dumps, records)) + "\n]}\n",
              "papers.json": "{\n" + lines(f"{dumps(pmid)}:{dumps(paper)}" for pmid, paper in papers.items()) + "\n}\n",
              "candidates.json": dumps(json.loads((data / "candidates.json").read_text(encoding="utf-8"))) + "\n"}

@@ -1,5 +1,5 @@
-"""What the repository adds to a release, from data/: the paper of each study, its short name, and what the quality
-checks say of it."""
+"""What the repository adds to a release, from data/: the paper of each study, its short name, the trait it is of,
+and what the quality checks say of it."""
 import json
 import re
 import tomllib
@@ -67,6 +67,17 @@ def names(d: pd.DataFrame, data: Path) -> pd.Series:
     if len(twice):
         raise ValueError(f"data/names.tsv: {twice.iloc[0]} names two studies")
     return named
+
+
+def traits(d: pd.DataFrame, data: Path) -> tuple[pd.Series, dict[str, list[str]]]:
+    """The trait each study is of (data/traits.tsv); and of each trait, by name, the EFO term that fits ("" if none
+    does) and its category. Every study has a trait."""
+    rows = {row["id"]: row for row in cite.table(data / "traits.tsv")}
+    lacking = d.index.difference(list(rows))
+    if len(lacking):
+        raise ValueError(f"data/traits.tsv lacks the trait of {lacking[0]}: run python -m traits")
+    of = pd.Series({study: rows[study]["trait"] for study in d.index}, dtype=object)
+    return of, {rows[study]["trait"]: [rows[study]["efo"], rows[study]["category"]] for study in sorted(d.index, key=lambda study: rows[study]["trait"].lower())}
 
 
 def quality(d: pd.DataFrame, tables: dict, data: Path) -> pd.DataFrame:

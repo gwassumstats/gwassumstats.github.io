@@ -119,6 +119,9 @@ def mini(tmp_path):
     (data / "papers.json").write_text(json.dumps(PAPERS, ensure_ascii=False), encoding="utf-8")
     write(data / "consortia.tsv", ["group", "short"], [["# a comment line", ""], ["The Example Consortium", "TEC"]])
     write(data / "names.tsv", ["id", "name", "how"], NAMES)
+    write(data / "traits.tsv", ["id", "trait", "efo", "category", "how"], [["# the trait each study is of", "", "", "", ""],
+        ["A_unsigned", "Height", "EFO_1", "anthropometric", "by hand"], ["B", "Alzheimer's disease", "MONDO_2", "neurological and aging", "by hand"], ["C", "Trait C", "", "other", "check: no EFO term found"],
+        ["GCST0001", "Trait new", "EFO_4", "other", "by hand"], ["D_EAS", "Trait D", "EFO_5", "other", "by hand"], ["GCST0002", "Trait E", "EFO_6", "other", "by hand"], ["GCST0003", "Trait D", "EFO_5", "other", "by hand"]])
     write(data / "metrics.tsv", MEASURED, [  # what a scan of the files would have measured: see test_the_checks_judge_every_study
         measured("A_unsigned", 900, z_positive=1.0), measured("B", 910, n=2000), measured("C", 920, n=3000, in_hm3=400),
         measured("GCST0001", 930, n=4000), measured("GCST0001", 926, "rg", n=4000), measured("D_EAS", 940, n=5000),
