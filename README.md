@@ -38,6 +38,7 @@ with the lab's passphrase to see where they are. It costs $0.
 | `labels.tsv` | A study whose trait name in the release a person found wrong → what its file holds, and how that is known | By hand |
 | `findings.tsv` | What else a person found of a study, shown and counted like a finding of the checks | By hand |
 | `corrections.tsv` | What is corrected of a study, and why: a source to take it from again, a sign to turn, rows to drop, an N, a label | By hand |
+| `corrected_h2.tsv`, `corrected_rg.tsv` | What LDSC finds on the corrected copies: h², and rg of each with every other study of its ancestry | `python -m corrections.ldsc` |
 | `candidates.toml` | The rule that finds candidates in the GWAS Catalog, and the window of the last release | By hand |
 | `candidates.json` | The candidates, the papers set aside, and the rule's backtest | `python -m candidates` |
 | `catalog.tsv` | The GWAS Catalog's record of each study it knows: paper, N, ancestry, sex, cohorts | `python -m candidates` |
@@ -66,7 +67,14 @@ and what changed. That folder may be purged: a run writes everything again.
 Catalog, or a URL. The file is downloaded, checked against the checksum its folder states, and formatted by the rules
 of the release's own scripts (`sources/format.py`): SNP, A1, A2, N and Z on the HapMap3 SNPs, A1 the effect allele.
 `python -m sources ACCESSION ...` checks the rules: it makes studies of the release again from the Catalog and
-compares them with the release's files, byte for byte.
+compares them with the release's files, byte for byte. Nine of the 2026 additions, one of each layout of columns the
+release met, were made again on 2026-11-16: every one is the release's file.
+
+**LDSC on the corrected copies** (`corrections/ldsc.py`, `corrections/panel.py`). `python -m corrections.ldsc` runs
+S-LDSC and LDSC on each corrected copy with the release's options and reference files, against the file of every
+other study of its ancestry, and writes what the logs say to `data/corrected_h2.tsv` and `data/corrected_rg.tsv`.
+`corrections/panel.py` is the release's rule for its panels of non-redundant traits, read off its script: from the
+release's own tables it gives the release's two panels, study for study.
 
 **Short names.** A study is called `FirstAuthor_Year_Trait` (`Speliotes_2010_BMI`) everywhere on the site: who and
 which year its paper is cited by, and its trait, abbreviated. The name is a label only. A study's ID in the release
@@ -117,6 +125,12 @@ files themselves are protected by O2.
    ```
 
    The two files are those the release formatted with; they are needed for the studies taken from their source.
+   Then LDSC on the copies, as the release ran it (a Slurm task for each; the settings file, kept outside the
+   repository, names LDSC and its reference files: see `corrections/ldsc.py`):
+
+   ```bash
+   SUMSTATS_CORRECTIONS=<the same folder> uv run --group qc python -m corrections.ldsc --settings <file>
+   ```
 
 6. **Look for candidates**, from any machine: `uv run python -m candidates --refresh` downloads the GWAS Catalog's
    tables (to `.cache/`, not committed) and writes `data/candidates.json`, `data/catalog.tsv` and

@@ -125,6 +125,8 @@ def test_the_checks_judge_every_study(mini, tmp_path):
     (measured("B", 910, n=2000, bad_alleles=2), ["fail", "2 SNPs with alleles that are not two of A, C, G, T"]),
     (measured("B", 910, n=2000, not_rs=7), ["warn", "7 SNPs without an rsID"]),
     (measured("B", 911, n=2000), ["warn", "911 SNPs in the file; the inventory says 910"]),
+    (measured("B", 910, n=2000, as_list=0, list_reversed=909), ["warn", "its alleles are those of the HapMap3 list, the other way round, at 100% of its SNPs: the mark of a formatting that set the alleles "
+                                                                       "without regard to the effect allele. Where such a file was compared with its source, its Z went with its alleles at half of the SNPs only"]),
     (measured("B", 910, n=2000, in_hm3=299), ["fail", "only 299 of the 1,000 HapMap3 SNPs that LDSC regresses on: too few for LDSC"]),
     (measured("B", 910, n=2000, chi2_mean=1.01), ["warn", "mean χ² 1.01: no signal above chance"]),
     (measured("B", 910, n=2000, chi2_mean=0.8), ["warn", "mean χ² 0.80: no signal above chance; the statistics are deflated"]),
@@ -484,7 +486,9 @@ def test_a_file_is_measured_snp_by_snp(tmp_path):
     path = tmp_path / "X.sumstats"
     path.write_text("SNP\tA1\tA2\tN\tZ\n" + "".join(f"{row}\n" for row in (
         "rs1\tA\tG\t1000\t2.0", "rs2\tA\tT\t1000\t-1.0", "rs2\tC\tG\t900\t1.0", "rs3\tA\tA\t800\tinf", "chr1:5\tG\tT\t1000\t-3.0", "rs6\tN\tC\t\t0.5")))
-    m = measure(str(path), pd.Index(["rs1", "rs2", "rs8", "rs9"]))
+    alleles = pd.DataFrame({"A1": ["G", "A", "T"], "A2": ["A", "T", "G"]}, index=pd.Index(["rs1", "rs2", "chr1:5"], name="SNP"))
+    m = measure(str(path), pd.Index(["rs1", "rs2", "rs8", "rs9"]), alleles)
+    assert (m["as_list"], m["list_reversed"]) == (1, 2) and "as_list" not in measure(str(path), pd.Index(["rs1"]))  # rs2 once as the list has it; rs1 and chr1:5 the other way round
     assert (m["columns"], m["rows"], m["duplicates"], m["not_rs"], m["in_hm3"], m["hm3"]) == ("SNP A1 A2 N Z", 6, 1, 1, 2, 4)  # rs2, listed twice, counts once
     assert (m["bad_alleles"], m["ambiguous"], m["n_missing"], m["n_median"], m["z_missing"]) == (2, 2, 1, 1000, 1)  # A/A and N/C; A/T and C/G; an infinite Z is counted and left out
     assert m["z_positive"] == 0.6 and m["chi2_mean"] == pytest.approx((4 + 1 + 1 + 9 + 0.25) / 5) and m["lambda_gc"] == pytest.approx(1 / 0.4549364)

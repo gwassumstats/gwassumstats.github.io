@@ -11,12 +11,13 @@ the release's:
   4. N is the file's, SNP by SNP; without one, the N given for the study. It is above 0.
   5. Of several rows of a SNP, the first that passes all of this is kept.
 
-A file may be delimited by tabs or commas, as in the release, or by blanks. A column plays a role by its name, in the
+A file may be delimited by tabs or commas, as in the release, or by blanks, and packed by gzip or zip. A column plays a role by its name, in the
 release's order of preference (ROLES), unless it is named for the role. A row with more fields than the header is
 left out, as in the release; one that ends early is read with its last columns empty, where the release leaves it out.
 """
 import csv
 import gzip
+import zipfile
 from pathlib import Path
 
 import numpy as np
@@ -118,9 +119,13 @@ def formatted(source: Path, alleles: pd.DataFrame, where: pd.DataFrame, n: float
     study, for a file without one, or, if not `own_n`, in place of the file's; `roles`: {role: column}, for a file
     whose columns are not named as ROLES expects."""
     with open(source, "rb") as file:
-        zipped = file.read(2) == b"\x1f\x8b"
-    with (gzip.open if zipped else open)(source, "rt", encoding="utf-8", errors="replace", newline="") as file:
-        first = file.readline().rstrip("\r\n")
+        packed = {b"\x1f\x8b": "gzip", b"PK": "zip"}.get(file.read(2))  # by its first bytes, whatever its name; a zip archive holds the one file
+    if packed == "zip":
+        with zipfile.ZipFile(source) as archive, archive.open(archive.namelist()[0]) as file:
+            first = file.readline().decode("utf-8", "replace").rstrip("\r\n")
+    else:
+        with (gzip.open if packed else open)(source, "rt", encoding="utf-8", errors="replace", newline="") as file:
+            first = file.readline().rstrip("\r\n")
     delimiter = "\t" if "\t" in first else "," if "," in first else r"\s+"
     header = first.split() if delimiter == r"\s+" else next(csv.reader([first], delimiter=delimiter))
     columns = {role: column for role, column in named(header, roles).items() if own_n or role != "n"}
@@ -132,7 +137,7 @@ def formatted(source: Path, alleles: pd.DataFrame, where: pd.DataFrame, n: float
         raise ValueError(f"no N among the columns {', '.join(header)}, and none given for the study")
     kept, counts = [], {}
     for chunk in pd.read_csv(source, sep=delimiter, dtype=str, keep_default_na=False, usecols=list(set(columns.values())), chunksize=CHUNK, on_bad_lines="skip",
-                             encoding_errors="replace", compression="gzip" if zipped else None):
+                             encoding_errors="replace", compression=packed):
         part, counted = rows(chunk, columns, alleles, where, n)
         kept.append(part)
         counts = {key: counts.get(key, 0) + value for key, value in counted.items()}

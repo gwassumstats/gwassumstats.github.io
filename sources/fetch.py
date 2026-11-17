@@ -1,5 +1,6 @@
 """Where the summary statistics of a study are, and their download: a study's folder in the GWAS Catalog, or a URL."""
 import hashlib
+import http.client
 import re
 import time
 import urllib.error
@@ -59,14 +60,22 @@ def located(source: str, file: str = "") -> tuple[str, str]:
 
 def download(url: str, to: Path, md5: str = "") -> dict:
     """Fetches `url` into the file `to`, unless it is there already, and says what it is: its URL, its size and its
-    checksums. A file whose MD5 is not the one stated is an error, and is not kept."""
-    if not to.exists():
+    checksums. A file whose MD5 is not the one stated is an error, and is not kept. A response cut short by the
+    server shows in that checksum, where the folder states one."""
+    for attempt in range(0 if to.exists() else 3):  # a transfer that breaks off is begun again, twice
         to.parent.mkdir(parents=True, exist_ok=True)
         part = to.with_name(to.name + ".part")
-        with urllib.request.urlopen(urllib.request.Request(url, headers=AGENT), timeout=600) as response, part.open("wb") as file:
-            while block := response.read(1 << 22):
-                file.write(block)
-        part.replace(to)
+        try:
+            with urllib.request.urlopen(urllib.request.Request(url, headers=AGENT), timeout=600) as response, part.open("wb") as file:
+                while block := response.read(1 << 22):
+                    file.write(block)
+        except (urllib.error.URLError, TimeoutError, ConnectionError, http.client.HTTPException):
+            if attempt == 2:
+                raise
+            time.sleep(30)
+        else:
+            part.replace(to)
+            break
     sums = hashlib.sha256(), hashlib.md5()
     with to.open("rb") as file:
         while block := file.read(1 << 22):

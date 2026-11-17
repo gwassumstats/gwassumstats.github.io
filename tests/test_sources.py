@@ -1,5 +1,6 @@
 """From a source to the release's format: the rules of the formatting, on made-up files, and where a source is found."""
 import gzip
+import zipfile
 
 import pandas as pd
 import pytest
@@ -60,6 +61,13 @@ def test_a_file_may_be_delimited_by_commas_or_blanks_and_zipped(tmp_path, hapmap
     with gzip.open(tmp_path / "study.out", "wt") as file:  # zipped, whatever its name
         file.write(text)
     assert formatted(tmp_path / "study.out", *hapmap3)[0].values.tolist() == [["rs1", "A", "G", "10", "1.5"]]
+
+
+def test_a_zip_archive_of_one_file_is_read(tmp_path, hapmap3):
+    with zipfile.ZipFile(tmp_path / "study.txt.zip", "w") as archive:
+        archive.writestr("inside.txt", "SNP ALLELE1 ALLELE0 BETA_X SE_X\nrs1 A G 0.3 0.1\n")
+    table, done = formatted(tmp_path / "study.txt.zip", *hapmap3, n=400, roles={"a1": "ALLELE1", "a2": "ALLELE0", "beta": "BETA_X", "se": "SE_X"})
+    assert table.values.tolist() == [["rs1", "A", "G", "400", "3"]] and done["z_from"] == "BETA_X / SE_X"
 
 
 @pytest.mark.parametrize("header, n, roles, problem", [

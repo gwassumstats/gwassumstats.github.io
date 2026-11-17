@@ -6,9 +6,10 @@ import sys
 from pathlib import Path
 
 
-def submitted(name: str, out: Path, account: str | None, function, *arguments, memory: int = 8, minutes: int = 60) -> list:
+def submitted(name: str, out: Path, account: str | None, function, *arguments, memory: int = 8, minutes: int = 60, strict: bool = True) -> list:
     """Runs `function` over `arguments`, a Slurm task each, under the name `name`, and returns the tasks' results. The
-    logs go to submitit-logs/ under `out`, with a record of what was submitted and how it ended."""
+    logs go to submitit-logs/ under `out`, with a record of what was submitted and how it ended. A task that failed
+    raises what it raised, or, if not `strict`, gives None in place of its result."""
     import submitit  # only on O2: the group "qc"
 
     logs = out / "submitit-logs"
@@ -30,4 +31,12 @@ def submitted(name: str, out: Path, account: str | None, function, *arguments, m
     submitit.helpers.monitor_jobs(jobs)
     failed = [job.job_id for job in jobs if job.state != "COMPLETED"]
     note(f"finished: {len(jobs) - len(failed)} of {len(jobs)} tasks completed" + (f"; failed: {', '.join(failed)}" if failed else ""))
-    return [job.result() for job in jobs]  # raises what a task raised
+    results = []
+    for job in jobs:
+        try:
+            results.append(job.result())  # raises what the task raised
+        except Exception:
+            if strict:
+                raise
+            results.append(None)
+    return results

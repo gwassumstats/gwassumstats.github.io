@@ -1,10 +1,11 @@
 """Measures every sumstats file of a release, on Slurm: the per-SNP numbers behind the site's quality checks.
 
-  uv run --group qc python -m qc.scan RELEASE --hm3 EUR='PATTERN' --hm3 EAS='PATTERN' --logs FOLDER [--account NAME]
+  uv run --group qc python -m qc.scan RELEASE --hm3 EUR='PATTERN' --hm3 EAS='PATTERN' --alleles FILE --logs FOLDER [--account NAME]
 
 RELEASE is the release folder (default: $SUMSTATS_RELEASE); its file index says where each study's files are. A
 PATTERN names the LD score weight files of an ancestry, one per chromosome: their SNPs are the HapMap3 SNPs that LDSC
-regresses on. FOLDER takes the Slurm logs, which hold paths: keep it outside the repository. The result,
+regresses on. FILE lists the HapMap3 SNPs with their alleles (SNP, A1, A2), as the release formats to: a file whose
+alleles are the list's at every SNP had them set from it. FOLDER takes the Slurm logs, which hold paths: keep it outside the repository. The result,
 data/metrics.tsv, holds none: a row per file, named by its study's ID.
 """
 import argparse
@@ -24,8 +25,10 @@ MEDIAN_CHI2 = 0.4549364  # of a chi-square with one degree of freedom: lambda GC
 TASKS = 12  # a file takes a second or two: many files a task
 
 
-def measure(path: str, hm3: pd.Index) -> dict:
-    """The numbers of one file: its columns and rows, what is wrong with its SNPs and alleles, its N and its Z."""
+def measure(path: str, hm3: pd.Index, alleles: pd.DataFrame | None = None) -> dict:
+    """The numbers of one file: its columns and rows, what is wrong with its SNPs and alleles, its N and its Z. With
+    `alleles`, the two alleles of the HapMap3 list by SNP: how many of the file's SNPs have them in the list's order
+    (`as_list`), and how many the other way round (`list_reversed`)."""
     table = pd.read_csv(path, sep="\t", dtype={"SNP": str, "A1": str, "A2": str})
     n, z = (pd.to_numeric(table[c], errors="coerce") if c in table else pd.Series(dtype=float) for c in ("N", "Z"))
     z_missing = int((~np.isfinite(z)).sum())
@@ -37,19 +40,24 @@ def measure(path: str, hm3: pd.Index) -> dict:
         a1, a2 = table["A1"].str.upper(), table["A2"].str.upper()
         out["bad_alleles"] = int((~a1.isin(list("ACGT")) | ~a2.isin(list("ACGT")) | (a1 == a2)).sum())
         out["ambiguous"] = int((a1 + a2).isin(["AT", "TA", "CG", "GC"]).sum())  # strand-ambiguous
+        if alleles is not None:
+            listed = alleles.reindex(table["SNP"])
+            out |= {"as_list": int(((a1 == listed["A1"].to_numpy()) & (a2 == listed["A2"].to_numpy())).sum()), "list_reversed": int(((a1 == listed["A2"].to_numpy()) & (a2 == listed["A1"].to_numpy())).sum())}
     return out | {"n_missing": int((~(n > 0)).sum()), "n_min": n.min(), "n_median": n.median(), "n_max": n.max(),
                   "z_missing": z_missing, "z_mean": z.mean(), "z_sd": z.std(), "z_max": z.abs().max(),
                   "z_positive": (z > 0).mean(), "chi2_mean": chi2.mean(), "lambda_gc": chi2.median() / MEDIAN_CHI2}
 
 
-def scan(files: list[tuple[str, str, str, str]], patterns: dict[str, str]) -> list[dict]:
-    """One Slurm task: measures (study ID, "h2" or "rg", ancestry, path) one by one, against its ancestry's HapMap3 SNPs."""
+def scan(files: list[tuple[str, str, str, str]], patterns: dict[str, str], snplist: str = "") -> list[dict]:
+    """One Slurm task: measures (study ID, "h2" or "rg", ancestry, path) one by one, against its ancestry's HapMap3 SNPs
+    and, if `snplist` names it, against the HapMap3 list's alleles."""
+    alleles = pd.read_csv(snplist, sep="\t", dtype=str).drop_duplicates("SNP").set_index("SNP") if snplist else None
     hm3 = {anc: pd.Index(pd.concat(pd.read_csv(path, sep="\t", usecols=["SNP"]) for path in sorted(glob.glob(pattern)))["SNP"])
            for anc, pattern in patterns.items() if anc in {f[2] for f in files}}
     rows = []
     for k, (study, kind, anc, path) in enumerate(files):
         start = time.perf_counter()
-        rows.append({"id": study, "file": kind} | measure(path, hm3[anc]))
+        rows.append({"id": study, "file": kind} | measure(path, hm3[anc], alleles))
         print(f"[{k + 1}/{len(files)}] {study} {kind}: {time.perf_counter() - start:.1f} s", flush=True)
     return rows
 
@@ -68,6 +76,7 @@ def main():
     parser = argparse.ArgumentParser(prog="python -m qc.scan", description="Measures every sumstats file of a release, on Slurm.")
     parser.add_argument("release", nargs="?", default=os.environ.get("SUMSTATS_RELEASE"), help="the release folder (default: $SUMSTATS_RELEASE)")
     parser.add_argument("--hm3", action="append", required=True, metavar="ANCESTRY=PATTERN", help="the LD score weight files of an ancestry")
+    parser.add_argument("--alleles", default="", metavar="FILE", help="the HapMap3 SNPs with their alleles: SNP, A1, A2")
     parser.add_argument("--logs", type=Path, required=True, help="a folder outside the repository, for the Slurm logs")
     parser.add_argument("--account", help="the Slurm account to charge")
     parser.add_argument("--name", default=f"{datetime.date.today():%Y%m%d}_qc_scan", help="the name of the array and of its logs")
@@ -89,7 +98,7 @@ def main():
     executor.update_parameters(name=args.name, slurm_partition="short", cpus_per_task=1, mem_gb=8, timeout_min=60, slurm_srun_args=["--export=ALL"],
                                slurm_additional_parameters={"account": args.account} if args.account else {})
     chunks = [files[k::TASKS] for k in range(TASKS)]
-    jobs = executor.map_array(scan, chunks, [patterns] * TASKS)
+    jobs = executor.map_array(scan, chunks, [patterns] * TASKS, [args.alleles] * TASKS)
 
     def note(text):
         with record.open("a") as log:

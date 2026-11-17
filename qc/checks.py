@@ -38,6 +38,9 @@ def files(studies: pd.DataFrame, metrics: pd.DataFrame, rules: dict):
             continue  # what follows is said once a study, of its file
         if m["rows"] != s["m"]:
             yield study, "warn", f"{m['rows']:,} SNPs in the file; the inventory says {s['m']:,}"
+        if s["signed"] and m.get("list_reversed", 0) > rules["list_reversed"] * m["rows"]:
+            yield study, "warn", (f"its alleles are those of the HapMap3 list, the other way round, at {m['list_reversed'] / m['rows']:.0%} of its SNPs: the mark of a formatting that set the alleles "
+                                  "without regard to the effect allele. Where such a file was compared with its source, its Z went with its alleles at half of the SNPs only")
         if abs(m["n_median"] / s["n"] - 1) > rules["n_within"]:
             yield study, "note", f"the median N of its SNPs is {m['n_median']:,.0f}; the inventory says {s['n']:,}"
         if m["in_hm3"] < rules["min_snps"]:

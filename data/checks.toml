@@ -6,6 +6,7 @@
 min_snps = 200_000        # fail: fewer of the HapMap3 SNPs that LDSC regresses on (LDSC itself warns below this)
 min_coverage = 0.5        # warn: a smaller share of those SNPs
 max_bad = 0.01            # fail: a larger share of rows listed twice, or with a Z that is not a number
+list_reversed = 0.98      # warn: a larger share of a signed file's SNPs has the alleles of the HapMap3 list, the other way round
 n_within = 0.2            # note: the median N of the SNPs differs from the inventory's N by more than this share
 n_of_paper = [0.6, 1.5]   # note: the median N is not within these times any sample the GWAS Catalog records for its paper
 same_n = 0.01             # the largest N of a file is that of a sample if it is within this share of it

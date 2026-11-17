@@ -48,13 +48,14 @@ NAMES = [["A_unsigned", "Smith_2010_Height", "drafted"], ["B", "TEC_2021_Alzheim
          ["GCST0003", "Ito_2024_TraitFEAS", "drafted"]]
 
 
-MEASURED = ["id", "file", "columns", "rows", "duplicates", "not_rs", "in_hm3", "hm3", "bad_alleles", "ambiguous", "n_missing", "n_min", "n_median", "n_max",
+MEASURED = ["id", "file", "columns", "rows", "duplicates", "not_rs", "in_hm3", "hm3", "bad_alleles", "ambiguous", "as_list", "list_reversed", "n_missing", "n_min", "n_median", "n_max",
             "z_missing", "z_mean", "z_sd", "z_max", "z_positive", "chi2_mean", "lambda_gc"]
 RULES = """
 [file]
 min_snps = 300
 min_coverage = 0.5
 max_bad = 0.01
+list_reversed = 0.98
 n_within = 0.2
 n_of_paper = [0.6, 1.5]
 same_n = 0.01
@@ -82,7 +83,7 @@ related = []
 
 def measured(study, rows, kind="h2", n=1000, **other):
     """A row of the made-up metrics.tsv: a file with nothing wrong, but for `other`."""
-    row = {"id": study, "file": kind, "columns": "SNP A1 A2 N Z", "rows": rows, "duplicates": 0, "not_rs": 0, "in_hm3": rows, "hm3": 1000, "bad_alleles": 0, "ambiguous": 0,
+    row = {"id": study, "file": kind, "columns": "SNP A1 A2 N Z", "rows": rows, "duplicates": 0, "not_rs": 0, "in_hm3": rows, "hm3": 1000, "bad_alleles": 0, "ambiguous": 0, "as_list": rows // 2, "list_reversed": rows // 2,
            "n_missing": 0, "n_min": n, "n_median": n, "n_max": n, "z_missing": 0, "z_mean": 0.0, "z_sd": 1.1, "z_max": 9.0, "z_positive": 0.5, "chi2_mean": 1.3, "lambda_gc": 1.2}
     return [(row | other)[column] for column in MEASURED]
 

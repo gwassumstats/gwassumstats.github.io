@@ -14,8 +14,10 @@ Under the folder named by $SUMSTATS_CORRECTIONS the command writes:
   sources/<SOURCE>/        the files as downloaded, kept for a later run
   corrections.tsv          a line a copy: study, fixes, rows, checksum
 
-The folder may be purged: a run writes everything again, from the release's files and from the sources. Nothing here
-enters the repository, and nothing is written to the release or to any other folder.
+A copy that is there, with a record of the fixes that the table asks of it, is left as it is: a run writes what is new
+or changed, or everything with --again. The folder may be purged: a run then writes everything again, from the
+release's files and from the sources. Nothing here enters the repository, and nothing is written to the release or
+to any other folder.
 """
 import argparse
 import datetime
@@ -90,12 +92,19 @@ def correct(plan: dict[str, list[dict]], sources: dict[str, str], out: Path, cod
     return lines
 
 
+def standing(study: str, fixes: list[dict], out: Path) -> bool:
+    """Whether a study's corrected copy is there, with a record of these very fixes."""
+    copy, record = out / "sumstats" / f"{study}.sumstats", out / "provenance" / f"{study}.json"
+    return copy.exists() and record.exists() and [(fix["fix"], fix["value"]) for fix in json.loads(record.read_text())["fixes"]] == [(row["fix"], row["value"]) for row in fixes]
+
+
 def main():
     parser = argparse.ArgumentParser(prog="python -m corrections", description="Writes corrected copies of the studies of data/corrections.tsv, outside the repository.")
     parser.add_argument("release", nargs="?", default=os.environ.get("SUMSTATS_RELEASE"), help="the release folder, read only (default: $SUMSTATS_RELEASE)")
     parser.add_argument("--out", default=os.environ.get("SUMSTATS_CORRECTIONS"), help="where to write (default: $SUMSTATS_CORRECTIONS)")
     parser.add_argument("--snplist", default="", help="the HapMap3 SNPs and their alleles (SNP, A1, A2): for the studies taken from their source")
     parser.add_argument("--bim-prefix", default="", help="the reference panel's .bim files, up to the chromosome's number: for the same")
+    parser.add_argument("--again", action="store_true", help="write every copy again, also those that are there as the table asks")
     parser.add_argument("--account", help="the Slurm account to charge")
     parser.add_argument("--name", default=f"{datetime.date.today():%Y%m%d}_corrections", help="the name of the Slurm tasks and of their logs")
     args = parser.parse_args()
@@ -105,9 +114,10 @@ def main():
     if out.is_relative_to(ROOT) or out.is_relative_to(release) or release.is_relative_to(out):
         parser.error("the corrected copies do not go inside the repository, nor inside the release")
     index = pd.read_csv(release / "_audit" / "sumstats_file_index.tsv", sep="\t", dtype=str, keep_default_na=False).set_index("Trait Identifier")["H2 Sumstats"]
-    plan = planned(cite.table(ROOT / "data" / "corrections.tsv"))
-    if unknown := sorted(set(plan) - set(index.index)):
+    asked = planned(cite.table(ROOT / "data" / "corrections.tsv"))
+    if unknown := sorted(set(asked) - set(index.index)):
         parser.error(f"data/corrections.tsv names a study that the release lacks: {unknown[0]}")
+    plan = {study: fixes for study, fixes in asked.items() if args.again or not standing(study, fixes, out)}
     from_source = [study for study, fixes in plan.items() if fixes[0]["fix"] == "source"]
     if from_source and not (args.snplist and args.bim_prefix):
         parser.error(f"{len(from_source)} studies are taken from their source: name the reference they are formatted with, --snplist and --bim-prefix")
@@ -116,11 +126,14 @@ def main():
     parts = [{study: plan[study] for study in plan if study not in from_source}, *({study: plan[study]} for study in from_source)]  # a task for each study from its source, one for the rest
     parts = [part for part in parts if part]
     k = len(parts)
-    lines = [line for task in submitted(args.name, out, args.account, correct, parts, [{study: index[study] for study in part} for part in parts], [out] * k, [code] * k,
-                                        [args.snplist] * k, [args.bim_prefix] * k, [sizes] * k) for line in task]
-    pd.DataFrame(lines).to_csv(out / "corrections.tsv", sep="\t", index=False)
-    missing = [study for study in plan if not (out / "sumstats" / f"{study}.sumstats").exists() or not (out / "provenance" / f"{study}.json").exists()]
-    print(f"{len(lines)} copies written, {len(missing)} missing")
+    if parts:
+        submitted(args.name, out, args.account, correct, parts, [{study: index[study] for study in part} for part in parts], [out] * k, [code] * k, [args.snplist] * k, [args.bim_prefix] * k, [sizes] * k)
+    missing = [study for study, fixes in asked.items() if not standing(study, fixes, out)]
+    records = [json.loads((out / "provenance" / f"{study}.json").read_text()) for study in asked if study not in missing]
+    pd.DataFrame([{"id": record["study"], "fixes": "; ".join(fix["fix"] + (f" {fix['value']}" if fix["value"] else "") for fix in record["fixes"]),
+                   "rows_before": record.get("in_place_of", record["source"])["rows"], "rows": record["copy"]["rows"], "sha256": record["copy"]["sha256"], **record["changed"]}
+                  for record in records]).to_csv(out / "corrections.tsv", sep="\t", index=False)  # a line a copy that stands, from its record
+    print(f"{len(plan)} copies written, {len(asked) - len(plan)} left as they were, {len(missing)} missing")
     if missing:
         sys.exit(f"missing: {', '.join(missing)}")
 
