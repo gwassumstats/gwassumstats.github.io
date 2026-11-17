@@ -116,9 +116,9 @@ def test_counts_are_the_release_s():
         assert t["ids"] == [d["id"] for d in STUDIES if d["anc"] == anc and d["cross"]] and len(t["ids"]) == shown
         assert {len(t[c]) for c in COLUMNS} == {shown * (shown - 1) // 2}
         assert RELEASE[anc] | {"worst": None} == RELEASE[anc] | {"worst": None, "studies": count(anc=anc), "signed": signed, "pairs": signed * (signed - 1) // 2, "failed": failed}
-    assert RELEASE["corrected"] == {"studies": 36, "copies": len(COPIED), "qc": {level: sum(d["qc"] == level for d in RELEASED) for level in ("pass", "warn", "fail")},
+    assert RELEASE["corrected"] == {"studies": 37, "copies": len(COPIED), "qc": {level: sum(d["qc"] == level for d in RELEASED) for level in ("pass", "warn", "fail")},
                                     "signed": 4, "pairs": sum(len(correlations(anc).get("was", {})) for anc in RELEASE["ancestries"]),
-                                    "panel": {"EUR": {"out": ["PANUKBB_AtrialFibrillationAndFlutter"], "in": []}, "EAS": {"out": [], "in": []}}} and len(COPIED) == 30
+                                    "panel": {"EUR": {"out": ["PANUKBB_AtrialFibrillationAndFlutter"], "in": []}, "EAS": {"out": [], "in": []}}} and len(COPIED) == 31
 
 
 def test_a_panel_is_what_about_says():
@@ -225,7 +225,7 @@ def test_a_corrected_study_is_judged_as_corrected():
     """The checks say of a corrected study what holds of it as corrected: its copy as measured, with the copy's LDSC
     results and the sign test of the copies. What they say of the release's file is kept beside."""
     corrected = [d for d in STUDIES if "fixed" in d]
-    assert len(corrected) == 36 and RELEASE["qc"]["fail"] < RELEASE["corrected"]["qc"]["fail"] and RELEASE["qc"]["pass"] > RELEASE["corrected"]["qc"]["pass"]
+    assert len(corrected) == 37 and RELEASE["qc"]["fail"] < RELEASE["corrected"]["qc"]["fail"] and RELEASE["qc"]["pass"] > RELEASE["corrected"]["qc"]["pass"]
     by_hand = [(row["id"], [row["level"], row["finding"]], row["of"]) for row in cite.table(merge.DATA / "findings.tsv")]
     assert {of for _, _, of in by_hand} == {"", "study"} and {study for study, _, of in by_hand if of} < {d["id"] for d in corrected}
     for study, finding, of in by_hand:  # what a person found of the release's file is no finding of the corrected study, unless it holds whatever the file

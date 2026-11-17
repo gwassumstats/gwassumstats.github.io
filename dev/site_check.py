@@ -516,7 +516,7 @@ def run(pw, url, name, **context):
     page.select_option("#f-qc", "corrected")
     tags = page.locator("#sumstats-table tbody tr:first-child td:nth-child(8)").all_inner_texts()
     check(f"[{name}] the corrected studies are listed on demand, each with what the checks say of it as corrected",
-          tags == [f"{d['qc']} corrected" for d in corrected] and len(corrected) == RELEASE["corrected"]["studies"] == 36 and page.inner_text("#count") == "36 of 602 studies"
+          tags == [f"{d['qc']} corrected" for d in corrected] and len(corrected) == RELEASE["corrected"]["studies"] == 37 and page.inner_text("#count") == "37 of 602 studies"
           and len({d["qc"] for d in corrected}) == 3, lambda: tags[:3])
     shot("corrected", full=False)
     page.select_option("#f-qc", "")

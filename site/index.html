@@ -234,8 +234,8 @@
     <h2>How is a study checked?</h2>
     <p>Every study goes through the same checks, and its page says what they found. Of the <span data-v="all.studies">602</span>
     studies, <span data-v="qc.pass">542</span> pass, <span data-v="qc.warn">55</span> warn and <span data-v="qc.fail">5</span> fail: a
-    corrected study is checked as corrected. Of the release's own files, <span data-v="corrected.qc.pass">523</span> pass,
-    <span data-v="corrected.qc.warn">55</span> warn and <span data-v="corrected.qc.fail">24</span> fail.</p>
+    corrected study is checked as corrected. Of the release's own files, <span data-v="corrected.qc.pass">522</span> pass,
+    <span data-v="corrected.qc.warn">56</span> warn and <span data-v="corrected.qc.fail">24</span> fail.</p>
     <ol>
       <li><strong>Its file</strong>, read SNP by SNP: the columns, SNPs listed twice, Z that are not numbers, and how many of
       the HapMap3 SNPs that LDSC regresses on it has. Fewer than 200,000 fails; fewer than half warns.</li>
@@ -252,11 +252,11 @@
 
     <h2>What is a corrected study?</h2>
     <p>A study whose file in the release was found at fault and could be mended. The release itself is never changed: the study has a corrected copy, and this site shows the numbers of the
-      copy, with the release's beside them on the study's page. <span data-v="corrected.copies">30</span> studies have one: their statistics were taken again from their source and formatted as
+      copy, with the release's beside them on the study's page. <span data-v="corrected.copies">31</span> studies have one: their statistics were taken again from their source and formatted as
       the release formats, or the sign of their Z was turned, or their N was scaled to the count of cases and controls, or rows were dropped, or each SNP was given its own alleles. S-LDSC and LDSC
-      were run again on the copies with the release's settings: <span data-v="corrected.pairs">11,739</span> genetic correlations of the release were estimated again, and
+      were run again on the copies with the release's settings: <span data-v="corrected.pairs">12,235</span> genetic correlations of the release were estimated again, and
       <span data-v="corrected.signed">4</span> studies that the release holds unsigned have genetic correlations now. Where a study of an ancestry was corrected, its nonredundant panel was chosen
-      again by the release's rule. After login, a corrected study's path is that of its copy. Of the <span data-v="corrected.studies">36</span> studies with a correction, the others have a
+      again by the release's rule. After login, a corrected study's path is that of its copy. Of the <span data-v="corrected.studies">37</span> studies with a correction, the others have a
       corrected label only: their file is sound, and holds another trait than its name says.</p>
     <p>A corrected study is checked as corrected. Its copy is read and judged like any file, with the h² and the genetic correlations of the copy, and the sign test is run with the copies in
       place of the release's files; a study with a corrected label is judged under the trait its file holds, and warns, for its name still says the other. The tables say <q>corrected</q> beside
