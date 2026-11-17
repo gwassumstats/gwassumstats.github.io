@@ -57,7 +57,7 @@ def test_a_binary_study_has_its_cases_and_controls_and_a_study_that_passes_is_re
     assert not [d["id"] for d in data["studies"] if d["id"] not in ("B", "C", "GCST0003") and {"kind", "cases", "controls", "neff", "cases_from", "cases_how"} & set(d)]  # a quantitative study's effective N is its N
     # of each trait and ancestry, a study that passes is recommended: here two studies pass, each the only one of its trait
     assert {d["id"]: d["rec"] for d in data["studies"] if "rec" in d} == {"A_unsigned": "neff", "GCST0001": "neff"} and not [d["id"] for d in data["studies"] if "sup" in d]
-    assert data["release"]["binary"] == {"studies": 3, "counted": 2} and data["release"]["recommended"] == {"of": 6, "studies": 2, "by_n": 0, "superseded": 0}
+    assert data["release"]["binary"] == {"studies": 3, "counted": 2} and data["release"]["recommended"] == {"of": 6, "studies": 2, "by_z": 0, "superseded": 0}
     rows = cite.table(data_of(mini) / "cases.tsv")
     write(data_of(mini) / "cases.tsv", list(rows[0]), [list(row.values()) for row in rows[1:]])
     with pytest.raises(ValueError, match="data/cases.tsv lacks A_unsigned: run python -m cases"):
@@ -113,7 +113,7 @@ def test_the_corrections_are_laid_over_the_release_which_is_kept_beside(mini, tm
                                     "panel": {"EUR": {"out": ["C", "GCST0001"], "in": ["A_unsigned", "B"]}, "EAS": {"out": [], "in": []}}}
     apart = ("corrected", "qc", "recommended")  # what is counted of the studies as shown
     assert {k: v for k, v in release.items() if k not in apart} == {k: v for k, v in unchanged["studies.json"]["release"].items() if k not in apart}  # the release's own counts stand
-    assert b["rec"] == "neff" and (b["cases"], b["controls"], b["neff"]) == (400, 1600, 1280) and release["recommended"] == {"of": 6, "studies": 3, "by_n": 0, "superseded": 0}  # its copy passes: it is the study of its trait
+    assert b["rec"] == "neff" and (b["cases"], b["controls"], b["neff"]) == (400, 1600, 1280) and release["recommended"] == {"of": 6, "studies": 3, "by_z": 0, "superseded": 0}  # its copy passes: it is the study of its trait
     assert [d["qc"] for d in files["studies.json"]["studies"]][2:] == [d["qc"] for d in unchanged["studies.json"]["studies"]][2:]  # the other studies are judged as before
     assert release["qc"] == {"pass": 3, "warn": 4, "fail": 0} and release["corrected"]["qc"] == {"pass": 2, "warn": 4, "fail": 1}  # as shown; and of the release's files
     build(mini, tmp_path / "out", "correct horse", copies=tmp_path / "scratch")
@@ -340,7 +340,7 @@ def test_release_counts(mini, tmp_path):
     release = built(mini, tmp_path / "out")["studies.json"]["release"]
     assert release == {
         "year": 2026, "packaged": "2026-09-07", "papers": 2, "ancestries": ["EUR", "EAS"], "qc": {"pass": 2, "warn": 4, "fail": 1}, "traits": {"all": 6, "efo": 5},
-        "binary": {"studies": 3, "counted": 2}, "recommended": {"of": 6, "studies": 2, "by_n": 0, "superseded": 0},
+        "binary": {"studies": 3, "counted": 2}, "recommended": {"of": 6, "studies": 2, "by_z": 0, "superseded": 0},
         "all": {"studies": 7, "before": 4, "added": 3, "signed": 6, "signed_before": 3, "unsigned": 1, "unsigned_added": 0, "no_alleles": 0},
         "EUR": {"studies": 4, "before": 3, "added": 1, "signed": 3, "signed_before": 2, "pairs": 3, "failed": 1,
                 "worst": {"id": "C", "failed": 1, "pairs": 2}, "panel": 2, "panel_added": 1, "pairs_before": 1, "panel_before": 2, "panel_kept": 1},

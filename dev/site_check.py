@@ -564,15 +564,15 @@ def run(pw, url, name, **context):
           row("Cases and controls") == f"{stenosis['cases']:,} and {stenosis['controls']:,}: effective N {stenosis['neff']:,} · GCST90651074"
           and page.locator("#view-study .row", has_text="Cases and controls").locator("a").get_attribute("href") == "https://www.ebi.ac.uk/gwas/studies/GCST90651074", lambda: row("Cases and controls"))
     told = {}
-    for study in ("UKB_460K.disease_T2D", "PASS_Type2Diabetes_Xue2018", "PASS_BMI1", "PASS_Celiac", "UKB_460K.body_HEIGHTz"):
+    for study in ("UKB_460K.cancer_PROSTATE", "PASS_ProstateCancer", "PASS_BMI1", "PASS_Celiac", "UKB_460K.body_HEIGHTz"):
         show(f"?study={study}", "#view-study .fields")
         told[study] = (row("Recommended"), row("Cases and controls") if page.locator("#view-study .label", has_text="Cases and controls").count() else None)
-        if study == "UKB_460K.disease_T2D":
+        if study == "UKB_460K.cancer_PROSTATE":
             shot("study-cases-not-public", full=False)
-    check(f"[{name}] a study whose cases are not public says so, and is ranked by N with the others of its trait; an older study is superseded; a trait of which nothing passes has no study to use",
-          told["UKB_460K.disease_T2D"] == ("no: the study to use is Xue_2018_T2D", "not known: no effective N A yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, "
-                                           "and no other public record of them was found.")
-          and told["PASS_Type2Diabetes_Xue2018"][0] == "yes: of the 3 studies of this trait and ancestry that pass the checks, the largest N. Effective N does not rank them: the cases of at least one are not known"
+    check(f"[{name}] a study whose cases are not public says so, and h² z ranks it with the others of its trait; an older study is superseded; a trait of which nothing passes has no study to use",
+          told["UKB_460K.cancer_PROSTATE"] == ("no: the study to use is Schumacher_2018_ProstateCancer", "not known: no effective N A yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the "
+                                               "paper count individuals, and no other public record of them was found.")
+          and told["PASS_ProstateCancer"][0] == "yes: of the 3 studies of this trait and ancestry that pass the checks, the largest h² z. Effective N does not rank them: the cases of at least one are not known"
           and told["PASS_BMI1"] == ("no: superseded by Yengo_2018_BMI", None) and told["PASS_Celiac"][0] == "no: no study of this trait and ancestry passes the checks"
           and told["UKB_460K.body_HEIGHTz"] == ("no: superseded by Yengo_2022_Height", None), lambda: told)
     # the candidates for the next release, and the rule's backtest

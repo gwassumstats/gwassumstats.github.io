@@ -763,7 +763,7 @@ function counted(d) {
 function recommendation(d) {
   const same = state.studies.filter((s) => s.of === d.of && s.anc === d.anc), passing = same.filter((s) => s.qc === "pass"), best = same.find((s) => s.rec);
   if (d.rec && passing.length === 1) return ["yes: the one study of this trait and ancestry that passes the checks"];
-  if (d.rec) return [`yes: of the ${int(passing.length)} studies of this trait and ancestry that pass the checks, the largest ${d.rec === "neff" ? "effective N" : "N. Effective N does not rank them: the cases of at least one are not known"}`];
+  if (d.rec) return [`yes: of the ${int(passing.length)} studies of this trait and ancestry that pass the checks, the largest ${d.rec === "neff" ? "effective N" : "h² z. Effective N does not rank them: the cases of at least one are not known"}`];
   if (!best) return ["no: no study of this trait and ancestry passes the checks"];
   return [d.sup ? "no: superseded by " : "no: the study to use is ", studyLink(best)];
 }

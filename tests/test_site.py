@@ -247,7 +247,7 @@ def test_a_corrected_study_is_judged_as_corrected():
 
 def test_one_study_of_each_trait_and_ancestry_is_recommended():
     """Of the studies of a trait and an ancestry that pass, the largest effective N; where the cases of one are not
-    known, the largest N. An older study of the same sex is superseded by it."""
+    known, the largest h² z. An older study of the same sex is superseded by it."""
     groups, sex = {}, lambda d: next((word for word in ("Female", "Male") if word in d["name"].split("_", 2)[2]), "")
     for d in STUDIES:
         groups.setdefault((d["of"], d["anc"]), []).append(d)
@@ -256,21 +256,23 @@ def test_one_study_of_each_trait_and_ancestry_is_recommended():
         passing, chosen = [d for d in studies if d["qc"] == "pass"], [d for d in studies if "rec" in d]
         assert len(chosen) == bool(passing) and all(d["qc"] == "pass" for d in chosen)  # one, if any passes
         for best in chosen:
-            by = "n" if any(size(d) is None for d in passing) else "neff"
-            assert best["rec"] == by and (best["n"] if by == "n" else size(best), best["h2_z"]) == max((d["n"] if by == "n" else size(d), d["h2_z"]) for d in passing)
+            by = "z" if any(size(d) is None for d in passing) else "neff"
+            rank = (lambda d: (d["h2_z"], d["n"])) if by == "z" else (lambda d: (size(d), d["h2_z"]))
+            assert best["rec"] == by and rank(best) == max(map(rank, passing))
         for d in studies:
             if "sup" in d:  # by the study of its own trait and ancestry, whose paper is the later one
                 best, days = BY_ID[d["sup"]], [PAPERS[s["cite"][0]]["published"] for s in (d, BY_ID[d["sup"]])]
                 assert best in chosen and "rec" not in d and sex(d) == sex(best) and days[0][:min(map(len, days))] < days[1][:min(map(len, days))]
     counted = RELEASE["recommended"]
-    assert counted == {"of": len(groups), "studies": sum("rec" in d for d in STUDIES), "by_n": sum(d.get("rec") == "n" for d in STUDIES), "superseded": sum("sup" in d for d in STUDIES)}
-    assert counted["of"] == 376 and 300 < counted["studies"] < counted["of"] and counted["by_n"] < 40
+    assert counted == {"of": len(groups), "studies": sum("rec" in d for d in STUDIES), "by_z": sum(d.get("rec") == "z" for d in STUDIES), "superseded": sum("sup" in d for d in STUDIES)}
+    assert counted["of"] == 376 and 300 < counted["studies"] < counted["of"] and counted["by_z"] < 40
     assert RELEASE["binary"] == {"studies": sum(d.get("kind") == "binary" for d in STUDIES), "counted": sum("neff" in d for d in STUDIES)}
     # the largest study of height supersedes the two before it; of schizophrenia, the corrected copy of the largest is the one to use
     assert BY_ID["PASS_Height_Yengo2022"]["rec"] == "neff" and BY_ID["PASS_Height1"]["sup"] == BY_ID["UKB_460K.body_HEIGHTz"]["sup"] == "PASS_Height_Yengo2022"
     assert BY_ID["PASS_Schizophrenia_Trubetskoy2022"]["rec"] == "neff" and WAS["PASS_Schizophrenia_Trubetskoy2022"]["qc"] == "warn"
-    # where the cases of a study that passes are not public, N ranks: of type 2 diabetes, the meta-analysis with more individuals than UK Biobank's own
-    assert BY_ID["PASS_Type2Diabetes_Xue2018"]["rec"] == "n" and "neff" not in BY_ID["UKB_460K.disease_T2D"] and "sup" not in BY_ID["UKB_460K.disease_T2D"]
+    # where the cases of a study that passes are not public, h² z ranks them, not N: of prostate cancer, the consortium's 46,939 cases, not UK Biobank's 459,324 individuals
+    prostate = [BY_ID[study] for study in ("PASS_ProstateCancer", "UKB_460K.cancer_PROSTATE")]
+    assert prostate[0]["rec"] == "z" and "rec" not in prostate[1] and "neff" not in prostate[1] and prostate[0]["n"] < prostate[1]["n"] and prostate[0]["h2_z"] > prostate[1]["h2_z"]
 
 
 def test_a_problem_is_reported_through_a_form_that_warns_it_is_public():

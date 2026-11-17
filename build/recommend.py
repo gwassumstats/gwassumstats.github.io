@@ -3,7 +3,8 @@
 A study of a binary trait has the power of its cases and controls, not of their sum: its effective N is
 4 / (1 / cases + 1 / controls), which is 4 v (1 - v) N for a share v of cases among N individuals. A quantitative
 study's is its N. Of the studies of one trait and one ancestry that pass the quality checks, the one of the largest
-effective N is recommended; an older study of that trait and ancestry, and of the same sex, is superseded by it.
+effective N is recommended, or of the largest h² z where the effective N of one of them is not known; an older study
+of that trait and ancestry, and of the same sex, is superseded by it.
 """
 import math
 
@@ -42,10 +43,12 @@ def chosen(d: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
     (its trait), `anc`, `qc`, `n`, `neff` (its effective N, missing if not known), `h2_z`, `name` and `published` (the
     day its paper was published, or its month; "" if none is known).
 
-    The first: by study, "neff" or "n" for a recommended study, after what it was chosen by, and None for the others.
+    The first: by study, "neff" or "z" for a recommended study, after what it was chosen by, and None for the others.
     Of a trait and an ancestry, the studies that pass are ranked by effective N, the largest first, then by h² z. If
     the effective N of one of them is not known, as where a binary study's cases are not public, they are all ranked
-    by N instead: an effective N is no measure against a study that has none. The first is recommended.
+    by h² z instead, then by N: an effective N is no measure against a study that has none, and N alone overstates
+    the power of a study of few cases among many controls; h² z is the power that LDSC measured. The first is
+    recommended.
 
     The second: by study, the ID of the study that supersedes it, or None. Every other study of the trait and
     ancestry whose paper is older than the recommended study's, and which is of the same sex, is superseded by it: a
@@ -55,9 +58,9 @@ def chosen(d: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
         passing = group[group["qc"] == "pass"]
         if passing.empty:
             continue
-        by = "neff" if passing["neff"].notna().all() else "n"
-        best = passing.sort_values([by, "h2_z"], ascending=False, kind="stable").index[0]
-        recommended[best] = by
+        known = passing["neff"].notna().all()
+        best = passing.sort_values(["neff", "h2_z"] if known else ["h2_z", "n"], ascending=False, kind="stable").index[0]
+        recommended[best] = "neff" if known else "z"
         when, whose = d.at[best, "published"], sex(d.at[best, "name"])
         for study, row in group.iterrows():
             if study != best and older(row["published"], when) and sex(row["name"]) == whose:

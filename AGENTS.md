@@ -75,7 +75,7 @@ their rule. Open: fixes to the studies that the checks flag wait for the owner (
   effective N of a binary study is 4 v (1 − v) times its individuals, v its share of cases (`build/recommend.py`);
   a quantitative study's is its N; a binary study whose cases are *not public* or not known has none.
 - *Recommended, superseded:* of the studies of a trait and an ancestry that pass QC as shown, the one of the largest
-  effective N is *recommended* (ties by h² z; by N instead where a candidate has no effective N). An older study of
+  effective N is *recommended* (ties by h² z; by h² z, then N, where a candidate has no effective N). An older study of
   the same trait, ancestry and sex is *superseded* by it.
 - *Correction:* a row of `data/corrections.tsv`: a *source* (the study is taken again from its *source*, its
   folder in the GWAS Catalog or a URL, and formatted by the release's rules: `sources/`), a *flip* (Z was signed for

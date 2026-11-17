@@ -18,7 +18,8 @@ data/names.tsv (python -m names). A study without a short name stops the build. 
 judge each study from its file as measured (data/metrics.tsv: python -m qc.scan), its results and its label; a
 corrected study, as corrected (its copy as measured: data/metrics_corrected.tsv), with what they say of the release's
 file kept beside. A study's cases and controls are those of data/cases.tsv (python -m cases); of the studies of a
-trait and an ancestry that pass, the one of the largest effective N is recommended (build/recommend.py). The
+trait and an ancestry that pass, the one of the largest effective N is recommended, or of the largest h² z where an
+effective N is not known (build/recommend.py). The
 candidates are those of data/candidates.json (python -m candidates), as they are.
 
 A release that has not changed rewrites the same files, and keeps the encrypted one as it is, so readers stay logged in.
@@ -97,7 +98,7 @@ def build(release: Path, out: Path, passphrase: str, iterations: int = crypt.ITE
                                                           "traits": {"all": len(traits), "efo": sum(bool(efo) for efo, _ in traits.values())},
                                                           "binary": {"studies": int(binary.sum()), "counted": int((binary & sized["neff"].notna()).sum())},
                                                           "recommended": {"of": int(pd.DataFrame({"of": of, "anc": d["anc"]}).drop_duplicates().shape[0]), "studies": int(recommended.notna().sum()),
-                                                                          "by_n": int((recommended == "n").sum()), "superseded": int(superseded.notna().sum())}}
+                                                                          "by_z": int((recommended == "z").sum()), "superseded": int(superseded.notna().sum())}}
     if fixed:
         summary["corrected"] = {"studies": len(fixed), "copies": sum(any(kind != "relabel" for kind, _, _ in fixes) for fixes in fixed.values()),
                                 "qc": {level: int((released["qc"] == level).sum()) for level in ("pass", "warn", "fail")},  # of the release's files
