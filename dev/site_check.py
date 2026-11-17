@@ -529,8 +529,8 @@ def run(pw, url, name, **context):
     row = lambda trait: [trait, TRAITS[trait][1], TRAITS[trait][0] or "–", *(str(sum(study["anc"] == anc for study in of[trait])) for anc in RELEASE["ancestries"]), ", ".join(study["name"] for study in of[trait])]
     rows, lead = table("traits-list"), page.inner_text("#traits-lead")
     check(f"[{name}] traits: every trait with its category, its term and its studies by their short names, in the order of the categories",
-          [r[:2] for r in rows] == [[trait, TRAITS[trait][1]] for trait in listed] and rows[0] == row(listed[0]) and row("Body mass index") in rows and len(rows) == RELEASE["traits"]["all"] == 334
-          and lead.startswith("The 602 studies are of 334 traits: 326 have a study of EUR ancestry, 49 have a study of EAS ancestry. 316 have a term") and page.title() == "Traits · GWAS Sumstats"
+          [r[:2] for r in rows] == [[trait, TRAITS[trait][1]] for trait in listed] and rows[0] == row(listed[0]) and row("Body mass index") in rows and len(rows) == RELEASE["traits"]["all"] == 335
+          and lead.startswith("The 602 studies are of 335 traits: 327 have a study of EUR ancestry, 49 have a study of EAS ancestry. 316 have a term") and page.title() == "Traits · GWAS Sumstats"
           and page.locator("#traits-list a", has_text="EFO_0004340").get_attribute("href") == "https://www.ebi.ac.uk/ols4/ontologies/efo/classes?short_form=EFO_0004340", lambda: (rows[:2], lead))
     page.fill("#traits-q", "sleep duration")
     check(f"[{name}] the search narrows the traits by their names, terms, categories and studies",

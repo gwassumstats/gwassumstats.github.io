@@ -24,7 +24,8 @@ So the command can be given again, under another --name, after a task failed or 
 only what is missing is run, and nothing at all if every log stands. What the logs say goes to the repository, without
 a path, once no study lacks LDSC:
 
-  data/corrected_h2.tsv   a line a corrected study: h², its standard error, z and the intercept, as the release's table
+  data/corrected_h2.tsv   a line a corrected study: h², its standard error, z and the intercept, as the release's table,
+                          and the SNPs of its copy
   data/corrected_rg.tsv   a line a pair with a corrected study, as the release's table; a pair that LDSC could not
                           estimate has nan throughout
 """
@@ -45,7 +46,7 @@ from papers import cite
 from sources.slurm import submitted
 
 ROOT = Path(__file__).parents[1]
-H2 = ["trait_identifier", "h2", "h2_se", "h2_z", "intercept"]
+H2 = ["trait_identifier", "h2", "h2_se", "h2_z", "intercept", "m"]
 RG = ["trait1", "trait2", "genetic_correlation", "genetic_correlation_se", "genetic_correlation_z", "genetic_correlation_p", "genetic_covariance", "genetic_covariance_se"]
 PAIR = {"rg": r"Genetic Correlation:\s*([^\s]+)\s*\(([^)]+)\)", "z": r"Z-score:\s*([^\s]+)", "p": r"P:\s*([^\s]+)", "gcov": r"Total Observed scale gencov:\s*([^\s]+)\s*\(([^)]+)\)"}
 
@@ -60,11 +61,12 @@ def finite(text: str) -> bool:
 
 def heritability(log: str) -> dict:
     """What an S-LDSC log says of a study, as the release's table has it: h², its standard error, their ratio to five
-    decimals, and the intercept."""
+    decimals, and the intercept; and the SNPs of its file (`m`)."""
     if not (found := re.search(r"Total Observed scale h2: ([^ ]+) \(([^)]+)\)", log)):
         raise ValueError("S-LDSC did not finish: its log has no h²")
     h2, se = found.groups()
-    return {"h2": h2, "h2_se": se, "h2_z": str(round(float(h2) / float(se), 5)), "intercept": re.search(r"Intercept: ([^ ]+) \(([^)]+)\)", log)[1]}
+    return {"h2": h2, "h2_se": se, "h2_z": str(round(float(h2) / float(se), 5)), "intercept": re.search(r"Intercept: ([^ ]+) \(([^)]+)\)", log)[1],
+            "m": re.search(r"Read summary statistics for ([0-9]+) SNPs", log)[1]}
 
 
 def listed(log: str) -> list[str]:

@@ -13,6 +13,11 @@ same_n = 0.01             # the largest N of a file is that of a sample if it is
 effective = [0.8, 1.02]   # an N that is not whole numbers looks like an effective N, or half of one, if its largest is within these times it (summed over cohorts, it is a little below the whole sample's): a warn, or a note if the count of cases and controls is within n_within of it
 other_ancestry = 0.05     # warn: the largest N is that of a sample of several ancestries, and above every sample's count of the study's ancestry by more than this share
 
+[signs]                   # the sign test: pairs of studies at the SNPs with |Z| > 4 in both (qc/signs.py)
+agree = 0.97              # warn: two studies of one trait and ancestry have the same sign at a smaller share of those SNPs (302 of 309 sound pairs: at least 99%)
+clear_snps = 200          # warn: a study has a pair of at least this many such SNPs,
+unclear = 0.3             # and in every pair listed for it, the same sign at a share this close to a half
+
 [statistics]
 unsigned_positive = 0.9   # a file with a larger share of positive Z holds |Z|: it is unsigned
 signed_positive = [0.4, 0.6]  # warn: a signed file with a share of positive Z outside this

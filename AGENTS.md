@@ -60,6 +60,8 @@ their rule. Open: fixes to the studies that the checks flag wait for the owner (
   papers (BibTeX).
 - *QC, checks:* what `qc/checks.py` says of a study: *pass*, *warn* or *fail*, with its *findings*, each a fail, a
   warn or a *note* (worth knowing; the study passes). Thresholds: `data/checks.toml`.
+- *Sign test:* the part of QC that compares the signs of two signed studies at the SNPs *strong* in both (|Z| > 4),
+  alleles aligned (`qc/signs.py`, `data/signs.tsv`): the share of the *same sign*.
 - *Label check:* the part of QC that compares a study's label (its trait name in the release) with its genetic
   correlations: a *twin* is a study with rg of 0.95 or more; a label is *confirmed* when a study of the same label
   agrees. It flags, with the best-matching studies as evidence; it never relabels.

@@ -217,6 +217,36 @@ def test_a_sample_is_counted_for_a_study_s_ancestry():
     assert checks.recorded(japanese, "European")["own"] == 0
 
 
+def test_the_sign_test_warns_two_studies_of_one_trait_that_do_not_agree(mini, tmp_path):
+    pairs = lambda rows: write(data_of(mini) / "signs.tsv", ["a", "b", "n", "same"], rows)
+    notes = lambda: {d["id"]: [note for note in d.get("notes", []) if "|Z| > 4" in note[1]] for d in built(mini, tmp_path / "out")["studies.json"]["studies"]}
+    pairs([["D_EAS", "GCST0003", 400, 204], ["B", "C", 150, 75], ["GCST0002", "GCST0003", 80, 0], ["D_EAS", "GCST0002", 90, 90]])  # D_EAS and GCST0003 are of one trait and ancestry; the other pairs are of two traits
+    half = "at the 400 SNPs with |Z| > 4 in both, its Z has the sign of that of {%s}, a study of its trait, for 51%% only: two studies of one trait agree at nearly all, unless the Z of one does not go with its alleles"
+    assert notes() == {"A_unsigned": [], "B": [], "C": [], "GCST0001": [], "D_EAS": [["warn", half % "GCST0003"]], "GCST0002": [], "GCST0003": [["warn", half % "D_EAS"]]}
+    pairs([["D_EAS", "GCST0003", 400, 4]])
+    assert notes()["D_EAS"] == [["warn", "at the 400 SNPs with |Z| > 4 in both, its Z has the sign opposite to that of {GCST0003}, a study of its trait, for 99%: "
+                                         "one of the two is signed for the other allele, or measures the trait the other way round"]]
+    pairs([["D_EAS", "GCST0003", 400, 392]])  # 98%: they agree
+    assert not any(notes().values())
+    pairs([["D_EAS", "GCST0003", 400, 204]])
+    write(data_of(mini) / "findings.tsv", ["id", "level", "finding"], [["GCST0003", "fail", "its Z does not go with its alleles"]])
+    assert not any(notes().values())  # a person found GCST0003 at fault: that explains it, and says nothing of D_EAS
+    write(data_of(mini) / "findings.tsv", ["id", "level", "finding"], [])
+    pairs([["B", "C", 300, 150], ["B", "GCST0001", 60, 34], ["C", "GCST0001", 500, 500], ["A_unsigned", "GCST0001", 90, 45]])
+    assert notes() == {"A_unsigned": [], "B": [["warn", "its sign is clear against no other study: of its 2 pairs listed, one of 300 SNPs with |Z| > 4 in both, the same sign at 50% to 57%. "
+                                                       "A study whose Z does not go with its alleles looks so"]],
+                       "C": [], "GCST0001": [], "D_EAS": [], "GCST0002": [], "GCST0003": []}  # C has a clear pair; A_unsigned has no pair of 200 SNPs
+
+
+def test_two_studies_of_one_trait_are_not_judged_across_sexes_or_ancestries():
+    studies = pd.DataFrame({"anc": ["EUR", "EUR", "EUR", "EAS"]}, index=["F", "M", "X", "E"])
+    pairs = pd.DataFrame({"a": ["F", "F", "X", "F"], "b": ["M", "X", "E", "E"], "n": [100, 100, 100, 100], "same": [50, 96, 80, 99]})
+    names = {"F": "A_2025_TestosteroneFemale", "M": "A_2025_TestosteroneMale", "X": "B_2020_Testosterone", "E": "C_2024_TestosteroneFemaleEAS"}
+    assert list(checks.signs(studies, pairs, dict.fromkeys("FMXE", "Testosterone"), names, set(), {"agree": 0.97, "clear_snps": 200, "unclear": 0.3})) == []  # women and men; women and all; two ancestries
+    found = list(checks.signs(studies, pairs, dict.fromkeys("FMXE", "Testosterone"), names | {"F": "A_2025_Testosterone"}, set(), {"agree": 0.97, "clear_snps": 200, "unclear": 0.3}))
+    assert [(study, level) for study, level, _ in found] == [("F", "warn"), ("X", "warn")]  # F is of both sexes now: its pair with X is judged, at 96%
+
+
 def test_a_label_that_a_person_found_wrong_warns_and_is_read_as_corrected(mini, tmp_path):
     write(data_of(mini) / "labels.tsv", ["id", "label", "why"], [["GCST0003", "Trait D", "its N is that of Trait D"]])
     studies = {d["id"]: d for d in built(mini, tmp_path / "out")["studies.json"]["studies"]}

@@ -112,6 +112,34 @@ def sizes(studies: pd.DataFrame, metrics: pd.DataFrame, samples: pd.DataFrame, c
             yield study, "note", f"its N is not whole numbers ({plain(value)} {where}): the weights of a meta-analysis, or an effective N"
 
 
+def signs(studies: pd.DataFrame, pairs: pd.DataFrame, traits: dict[str, str], names: dict[str, str], faulty: set[str], rules: dict):
+    """Findings from the sign test (qc/signs.py -> data/signs.tsv): (study, level, text). `pairs`: a, b, the SNPs
+    with |Z| > 4 in both (n) and those at which the two Z have the same sign (same). Two studies of one trait
+    (`traits`) and one ancestry agree at nearly all such SNPs: a pair that agrees at some only, or at none, warns
+    both, unless one is `faulty`, found at fault by a person, which explains it, or the two are not of the same sex
+    by their short `names`, where a trait may differ. Across ancestries two sound studies agree less, and are not
+    judged. A study with many such SNPs in a pair, and no pair that agrees or disagrees clearly, warns too: its sign
+    carries nothing."""
+    pairs = pairs[pairs["a"].isin(studies.index) & pairs["b"].isin(studies.index)]
+    pairs = pairs.assign(share=pairs["same"] / pairs["n"])
+    sex = lambda study: next((word for word in ("Female", "Male") if word in names.get(study, "")), "")
+    for a, b, n, share in pairs[["a", "b", "n", "share"]].itertuples(index=False):
+        if traits.get(a) != traits.get(b) or studies.at[a, "anc"] != studies.at[b, "anc"] or {a, b} & faulty or sex(a) != sex(b) or share >= rules["agree"]:
+            continue
+        for study, other in ((a, b), (b, a)):
+            if share <= 1 - rules["agree"]:
+                yield study, "warn", (f"at the {n:,} SNPs with |Z| > 4 in both, its Z has the sign opposite to that of {{{other}}}, a study of its trait, for {1 - share:.0%}: "
+                                      "one of the two is signed for the other allele, or measures the trait the other way round")
+            else:
+                yield study, "warn", (f"at the {n:,} SNPs with |Z| > 4 in both, its Z has the sign of that of {{{other}}}, a study of its trait, for {share:.0%} only: "
+                                      "two studies of one trait agree at nearly all, unless the Z of one does not go with its alleles")
+    both = pd.concat([pairs, pairs.rename(columns={"a": "b", "b": "a"})])
+    for study, own in both[~both["b"].isin(faulty)].groupby("a"):  # a pair with a study at fault says nothing of the other
+        if study not in faulty and own["n"].max() >= rules["clear_snps"] and ((own["share"] - 0.5).abs() < rules["unclear"]).all():
+            yield study, "warn", (f"its sign is clear against no other study: of its {len(own)} pairs listed, one of {own['n'].max():,} SNPs with |Z| > 4 in both, the same sign at {own['share'].min():.0%} to "
+                                  f"{own['share'].max():.0%}. A study whose Z does not go with its alleles looks so")
+
+
 def statistics(studies: pd.DataFrame, metrics: pd.DataFrame, rules: dict):
     """Findings on the Z scores of each study and on its LDSC results: (study, level, text)."""
     low, high = rules["signed_positive"]
@@ -167,7 +195,8 @@ def metadata(studies: pd.DataFrame, catalog: pd.DataFrame):
 
 
 def judge(studies: pd.DataFrame, tables: dict, metrics: pd.DataFrame, catalog: pd.DataFrame, reviewed: dict[str, tuple[str, str]],
-          by_hand: list[tuple[str, str, str]], rules: dict, samples: pd.DataFrame | None = None, cited: dict[str, str] | None = None) -> pd.DataFrame:
+          by_hand: list[tuple[str, str, str]], rules: dict, samples: pd.DataFrame | None = None, cited: dict[str, str] | None = None,
+          compared: pd.DataFrame | None = None, traits: dict[str, str] | None = None, names: dict[str, str] | None = None) -> pd.DataFrame:
     """One row per study, in their order: `qc` (pass, warn or fail) and `notes`, its findings as [level, text], the
     worst first. `metrics`: by study and file ("h2", "rg"); `catalog`: by study; `reviewed`: {study: (the trait its
     file holds, how that is known)} for the studies whose label in the release a person found wrong; `by_hand`: what a
@@ -185,6 +214,8 @@ def judge(studies: pd.DataFrame, tables: dict, metrics: pd.DataFrame, catalog: p
     found += [finding for finding in by_hand if finding[0] in studies.index]
     signed = studies[studies["cross"]].assign(trait=lambda t: [reviewed[study][0] if study in reviewed else trait for study, trait in t["trait"].items()])
     faulty = {study for study, level, _ in by_hand if level == "fail"}  # a study that a person found at fault: its partners are not blamed for disagreeing with it
+    if compared is not None:
+        found += signs(studies, compared, traits or {}, names or {}, faulty, rules["signs"])
     found += [(study, level, text) for study, findings in labels.check(signed[["trait", "h2_z"]].to_dict("index"), tables, rules["label"], faulty).items() for level, text in findings]
     notes = {study: [] for study in studies.index}
     for study, level, text in sorted(found, key=lambda finding: LEVELS.index(finding[1])):  # a stable sort: within a level, in the order found

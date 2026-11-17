@@ -542,7 +542,7 @@ GCST90429794	High-gain, medium-gain or stable weight trajectory	EFO_0004566	anth
 GCST90503483	Sarcoidosis	MONDO_0019338	immune	the EFO term of this name in the GWAS Catalog
 GCST90558258	Sarcoidosis	MONDO_0019338	immune	the EFO term of this name in the GWAS Catalog
 GCST90435144	Telomere length	OBA_0003784	blood	the GWAS Catalog's term for its studies
-GCST90435145	Telomere length	OBA_0003784	blood	the GWAS Catalog's term for its studies
+GCST90435145	Telomere length, second component		blood	by hand: no EFO term fits: the second component of several measures of telomere length, of one paper; at the 232 SNPs with |Z| > 4 in both, it has the sign of a study of telomere length at 49%
 GCST90624053	Pneumonia	EFO_0003106	respiratory	the EFO term of this name in the GWAS Catalog
 GCST90319877	Cirrhosis	MONDO_0005155	digestive	the GWAS Catalog's term for its studies
 GCST90728695	Heart failure	EFO_0003144	cardiovascular	the EFO term of this name in the GWAS Catalog

@@ -344,7 +344,7 @@ def test_a_row_is_a_study():
 def test_every_study_is_of_a_trait_of_the_table():
     rows = {row["id"]: row for row in cite.table(merge.DATA / "traits.tsv")}
     assert all(d["of"] == rows[d["id"]]["trait"] and TRAITS[d["of"]] == [rows[d["id"]]["efo"], rows[d["id"]]["category"]] for d in STUDIES)
-    assert set(TRAITS) == {d["of"] for d in STUDIES} and RELEASE["traits"] == {"all": len(TRAITS), "efo": sum(bool(term) for term, _ in TRAITS.values())} == {"all": 334, "efo": 316}
+    assert set(TRAITS) == {d["of"] for d in STUDIES} and RELEASE["traits"] == {"all": len(TRAITS), "efo": sum(bool(term) for term, _ in TRAITS.values())} == {"all": 335, "efo": 316}
 
 
 def test_the_page_loads_nothing_from_elsewhere():

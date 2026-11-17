@@ -61,6 +61,10 @@ n_of_paper = [0.6, 1.5]
 same_n = 0.01
 effective = [0.8, 1.02]
 other_ancestry = 0.05
+[signs]
+agree = 0.97
+clear_snps = 200
+unclear = 0.3
 [statistics]
 unsigned_positive = 0.9
 signed_positive = [0.4, 0.6]

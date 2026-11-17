@@ -34,6 +34,7 @@ with the lab's passphrase to see where they are. It costs $0.
 | `traits.tsv` | A study's ID → its complex trait, the EFO term that fits, a broad category, and how they were found | `python -m traits`, then by hand |
 | `trait_aliases.tsv`, `categories.tsv` | Traits named by hand, with the label of their EFO term; the rule that gives a trait its category | By hand |
 | `metrics.tsv` | What was measured of each file: rows, SNPs listed twice, HapMap3 SNPs, N, Z, mean χ² | `python -m qc.scan` |
+| `signs.tsv` | The sign test: pairs of signed studies, the SNPs strong in both, and those of the same sign | `python -m qc.signs` |
 | `checks.toml` | The thresholds of the quality checks | By hand |
 | `labels.tsv` | A study whose trait name in the release a person found wrong → what its file holds, and how that is known | By hand |
 | `findings.tsv` | What else a person found of a study, shown and counted like a finding of the checks | By hand |
@@ -48,6 +49,11 @@ with the lab's passphrase to see where they are. It costs $0.
 results, its label against its genetic correlations (`qc/labels.py`), its row against the GWAS Catalog's record, and
 the N of its file against the samples the Catalog records for its paper. The release counts individuals, cases and
 controls together: an N that is an effective N, or half of one, or that of a sample of several ancestries, is named.
+The sign test (`qc/signs.py`) compares every pair of signed studies at the SNPs with |Z| > 4 in both: two studies of one
+trait and ancestry have the same sign at nearly all of them (99% or more in 302 of 309 pairs of the 2026 release), and
+a study whose Z does not go with its alleles agrees with every other at about half. The scan also counts the SNPs
+whose alleles are those of the HapMap3 list in its order, or the other way round: a file that has them the other way
+round throughout had its alleles set from the list, without regard to the effect allele.
 A fail means do not use the study as it is; a warn, use it with care; a note is worth knowing, and the study passes.
 The site shows each finding on the study's page. The label check flags a study whose label its genetic correlations
 contradict; it does not relabel it. A person who has looked adds the study to `data/labels.tsv`.

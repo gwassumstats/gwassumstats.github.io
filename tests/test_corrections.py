@@ -91,6 +91,7 @@ def test_a_study_is_taken_from_its_source_then_fixed(source, tmp_path):
 
 
 H2_LOG = """Reading summary statistics from X.sumstats ...
+Read summary statistics for 1171029 SNPs.
 Total Observed scale h2: 0.1461 (0.009)
 Categories: baseL2_0 Coding_UCSCL2_0
 Lambda GC: 1.2
@@ -127,7 +128,7 @@ p1 p2 rg se z p h2_obs h2_obs_se h2_int h2_int_se gcov_int gcov_int_se
 
 
 def test_the_logs_of_ldsc_are_read_as_the_release_reads_them():
-    assert ldsc.heritability(H2_LOG) == {"h2": "0.1461", "h2_se": "0.009", "h2_z": "16.23333", "intercept": "0.7683"}
+    assert ldsc.heritability(H2_LOG) == {"h2": "0.1461", "h2_se": "0.009", "h2_z": "16.23333", "intercept": "0.7683", "m": "1171029"}
     call = "Call:\n./ldsc.py \\\n--ref-ld-chr L. \\\n--out X \\\n--rg x.sumstats,a.sumstats,b.sumstats,c.sumstats \\\n--w-ld-chr W. \n\n"  # as LDSC repeats its call
     assert ldsc.listed(call + RG_LOG) == ["x.sumstats", "a.sumstats", "b.sumstats", "c.sumstats"]
     assert ldsc.correlations(call + RG_LOG) == {"a.sumstats": ["-0.1243", "0.0566", "-2.1969", "0.028", "-0.0116", "0.005"], "b.sumstats": ["nan"] * 6, "c.sumstats": ["nan"] * 6}  # out of bounds; failed

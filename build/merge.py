@@ -95,6 +95,9 @@ def quality(d: pd.DataFrame, tables: dict, data: Path) -> pd.DataFrame:
     recorded = data / "samples.tsv"  # the samples the GWAS Catalog records for the papers cited, if python -m candidates wrote them
     samples = pd.read_csv(recorded, sep="\t", dtype=str, keep_default_na=False) if recorded.exists() else None
     cited = {study: pmids[0] for study, pmids in zip(d.index, sources(d, data)[0]) if pmids}
-    judged = checks.judge(d, tables, metrics, catalog, reviewed, by_hand, tomllib.loads((data / "checks.toml").read_text(encoding="utf-8")), samples, cited)
+    tested = data / "signs.tsv"  # the sign test, if python -m qc.signs wrote it
+    compared = pd.read_csv(tested, sep="\t") if tested.exists() else None
+    judged = checks.judge(d, tables, metrics, catalog, reviewed, by_hand, tomllib.loads((data / "checks.toml").read_text(encoding="utf-8")), samples, cited,
+                          compared, traits(d, data)[0].to_dict(), names(d, data).to_dict())
     file = metrics.xs("h2", level="file").reindex(d.index)
     return judged.assign(hm3=(file["in_hm3"] / file["hm3"]).clip(upper=1).round(3), chi2=file["chi2_mean"].round(3), **{"lambda": file["lambda_gc"].round(3)})
