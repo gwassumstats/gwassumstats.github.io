@@ -9,7 +9,8 @@ writes, from them and the site's data:
                          the same rule finds in the window of the last release, against what that release added
   data/samples.tsv       every sample the Catalog records for a paper that the collection cites, with its individuals
                          by ancestry: the quality checks compare the N of a file with them. A paper of more samples
-                         than the rule allows is left out: among so many, one always fits
+                         than the rule allows is left out: among so many, one always fits. And every record that
+                         data/cases.tsv names as the source of a study's cases and controls, whatever its paper
   data/catalog.tsv       the Catalog's record of each study of the collection that it knows, for the quality checks
                          and the short names: its paper, its sample, its cohorts, and whose statistics it holds
                          (women's, men's or both: from the metadata file beside its summary statistics)
@@ -24,6 +25,7 @@ from pathlib import Path
 import pandas as pd
 
 from candidates import catalog
+from papers import cite
 
 ROOT = Path(__file__).parents[1]
 DATA = ROOT / "data"
@@ -82,7 +84,9 @@ def main():
     known = known.assign(sex=catalog.sexes(known, args.cache / "meta"))[["pmid", "author", "published", "journal", "n", "ancestry", "sex", "trait", "mapped", "efo", "sample", "cohort", "title"]]
     known.rename_axis("id").to_csv(DATA / "catalog.tsv", sep="\t")
     samples = studies[studies["pmid"].isin(set(json.loads((DATA / "papers.json").read_text())))].rename_axis("accession").reset_index()  # of the papers that the collection cites
-    samples = samples[samples.groupby("pmid")["pmid"].transform("size") <= rule["max_studies"]][["pmid", "accession", "trait", "n", "ancestries", "sample"]]
+    named = {row["source"] for row in cite.table(DATA / "cases.tsv")} if (DATA / "cases.tsv").exists() else set()  # a study's cases and controls may be those of a record of another paper
+    samples = pd.concat([samples[samples.groupby("pmid")["pmid"].transform("size") <= rule["max_studies"]], studies[studies.index.isin(named)].rename_axis("accession").reset_index()])
+    samples = samples.drop_duplicates("accession")[["pmid", "accession", "trait", "n", "ancestries", "sample"]]
     samples.sort_values(["pmid", "accession"], key=lambda column: column.astype(int) if column.name == "pmid" else column).to_csv(DATA / "samples.tsv", sep="\t", index=False)
     test = out["backtest"]
     print(f"Catalog fetched {fetched}: {len(studies):,} studies, published to {out['catalog']['published_to']}, added to {out['catalog']['added_to']}")

@@ -30,6 +30,9 @@ pmid	accession	trait	n	ancestries	sample
 25056061	GCST002539	Schizophrenia	87534	European 82315; East Asian 5219	32,405 European ancestry cases, 42,221 European ancestry controls, 1,235 European ancestry cases and 1,235 European ancestry controls from 1235 parent-offspring trios, 1,836 East Asian ancestry cases, 3,383 East Asian ancestry controls
 25087078	GCST002547	Epilepsy	34853	European 23453; NR, European 3501; African American or Afro-Caribbean 3273; African American or Afro-Caribbean, European 1264; East Asian 3362	405 European ancestry cases, 127 African American cases, 248 cases, 2,330 European ancestry genetic generalised epilepsy cases, 81 African American genetic generalised epilepsy cases, 195 genetic generalised epilepsy cases, 3,277 European ancestry focal epilepsy cases, 222 African American focal epilepsy cases, 487 Han Chinese ancestry focal epilepsy cases, 1,324 focal epilepsy cases, up to 17,441 European ancestry controls, up to 2,843 African American controls, up to 2,875 Han Chinese ancestry controls, up to 2,998 controls
 25607358	GCST002756	Subcortical brain region volumes	13171	European 13171	up to 13,171 European ancestry individuals
+26192919	GCST003043	Inflammatory bowel disease	34652	European 34652	12,882 European ancestry cases, 21,770 European ancestry controls
+26192919	GCST003044	Crohn's disease	20883	European 20883	5,956 European ancestry cases, 14,927 European ancestry controls
+26192919	GCST003045	Ulcerative colitis	27432	European 27432	6,968 European ancestry cases, 20,464 European ancestry controls
 26394269	GCST003129	Primary biliary cholangitis	13239	European 13239	2,764 European ancestry cases, 10,475 European ancestry controls
 26502338	GCST003155	Systemic lupus erythematosus	14267	European 14267	5,201 European ancestry cases, 9,066 European ancestry controls
 26502338	GCST003156	Systemic lupus erythematosus	14267	European 14267	5,201 European ancestry cases, 9,066 European ancestry controls
@@ -366,6 +369,10 @@ pmid	accession	trait	n	ancestries	sample
 33830993	GCST012332	Multisite chronic pain	387649	European 387649	387,649 British ancestry individuals
 33830993	GCST012333	Multisite chronic pain	178556	European 178556	178,556 British ancestry men
 33830993	GCST012334	Multisite chronic pain	209093	European 209093	209,093 British ancestry women
+33959723	GCST90038597	Gastrointestinal or abdominal disease	484598	NR 484598	77,978 cases, 406,620 controls
+33959723	GCST90038624	Gastroesophageal reflux disease or gastric reflux	484598	NR 484598	20,381 cases, 464,217 controls
+33959723	GCST90038664	Allergic rhinitis	484598	NR 484598	27,415 cases, 457,183 controls
+33959723	GCST90038687	Gout	484598	NR 484598	6,810 cases, 477,788 controls
 34002096	GCST012463	Bipolar II disorder	370856	European 370856	6,781 European ancestry cases, 364,075 European ancestry controls
 34002096	GCST012464	Bipolar I disorder	475038	European 475038	25,060 European ancestry cases, 449,978 European ancestry controls
 34002096	GCST012465	Bipolar disorder	413466	European 413466	41,917 European ancestry cases, 371,549 European ancestry controls
@@ -520,6 +527,15 @@ pmid	accession	trait	n	ancestries	sample
 36474045	GCST90132314	Coronary artery disease	1165690	European, NR 1165690	181,522 European ancestry, unknown cases, 984,168 European ancestry, unknown controls
 36474045	GCST90132315	Coronary artery disease	1378170	European, East Asian, NR 1378170	210,842 European ancestry, East Asian ancestry, unknown cases, 1,167,328 European ancestry, East Asian ancestry, unknown controls
 36702997	GCST90269774	Attention deficit hyperactivity disorder	225534	European 225534	38,691 European ancestry cases, 186,843 European ancestry controls
+36777996	GCST90399672	Abdominal aortic aneurysm	1264918	European 1264918	8,163 European ancestry cases, 1,256,755 European ancestry controls
+36777996	GCST90399676	Acute appendicitis	1010222	European 1010222	31,714 European ancestry cases, 978,508 European ancestry controls
+36777996	GCST90399686	Asthma	1376071	European 1376071	121,940 European ancestry cases, 1,254,131 European ancestry controls
+36777996	GCST90399694	Chronic obstructive pulmonary disease	995917	European 995917	58,559 European ancestry cases, 937,358 European ancestry controls
+36777996	GCST90399701	Gout	1051653	European 1051653	24,278 European ancestry cases, 1,027,375 European ancestry controls
+36777996	GCST90399713	Heart failure	1020441	European 1020441	52,496 European ancestry cases, 967,945 European ancestry controls
+36777996	GCST90399725	Glaucoma (primary open-angle)	1172905	European 1172905	16,355 European ancestry cases, 1,156,550 European ancestry controls
+36777996	GCST90399732	Stroke	1039382	European 1039382	34,503 European ancestry cases, 1,004,879 European ancestry controls
+36777996	GCST90399744	Venous thromboembolism	915868	European 915868	25,146 European ancestry cases, 890,722 European ancestry controls
 36882310	GCST90271728	Functional connectivity (default mode network)	24336	European 24336	24,336 European ancestry individuals
 36882310	GCST90271729	Functional connectivity (dorsal attention network)	24336	European 24336	24,336 European ancestry individuals
 36882310	GCST90271730	Functional connectivity (frontoparietal network)	24336	European 24336	24,336 European ancestry individuals

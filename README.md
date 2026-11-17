@@ -18,7 +18,7 @@ with the lab's passphrase to see where they are. It costs $0.
 
 | File in `site/data/` | Content | Read by |
 |---|---|---|
-| `studies.json` | The inventory with h², each study's short name, paper and quality checks, and the release's counts | Anyone |
+| `studies.json` | The inventory with h², each study's short name, paper, quality checks, cases and controls, and whether it is the study to use of its trait; the release's counts | Anyone |
 | `papers.json` | Every paper cited: authors, title, journal, DOI, BibTeX entry | Anyone, when first needed |
 | `candidates.json` | The candidates for the next release, and the backtest of the rule that finds them | Anyone, when first needed |
 | `rg_EUR.json`, `rg_EAS.json` | Every genetic correlation of an ancestry; the order of its heatmaps | Anyone, when first needed |
@@ -44,7 +44,8 @@ with the lab's passphrase to see where they are. It costs $0.
 | `candidates.toml` | The rule that finds candidates in the GWAS Catalog, and the window of the last release | By hand |
 | `candidates.json` | The candidates, the papers set aside, and the rule's backtest | `python -m candidates` |
 | `catalog.tsv` | The GWAS Catalog's record of each study it knows: paper, N, ancestry, sex, cohorts | `python -m candidates` |
-| `samples.tsv` | Every sample the GWAS Catalog records for a paper cited: its individuals, by ancestry, and its cases and controls | `python -m candidates` |
+| `samples.tsv` | Every sample the GWAS Catalog records for a paper cited, and every record that `cases.tsv` names: its individuals, by ancestry, and its cases and controls | `python -m candidates` |
+| `cases.tsv` | A study's ID → whether its trait is binary or quantitative, its cases and controls, the record they are from, and how they were found | `python -m cases`, then by hand |
 
 **Quality checks** (`qc/checks.py`). Every study goes through the same checks: its file as measured, its LDSC
 results, its label against its genetic correlations (`qc/labels.py`), its row against the GWAS Catalog's record, and
@@ -93,6 +94,21 @@ other study of its ancestry, and writes what the logs say to `data/corrected_h2.
 `corrections/panel.py` is the release's rule for its panels of non-redundant traits, read off its script: from the
 release's own tables it gives the release's two panels, study for study.
 
+**Cases, controls and effective N** (`cases/`, `build/recommend.py`). A study of a binary trait has the power of
+its cases and controls, not of their sum: its effective N is 4 / (1/cases + 1/controls). `python -m cases` drafts
+`data/cases.tsv` from the records of each study's sample: the GWAS Catalog's record of the study, or of the source
+its corrected copy was taken from; else the record of its paper whose sample is the study's by its N; else, for a
+study of the Pan-UK Biobank, the phenotype of its N in that project's manifest. The rest is by hand, each row with
+the record or the paper its numbers are from. A binary study whose cases no public record gives has no effective N.
+Where the record is of a larger sample than the file holds, the file is taken to have its share of cases.
+
+**The study to use of a trait** (`build/recommend.py`). Of the studies of one trait and one ancestry that pass the
+checks, as the site shows them, the one of the largest effective N is recommended; h² z settles a tie. If the
+effective N of one of them is not known, they are all ranked by N instead: an effective N is no measure against a
+study that has none. An older study of the same trait, ancestry and sex is superseded by the recommended one; a study
+of one sex, or a newer one, is another analysis and is left unmarked. A trait of which nothing passes has no
+recommended study.
+
 **Short names.** A study is called `FirstAuthor_Year_Trait` (`Speliotes_2010_BMI`) everywhere on the site: who and
 which year its paper is cited by, and its trait, abbreviated. The name is a label only. A study's ID in the release
 stays its key, names its file, and shows on its page and in the exports.
@@ -111,6 +127,7 @@ files themselves are protected by O2.
    uv run python -m papers    # the papers of new references, from PubMed: data/references.tsv, data/papers.json
    uv run python -m names     # short names for new studies: data/names.tsv
    uv run python -m traits    # the trait, EFO term and category of new studies: data/traits.tsv
+   uv run python -m cases     # binary or quantitative, cases and controls of new studies: data/cases.tsv
    SUMSTATS_PASSPHRASE=... SUMSTATS_CORRECTIONS=<the folder of the corrected copies> uv run python -m build
    ```
 
@@ -118,8 +135,8 @@ files themselves are protected by O2.
    copy, behind the login; without it such a study keeps the path of the release's file. The folder's path shows on the site's Release notes after
    login. Then run the checks and commit `data/` and `site/data/`. An unchanged release rewrites nothing, and readers
    stay logged in.
-2. **Review papers and names.** A row of `data/references.tsv` or `data/names.tsv` whose `how` says "check" was a
-   guess. Correct the row, write "by hand" and why in `how`, and rebuild: the scripts keep the rows that are there.
+2. **Review papers and names.** A row of `data/references.tsv`, `data/names.tsv`, `data/traits.tsv` or
+   `data/cases.tsv` whose `how` says "check" was a guess, or could not be drafted. Correct the row, write "by hand" and why in `how`, and rebuild: the scripts keep the rows that are there.
    A study whose reference still says "check" shows no paper; a study without a short name stops the build.
 3. **Measure the files**, on O2, when files were added or changed. The scan runs on Slurm (12 tasks, a few minutes)
    and writes `data/metrics.tsv`; the sign test (one task, a quarter of an hour) writes `data/signs.tsv`; then rebuild.

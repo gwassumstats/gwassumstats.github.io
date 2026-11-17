@@ -27,6 +27,19 @@ def finite(text) -> bool:
         return False
 
 
+def counts(plan: dict[str, list[dict]], data: Path) -> dict[str, int]:
+    """The N that its corrections give a study: that of an `n` fix, or of its source, which names it (`n=`) or else
+    is a sample that the GWAS Catalog records (data/samples.tsv). `plan`: {study: its fixes that change the file}."""
+    sizes = {row["accession"]: float(row["n"]) for row in cite.table(data / "samples.tsv")} if (data / "samples.tsv").exists() else {}
+    given = {}
+    for study, fixes in plan.items():
+        for row in fixes:
+            said = fix.sourced(row["value"]) if row["fix"] == "source" else {}
+            if n := float(row["value"]) if row["fix"] == "n" else said.get("n") or sizes.get(said.get("source")):
+                given[study] = round(n)
+    return given
+
+
 def laid(d: pd.DataFrame, pairs: dict[str, pd.DataFrame], data: Path, copies: Path | None = None) -> tuple[pd.DataFrame, dict[str, pd.DataFrame], dict[str, dict], dict[str, dict]]:
     """The studies and the tables of pairs with the corrections laid over them; `fixed`, {study: its corrections as
     [fix, what it gives, why]}; and `was`, {study: the release's values of what changed}, with, under each ancestry,
@@ -44,17 +57,13 @@ def laid(d: pd.DataFrame, pairs: dict[str, pd.DataFrame], data: Path, copies: Pa
     if lacking := [study for study in plan if study not in h2.index]:
         raise ValueError(f"data/corrected_h2.tsv lacks {lacking[0]}: run python -m corrections.ldsc")
     rg = pd.read_csv(data / "corrected_rg.tsv", sep="\t", dtype=str, keep_default_na=False)
-    sizes = {row["accession"]: float(row["n"]) for row in cite.table(data / "samples.tsv")} if (data / "samples.tsv").exists() else {}
     new = d.copy()
-    for study, fixes in plan.items():
+    for study in plan:
         for column in ("h2", "h2_se", "h2_z", "intercept"):
             new.at[study, column] = float(h2.at[study, column])
         new.at[study, "m"], new.at[study, "m_rg"] = int(h2.at[study, "m"]), pd.NA  # the SNPs of the copy; the release's count for rg is not the copy's
-        for row in fixes:  # the N that a correction gives: its own, or that of its source in the GWAS Catalog
-            said = fix.sourced(row["value"]) if row["fix"] == "source" else {}
-            n = float(row["value"]) if row["fix"] == "n" else said.get("n") or sizes.get(said.get("source"))
-            if n:
-                new.at[study, "n"] = round(n)
+    for study, n in counts(plan, data).items():
+        new.at[study, "n"] = n
     correlated = set(rg["trait1"]) | set(rg["trait2"])
     new["cross"] = new["cross"] | new.index.isin([study for study in plan if study in correlated])
     new["signed"] = new["signed"] | new["cross"]

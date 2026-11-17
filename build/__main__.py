@@ -5,8 +5,9 @@
 RELEASE defaults to $SUMSTATS_RELEASE; without $SUMSTATS_PASSPHRASE the build asks for the passphrase. Neither is
 ever written to the repository. The build writes, in site/data/:
 
-  studies.json         the inventory with h², each study's short name, the paper it cites and
-                       what the quality checks say of it, and the release's counts       public
+  studies.json         the inventory with h², each study's short name, the paper it cites,
+                       what the quality checks say of it, its cases and controls, and
+                       whether it is the study to use of its trait; the release's counts  public
   papers.json          every paper cited: authors, title, journal, DOI, BibTeX entry     public
   candidates.json      the candidates for the next release, and the rule's backtest      public
   rg_{ancestry}.json   every genetic correlation of an ancestry                          public
@@ -16,7 +17,9 @@ The papers are those of data/references.tsv and data/papers.json (python -m pape
 data/names.tsv (python -m names). A study without a short name stops the build. The quality checks (qc/checks.py)
 judge each study from its file as measured (data/metrics.tsv: python -m qc.scan), its results and its label; a
 corrected study, as corrected (its copy as measured: data/metrics_corrected.tsv), with what they say of the release's
-file kept beside. The candidates are those of data/candidates.json (python -m candidates), as they are.
+file kept beside. A study's cases and controls are those of data/cases.tsv (python -m cases); of the studies of a
+trait and an ancestry that pass, the one of the largest effective N is recommended (build/recommend.py). The
+candidates are those of data/candidates.json (python -m candidates), as they are.
 
 A release that has not changed rewrites the same files, and keeps the encrypted one as it is, so readers stay logged in.
 """
@@ -30,7 +33,9 @@ from pathlib import Path
 
 from cryptography.exceptions import InvalidTag
 
-from build import crypt, merge, overlay, release as rel
+import pandas as pd
+
+from build import crypt, merge, overlay, recommend, release as rel
 
 SITE_DATA = Path(__file__).parents[1] / "site" / "data"
 BLOB = "paths.enc.json"
@@ -76,13 +81,23 @@ def build(release: Path, out: Path, passphrase: str, iterations: int = crypt.ITE
             t["was"] = {str(position): before[position] for position in sorted(before)}
     named = "|".join(re.escape(study) for study in sorted(d.index, key=len, reverse=True))
     said = lambda text: re.sub(rf"(?<![\w.])({named})(?![\w.])", r"{\1}", text)  # a study that a correction's reason names, as the site links it
-    public = d.assign(name=merge.names(d, data), of=of).join(judged[["qc", "hm3", "chi2", "lambda"]])[["name", "of", *rel.PUBLIC, "qc", "hm3", "chi2", "lambda"]].reset_index()
+    name, sized = merge.names(d, data), merge.sizes(d, judged["largest"], data)
+    published = pd.Series([papers[pmids[0]]["published"] if pmids else "" for pmids in cited], index=d.index)  # of the paper of a study's statistics
+    recommended, superseded = recommend.chosen(pd.DataFrame({"of": of, "anc": d["anc"], "qc": judged["qc"], "n": d["n"], "neff": sized["neff"], "h2_z": d["h2_z"], "name": name, "published": published}))
+    binary = sized["kind"] == "binary"  # a quantitative study's effective N is its N: only a binary study's cases, controls and effective N are written
+    counted = sized[["cases", "controls", "neff"]].where(binary).astype("Int64")
+    public = (d.assign(name=name, of=of).join(judged[["qc", "hm3", "chi2", "lambda"]]).join(counted)
+              .assign(kind=sized["kind"].where(binary), cases_from=sized["cases_from"], cases_how=sized["cases_how"], rec=recommended, sup=superseded)
+              [["name", "of", *rel.PUBLIC, "qc", "hm3", "chi2", "lambda", "kind", "cases", "controls", "neff", "cases_from", "cases_how", "rec", "sup"]].reset_index())
     records = public.astype(object).where(public.notna(), None).to_dict("records")
     records = [{k: v for k, v in r.items() if v is not None} | ({"cite": pmids} if pmids else {}) | ({"notes": notes} if notes else {})
                | ({"fixed": [[kind, value, said(why)] for kind, value, why in fixed[r["id"]]]} if r["id"] in fixed else {}) | ({"was": was[r["id"]]} if r["id"] in was else {})
                for r, pmids, notes in zip(records, cited, judged["notes"])]
     summary = rel.summary(release, theirs, as_released) | {"qc": {level: int((judged["qc"] == level).sum()) for level in ("pass", "warn", "fail")},
-                                                          "traits": {"all": len(traits), "efo": sum(bool(efo) for efo, _ in traits.values())}}
+                                                          "traits": {"all": len(traits), "efo": sum(bool(efo) for efo, _ in traits.values())},
+                                                          "binary": {"studies": int(binary.sum()), "counted": int((binary & sized["neff"].notna()).sum())},
+                                                          "recommended": {"of": int(pd.DataFrame({"of": of, "anc": d["anc"]}).drop_duplicates().shape[0]), "studies": int(recommended.notna().sum()),
+                                                                          "by_n": int((recommended == "n").sum()), "superseded": int(superseded.notna().sum())}}
     if fixed:
         summary["corrected"] = {"studies": len(fixed), "copies": sum(any(kind != "relabel" for kind, _, _ in fixes) for fixes in fixed.values()),
                                 "qc": {level: int((released["qc"] == level).sum()) for level in ("pass", "warn", "fail")},  # of the release's files

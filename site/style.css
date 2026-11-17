@@ -183,6 +183,8 @@ footer { margin-top: .9rem; padding-top: .8rem; padding-bottom: 2.5rem; border-t
 #traits-q { width: 22rem; max-width: 100%; }
 .prose > #traits-list { max-width: 100%; }  /* the table of traits may be wider than the text */
 #traits-list td:last-child { white-space: normal; min-width: 24rem; }  /* a trait's studies wrap */
+#traits-list td:nth-last-child(2) { white-space: normal; min-width: 14rem; }  /* so do the studies to use, one an ancestry */
+#traits-list a.superseded { color: var(--muted); }  /* a study that the recommended one supersedes */
 .prose td:first-child, .prose th:first-child { white-space: normal; }
 .prose td.num, .prose th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .prose code { font-family: inherit; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: .05em .3em; overflow-wrap: anywhere; }

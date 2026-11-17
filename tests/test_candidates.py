@@ -79,9 +79,11 @@ def test_a_study_s_sex_is_read_from_its_metadata_file(made_up, tmp_path):
 # ---------------------------------------------------------------- the committed result
 
 
-def test_the_samples_are_those_of_the_papers_cited():
+def test_the_samples_are_those_of_the_papers_cited_and_those_that_a_study_s_cases_are_from():
     samples = pd.read_csv(ROOT / "data" / "samples.tsv", sep="\t", dtype=str, keep_default_na=False)
-    assert set(samples["pmid"]) <= set(json.loads((ROOT / "data" / "papers.json").read_text())) and not samples["accession"].duplicated().any()
+    named = set(pd.read_csv(ROOT / "data" / "cases.tsv", sep="\t", dtype=str, keep_default_na=False)["source"])  # a record of another paper may hold a study's sample
+    cited = samples["pmid"].isin(set(json.loads((ROOT / "data" / "papers.json").read_text())))
+    assert (cited | samples["accession"].isin(named)).all() and (~cited).sum() == 12 and not samples["accession"].duplicated().any()
     assert samples.groupby("pmid").size().max() <= tomllib.loads((ROOT / "data" / "candidates.toml").read_text())["rule"]["max_studies"]  # among more, one always fits
     by_ancestry = samples["ancestries"].str.findall(r" (\d+)(?:;|$)").map(lambda counts: sum(map(int, counts)))
     assert (by_ancestry == samples["n"].astype(int)).all() and (samples["n"].astype(int) > 0).all()  # the individuals of each ancestry add up to the sample

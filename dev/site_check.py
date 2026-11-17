@@ -119,10 +119,14 @@ def text(d):
 
 
 def table_of(studies, paths):
-    """The file of the studies ticked: a line each, with its trait, what the checks say and whether it is corrected (by a copy, or its label alone), and the path after login."""
-    head = ["short_name", "id", "release_name", "trait", "ancestry", "n", "reference", "published", "pmid", "qc", "corrected", *(["path"] if paths else [])]
+    """The file of the studies ticked: a line each, with its trait, its cases, controls and effective N, what the checks say, whether it is corrected (by a copy, or its label
+    alone), whether it is the study to use of its trait or which supersedes it, and the path after login."""
+    head = ["short_name", "id", "release_name", "trait", "ancestry", "n", "cases", "controls", "effective_n", "reference", "published", "pmid", "qc", "corrected", "recommended", "superseded_by",
+            *(["path"] if paths else [])]
     corrected = lambda d: "copy" if any(kind != "relabel" for kind, _, _ in d.get("fixed", [])) else "label" if "fixed" in d else ""
-    lines = [[d["name"], d["id"], d["trait"], d["of"], d["anc"], str(d["n"]), label(d), published(d), ";".join(d.get("cite", [])), d["qc"], corrected(d), *([file_path(d["id"])] if paths else [])] for d in studies]
+    lines = [[d["name"], d["id"], d["trait"], d["of"], d["anc"], str(d["n"]), str(d.get("cases", "")), str(d.get("controls", "")), str(d.get("neff", "") if d.get("kind") == "binary" else d["n"]),
+              label(d), published(d), ";".join(d.get("cite", [])), d["qc"], corrected(d), "yes" if "rec" in d else "", BY_ID[d["sup"]]["name"] if "sup" in d else "", *([file_path(d["id"])] if paths else [])]
+             for d in studies]
     return "".join("\t".join(line) + "\n" for line in [head, *lines])
 
 
@@ -201,7 +205,10 @@ def run(pw, url, name, **context):
     ok &= count() == f"{sum('panel' in d for d in STUDIES if d['anc'] == 'EUR')} of 602 studies"
     page.uncheck("#f-panel")
     page.select_option("#f-anc", "")
-    check(f"[{name}] the filters count as the data does: ancestry, h² z > 6, signed, nonredundant", ok and count() == "602 studies", count)
+    page.check("#f-rec")
+    ok &= count() == f"{RELEASE['recommended']['studies']} of 602 studies" and set(page.locator("#sumstats-table td .qc").all_inner_texts()) == {"pass"}
+    page.uncheck("#f-rec")
+    check(f"[{name}] the filters count as the data does: ancestry, h² z > 6, signed, nonredundant, recommended", ok and count() == "602 studies", count)
     ok = True
     for level in ("pass", "warn", "fail"):
         page.select_option("#f-qc", level)
@@ -542,6 +549,32 @@ def run(pw, url, name, **context):
     untouched = next(d for d in STUDIES if "fixed" not in d and d["qc"] == "warn")
     show(f"?study={untouched['id']}", "#view-study .fields")
     check(f"[{name}] a study without a correction has one verdict", row("QC").startswith("warn") and page.locator("#view-study .label", has_text=re.compile("^QC as ")).count() == 0, lambda: row("QC"))
+    # cases, controls and effective N; the study to use of a trait
+    veins = BY_ID["PASS_VaricoseVeins_Ahmed2022"]
+    show(f"?study={veins['id']}", "#view-study .fields")
+    counted = row("Cases and controls")
+    check(f"[{name}] a binary study's page gives its cases and controls, its effective N and where they are from",
+          counted == f"{veins['cases']:,} and {veins['controls']:,}: effective N {veins['neff']:,} · the paper The paper's 22,473 cases and 379,183 controls of UK Biobank; they sum to its N."
+          and page.locator("#view-study .row", has_text="Cases and controls").locator("a", has_text="the paper").get_attribute("href") == "https://pubmed.ncbi.nlm.nih.gov/35654884/"
+          and veins["neff"] == round(4 / (1 / veins["cases"] + 1 / veins["controls"])) and row("Recommended") == "yes: the one study of this trait and ancestry that passes the checks", lambda: (counted, row("Recommended")))
+    shot("study-cases", full=False)
+    stenosis = BY_ID["GCST90651074"]
+    show(f"?study={stenosis['id']}", "#view-study .fields")
+    check(f"[{name}] cases that are those of a record of the GWAS Catalog link to it",
+          row("Cases and controls") == f"{stenosis['cases']:,} and {stenosis['controls']:,}: effective N {stenosis['neff']:,} · GCST90651074"
+          and page.locator("#view-study .row", has_text="Cases and controls").locator("a").get_attribute("href") == "https://www.ebi.ac.uk/gwas/studies/GCST90651074", lambda: row("Cases and controls"))
+    told = {}
+    for study in ("UKB_460K.disease_T2D", "PASS_Type2Diabetes_Xue2018", "PASS_BMI1", "PASS_Celiac", "UKB_460K.body_HEIGHTz"):
+        show(f"?study={study}", "#view-study .fields")
+        told[study] = (row("Recommended"), row("Cases and controls") if page.locator("#view-study .label", has_text="Cases and controls").count() else None)
+        if study == "UKB_460K.disease_T2D":
+            shot("study-cases-not-public", full=False)
+    check(f"[{name}] a study whose cases are not public says so, and is ranked by N with the others of its trait; an older study is superseded; a trait of which nothing passes has no study to use",
+          told["UKB_460K.disease_T2D"] == ("no: the study to use is Xue_2018_T2D", "not known: no effective N A yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, "
+                                           "and no other public record of them was found.")
+          and told["PASS_Type2Diabetes_Xue2018"][0] == "yes: of the 3 studies of this trait and ancestry that pass the checks, the largest N. Effective N does not rank them: the cases of at least one are not known"
+          and told["PASS_BMI1"] == ("no: superseded by Yengo_2018_BMI", None) and told["PASS_Celiac"][0] == "no: no study of this trait and ancestry passes the checks"
+          and told["UKB_460K.body_HEIGHTz"] == ("no: superseded by Yengo_2022_Height", None), lambda: told)
     # the candidates for the next release, and the rule's backtest
     show("?tab=candidates", "#cand-steps tbody tr")
     table = lambda name: [[" ".join(cell.split()) for cell in row] for row in page.locator(f"#{name} tbody tr").evaluate_all("rows => rows.map((row) => [...row.cells].map((cell) => cell.innerText))")]
@@ -573,10 +606,14 @@ def run(pw, url, name, **context):
     for study in STUDIES:
         of.setdefault(study["of"], []).append(study)
     listed = sorted(of, key=lambda trait: (TRAITS[trait][1], trait.lower()))
-    row = lambda trait: [trait, TRAITS[trait][1], TRAITS[trait][0] or "–", *(str(sum(study["anc"] == anc for study in of[trait])) for anc in RELEASE["ancestries"]), ", ".join(study["name"] for study in of[trait])]
+    row = lambda trait: [trait, TRAITS[trait][1], TRAITS[trait][0] or "–", *(str(sum(study["anc"] == anc for study in of[trait])) for anc in RELEASE["ancestries"]),
+                         ", ".join(study["name"] for anc in RELEASE["ancestries"] for study in of[trait] if "rec" in study and study["anc"] == anc) or "–", ", ".join(study["name"] for study in of[trait])]
     rows, lead = table("traits-list"), page.inner_text("#traits-lead")
-    check(f"[{name}] traits: every trait with its category, its term and its studies by their short names, in the order of the categories",
+    old = page.locator("#traits-list a.superseded", has_text="Speliotes_2010_BMI")
+    check(f"[{name}] traits: every trait with its category, its term, the study to use of each ancestry and its studies by their short names, in the order of the categories",
           [r[:2] for r in rows] == [[trait, TRAITS[trait][1]] for trait in listed] and rows[0] == row(listed[0]) and row("Body mass index") in rows and len(rows) == RELEASE["traits"]["all"] == 335
+          and row("Body mass index")[5] == "Yengo_2018_BMI, Akiyama_2017_BMIEAS" and row("Celiac disease")[5] == "–" and old.get_attribute("title") == "superseded by Yengo_2018_BMI"
+          and page.locator("#traits-list a.superseded").count() == RELEASE["recommended"]["superseded"]
           and lead.startswith("The 602 studies are of 335 traits: 327 have a study of EUR ancestry, 49 have a study of EAS ancestry. 316 have a term") and page.title() == "Traits · GWAS Sumstats"
           and page.locator("#traits-list a", has_text="EFO_0004340").get_attribute("href") == "https://www.ebi.ac.uk/ols4/ontologies/efo/classes?short_form=EFO_0004340", lambda: (rows[:2], lead))
     page.fill("#traits-q", "sleep duration")

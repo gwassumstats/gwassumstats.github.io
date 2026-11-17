@@ -27,7 +27,7 @@ const state = {
   count: {},          // ancestry → its studies in the panel and with genetic correlations, as shown: with the corrections
   view: "sumstats",   // a tab, or "study": the page of state.study
   study: null,
-  filter: { q: "", anc: "", qc: "", z6: false, signed: false, panel: false, ticked: false },  // of the studies under "sumstats" and "heritability"
+  filter: { q: "", anc: "", qc: "", z6: false, signed: false, panel: false, rec: false, ticked: false },  // of the studies under "sumstats" and "heritability"
   cart: new Set(),    // the IDs of the studies ticked, for the exports; kept in this browser
   sort: { sumstats: null, h2: { key: "h2", dir: -1 }, neighbours: null },  // null: the release's order; for neighbours, the strongest first
   rg: { a: null, b: null, strict: true, all: false, heat: null },  // the pair looked up, the neighbours listed, the heatmap drawn ({ anc, kind })
@@ -121,6 +121,10 @@ const verdict = (d) => {
 const copied = (d) => (d.fixed ?? []).some(([kind]) => kind !== "relabel");
 // What the checks say, and "corrected" beside it for a study that is shown, and judged, as corrected
 const verdictOf = (d) => (d.fixed ? [verdict(d), " ", el("span", "fixed", "corrected")] : verdict(d));
+// A study's effective N: its N if its trait is quantitative; that of its cases and controls if it is binary and they are known
+const effectiveN = (d) => (d.kind === "binary" ? d.neff : d.n);
+// Where a study's cases and controls are from: a record of the GWAS Catalog or a paper, linked; or as the table names it
+const countedIn = (from) => (/^GCST\d+$/.test(from) ? outside(`${CATALOG}${from}`, from) : /^PMID \d+$/.test(from) ? outside(`${PUBMED}${from.slice(5)}/`, "the paper") : `the ${from}`);
 // What a correction did, in a few words: [kind, what it gives, why] of data/corrections.tsv
 const DONE = {
   source: (value) => { const from = value.split(";")[0].trim(); return ["taken again from its source, ", /^GCST\d+$/.test(from) ? outside(`${CATALOG}${from}`, from) : httpUrl(from) ? outside(from, "the authors' file") : from, ", and formatted as the release formats"]; },
@@ -283,7 +287,7 @@ function pathLine(d, label = "") {
 
 function shown() {
   const f = state.filter, sought = words(f.q);
-  return state.studies.filter((d) => (!f.anc || d.anc === f.anc) && (!f.qc || (f.qc === "corrected" ? Boolean(d.fixed) : d.qc === f.qc)) && (!f.z6 || d.h2_z > 6) && (!f.signed || d.signed) && (!f.panel || d.panel)
+  return state.studies.filter((d) => (!f.anc || d.anc === f.anc) && (!f.qc || (f.qc === "corrected" ? Boolean(d.fixed) : d.qc === f.qc)) && (!f.z6 || d.h2_z > 6) && (!f.signed || d.signed) && (!f.panel || d.panel) && (!f.rec || d.rec)
     && (!f.ticked || state.cart.has(d.id)) && sought.every((w) => d.text.includes(w)));
 }
 
@@ -347,10 +351,12 @@ function renderCart() {
 
 // The studies ticked as a table: short name, ID, and what a script needs to find and cite each; the path after login.
 // `corrected`: "copy" for a study shown by its corrected copy, whose path this is; "label" for one whose file holds
-// another trait than its name says: `trait` is what it holds
+// another trait than its name says: `trait` is what it holds. A binary study has its cases and controls where they
+// are known, and its effective N; a quantitative study's effective N is its N
 function exportStudies() {
   const columns = [["short_name", (d) => d.name], ["id", (d) => d.id], ["release_name", (d) => d.trait], ["trait", (d) => d.of], ["ancestry", (d) => d.anc], ["n", (d) => d.n],
-    ["reference", (d) => d.label], ["published", (d) => d.published], ["pmid", (d) => (d.cite ?? []).join(";")], ["qc", (d) => d.qc], ["corrected", (d) => (copied(d) ? "copy" : d.fixed ? "label" : "")],
+    ["cases", (d) => d.cases], ["controls", (d) => d.controls], ["effective_n", effectiveN], ["reference", (d) => d.label], ["published", (d) => d.published], ["pmid", (d) => (d.cite ?? []).join(";")],
+    ["qc", (d) => d.qc], ["corrected", (d) => (copied(d) ? "copy" : d.fixed ? "label" : "")], ["recommended", (d) => (d.rec ? "yes" : "")], ["superseded_by", (d) => (d.sup ? state.byId.get(d.sup).name : "")],
     ...(state.paths ? [["path", filePath]] : [])];
   const cell = (value) => String(value ?? "").replace(/[\t\r\n]+/g, " ");
   const lines = [columns.map(([name]) => name), ...ticked().map((d) => columns.map(([, value]) => cell(value(d))))];
@@ -740,6 +746,28 @@ function citation(pmid, paper) {
   return line;
 }
 
+// A binary study's cases and controls with where they are from, its effective N, and what a person noted of them
+function counted(d) {
+  const block = el("div"), head = el("div");
+  if (d.cases != null) head.append(`${int(d.cases)} and ${int(d.controls)}: effective N ${int(d.neff)}`, ...(d.cases_from ? [" · ", countedIn(d.cases_from)] : []));
+  else head.append("not known: no effective N");
+  block.append(head);
+  if (d.cases_how) {
+    const note = el("div", "hint");
+    note.append(...finding(d.cases_how.charAt(0).toUpperCase() + d.cases_how.slice(1), true), ".");
+    block.append(note);
+  }
+  return block;
+}
+// Whether a study is the one to use of its trait and ancestry, and if not, which is
+function recommendation(d) {
+  const same = state.studies.filter((s) => s.of === d.of && s.anc === d.anc), passing = same.filter((s) => s.qc === "pass"), best = same.find((s) => s.rec);
+  if (d.rec && passing.length === 1) return ["yes: the one study of this trait and ancestry that passes the checks"];
+  if (d.rec) return [`yes: of the ${int(passing.length)} studies of this trait and ancestry that pass the checks, the largest ${d.rec === "neff" ? "effective N" : "N. Effective N does not rank them: the cases of at least one are not known"}`];
+  if (!best) return ["no: no study of this trait and ancestry passes the checks"];
+  return [d.sup ? "no: superseded by " : "no: the study to use is ", studyLink(best)];
+}
+
 // What was corrected of a study and why, and what the release has where the corrected copy differs
 function corrected(d) {
   const block = el("div"), w = d.was ?? {}, before = [];
@@ -791,13 +819,14 @@ async function renderStudy() {
   fields.append(
     field("ID", ...parts(d.id)), field("Release name", d.trait),
     field("Trait", action(d.of, () => { $("traits-q").value = d.of; go({ tab: "traits" }); }), ` (${state.traits[d.of][1]}${term(d.of).length ? "; " : ""}`, ...term(d.of), ")"),
-    field("Ancestry", d.anc), field("N", int(d.n)),
+    field("Ancestry", d.anc), field("N", int(d.n)), ...(d.kind === "binary" ? [field("Cases and controls", counted(d))] : []),
     field("M", d.m_rg != null && d.m_rg !== d.m ? `${int(d.m)} SNPs; ${int(d.m_rg)} without the strand-ambiguous ones, for rg` : `${int(d.m)} SNPs`),
     field("Release", d.origin), field("Reference", cited),
     ...(httpUrl(d.catalog) ? [field("GWAS Catalog", outside(d.catalog, d.id))] : []),
     field("Signed", yesNo(d.signed)), field("Allele info", yesNo(d.alleles)), field("Cross-trait LDSC", yesNo(d.cross)),
     field("Nonredundant panel", (d.panel ? `yes: ${int(d.panel)} of ${int(state.count[d.anc].panel)} in the ${d.anc} panel, by h² z` : "no")
       + (d.was && "panel" in d.was ? `; in the release's panel: ${d.was.panel ? "yes" : "no"}` : "")),
+    field("Recommended", ...recommendation(d)),
     field("h² ± SE", plusMinus(d.h2, d.h2_se)), field("h² z", sig(d.h2_z)), field("Intercept", fixed(4)(d.intercept)),
     field(d.was?.qc ? "QC as corrected" : "QC", checked(d)),
     ...(d.fixed ? [field("Corrected", corrected(d))] : []),
@@ -900,11 +929,19 @@ function renderTraits() {
   const kept = all.filter((t) => sought.every((w) => t.text.includes(w))).sort((a, b) => plainly(a.category, b.category) || compare(a.trait, b.trait));
   const having = (anc) => all.filter((t) => t.studies.some((d) => d.anc === anc)).length;
   $("traits-lead").textContent = `The ${int(state.studies.length)} studies are of ${howMany(all.length, "trait")}: ${ancestries.map((anc) => `${int(having(anc))} have a study of ${anc} ancestry`).join(", ")}. `
-    + `${int(state.release.traits.efo)} have a term of the Experimental Factor Ontology, as the GWAS Catalog uses it. A trait is the same whatever the paper, the ancestry, the sex or the adjustment of its studies.`;
+    + `${int(state.release.traits.efo)} have a term of the Experimental Factor Ontology, as the GWAS Catalog uses it. A trait is the same whatever the paper, the ancestry, the sex or the adjustment of its studies. `
+    + "Recommended: the study to use of the trait, one for each ancestry that has a study which passes the checks; a study in grey is superseded by it.";
   $("traits-none").hidden = kept.length > 0;
   $("traits-list").hidden = !kept.length;
-  grid($("traits-list"), ["Trait", "Category", "Term", ...ancestries, "Studies"],
-    kept.map((t) => [t.trait, t.category, term(t.trait).length ? term(t.trait) : "–", ...ancestries.map((anc) => t.studies.filter((d) => d.anc === anc).length), t.studies.flatMap((d, k) => [k ? ", " : "", studyLink(d)])]));
+  const listed = (d) => {  // a study in its trait's row: one that another supersedes says so when the pointer rests on it
+    const link = studyLink(d);
+    if (d.sup) Object.assign(link, { className: "superseded", title: `superseded by ${state.byId.get(d.sup).name}` });
+    return link;
+  };
+  grid($("traits-list"), ["Trait", "Category", "Term", ...ancestries, "Recommended", "Studies"],
+    kept.map((t) => [t.trait, t.category, term(t.trait).length ? term(t.trait) : "–", ...ancestries.map((anc) => t.studies.filter((d) => d.anc === anc).length),
+      t.studies.some((d) => d.rec) ? ancestries.flatMap((anc) => t.studies.filter((d) => d.rec && d.anc === anc)).flatMap((d, k) => [k ? ", " : "", studyLink(d)]) : "–",
+      t.studies.flatMap((d, k) => [k ? ", " : "", listed(d)])]));
 }
 
 // ---------------------------------------------------------------- the bar, the tabs, the address
@@ -1013,7 +1050,7 @@ function listen() {
   $("filters").addEventListener("submit", (event) => event.preventDefault());
   $("q").addEventListener("input", () => { f.q = $("q").value; renderList(); });
   for (const name of ["anc", "qc"]) $(`f-${name}`).addEventListener("change", () => { f[name] = $(`f-${name}`).value; renderList(); });
-  for (const name of ["z6", "signed", "panel", "ticked"]) $(`f-${name}`).addEventListener("change", () => { f[name] = $(`f-${name}`).checked; renderList(); });
+  for (const name of ["z6", "signed", "panel", "rec", "ticked"]) $(`f-${name}`).addEventListener("change", () => { f[name] = $(`f-${name}`).checked; renderList(); });
 
   $("traits-q").addEventListener("input", () => { if (state.view === "traits") renderTraits(); });
 

@@ -245,6 +245,34 @@ def test_a_corrected_study_is_judged_as_corrected():
     assert not [d["id"] for d in corrected for _, text in d.get("notes", []) if "sign" in text and "SNPs with |Z| > 4" in text]  # no corrected study disagrees with another of its trait
 
 
+def test_one_study_of_each_trait_and_ancestry_is_recommended():
+    """Of the studies of a trait and an ancestry that pass, the largest effective N; where the cases of one are not
+    known, the largest N. An older study of the same sex is superseded by it."""
+    groups, sex = {}, lambda d: next((word for word in ("Female", "Male") if word in d["name"].split("_", 2)[2]), "")
+    for d in STUDIES:
+        groups.setdefault((d["of"], d["anc"]), []).append(d)
+    size = lambda d: d.get("neff") if d.get("kind") == "binary" else d["n"]  # a quantitative study's effective N is its N
+    for studies in groups.values():
+        passing, chosen = [d for d in studies if d["qc"] == "pass"], [d for d in studies if "rec" in d]
+        assert len(chosen) == bool(passing) and all(d["qc"] == "pass" for d in chosen)  # one, if any passes
+        for best in chosen:
+            by = "n" if any(size(d) is None for d in passing) else "neff"
+            assert best["rec"] == by and (best["n"] if by == "n" else size(best), best["h2_z"]) == max((d["n"] if by == "n" else size(d), d["h2_z"]) for d in passing)
+        for d in studies:
+            if "sup" in d:  # by the study of its own trait and ancestry, whose paper is the later one
+                best, days = BY_ID[d["sup"]], [PAPERS[s["cite"][0]]["published"] for s in (d, BY_ID[d["sup"]])]
+                assert best in chosen and "rec" not in d and sex(d) == sex(best) and days[0][:min(map(len, days))] < days[1][:min(map(len, days))]
+    counted = RELEASE["recommended"]
+    assert counted == {"of": len(groups), "studies": sum("rec" in d for d in STUDIES), "by_n": sum(d.get("rec") == "n" for d in STUDIES), "superseded": sum("sup" in d for d in STUDIES)}
+    assert counted["of"] == 376 and 300 < counted["studies"] < counted["of"] and counted["by_n"] < 40
+    assert RELEASE["binary"] == {"studies": sum(d.get("kind") == "binary" for d in STUDIES), "counted": sum("neff" in d for d in STUDIES)}
+    # the largest study of height supersedes the two before it; of schizophrenia, the corrected copy of the largest is the one to use
+    assert BY_ID["PASS_Height_Yengo2022"]["rec"] == "neff" and BY_ID["PASS_Height1"]["sup"] == BY_ID["UKB_460K.body_HEIGHTz"]["sup"] == "PASS_Height_Yengo2022"
+    assert BY_ID["PASS_Schizophrenia_Trubetskoy2022"]["rec"] == "neff" and WAS["PASS_Schizophrenia_Trubetskoy2022"]["qc"] == "warn"
+    # where the cases of a study that passes are not public, N ranks: of type 2 diabetes, the meta-analysis with more individuals than UK Biobank's own
+    assert BY_ID["PASS_Type2Diabetes_Xue2018"]["rec"] == "n" and "neff" not in BY_ID["UKB_460K.disease_T2D"] and "sup" not in BY_ID["UKB_460K.disease_T2D"]
+
+
 def test_a_problem_is_reported_through_a_form_that_warns_it_is_public():
     form, script = (ROOT / ".github" / "ISSUE_TEMPLATE" / "study.yml").read_text(), (SITE / "app.js").read_text()
     assert "id: study" in form and "public" in form and 'template: "study.yml"' in script and "study: `${d.name} (${d.id})`" in script  # the page fills in the study

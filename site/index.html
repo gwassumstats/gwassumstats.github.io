@@ -39,6 +39,7 @@
       <label title="Heritability z-score above 6"><input id="f-z6" type="checkbox"> h² z &gt; 6</label>
       <label title="Signed sumstats: used for genetic correlation"><input id="f-signed" type="checkbox"> signed</label>
       <label title="In the nonredundant panel of its ancestry"><input id="f-panel" type="checkbox"> nonredundant</label>
+      <label title="The study to use of its trait and ancestry: of those that pass the checks, the largest effective N"><input id="f-rec" type="checkbox"> recommended</label>
       <label title="The studies you ticked"><input id="f-ticked" type="checkbox"> ticked</label>
     </form>
     <p class="page-head"><span id="count" role="status"></span><span id="cart" hidden></span></p>
@@ -188,6 +189,19 @@
       the <span data-v="traits.all">335</span> traits with their studies. A trait has a broad category and, for <span data-v="traits.efo">316</span> of them, a term of the Experimental Factor
       Ontology: the one the GWAS Catalog uses for traits of that name. The others have none that fits: an interaction, a contrast of two disorders, a procedure code. The trait is that of what
       a study's file holds, where its name in the release says otherwise.</p>
+
+    <h2>Which study of a trait should I use?</h2>
+    <p>The <a href="?tab=traits" data-tab="traits">traits</a> tab names one study for each trait and ancestry, and the tables can list these alone: <span data-v="recommended.studies">346</span>
+      studies, for the <span data-v="recommended.of">376</span> pairs of a trait and an ancestry. It is, among the studies of the trait and ancestry that pass the checks, the one of the largest
+      effective N; h² z settles a tie. Where the cases of one of them are not known, effective N cannot rank them, and the largest N is taken instead: so for
+      <span data-v="recommended.by_n">32</span> of the studies. A trait of which no study passes has none. An older study of the same trait, ancestry and sex is superseded by the recommended one:
+      <span data-v="recommended.superseded">84</span> studies are. A study of one sex, or a newer one, is another analysis, and is left unmarked.</p>
+
+    <h2>What are cases, controls and effective N?</h2>
+    <p>A study of a binary trait, a disease or a yes-or-no answer, has the power of its cases and controls, not of their sum: its effective N is 4 / (1/cases + 1/controls). A study's page
+      gives them with the record they are from: the GWAS Catalog's record of the study or of its paper, the paper itself, or the Pan-UK Biobank's manifest. Of the
+      <span data-v="binary.studies">244</span> binary studies, <span data-v="binary.counted">207</span> have them. The others have no effective N: the cases of the UK Biobank studies of
+      Loh et al. 2018 are not public, and a few records count individuals only. A quantitative study's effective N is its N.</p>
 
     <h2>What is in a file?</h2>
     <p>One row per SNP, tab-separated, in the <code>.sumstats</code> format of LDSC. Only HapMap3 SNPs.</p>

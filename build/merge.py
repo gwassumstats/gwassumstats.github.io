@@ -1,5 +1,5 @@
 """What the repository adds to a release, from data/: the paper of each study, its short name, the trait it is of,
-and what the quality checks say of it."""
+what the quality checks say of it, and its cases and controls."""
 import json
 import re
 import tomllib
@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from build import recommend
 from papers import cite
 from qc import checks
 
@@ -115,4 +116,25 @@ def quality(d: pd.DataFrame, tables: dict, data: Path, corrected: dict[str, list
     judged = checks.judge(d, tables, metrics, catalog, reviewed, by_hand, tomllib.loads((data / "checks.toml").read_text(encoding="utf-8")), samples, cited,
                           compared, traits(d, data)[0].to_dict(), names(d, data).to_dict())
     file = metrics.xs("h2", level="file").reindex(d.index)
-    return judged.assign(hm3=(file["in_hm3"] / file["hm3"]).clip(upper=1).round(3), chi2=file["chi2_mean"].round(3), **{"lambda": file["lambda_gc"].round(3)})
+    return judged.assign(hm3=(file["in_hm3"] / file["hm3"]).clip(upper=1).round(3), chi2=file["chi2_mean"].round(3), **{"lambda": file["lambda_gc"].round(3)}, largest=file["n_max"])
+
+
+def sizes(d: pd.DataFrame, largest: pd.Series, data: Path) -> pd.DataFrame:
+    """Of each study, from data/cases.tsv: whether its trait is binary (`kind`: "binary", "quantitative", or "" where
+    the table does not say yet); its `cases` and `controls`, missing where they are not known; the record they are
+    from (`cases_from`) and what a person noted of them (`cases_how`); and `neff`, its effective N
+    (build/recommend.py), missing where it is not known. `largest`: the largest N of the SNPs of each study's file.
+    Every study has a row."""
+    rows = {row["id"]: row for row in cite.table(data / "cases.tsv")}
+    lacking = d.index.difference(list(rows))
+    if len(lacking):
+        raise ValueError(f"data/cases.tsv lacks {lacking[0]}: run python -m cases")
+    if odd := [study for study in d.index if rows[study]["kind"] not in ("binary", "quantitative", "") or bool(rows[study]["cases"]) != bool(rows[study]["controls"])]:
+        raise ValueError(f"data/cases.tsv: {odd[0]} is binary or quantitative, with cases and controls or with neither")
+    number = lambda column: pd.Series([float(rows[study][column]) if rows[study][column] else float("nan") for study in d.index], index=d.index)
+    said = lambda study: rows[study]["how"].removeprefix("by hand: ") if rows[study]["how"].startswith("by hand: ") and rows[study]["kind"] == "binary" else None
+    t = pd.DataFrame({"kind": [rows[study]["kind"] for study in d.index], "cases": number("cases"), "controls": number("controls"),
+                      "cases_from": [rows[study]["source"] if rows[study]["kind"] == "binary" and rows[study]["source"] else None for study in d.index],
+                      "cases_how": [said(study) for study in d.index]}, index=d.index)
+    known = [recommend.effective(kind, n, cases, controls, most if pd.notna(most) else None) for kind, n, cases, controls, most in zip(t["kind"], d["n"], t["cases"], t["controls"], largest.reindex(d.index))]
+    return t.assign(neff=pd.Series(known, index=d.index, dtype=float).round())
