@@ -21,7 +21,7 @@ const svg = (tag, attrs = {}) => {
 
 const state = {
   loaded: false, studies: [], byId: new Map(), release: null,
-  papers: {},         // PMID → the label of a paper: "Speliotes et al. 2010 Nat Genet"
+  papers: {},         // PMID → a paper's label, "Speliotes et al. 2010 Nat Genet", and the day it was published
   view: "sumstats",   // a tab, or "study": the page of state.study
   study: null,
   filter: { q: "", anc: "", qc: "", z6: false, signed: false, panel: false, ticked: false },  // of the studies under "sumstats" and "heritability"
@@ -115,7 +115,11 @@ const verdict = (d) => {
   return word;
 };
 // A study's paper, by its label, linked to PubMed; the inventory's own words for a study whose paper is not known
-const reference = (d) => (d.cite ? outside(`${PUBMED}${d.cite[0]}/`, state.papers[d.cite[0]]) : parts(d.ref));
+const reference = (d) => (d.cite ? outside(`${PUBMED}${d.cite[0]}/`, d.label) : parts(d.ref));
+// The order of two studies by their papers: the earlier published first; then by label, which begins with the first
+// author; then by short name. Plain comparisons: a day is written 2010-10-10, or 2018-07 where PubMed gives no day.
+const plainly = (x, y) => (x < y ? -1 : x > y ? 1 : 0);
+const byPublication = (a, b) => plainly(a.published, b.published) || plainly(a.label, b.label) || plainly(a.name, b.name);
 
 const load = (name) => fetch(`data/${name}`, { cache: "no-cache" }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(`${name}: ${r.status}`))));
 const papers = () => (records ??= load("papers.json").catch((e) => { records = undefined; throw e; }));  // loaded when first needed
@@ -268,8 +272,9 @@ function shown() {
 }
 
 const compare = (x, y) => (typeof x === "string" ? x.localeCompare(y, "en", { numeric: true, sensitivity: "base" }) : (x ?? -Infinity) - (y ?? -Infinity));
-// `list` by a column, in the direction asked; ties, and no sort at all, keep the order of `list`
-const sorted = (list, sort, value = (item) => item[sort.key]) => (sort ? [...list].sort((a, b) => sort.dir * compare(value(a), value(b))) : list);
+// `list` by a column, in the direction asked: by `order`, the column's own, or else by its values; ties, and no sort
+// at all, keep the order of `list`
+const sorted = (list, sort, value = (item) => item[sort.key], order = (a, b) => compare(value(a), value(b))) => (sort ? [...list].sort((a, b) => sort.dir * order(a, b)) : list);
 
 // ---------------------------------------------------------------- the cart: studies ticked, and what is exported of them
 
@@ -327,7 +332,7 @@ function renderCart() {
 // The studies ticked as a table: short name, ID, and what a script needs to find and cite each; the path after login
 function exportStudies() {
   const columns = [["short_name", (d) => d.name], ["id", (d) => d.id], ["release_name", (d) => d.trait], ["ancestry", (d) => d.anc], ["n", (d) => d.n],
-    ["reference", (d) => d.label], ["pmid", (d) => (d.cite ?? []).join(";")], ...(state.paths ? [["path", filePath]] : [])];
+    ["reference", (d) => d.label], ["published", (d) => d.published], ["pmid", (d) => (d.cite ?? []).join(";")], ...(state.paths ? [["path", filePath]] : [])];
   const cell = (value) => String(value ?? "").replace(/[\t\r\n]+/g, " ");
   const lines = [columns.map(([name]) => name), ...ticked().map((d) => columns.map(([, value]) => cell(value(d))))];
   download("gwas-sumstats-studies.tsv", `${lines.map((line) => line.join("\t")).join("\n")}\n`, "text/tab-separated-values");
@@ -343,7 +348,8 @@ async function exportReferences() {
   }
   const cited = new Map(), named = (d) => `${d.name} (${d.id})`;
   for (const d of ticked()) for (const pmid of d.cite ?? []) cited.set(pmid, [...(cited.get(pmid) ?? []), named(d)]);
-  const entries = [...cited].sort(([a], [b]) => compare(all[a].key, all[b].key)).map(([pmid, studies]) => `% ${studies.join(", ")}\n${all[pmid].bib}`);
+  const entries = [...cited].sort(([a], [b]) => plainly(all[a].published, all[b].published) || plainly(all[a].key, all[b].key))  // the earliest paper first
+    .map(([pmid, studies]) => `% ${studies.join(", ")}\n${all[pmid].bib}`);
   const without = ticked().filter((d) => !d.cite).map(named);
   download("gwas-sumstats-references.bib", entries.join("\n") + (without.length ? `\n% no paper known: ${without.join(", ")}\n` : ""), "application/x-bibtex");
 }
@@ -362,7 +368,7 @@ const COLUMNS = {
     { key: "n", label: "N", title: "Sample size", num: int },
     { key: "m", label: "M", title: "SNPs in the file", num: int },
     H2, H2_Z, CHECKS,
-    { key: "label", label: "Reference", title: "The study's paper", cls: "ref", show: reference }],
+    { key: "label", label: "Reference", title: "The study's paper; it sorts by the day the paper was published", cls: "ref", show: reference, order: byPublication }],
   h2: [TICK, STUDY, ANCESTRY, H2, H2_Z,
     { key: "intercept", label: "Intercept", title: "Intercept of the LD score regression", num: fixed(4) }, CHECKS],
   neighbours: [{ ...STUDY, show: (r) => studyLink(r.d) },
@@ -434,7 +440,8 @@ function renderList() {
   const view = state.view, columns = COLUMNS[view], list = shown(), all = state.studies.length;
   $("count").textContent = list.length === all ? howMany(all, "study", "studies") : `${int(list.length)} of ${howMany(all, "study", "studies")}`;
   const cache = rows[view];
-  const bodies = sorted(list, state.sort[view]).map((d) => cache.get(d.id) ?? cache.set(d.id, body(columns, d, pathLine(d))).get(d.id));
+  const by = columns.find((c) => c.key === state.sort[view]?.key)?.order;
+  const bodies = sorted(list, state.sort[view], undefined, by).map((d) => cache.get(d.id) ?? cache.set(d.id, body(columns, d, pathLine(d))).get(d.id));
   const head = header(columns, state.sort[view], (sort) => { state.sort[view] = sort; renderList(); });
   $(`${view}-table`).replaceChildren(head, ...(bodies.length ? bodies : [nothing(columns, "No study matches.")]));
   renderCart();
@@ -708,7 +715,7 @@ async function renderRg() {
 function citation(pmid, paper) {
   const line = el("div", "citation"), issue = `${paper.volume}${paper.issue ? `(${paper.issue})` : ""}`;
   line.append(`${paper.authors.map((name) => name.replace(/^\{|\}$/g, "")).join(", ")}${paper.more ? ", et al" : ""}. ${paper.title}. `
-    + `${paper.journal} ${paper.year}${issue ? `;${issue}` : ""}${paper.pages ? `:${paper.pages}` : ""}. `,
+    + `${paper.journal} ${paper.year}${issue ? `;${issue}` : ""}${paper.pages ? `:${paper.pages}` : ""}. Published ${day(paper.published)}. `,
     outside(`${PUBMED}${pmid}/`, "PubMed"), ...(paper.doi ? [" · ", outside(`${DOI}${paper.doi}`, "DOI")] : []));
   return line;
 }
@@ -732,7 +739,7 @@ function checked(d) {
 
 async function renderStudy() {
   const d = state.study, page = $("view-study"), fields = el("div", "fields"), cited = el("div"), ticking = el("label", "check");
-  cited.append(...(d.cite ? d.cite.map((pmid) => { const line = el("div", "citation"); line.append(outside(`${PUBMED}${pmid}/`, state.papers[pmid])); return line; }) : [d.ref]));
+  cited.append(...(d.cite ? d.cite.map((pmid) => { const line = el("div", "citation"); line.append(outside(`${PUBMED}${pmid}/`, state.papers[pmid].label)); return line; }) : [d.ref]));
   if (d.cite) papers().then((all) => { if (state.study === d) cited.replaceChildren(...d.cite.map((pmid) => citation(pmid, all[pmid]))); }, () => {});  // the labels stay if it fails
   ticking.append(tickBox(d), " ticked for export");
   fields.append(
@@ -906,9 +913,10 @@ function start(data) {
   state.studies = data.studies;
   state.papers = data.papers;
   for (const d of data.studies) {
-    d.label = d.cite ? state.papers[d.cite[0]] : d.ref;  // its paper, as the table lists and sorts it
+    d.label = d.cite ? state.papers[d.cite[0]].label : d.ref;  // its paper, as the table lists it
+    d.published = d.cite ? state.papers[d.cite[0]].published : "";  // and the day that paper was published, by which the table sorts it
     d.rank = QC.indexOf(d.qc);  // the worst sorts first
-    d.text = [d.name, d.id, d.trait, d.origin, d.ref, ...(d.cite ?? []).map((pmid) => state.papers[pmid])].join("\n").toLowerCase();  // what the search reads
+    d.text = [d.name, d.id, d.trait, d.origin, d.ref, ...(d.cite ?? []).map((pmid) => state.papers[pmid].label)].join("\n").toLowerCase();  // what the search reads
     state.byId.set(d.id, d);
   }
   state.loaded = true;

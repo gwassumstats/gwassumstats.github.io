@@ -49,7 +49,9 @@ their rule. Open: fixes to the studies that the checks flag wait for the owner (
   A label only: this repository never renames, moves or writes a file on O2, nor changes an ID. A future release may
   adopt short names as file names for new studies; that is the release owner's step.
 - *Paper, reference:* the paper a study cites (`data/references.tsv`, PubMed's record in `data/papers.json`); its
-  *label* is who and which year it is cited by, and its journal: `Speliotes et al. 2010 Nat Genet`.
+  *label* is who and which year it is cited by, and its journal: `Speliotes et al. 2010 Nat Genet`. A paper's day
+  of publication is the earliest of PubMed's online and print dates, as precise as PubMed gives it (`2010-10-10`,
+  or `2018-07`); the Reference column and the BibTeX export sort by it.
 - *Cart:* the studies a reader ticked, kept in the browser; it exports their names, IDs and paths (TSV) and their
   papers (BibTeX).
 - *QC, checks:* what `qc/checks.py` says of a study: *pass*, *warn* or *fail*, with its *findings*, each a fail, a

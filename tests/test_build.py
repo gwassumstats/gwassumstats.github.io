@@ -13,7 +13,7 @@ from build.__main__ import BLOB, build as build_with
 from build.release import tree
 from conftest import MEASURED, NAMES, NAN, PAPERS, RG, data_of, measured, write
 from names.__main__ import draft, trait
-from papers import cite
+from papers import cite, pubmed
 from papers.__main__ import choose, parse
 from qc import labels
 from qc.scan import measure
@@ -54,11 +54,13 @@ def test_a_study_cites_its_paper(mini, tmp_path):
     assert {d["id"]: d.get("cite") for d in data["studies"]} == {"A_unsigned": ["1"], "B": ["2"], "C": None, "GCST0001": ["111"], "D_EAS": ["3", "4"],
                                                                   "GCST0002": ["222"], "GCST0003": ["222"]}
     # who and which year a paper is cited by: its first author; a group by its short name; the inventory's year (2025), not that of the issue (2026)
-    assert data["papers"] == {"1": "Smith et al. 2010 Nature", "2": "TEC 2021 Nat Genet", "3": "Kim et al. 2018 Nat Genet", "4": "Kim 2018 Nature",
-                              "111": "Ortín Vela et al. 2025 Nat Genet", "222": "Ito 2024 Nat Commun"}
-    assert {pmid: paper["label"] for pmid, paper in papers.items()} == data["papers"] and list(papers) == ["1", "2", "3", "4", "111", "222"]
+    assert {pmid: paper["label"] for pmid, paper in data["papers"].items()} == {
+        "1": "Smith et al. 2010 Nature", "2": "TEC 2021 Nat Genet", "3": "Kim et al. 2018 Nat Genet", "4": "Kim 2018 Nature", "111": "Ortín Vela et al. 2025 Nat Genet", "222": "Ito 2024 Nat Commun"}
+    # the day each was published, as precisely as PubMed dates it: the table of studies sorts its references by it
+    assert {pmid: paper["published"] for pmid, paper in data["papers"].items()} == {"1": "2010-10-10", "2": "2021-03", "3": "2018-02-05", "4": "2018", "111": "2025-12-19", "222": "2024-06-01"}
+    assert {pmid: {"label": paper["label"], "published": paper["published"]} for pmid, paper in papers.items()} == data["papers"] and list(papers) == ["1", "2", "3", "4", "111", "222"]
     assert {pmid: paper["key"] for pmid, paper in papers.items()} == {"1": "Smith2010", "2": "TEC2021", "3": "Kim2018a", "4": "Kim2018b", "111": "OrtinVela2025", "222": "Ito2024"}
-    assert papers["1"] == {"key": "Smith2010", "label": "Smith et al. 2010 Nature", "authors": ["Smith J", "Doe A Jr", "Roe B"], "more": 1, "title": "Height of 1,000 people",
+    assert papers["1"] == {"key": "Smith2010", "label": "Smith et al. 2010 Nature", "published": "2010-10-10", "authors": ["Smith J", "Doe A Jr", "Roe B"], "more": 1, "title": "Height of 1,000 people",
                            "journal": "Nature", "year": "2010", "volume": "1", "issue": "2", "pages": "10-9", "doi": "10.1000/one",
                            "bib": "@article{Smith2010,\n  author = {Smith, J. and Doe, Jr, A. and Roe, B. and Poe, C.},\n  title = {{Height of 1,000 people}},\n  journal = {Nature},\n"
                                   "  year = {2010},\n  volume = {1},\n  number = {2},\n  pages = {10--19},\n  doi = {10.1000/one},\n  pmid = {1}\n}\n"}
@@ -272,6 +274,15 @@ def test_a_reference_of_the_inventory_names_author_year_and_journal():
     assert parse("Kessler et al. Nature") == ("Kessler", "", "Nature")
     assert parse("Sanchez-Roige et al. 2018 American Journal of Psychiatry") == ("Sanchez-Roige", "2018", "Am J Psychiatry")
     assert parse("PAN UKBB") == ("", "", "")  # no first author: left for a hand
+
+
+def test_the_day_a_paper_was_published_is_as_precise_as_pubmed_gives_it():
+    assert [pubmed.date(text) for text in ("2010 Oct 10", "2010 Nov", "2019 Jan-Feb", "2018 Dec 15-31", "2010", "2019 Spring", "2014 Feb 6", "")] \
+        == ["2010-10-10", "2010-11", "2019-01", "2018-12-15", "2010", "2019", "2014-02-06", ""]
+    # the earliest of the day online and the day in print; of two that may be the same day, the more precise
+    assert pubmed.earliest("2014-02-20", "2013-12-25") == "2013-12-25" and pubmed.earliest("2026-01", "2025-12-19") == "2025-12-19"
+    assert pubmed.earliest("2019-01", "2019-01-14") == "2019-01-14" and pubmed.earliest("2019-01", "2019-02-02") == "2019-01"
+    assert pubmed.earliest("2018-07", "") == "2018-07" and pubmed.earliest("2019", "2019-06-01") == "2019-06-01" and pubmed.earliest("", "") == ""
 
 
 def test_of_several_papers_the_one_whose_title_names_the_trait():

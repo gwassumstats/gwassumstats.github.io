@@ -26,8 +26,8 @@ with the lab's passphrase to see where they are. It costs $0.
 
 | File in `data/` | Content | Written by |
 |---|---|---|
-| `references.tsv` | A reference of the inventory → PMID, DOI, and how it was matched | `python -m papers`, then by hand |
-| `papers.json` | PubMed's record of every paper cited | `python -m papers` |
+| `references.tsv` | A reference of the inventory → PMID, DOI, the day the paper was published, and how it was matched | `python -m papers`, then by hand |
+| `papers.json` | PubMed's record of every paper cited, with the day it first appeared, online or in print | `python -m papers` |
 | `consortia.tsv` | A group that PubMed names as author → the short name it is cited by | By hand |
 | `names.tsv` | A study's ID → its short name, and how the name was made | `python -m names`, then by hand |
 | `abbreviations.tsv` | A phrase of a trait name → what stands for it in a short name | By hand |

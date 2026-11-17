@@ -99,7 +99,12 @@ def plus_minus(value, se):
 
 def label(d):
     """A study's paper as the table names it."""
-    return LABELS[d["cite"][0]] if "cite" in d else d["ref"]
+    return LABELS[d["cite"][0]]["label"] if "cite" in d else d["ref"]
+
+
+def published(d):
+    """The day a study's paper was published: 2010-10-10, or 2018-07 where PubMed gives no day."""
+    return LABELS[d["cite"][0]]["published"] if "cite" in d else ""
 
 
 def said(finding):
@@ -109,23 +114,23 @@ def said(finding):
 
 def text(d):
     """What the search reads of a study: its short name, its ID and name in the release, its release, its paper."""
-    return "\n".join([d["name"], d["id"], d["trait"], d["origin"], d["ref"], *(LABELS[pmid] for pmid in d.get("cite", []))]).lower()
+    return "\n".join([d["name"], d["id"], d["trait"], d["origin"], d["ref"], *(LABELS[pmid]["label"] for pmid in d.get("cite", []))]).lower()
 
 
 def table_of(studies, paths):
     """The file of the studies ticked: a line each, with the path after login."""
-    head = ["short_name", "id", "release_name", "ancestry", "n", "reference", "pmid", *(["path"] if paths else [])]
-    lines = [[d["name"], d["id"], d["trait"], d["anc"], str(d["n"]), label(d), ";".join(d.get("cite", [])), *([file_path(d["id"])] if paths else [])] for d in studies]
+    head = ["short_name", "id", "release_name", "ancestry", "n", "reference", "published", "pmid", *(["path"] if paths else [])]
+    lines = [[d["name"], d["id"], d["trait"], d["anc"], str(d["n"]), label(d), published(d), ";".join(d.get("cite", [])), *([file_path(d["id"])] if paths else [])] for d in studies]
     return "".join("\t".join(line) + "\n" for line in [head, *lines])
 
 
 def references_of(studies):
-    """The BibTeX file of the studies ticked: an entry a paper, by key, under a comment that names its studies."""
+    """The BibTeX file of the studies ticked: an entry a paper, the earliest published first, under a comment that names its studies."""
     cited = {}
     for d in studies:
         for pmid in d.get("cite", []):
             cited.setdefault(pmid, []).append(f"{d['name']} ({d['id']})")
-    return "\n".join(f"% {', '.join(cited[pmid])}\n{PAPERS[pmid]['bib']}" for pmid in sorted(cited, key=lambda pmid: PAPERS[pmid]["key"].lower()))
+    return "\n".join(f"% {', '.join(cited[pmid])}\n{PAPERS[pmid]['bib']}" for pmid in sorted(cited, key=lambda pmid: (PAPERS[pmid]["published"], PAPERS[pmid]["key"])))
 
 
 def run(pw, url, name, **context):
@@ -217,6 +222,14 @@ def run(pw, url, name, **context):
         order.append(first("sumstats-table"))
     check(f"[{name}] a column sorts largest first, then smallest first, then as released",
           order == [by_n[-1]["name"], by_n[0]["name"], STUDIES[0]["name"]], lambda: order)
+    by_paper = [d["name"] for d in sorted(STUDIES, key=lambda d: (published(d), label(d), d["name"]))]  # the earliest paper first; then first author; then short name
+    sort_reference, order = page.locator("#sumstats-table th", has_text="Reference").locator("button"), []
+    for _ in range(3):
+        sort_reference.click()
+        order.append(page.locator("#sumstats-table td.study").all_inner_texts())
+    days = [published(BY_ID[next(d["id"] for d in STUDIES if d["name"] == study)]) for study in order[0]]
+    check(f"[{name}] the Reference column sorts by the day the paper was published, the earliest first, then the latest first, then as released",
+          order == [by_paper, by_paper[::-1], [d["name"] for d in STUDIES]] and days == sorted(days) and days[0] < "2011" and days[-1] > "2026", lambda: (order[0][:4], days[:4], days[-3:]))
     check(f"[{name}] logged out, no path is in the page", not private() and page.locator(".paths").count() == 0, private)
 
     # the cart: ticks, and the files they export
@@ -452,7 +465,8 @@ def run(pw, url, name, **context):
         p = PAPERS[pmid]
         authors = ", ".join(author.strip("{}") for author in p["authors"]) + (", et al" if p["more"] else "")
         issue = p["volume"] + (f"({p['issue']})" if p["issue"] else "")
-        return f"{authors}. {p['title']}. {p['journal']} {p['year']}" + (f";{issue}" if issue else "") + (f":{p['pages']}" if p["pages"] else "") + ". PubMed" + (" · DOI" if p["doi"] else "")
+        return (f"{authors}. {p['title']}. {p['journal']} {p['year']}" + (f";{issue}" if issue else "") + (f":{p['pages']}" if p["pages"] else "")
+                + f". Published {p['published'].replace('-', '/')}. PubMed" + (" · DOI" if p["doi"] else ""))
 
     check(f"[{name}] a study's page cites its papers in full, with their PubMed and DOI links",
           cited == [in_full(pmid) for pmid in both["cite"]]

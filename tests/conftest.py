@@ -36,12 +36,12 @@ def write(path: Path, header, rows):
 
 
 PAPERS = {  # as PubMed would record the papers of the made-up release
-    "1": {"authors": ["Smith J", "Doe A Jr", "Roe B", "Poe C"], "title": "Height of 1,000 people", "journal": "Nature", "year": "2010", "volume": "1", "issue": "2", "pages": "10-9", "doi": "10.1000/one"},
-    "2": {"authors": ["{The Example Consortium}"], "title": "Loci & genes for Alzheimer's disease", "journal": "Nat Genet", "year": "2021", "volume": "53", "issue": "", "pages": "", "doi": "10.1000/two"},
-    "3": {"authors": ["Kim A", "Park B"], "title": "Trait D in East Asians", "journal": "Nat Genet", "year": "2018", "volume": "50", "issue": "1", "pages": "100-110", "doi": "10.1000/three"},
-    "4": {"authors": ["Kim C"], "title": "A biobank", "journal": "Nature", "year": "2018", "volume": "9", "issue": "", "pages": "e12", "doi": ""},
-    "111": {"authors": ["Ortín Vela S", "Li X"], "title": "A new trait", "journal": "Nat Genet", "year": "2026", "volume": "58", "issue": "1", "pages": "1-9", "doi": "10.1000/new"},
-    "222": {"authors": ["Ito K"], "title": "Traits E and F", "journal": "Nat Commun", "year": "2024", "volume": "15", "issue": "", "pages": "1234", "doi": "10.1000/ito"},
+    "1": {"authors": ["Smith J", "Doe A Jr", "Roe B", "Poe C"], "title": "Height of 1,000 people", "journal": "Nature", "year": "2010", "volume": "1", "issue": "2", "pages": "10-9", "doi": "10.1000/one", "published": "2010-10-10"},
+    "2": {"authors": ["{The Example Consortium}"], "title": "Loci & genes for Alzheimer's disease", "journal": "Nat Genet", "year": "2021", "volume": "53", "issue": "", "pages": "", "doi": "10.1000/two", "published": "2021-03"},
+    "3": {"authors": ["Kim A", "Park B"], "title": "Trait D in East Asians", "journal": "Nat Genet", "year": "2018", "volume": "50", "issue": "1", "pages": "100-110", "doi": "10.1000/three", "published": "2018-02-05"},
+    "4": {"authors": ["Kim C"], "title": "A biobank", "journal": "Nature", "year": "2018", "volume": "9", "issue": "", "pages": "e12", "doi": "", "published": "2018"},
+    "111": {"authors": ["Ortín Vela S", "Li X"], "title": "A new trait", "journal": "Nat Genet", "year": "2026", "volume": "58", "issue": "1", "pages": "1-9", "doi": "10.1000/new", "published": "2025-12-19"},
+    "222": {"authors": ["Ito K"], "title": "Traits E and F", "journal": "Nat Commun", "year": "2024", "volume": "15", "issue": "", "pages": "1234", "doi": "10.1000/ito", "published": "2024-06-01"},
 }
 NAMES = [["A_unsigned", "Smith_2010_Height", "drafted"], ["B", "TEC_2021_Alzheimers", "drafted"], ["C", "Lee_2022_TraitC", "check: no paper found"],
          ["GCST0001", "OrtinVela_2025_TraitNew", "drafted"], ["D_EAS", "Kim_2018_TraitDEAS", "drafted"], ["GCST0002", "Ito_2024_TraitEEAS", "by hand"],

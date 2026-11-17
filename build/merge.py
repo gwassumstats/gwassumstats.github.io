@@ -37,13 +37,15 @@ def sources(d: pd.DataFrame, data: Path) -> tuple[list[list[str]], dict, dict, d
 
 def citations(d: pd.DataFrame, data: Path) -> tuple[list[list[str]], dict[str, dict]]:
     """The papers each study cites (see sources), and what the site shows of every paper cited, {PMID: ...}, by PMID:
-    its label, the first authors, the bibliographic record, and its BibTeX entry under a key of its own."""
+    its label, the day it was published, the first authors, the bibliographic record, and its BibTeX entry under a
+    key of its own."""
     cited, records, references, groups = sources(d, data)
     keys = cite.keys({pmid: (cite.who(records[pmid], refs, groups)[0], cite.year(records[pmid], refs)) for pmid, refs in references.items()})
     papers = {}
     for pmid in sorted(references, key=int):
         paper = records[pmid]
-        papers[pmid] = {"key": keys[pmid], "label": cite.label(paper, references[pmid], groups), "authors": paper["authors"][:NAMED], "more": max(0, len(paper["authors"]) - NAMED),
+        papers[pmid] = {"key": keys[pmid], "label": cite.label(paper, references[pmid], groups), "published": paper["published"],
+                        "authors": paper["authors"][:NAMED], "more": max(0, len(paper["authors"]) - NAMED),
                         **{field: paper[field] for field in ("title", "journal", "year", "volume", "issue", "pages", "doi")}, "bib": cite.bibtex(keys[pmid], pmid, paper)}
     return cited, papers
 

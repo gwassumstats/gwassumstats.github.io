@@ -73,6 +73,7 @@
   "issue": "4",
   "journal": "Nat Genet",
   "pages": "295-302",
+  "published": "2010-02-28",
   "title": "Multiple common variants for celiac disease influencing immune gene expression",
   "volume": "42",
   "year": "2010"
@@ -85,6 +86,7 @@
   "issue": "5",
   "journal": "Nat Genet",
   "pages": "441-7",
+  "published": "2010-04-25",
   "title": "Genome-wide meta-analyses identify multiple loci associated with smoking behavior",
   "volume": "42",
   "year": "2010"
@@ -305,6 +307,7 @@
   "issue": "7307",
   "journal": "Nature",
   "pages": "707-13",
+  "published": "2010-08-05",
   "title": "Biological, clinical and population relevance of 95 loci for blood lipids",
   "volume": "466",
   "year": "2010"
@@ -494,6 +497,7 @@
   "issue": "12",
   "journal": "Diabetes",
   "pages": "3229-39",
+  "published": "2010-09-21",
   "title": "Common variants at 10 genomic loci influence hemoglobin A₁(C) levels via glycemic and nonglycemic pathways",
   "volume": "59",
   "year": "2010"
@@ -798,6 +802,7 @@
   "issue": "7317",
   "journal": "Nature",
   "pages": "832-8",
+  "published": "2010-09-29",
   "title": "Hundreds of variants clustered in genomic loci and biological pathways affect human height",
   "volume": "467",
   "year": "2010"
@@ -1186,6 +1191,7 @@
   "issue": "11",
   "journal": "Nat Genet",
   "pages": "937-48",
+  "published": "2010-10-10",
   "title": "Association analyses of 249,796 individuals reveal 18 new loci associated with body mass index",
   "volume": "42",
   "year": "2010"
@@ -1366,6 +1372,7 @@
   "issue": "4",
   "journal": "Nat Genet",
   "pages": "333-8",
+  "published": "2011-03-06",
   "title": "Large-scale association analysis identifies 13 new susceptibility loci for coronary artery disease",
   "volume": "43",
   "year": "2011"
@@ -1621,6 +1628,7 @@
   "issue": "7359",
   "journal": "Nature",
   "pages": "214-9",
+  "published": "2011-08-10",
   "title": "Genetic risk and a primary role for cell-mediated immune mechanisms in multiple sclerosis",
   "volume": "476",
   "year": "2011"
@@ -1633,6 +1641,7 @@
   "issue": "10",
   "journal": "Nat Genet",
   "pages": "977-83",
+  "published": "2011-09-18",
   "title": "Large-scale genome-wide association analysis of bipolar disorder identifies a new susceptibility locus near ODZ4",
   "volume": "43",
   "year": "2011"
@@ -1663,6 +1672,7 @@
   "issue": "9",
   "journal": "PLoS Genet",
   "pages": "e1002293",
+  "published": "2011-09-29",
   "title": "A genome-wide meta-analysis of six type 1 diabetes cohorts identifies multiple associated loci",
   "volume": "7",
   "year": "2011"
@@ -1892,6 +1902,7 @@
   "issue": "6",
   "journal": "Nat Genet",
   "pages": "659-69",
+  "published": "2012-05-13",
   "title": "A genome-wide approach accounting for body mass index identifies genetic variants influencing fasting glycemic traits and insulin resistance",
   "volume": "44",
   "year": "2012"
@@ -2113,6 +2124,7 @@
   "issue": "9",
   "journal": "Nat Genet",
   "pages": "981-90",
+  "published": "2012-08-12",
   "title": "Large-scale association analysis provides insights into the genetic architecture and pathophysiology of type 2 diabetes",
   "volume": "44",
   "year": "2012"
@@ -2231,6 +2243,7 @@
   "issue": "7422",
   "journal": "Nature",
   "pages": "119-24",
+  "published": "2012-11-01",
   "title": "Host-microbe interactions have shaped the genetic architecture of inflammatory bowel disease",
   "volume": "491",
   "year": "2012"
@@ -2243,6 +2256,7 @@
   "issue": "9875",
   "journal": "Lancet",
   "pages": "1371-1379",
+  "published": "2013-02-28",
   "title": "Identification of risk loci with shared effects on five major psychiatric disorders: a genome-wide analysis",
   "volume": "381",
   "year": "2013"
@@ -2458,6 +2472,7 @@
   "issue": "6139",
   "journal": "Science",
   "pages": "1467-71",
+  "published": "2013-05-30",
   "title": "GWAS of 126,559 individuals identifies genetic variants associated with educational attainment",
   "volume": "340",
   "year": "2013"
@@ -2644,6 +2659,7 @@
   "issue": "12",
   "journal": "Nat Genet",
   "pages": "1452-8",
+  "published": "2013-10-27",
   "title": "Meta-analysis of 74,046 individuals identifies 11 new susceptibility loci for Alzheimer's disease",
   "volume": "45",
   "year": "2013"
@@ -2752,6 +2768,7 @@
   "issue": "7488",
   "journal": "Nature",
   "pages": "376-81",
+  "published": "2013-12-25",
   "title": "Genetics of rheumatoid arthritis contributes to biology and drug discovery",
   "volume": "506",
   "year": "2014"
@@ -2940,6 +2957,7 @@
   "issue": "10",
   "journal": "Mol Psychiatry",
   "pages": "1085-94",
+  "published": "2014-02-11",
   "title": "A genome-wide association study of anorexia nervosa",
   "volume": "19",
   "year": "2014"
@@ -2952,6 +2970,7 @@
   "issue": "7510",
   "journal": "Nature",
   "pages": "421-7",
+  "published": "2014-07-22",
   "title": "Biological insights from 108 schizophrenia-associated genetic loci",
   "volume": "511",
   "year": "2014"
@@ -2964,6 +2983,7 @@
   "issue": "9",
   "journal": "Lancet Neurol",
   "pages": "893-903",
+  "published": "2014-07-30",
   "title": "Genetic determinants of common epilepsies: a meta-analysis of genome-wide association studies",
   "volume": "13",
   "year": "2014"
@@ -3267,6 +3287,7 @@
   "issue": "7546",
   "journal": "Nature",
   "pages": "224-9",
+  "published": "2015-01-21",
   "title": "Common genetic variants influence human subcortical brain structures",
   "volume": "520",
   "year": "2015"
@@ -3279,6 +3300,7 @@
   "issue": "7562",
   "journal": "Nature",
   "pages": "588-91",
+  "published": "2015-07-15",
   "title": "Sparse whole-genome sequencing identifies two loci for major depressive disorder",
   "volume": "523",
   "year": "2015"
@@ -3316,6 +3338,7 @@
   "issue": "",
   "journal": "Nat Commun",
   "pages": "8019",
+  "published": "2015-09-22",
   "title": "International genome-wide meta-analysis identifies new primary biliary cirrhosis risk loci and targetable pathogenic pathways",
   "volume": "6",
   "year": "2015"
@@ -3345,6 +3368,7 @@
   "issue": "12",
   "journal": "Nat Genet",
   "pages": "1457-1464",
+  "published": "2015-10-26",
   "title": "Genetic association analyses implicate aberrant regulation of innate and adaptive immunity genes in the pathogenesis of systemic lupus erythematosus",
   "volume": "47",
   "year": "2015"
@@ -3544,6 +3568,7 @@
   "issue": "6",
   "journal": "Nat Genet",
   "pages": "624-33",
+  "published": "2016-04-18",
   "title": "Genetic variants associated with subjective well-being, depressive symptoms, and neuroticism identified through genome-wide analyses",
   "volume": "48",
   "year": "2016"
@@ -3811,6 +3836,7 @@
   "issue": "7604",
   "journal": "Nature",
   "pages": "539-42",
+  "published": "2016-05-11",
   "title": "Genome-wide association study identifies 74 loci associated with educational attainment",
   "volume": "533",
   "year": "2016"
@@ -3894,6 +3920,7 @@
   "issue": "10",
   "journal": "Lancet Oncol",
   "pages": "1363-1373",
+  "published": "2016-08-12",
   "title": "Genome-wide association studies in oesophageal adenocarcinoma and Barrett's oesophagus: a large-scale meta-analysis",
   "volume": "17",
   "year": "2016"
@@ -4160,6 +4187,7 @@
   "issue": "12",
   "journal": "Nat Genet",
   "pages": "1462-1472",
+  "published": "2016-10-31",
   "title": "Genome-wide analysis identifies 12 loci influencing human reproductive behavior",
   "volume": "48",
   "year": "2016"
@@ -4203,6 +4231,7 @@
   "issue": "2",
   "journal": "Nat Genet",
   "pages": "256-261",
+  "published": "2017-01-09",
   "title": "Genome-wide association study implicates immune activation of multiple integrin genes in inflammatory bowel disease",
   "volume": "49",
   "year": "2017"
@@ -4634,6 +4663,7 @@
   "issue": "5",
   "journal": "Nat Genet",
   "pages": "680-691",
+  "published": "2017-03-27",
   "title": "Identification of 12 new susceptibility loci for different histotypes of epithelial ovarian cancer",
   "volume": "49",
   "year": "2017"
@@ -4668,6 +4698,7 @@
   "issue": "6",
   "journal": "Nat Genet",
   "pages": "953-958",
+  "published": "2017-04-17",
   "title": "Identification of six new genetic loci associated with atrial fibrillation in the Japanese population",
   "volume": "49",
   "year": "2017"
@@ -4901,6 +4932,7 @@
   "issue": "6",
   "journal": "Nat Genet",
   "pages": "834-841",
+  "published": "2017-04-24",
   "title": "Genomic analyses identify hundreds of variants associated with age at menarche and support a role for puberty timing in cancer risk",
   "volume": "49",
   "year": "2017"
@@ -4928,6 +4960,7 @@
   "issue": "9",
   "journal": "Am J Psychiatry",
   "pages": "850-858",
+  "published": "2017-05-12",
   "title": "Significant Locus and Metabolic Genetic Correlations Revealed in Genome-Wide Association Study of Anorexia Nervosa",
   "volume": "174",
   "year": "2017"
@@ -5013,6 +5046,7 @@
   "issue": "7",
   "journal": "Nat Genet",
   "pages": "1113-1119",
+  "published": "2017-05-22",
   "title": "Fifteen new risk loci for coronary artery disease highlight arterial-wall-specific mechanisms",
   "volume": "49",
   "year": "2017"
@@ -5165,6 +5199,7 @@
   "issue": "7",
   "journal": "Nat Genet",
   "pages": "1126-1132",
+  "published": "2017-06-12",
   "title": "Large-scale association analysis identifies new lung cancer susceptibility loci and heterogeneity in genetic susceptibility across histological subtypes",
   "volume": "49",
   "year": "2017"
@@ -5369,6 +5404,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "80",
+  "published": "2017-07-19",
   "title": "Large meta-analysis of genome-wide association studies identifies five loci for lean body mass",
   "volume": "8",
   "year": "2017"
@@ -5402,6 +5438,7 @@
   "issue": "10",
   "journal": "Nat Genet",
   "pages": "1458-1467",
+  "published": "2017-09-11",
   "title": "Genome-wide association study identifies 112 new loci for body mass index in the Japanese population",
   "volume": "49",
   "year": "2017"
@@ -5458,6 +5495,7 @@
   "issue": "1",
   "journal": "Am J Hum Genet",
   "pages": "103-115",
+  "published": "2017-12-28",
   "title": "Genome-wide Study of Atrial Fibrillation Identifies Seven Risk Loci and Highlights Biological Pathways and Regulatory Elements Involved in Cardiac Development",
   "volume": "102",
   "year": "2018"
@@ -5482,6 +5520,7 @@
   "issue": "3",
   "journal": "Nat Genet",
   "pages": "390-400",
+  "published": "2018-02-05",
   "title": "Genetic analysis of quantitative traits in the Japanese population links cell types to complex human diseases",
   "volume": "50",
   "year": "2018"
@@ -5562,6 +5601,7 @@
   "issue": "8",
   "journal": "Hum Mol Genet",
   "pages": "1486-1496",
+  "published": "2018-04-15",
   "title": "Genome-wide association study identifies seven novel susceptibility loci for primary open-angle glaucoma",
   "volume": "27",
   "year": "2018"
@@ -5600,6 +5640,7 @@
   "issue": "5",
   "journal": "Carcinogenesis",
   "pages": "652-660",
+  "published": "2018-05-03",
   "title": "GWAS identifies two novel colorectal cancer loci at 16q24.1 and 20q13.12",
   "volume": "39",
   "year": "2018"
@@ -5682,6 +5723,7 @@
   "issue": "3",
   "journal": "Nat Genet",
   "pages": "381-389",
+  "published": "2018-02-26",
   "title": "Common schizophrenia alleles are enriched in mutation-intolerant genes and in regions under strong background selection",
   "volume": "50",
   "year": "2018"
@@ -5879,6 +5921,7 @@
   "issue": "4",
   "journal": "Nat Genet",
   "pages": "524-537",
+  "published": "2018-03-12",
   "title": "Multiancestry genome-wide association study of 520,000 subjects identifies 32 loci associated with stroke and stroke subtypes",
   "volume": "50",
   "year": "2018"
@@ -6109,6 +6152,7 @@
   "issue": "5",
   "journal": "Nat Genet",
   "pages": "668-681",
+  "published": "2018-04-26",
   "title": "Genome-wide association analyses identify 44 risk variants and refine the genetic architecture of major depression",
   "volume": "50",
   "year": "2018"
@@ -6135,6 +6179,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "1977",
+  "published": "2018-05-17",
   "title": "Elucidating the genetic architecture of reproductive ageing in the Japanese population",
   "volume": "9",
   "year": "2018"
@@ -6163,6 +6208,7 @@
   "issue": "1",
   "journal": "Transl Psychiatry",
   "pages": "99",
+  "published": "2018-05-18",
   "title": "GWAS on family history of Alzheimer's disease",
   "volume": "8",
   "year": "2018"
@@ -6396,6 +6442,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "2098",
+  "published": "2018-05-29",
   "title": "Study of 300,486 individuals identifies 148 independent genetic loci influencing general cognitive function",
   "volume": "9",
   "year": "2018"
@@ -6412,6 +6459,7 @@
   "issue": "7",
   "journal": "Nat Genet",
   "pages": "906-908",
+  "published": "2018-07",
   "title": "Mixed-model association for biobank-scale datasets",
   "volume": "50",
   "year": "2018"
@@ -6619,6 +6667,7 @@
   "issue": "7",
   "journal": "Nat Genet",
   "pages": "928-936",
+  "published": "2018-06-11",
   "title": "Association analyses of more than 140,000 men identify 63 new prostate cancer susceptibility loci",
   "volume": "50",
   "year": "2018"
@@ -6632,6 +6681,7 @@
   "issue": "7",
   "journal": "Cell",
   "pages": "1705-1715.e16",
+  "published": "2018-06-14",
   "title": "Genomic Dissection of Bipolar Disorder and Schizophrenia, Including 28 Subphenotypes",
   "volume": "173",
   "year": "2018"
@@ -6662,6 +6712,7 @@
   "issue": "7",
   "journal": "Nat Genet",
   "pages": "920-927",
+  "published": "2018-06-25",
   "title": "Meta-analysis of genome-wide association studies for neuroticism in 449,484 individuals identifies novel genetic loci and pathways",
   "volume": "50",
   "year": "2018"
@@ -6790,6 +6841,7 @@
   "issue": "7",
   "journal": "Nat Genet",
   "pages": "912-919",
+  "published": "2018-06-25",
   "title": "Genome-wide association meta-analysis in 269,867 individuals identifies new genetic and functional links to intelligence",
   "volume": "50",
   "year": "2018"
@@ -6816,6 +6868,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "2941",
+  "published": "2018-07-27",
   "title": "Genome-wide association analyses identify 143 risk variants and putative regulatory mechanisms for type 2 diabetes",
   "volume": "9",
   "year": "2018"
@@ -6838,6 +6891,7 @@
   "issue": "20",
   "journal": "Hum Mol Genet",
   "pages": "3641-3649",
+  "published": "2018-10-15",
   "title": "Meta-analysis of genome-wide association studies for height and body mass index in ∼700000 individuals of European ancestry",
   "volume": "27",
   "year": "2018"
@@ -6868,6 +6922,7 @@
   "issue": "7726",
   "journal": "Nature",
   "pages": "203-209",
+  "published": "2018-10-10",
   "title": "The UK Biobank resource with deep phenotyping and genomic data",
   "volume": "562",
   "year": "2018"
@@ -6892,6 +6947,7 @@
   "issue": "2",
   "journal": "Am J Psychiatry",
   "pages": "107-118",
+  "published": "2018-10-19",
   "title": "Genome-Wide Association Study Meta-Analysis of the Alcohol Use Disorders Identification Test (AUDIT) in Two Population-Based Cohorts",
   "volume": "176",
   "year": "2019"
@@ -6987,6 +7043,7 @@
   "issue": "1",
   "journal": "Nat Genet",
   "pages": "63-75",
+  "published": "2018-11-26",
   "title": "Discovery of the first genome-wide significant risk loci for attention deficit/hyperactivity disorder",
   "volume": "51",
   "year": "2019"
@@ -7051,6 +7108,7 @@
   "issue": "3",
   "journal": "Nat Genet",
   "pages": "404-413",
+  "published": "2019-01-07",
   "title": "Genome-wide meta-analysis identifies new loci and functional pathways influencing Alzheimer's disease risk",
   "volume": "51",
   "year": "2019"
@@ -7187,6 +7245,7 @@
   "issue": "2",
   "journal": "Nat Genet",
   "pages": "237-244",
+  "published": "2019-01-14",
   "title": "Association studies of up to 1.2 million individuals yield new insights into the genetic etiology of tobacco and alcohol use",
   "volume": "51",
   "year": "2019"
@@ -7294,6 +7353,7 @@
   "issue": "2",
   "journal": "Nat Genet",
   "pages": "245-257",
+  "published": "2019-01-14",
   "title": "Genome-wide association analyses of risk tolerance and risky behaviors in over 1 million individuals identify hundreds of loci and shared genetic influences",
   "volume": "51",
   "year": "2019"
@@ -7327,6 +7387,7 @@
   "issue": "2",
   "journal": "Nat Genet",
   "pages": "230-236",
+  "published": "2019-01-21",
   "title": "Identification of new therapeutic targets for osteoarthritis through genome-wide analyses of UK Biobank data",
   "volume": "51",
   "year": "2019"
@@ -7378,6 +7439,7 @@
   "issue": "3",
   "journal": "Nat Neurosci",
   "pages": "343-352",
+  "published": "2019-02-04",
   "title": "Genome-wide meta-analysis of depression identifies 102 independent variants and highlights the importance of the prefrontal brain regions",
   "volume": "22",
   "year": "2019"
@@ -7421,6 +7483,7 @@
   "issue": "3",
   "journal": "Nat Genet",
   "pages": "379-386",
+  "published": "2019-02-04",
   "title": "Identification of 28 new susceptibility loci for type 2 diabetes in the Japanese population",
   "volume": "51",
   "year": "2019"
@@ -7512,6 +7575,7 @@
   "issue": "3",
   "journal": "Nat Genet",
   "pages": "431-444",
+  "published": "2019-02-25",
   "title": "Identification of common genetic risk variants for autism spectrum disorder",
   "volume": "51",
   "year": "2019"
@@ -7633,6 +7697,7 @@
   "issue": "3",
   "journal": "Nat Genet",
   "pages": "481-493",
+  "published": "2019-02-25",
   "title": "New genetic signals for lung function highlight pathways and chronic obstructive pulmonary disease associations across multiple ancestries",
   "volume": "51",
   "year": "2019"
@@ -7669,6 +7734,7 @@
   "issue": "3",
   "journal": "Nat Genet",
   "pages": "394-403",
+  "published": "2019-02-25",
   "title": "Genome-wide analysis of insomnia in 1,331,010 individuals identifies new risk loci and functional pathways",
   "volume": "51",
   "year": "2019"
@@ -7763,6 +7829,7 @@
   "issue": "3",
   "journal": "Am J Psychiatry",
   "pages": "217-227",
+  "published": "2019-03-01",
   "title": "Interrogating the Genetic Determinants of Tourette's Syndrome and Other Tic Disorders Through Genome-Wide Association Studies",
   "volume": "176",
   "year": "2019"
@@ -7806,6 +7873,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "1100",
+  "published": "2019-03-07",
   "title": "Genome-wide association study identifies genetic loci for self-reported habitual sleep duration supported by accelerometer-derived estimates",
   "volume": "10",
   "year": "2019"
@@ -7836,6 +7904,7 @@
   "issue": "4",
   "journal": "Am J Hum Genet",
   "pages": "665-684",
+  "published": "2019-03-28",
   "title": "Genetic Architectures of Childhood- and Adult-Onset Asthma Are Partly Distinct",
   "volume": "104",
   "year": "2019"
@@ -7856,6 +7925,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "1891",
+  "published": "2019-04-23",
   "title": "Genome-wide association study of medication-use and associated disease in the UK Biobank",
   "volume": "10",
   "year": "2019"
@@ -8147,6 +8217,7 @@
   "issue": "5",
   "journal": "Nat Genet",
   "pages": "793-803",
+  "published": "2019-05-01",
   "title": "Genome-wide association study identifies 30 loci associated with bipolar disorder",
   "volume": "51",
   "year": "2019"
@@ -8367,6 +8438,7 @@
   "issue": "5",
   "journal": "Nat Genet",
   "pages": "804-814",
+  "published": "2019-05-01",
   "title": "Maternal and fetal genetic effects on birth weight and their relevance to cardio-metabolic risk factors",
   "volume": "51",
   "year": "2019"
@@ -8590,6 +8662,7 @@
   "issue": "8",
   "journal": "Nat Genet",
   "pages": "1207-1214",
+  "published": "2019-07-15",
   "title": "Genome-wide association study identifies eight risk loci and implicates metabo-psychiatric origins for anorexia nervosa",
   "volume": "51",
   "year": "2019"
@@ -8602,6 +8675,7 @@
   "issue": "6460",
   "journal": "Science",
   "pages": "",
+  "published": "2019-09-27",
   "title": "Multiple sclerosis genomic map implicates peripheral immune cells and microglia in susceptibility",
   "volume": "365",
   "year": "2019"
@@ -8902,6 +8976,7 @@
   "issue": "11",
   "journal": "Nat Genet",
   "pages": "1624-1636",
+  "published": "2019-10-21",
   "title": "Genetic architecture of subcortical brain structures in 38,851 individuals",
   "volume": "51",
   "year": "2019"
@@ -8967,6 +9042,7 @@
   "issue": "12",
   "journal": "Lancet Neurol",
   "pages": "1091-1102",
+  "published": "2019-12",
   "title": "Identification of novel risk loci, causal insights, and heritable risk for Parkinson's disease: a meta-analysis of genome-wide association studies",
   "volume": "18",
   "year": "2019"
@@ -9037,6 +9113,7 @@
   "issue": "12",
   "journal": "Nat Genet",
   "pages": "1670-1678",
+  "published": "2019-11-18",
   "title": "Comparative genetic architectures of schizophrenia in East Asian and European populations",
   "volume": "51",
   "year": "2019"
@@ -9195,6 +9272,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "163",
+  "published": "2020-01-09",
   "title": "Genome-wide association and Mendelian randomisation analysis provide insights into the pathogenesis of heart failure",
   "volume": "11",
   "year": "2020"
@@ -9267,6 +9345,7 @@
   "issue": "2",
   "journal": "Nat Genet",
   "pages": "160-166",
+  "published": "2020-01-20",
   "title": "Multitrait analysis of glaucoma identifies new risk loci and enables polygenic prediction of disease susceptibility and progression",
   "volume": "52",
   "year": "2020"
@@ -9284,6 +9363,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "817",
+  "published": "2020-02-14",
   "title": "Insights into the aetiology of snoring from observational and genetic investigations in the UK Biobank",
   "volume": "11",
   "year": "2020"
@@ -9662,6 +9742,7 @@
   "issue": "6484",
   "journal": "Science",
   "pages": "",
+  "published": "2020-03-20",
   "title": "The genetic architecture of the human cerebral cortex",
   "volume": "367",
   "year": "2020"
@@ -9703,6 +9784,7 @@
   "issue": "4",
   "journal": "Nat Genet",
   "pages": "401-407",
+  "published": "2020-03-30",
   "title": "Meta-analysis of 542,934 subjects of European ancestry identifies new genes and mechanisms predisposing to refractive error and myopia",
   "volume": "52",
   "year": "2020"
@@ -9718,6 +9800,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "3570",
+  "published": "2020-07-16",
   "title": "Multivariate genomic scan implicates novel loci and haem metabolism in human ageing",
   "volume": "11",
   "year": "2020"
@@ -9842,6 +9925,7 @@
   "issue": "5",
   "journal": "Cell",
   "pages": "1214-1231.e11",
+  "published": "2020-09-03",
   "title": "The Polygenic and Monogenic Basis of Blood Traits and Diseases",
   "volume": "182",
   "year": "2020"
@@ -9956,6 +10040,7 @@
   "issue": "12",
   "journal": "Lancet Psychiatry",
   "pages": "1032-1045",
+  "published": "2020-10-20",
   "title": "A large-scale genome-wide association study meta-analysis of cannabis use disorder",
   "volume": "7",
   "year": "2020"
@@ -9985,6 +10070,7 @@
   "issue": "11",
   "journal": "Nat Genet",
   "pages": "1158-1168",
+  "published": "2020-10-26",
   "title": "Single-cell epigenomic analyses implicate candidate causal variants at inherited risk loci for Alzheimer's and Parkinson's diseases",
   "volume": "52",
   "year": "2020"
@@ -10007,6 +10093,7 @@
   "issue": "4",
   "journal": "PLoS Genet",
   "pages": "e1009428",
+  "published": "2021-04-08",
   "title": "Sex-stratified genome-wide association study of multisite chronic pain in UK Biobank",
   "volume": "17",
   "year": "2021"
@@ -10023,6 +10110,7 @@
   "issue": "4",
   "journal": "Nat Aging",
   "pages": "400-412",
+  "published": "2021-04-08",
   "title": "Common genetic associations between age-related diseases",
   "volume": "1",
   "year": "2021"
@@ -10352,6 +10440,7 @@
   "issue": "6",
   "journal": "Nat Genet",
   "pages": "817-829",
+  "published": "2021-05-17",
   "title": "Genome-wide association study of more than 40,000 bipolar disorder cases provides new insights into the underlying biology",
   "volume": "53",
   "year": "2021"
@@ -10379,6 +10468,7 @@
   "issue": "7863",
   "journal": "Nature",
   "pages": "398-402",
+  "published": "2021-05-19",
   "title": "Interpreting type 1 diabetes risk with genetics and single-cell epigenomics",
   "volume": "594",
   "year": "2021"
@@ -10688,6 +10778,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "3417",
+  "published": "2021-06-07",
   "title": "Common variants in Alzheimer's disease and risk stratification by polygenic risk scores",
   "volume": "12",
   "year": "2021"
@@ -10707,6 +10798,7 @@
   "issue": "",
   "journal": "Elife",
   "pages": "",
+  "published": "2021-06-15",
   "title": "Genetic architecture of 11 organ traits derived from abdominal MRI using deep learning",
   "volume": "10",
   "year": "2021"
@@ -10733,6 +10825,7 @@
   "issue": "6548",
   "journal": "Science",
   "pages": "",
+  "published": "2021-06-18",
   "title": "Common genetic variation influencing human white matter microstructure",
   "volume": "372",
   "year": "2021"
@@ -10810,6 +10903,7 @@
   "issue": "18",
   "journal": "Cell",
   "pages": "4784-4818.e17",
+  "published": "2021-08-26",
   "title": "Deciphering osteoarthritis genetics across 826,690 individuals from 9 populations",
   "volume": "184",
   "year": "2021"
@@ -10883,6 +10977,7 @@
   "issue": "9",
   "journal": "Nat Genet",
   "pages": "1276-1282",
+  "published": "2021-09-07",
   "title": "A genome-wide association study with 1,126,563 individuals identifies new risk loci for Alzheimer's disease",
   "volume": "53",
   "year": "2021"
@@ -10922,6 +11017,7 @@
   "issue": "10",
   "journal": "Nat Genet",
   "pages": "1425-1433",
+  "published": "2021-10-05",
   "title": "Polygenic basis and biomedical consequences of telomere length variation",
   "volume": "53",
   "year": "2021"
@@ -11372,6 +11468,7 @@
   "issue": "7906",
   "journal": "Nature",
   "pages": "502-508",
+  "published": "2022-04-08",
   "title": "Mapping genomic loci implicates genes and synaptic biology in schizophrenia",
   "volume": "604",
   "year": "2022"
@@ -11464,6 +11561,7 @@
   "issue": "8",
   "journal": "Ann Rheum Dis",
   "pages": "1085-1095",
+  "published": "2022-04-25",
   "title": "Multiomics analysis of rheumatoid arthritis yields sequence variants that have large effects on risk of the seropositive subset",
   "volume": "81",
   "year": "2022"
@@ -11486,6 +11584,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "3065",
+  "published": "2022-06-02",
   "title": "Genome-wide association analysis and replication in 810,625 individuals with varicose veins",
   "volume": "13",
   "year": "2022"
@@ -11513,6 +11612,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "3771",
+  "published": "2022-06-30",
   "title": "Inherited basis of visceral, abdominal subcutaneous and gluteofemoral fat depots",
   "volume": "13",
   "year": "2022"
@@ -11540,6 +11640,7 @@
   "issue": "6",
   "journal": "Cell Genom",
   "pages": "",
+  "published": "2022-06-08",
   "title": "Multivariate GWAS of psychiatric disorders and their cardinal symptoms reveal two dimensions of cross-cutting genetic liabilities",
   "volume": "2",
   "year": "2022"
@@ -11565,6 +11666,7 @@
   "issue": "8",
   "journal": "Nat Genet",
   "pages": "1125-1132",
+  "published": "2022-07-14",
   "title": "Genome-wide meta-analysis of insomnia prioritizes genes associated with metabolic and psychiatric pathways",
   "volume": "54",
   "year": "2022"
@@ -11584,6 +11686,7 @@
   "issue": "11",
   "journal": "Diabetes",
   "pages": "2447-2457",
+  "published": "2022-11-01",
   "title": "Disentangling Genetic Risks for Metabolic Syndrome",
   "volume": "71",
   "year": "2022"
@@ -11814,6 +11917,7 @@
   "issue": "9",
   "journal": "Nat Genet",
   "pages": "1332-1344",
+  "published": "2022-09-07",
   "title": "Genome-wide association analyses of physical activity and sedentary behavior provide insights into underlying mechanisms and roles in disease prevention",
   "volume": "54",
   "year": "2022"
@@ -12454,6 +12558,7 @@
   "issue": "7933",
   "journal": "Nature",
   "pages": "704-712",
+  "published": "2022-10-12",
   "title": "A saturated map of common genetic variants associated with human height",
   "volume": "610",
   "year": "2022"
@@ -12556,6 +12661,7 @@
   "issue": "11",
   "journal": "Nat Genet",
   "pages": "1640-1651",
+  "published": "2022-11-04",
   "title": "Multi-ancestry genome-wide association analyses identify novel genetic mechanisms in rheumatoid arthritis",
   "volume": "54",
   "year": "2022"
@@ -12612,6 +12718,7 @@
   "issue": "7939",
   "journal": "Nature",
   "pages": "301-309",
+  "published": "2022-11-30",
   "title": "Common and rare variant associations with clonal haematopoiesis phenotypes",
   "volume": "612",
   "year": "2022"
@@ -12721,6 +12828,7 @@
   "issue": "12",
   "journal": "Nat Genet",
   "pages": "1803-1815",
+  "published": "2022-12-06",
   "title": "Discovery and systematic characterization of risk variants and genes for coronary artery disease in over a million participants",
   "volume": "54",
   "year": "2022"
@@ -12781,6 +12889,7 @@
   "issue": "2",
   "journal": "Nat Genet",
   "pages": "198-208",
+  "published": "2023-01-26",
   "title": "Genome-wide analyses of ADHD identify 27 risk loci, refine the genetic architecture and implicate several cognitive domains",
   "volume": "55",
   "year": "2023"
@@ -12822,6 +12931,7 @@
   "issue": "1",
   "journal": "Cell Genom",
   "pages": "100241",
+  "published": "2023-01-04",
   "title": "Global Biobank analyses provide lessons for developing polygenic risk scores across diverse cohorts",
   "volume": "3",
   "year": "2023"
@@ -12842,6 +12952,7 @@
   "issue": "4",
   "journal": "eNeuro",
   "pages": "",
+  "published": "2023-04-10",
   "title": "The Genetic Architectures of Functional and Structural Connectivity Properties within Cerebral Resting-State Networks",
   "volume": "10",
   "year": "2023"
@@ -13003,6 +13114,7 @@
   "issue": "3",
   "journal": "Nat Genet",
   "pages": "410-422",
+  "published": "2023-03-13",
   "title": "Multi-ancestry genome-wide association analyses improve resolution of genes and pathways influencing lung function and chronic obstructive pulmonary disease risk",
   "volume": "55",
   "year": "2023"
@@ -13152,6 +13264,7 @@
   "issue": "3",
   "journal": "Nat Genet",
   "pages": "423-436",
+  "published": "2023-03-13",
   "title": "The genetic basis of endometriosis and comorbidity with other pain and inflammatory conditions",
   "volume": "55",
   "year": "2023"
@@ -13172,6 +13285,7 @@
   "issue": "9",
   "journal": "Eur J Hum Genet",
   "pages": "1136-1143",
+  "published": "2023-03-16",
   "title": "Genome-wide meta-analysis identifies novel loci conferring risk of acne vulgaris",
   "volume": "32",
   "year": "2024"
@@ -13195,6 +13309,7 @@
   "issue": "5",
   "journal": "Nat Genet",
   "pages": "787-795",
+  "published": "2023-04-17",
   "title": "Inference of chronic obstructive pulmonary disease with deep learning on raw spirograms identifies new genetic loci and improves risk models",
   "volume": "55",
   "year": "2023"
@@ -13224,6 +13339,7 @@
   "issue": "7",
   "journal": "Nat Hum Behav",
   "pages": "1069-1083",
+  "published": "2023-04-20",
   "title": "Nationwide health, socio-economic and genetic predictors of COVID-19 vaccination status in Finland",
   "volume": "7",
   "year": "2023"
@@ -13236,6 +13352,7 @@
   "issue": "9",
   "journal": "Nat Genet",
   "pages": "1471-1482",
+  "published": "2023-08-31",
   "title": "GWAS meta-analysis of over 29,000 people with epilepsy identifies 26 risk loci and subtype-specific genetic architecture",
   "volume": "55",
   "year": "2023"
@@ -13260,6 +13377,7 @@
   "issue": "2",
   "journal": "Nat Genet",
   "pages": "212-221",
+  "published": "2024-01-10",
   "title": "Comprehensive genetic study of the insulin resistance marker TG:HDL-C in the UK Biobank",
   "volume": "56",
   "year": "2024"
@@ -13278,6 +13396,7 @@
   "issue": "3",
   "journal": "Nat Med",
   "pages": "818-828",
+  "published": "2024-03-08",
   "title": "Sex-specific genetic architecture of blood pressure",
   "volume": "30",
   "year": "2024"
@@ -13312,6 +13431,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "2407",
+  "published": "2024-03-18",
   "title": "Integrative genomic analyses identify candidate causal genes for calcific aortic valve stenosis involving tissue-specific regulation",
   "volume": "15",
   "year": "2024"
@@ -13347,6 +13467,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "2041",
+  "published": "2024-03-19",
   "title": "SCGB1D2 inhibits growth of Borrelia burgdorferi and affects susceptibility to Lyme disease",
   "volume": "15",
   "year": "2024"
@@ -13414,6 +13535,7 @@
   "issue": "5",
   "journal": "Nat Genet",
   "pages": "827-837",
+  "published": "2024-04-17",
   "title": "Integrative common and rare variant analyses provide insights into the genetic architecture of liver cirrhosis",
   "volume": "56",
   "year": "2024"
@@ -13442,6 +13564,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "3441",
+  "published": "2024-04-24",
   "title": "Large-scale cross-ancestry genome-wide meta-analysis of serum urate",
   "volume": "15",
   "year": "2024"
@@ -13587,6 +13710,7 @@
   "issue": "5",
   "journal": "Nat Genet",
   "pages": "809-818",
+  "published": "2024-04-26",
   "title": "Multi-ancestry genome-wide association study of kidney cancer identifies 63 susceptibility regions",
   "volume": "56",
   "year": "2024"
@@ -13749,6 +13873,7 @@
   "issue": "5",
   "journal": "Nat Genet",
   "pages": "778-791",
+  "published": "2024-04-30",
   "title": "Genome-wide analysis in over 1 million individuals of European ancestry yields improved polygenic risk scores for blood pressure traits",
   "volume": "56",
   "year": "2024"
@@ -13916,6 +14041,7 @@
   "issue": "6",
   "journal": "Am J Hum Genet",
   "pages": "1061-1083",
+  "published": "2024-05-08",
   "title": "Integrative multi-omics analyses to identify the genetic and functional mechanisms underlying ovarian cancer risk regions",
   "volume": "111",
   "year": "2024"
@@ -13946,6 +14072,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "5801",
+  "published": "2024-07-10",
   "title": "Characterising the genetic architecture of changes in adiposity during adulthood using electronic health records",
   "volume": "15",
   "year": "2024"
@@ -13984,6 +14111,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "6265",
+  "published": "2024-07-24",
   "title": "Causal relevance of different blood pressure traits on risk of cardiovascular diseases: GWAS and Mendelian randomisation in 100,000 Chinese adults",
   "volume": "15",
   "year": "2024"
@@ -14025,6 +14153,7 @@
   "issue": "9",
   "journal": "Cell Genom",
   "pages": "100630",
+  "published": "2024-08-13",
   "title": "Genetic and functional analysis of Raynaud's syndrome implicates loci in vasculature and immunity",
   "volume": "4",
   "year": "2024"
@@ -14061,6 +14190,7 @@
   "issue": "9",
   "journal": "Nat Genet",
   "pages": "1832-1840",
+  "published": "2024-08-27",
   "title": "Genetic architecture of telomere length in 462,666 UK Biobank whole-genome sequences",
   "volume": "56",
   "year": "2024"
@@ -14091,6 +14221,7 @@
   "issue": "10",
   "journal": "Nat Genet",
   "pages": "2078-2092",
+  "published": "2024-09-10",
   "title": "Variants in tubule epithelial regulatory elements mediate most heritable differences in human kidney function",
   "volume": "56",
   "year": "2024"
@@ -14124,6 +14255,7 @@
   "issue": "11",
   "journal": "Nat Genet",
   "pages": "2380-2391",
+  "published": "2024-09-30",
   "title": "Multivariate genomic analysis of 5 million people elucidates the genetic architecture of shared components of the metabolic syndrome",
   "volume": "56",
   "year": "2024"
@@ -14141,6 +14273,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "8739",
+  "published": "2024-10-09",
   "title": "Genome-wide association studies of COVID-19 vaccine seroconversion and breakthrough outcomes in UK Biobank",
   "volume": "15",
   "year": "2024"
@@ -14255,6 +14388,7 @@
   "issue": "11",
   "journal": "Nat Genet",
   "pages": "2392-2406",
+  "published": "2024-10-15",
   "title": "A genome-wide association analysis reveals new pathogenic pathways in gout",
   "volume": "56",
   "year": "2024"
@@ -14296,6 +14430,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "9568",
+  "published": "2024-11-06",
   "title": "High incidence and geographic distribution of cleft palate in Finland are associated with the IRF6 gene",
   "volume": "15",
   "year": "2024"
@@ -14323,6 +14458,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "9593",
+  "published": "2024-11-06",
   "title": "Phenotypic and genetic characteristics of retinal vascular parameters and their association with diseases",
   "volume": "15",
   "year": "2024"
@@ -14376,6 +14512,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "9839",
+  "published": "2024-11-13",
   "title": "Genome-wide meta-analysis of myasthenia gravis uncovers new loci and provides insights into polygenic prediction",
   "volume": "15",
   "year": "2024"
@@ -14572,6 +14709,7 @@
   "issue": "4",
   "journal": "Nat Genet",
   "pages": "815-828",
+  "published": "2025-03-04",
   "title": "Genome-wide association study meta-analysis provides insights into the etiology of heart failure and its subtypes",
   "volume": "57",
   "year": "2025"
@@ -14595,6 +14733,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "2481",
+  "published": "2025-03-12",
   "title": "GWAS identifies genetic loci, lifestyle factors and circulating biomarkers that are risk factors for sarcoidosis",
   "volume": "16",
   "year": "2025"
@@ -14662,6 +14801,7 @@
   "issue": "5",
   "journal": "Nat Genet",
   "pages": "1107-1118",
+  "published": "2025-04-14",
   "title": "Genome-wide analyses identify 25 infertility loci and relationships with reproductive traits across the allele frequency spectrum",
   "volume": "57",
   "year": "2025"
@@ -14690,6 +14830,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "4104",
+  "published": "2025-05-02",
   "title": "Discovery of novel ancestry specific genes for androgens and hypogonadism in Million Veteran Program Men",
   "volume": "16",
   "year": "2025"
@@ -14717,6 +14858,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "4178",
+  "published": "2025-05-05",
   "title": "Genetic architecture and risk prediction of gestational diabetes mellitus in Chinese pregnancies",
   "volume": "16",
   "year": "2025"
@@ -14744,6 +14886,7 @@
   "issue": "8",
   "journal": "Nat Genet",
   "pages": "1848-1859",
+  "published": "2025-08-04",
   "title": "Uncovering the multivariate genetic architecture of frailty with genomic structural equation modeling",
   "volume": "57",
   "year": "2025"
@@ -14884,6 +15027,7 @@
   "issue": "10",
   "journal": "Nat Genet",
   "pages": "2427-2435",
+  "published": "2025-09-17",
   "title": "Genome-wide association meta-analysis of childhood ADHD symptoms and diagnosis identifies new loci and potential effector genes",
   "volume": "57",
   "year": "2025"
@@ -14924,6 +15068,7 @@
   "issue": "10",
   "journal": "Nat Genet",
   "pages": "2408-2417",
+  "published": "2025-09-18",
   "title": "Pan-UK Biobank genome-wide association analyses enhance discovery and resolution of ancestry-enriched effects",
   "volume": "57",
   "year": "2025"
@@ -14966,6 +15111,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "9680",
+  "published": "2025-11-03",
   "title": "Genome-wide analysis of heart failure yields insights into disease heterogeneity and enables prognostic prediction in the Japanese population",
   "volume": "16",
   "year": "2025"
@@ -14989,6 +15135,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "9879",
+  "published": "2025-11-10",
   "title": "131 genetic loci highlight immunological pathways and tissues in nasal polyposis and asthma",
   "volume": "16",
   "year": "2025"
@@ -15032,6 +15179,7 @@
   "issue": "12",
   "journal": "Nat Genet",
   "pages": "2972-2979",
+  "published": "2025-11-13",
   "title": "Genome-wide association analyses identify distinct genetic architectures for early-onset and late-onset depression",
   "volume": "57",
   "year": "2025"
@@ -15076,6 +15224,7 @@
   "issue": "12",
   "journal": "Nat Genet",
   "pages": "3007-3015",
+  "published": "2025-11-14",
   "title": "Genome-wide association study and polygenic risk prediction of hypothyroidism",
   "volume": "57",
   "year": "2025"
@@ -15103,6 +15252,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "10774",
+  "published": "2025-11-28",
   "title": "Genome-wide gene-environment interaction study uncovers 162 vitamin D status variants using a precise ambient UVB measure",
   "volume": "16",
   "year": "2025"
@@ -15131,6 +15281,7 @@
   "issue": "1",
   "journal": "Nat Genet",
   "pages": "47-56",
+  "published": "2025-12-19",
   "title": "Multitrait analyses identify genetic variants associated with aortic valve function and aortic stenosis risk",
   "volume": "58",
   "year": "2026"
@@ -15160,6 +15311,7 @@
   "issue": "2",
   "journal": "Nat Genet",
   "pages": "289-298",
+  "published": "2026-01-21",
   "title": "Multi-trait and multi-ancestry genetic analysis of comorbid lung diseases and traits improves genetic discovery and polygenic risk prediction",
   "volume": "58",
   "year": "2026"
@@ -15192,6 +15344,7 @@
   "issue": "1",
   "journal": "Nat Commun",
   "pages": "",
+  "published": "2026-05-28",
   "title": "GWAS of extended prescription analgesic use identifies genetic loci in chronic pain",
   "volume": "17",
   "year": "2026"

@@ -144,7 +144,10 @@ def test_every_study_cites_its_paper():
     """A paper for each of the 602: the release's own for a study it gives a PMID, the one of data/references.tsv for the others."""
     assert all(d.get("cite") for d in STUDIES) and all(d["cite"] == [d["pmid"]] for d in STUDIES if "pmid" in d)
     cited = {pmid for d in STUDIES for pmid in d["cite"]}
-    assert cited == set(PAPERS) == set(SITE_DATA["papers"]) and SITE_DATA["papers"] == {pmid: paper["label"] for pmid, paper in PAPERS.items()}
+    assert cited == set(PAPERS) == set(SITE_DATA["papers"]) and SITE_DATA["papers"] == {pmid: {"label": paper["label"], "published": paper["published"]} for pmid, paper in PAPERS.items()}
+    # the day each paper was published: a day, or a month where PubMed gives no day; never after the year of its issue
+    assert all(re.fullmatch(r"(19|20)\d\d-\d\d(-\d\d)?", paper["published"]) and paper["published"][:4] <= paper["year"] for paper in PAPERS.values())
+    assert PAPERS["41419685"]["published"] == "2025-12-19" and PAPERS["41419685"]["year"] == "2026"  # online in December, in the January issue
     keys = [paper["key"] for paper in PAPERS.values()]
     assert len(set(keys)) == len(keys) and all(re.fullmatch(r"[A-Za-z]+\d{4}[a-z]?", key) for key in keys)
     assert all(paper["bib"].startswith(f"@article{{{paper['key']},\n  author = {{") and paper["bib"].endswith(f"  pmid = {{{pmid}}}\n}}\n") for pmid, paper in PAPERS.items())
@@ -153,8 +156,10 @@ def test_every_study_cites_its_paper():
     assert not [d["id"] for d in STUDIES if not PAPERS[d["cite"][0]]["key"].startswith(cite.plain("".join(d["name"].split("_")[:2])))]
     # UK Biobank's studies cite the paper of their statistics, then the resource; the Pan-UK Biobank's, that project's paper
     assert all(d["cite"] == ["29892013", "30305743"] for d in STUDIES if d["id"].startswith("UKB_460K")) and all(d["cite"] == ["40968291"] for d in STUDIES if d["id"].startswith("PANUKBB_"))
-    references = cite.table(merge.DATA / "references.tsv")
-    assert {row["reference"] for row in references} == {d["ref"] for d in STUDIES if "pmid" not in d} and not [row for row in references if "check" in row["how"] or not row["pmid"]]
+    references = cite.table(merge.DATA / "references.tsv")  # the table to review: every reference of the inventory, its paper and the day it was published
+    assert {row["reference"] for row in references} == {d["ref"] for d in STUDIES} and not [row for row in references if "check" in row["how"] or not row["pmid"]]
+    assert all(row["published"] == PAPERS[row["pmid"].split(";")[0]]["published"] for row in references)
+    assert all(d["cite"][0] in {row["pmid"].split(";")[0] for row in references if row["reference"] == d["ref"]} for d in STUDIES)
 
 
 def test_the_checks_catch_the_known_mislabels():

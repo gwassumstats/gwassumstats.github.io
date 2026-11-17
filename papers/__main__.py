@@ -6,10 +6,13 @@ RELEASE defaults to $SUMSTATS_RELEASE. A study that the release gives a PMID kee
 of the inventory ("Speliotes et al., 2010 Nat Genet", "NG_Kanai_2018_BBJ") is looked up once: first author, year and
 journal; of several papers, the one whose title names the study's trait. What is found goes to
 
-  data/references.tsv   reference (and study, where one reference stands for several papers) -> PMID, DOI, and how it
-                        was matched. A row that says "check" needs a look. Correct a row by hand and write "by hand"
-                        in `how`: a later run leaves the rows that are there alone, and looks up only new references.
-  data/papers.json      the PubMed record of every paper: authors, title, journal, year, volume, pages, DOI
+  data/references.tsv   reference (and study, where one reference stands for several papers) -> PMID, DOI, the day
+                        the paper was published, and how it was matched. A row that says "check" needs a look.
+                        Correct a row by hand and write "by hand" in `how`: a later run leaves the rows that are
+                        there alone but for the day of publication, which it reads again from PubMed, and looks up
+                        only new references. A reference whose studies the release gives a PMID is listed too.
+  data/papers.json      the PubMed record of every paper: authors, title, journal, year, volume, pages, DOI, and
+                        `published`, the day it first appeared, online or in print, as precisely as PubMed dates it
 
 The build merges both into the site's data. Rows that say "check" are left out until someone has looked.
 """
@@ -26,7 +29,7 @@ from papers import cite, pubmed
 
 ROOT = Path(__file__).parents[1]
 REFERENCES, PAPERS = ROOT / "data" / "references.tsv", ROOT / "data" / "papers.json"
-FIELDS = ["reference", "study", "pmid", "doi", "how", "paper"]
+FIELDS = ["reference", "study", "pmid", "doi", "published", "how", "paper"]
 JOURNALS = {  # as the inventory writes a journal -> as PubMed abbreviates it
     "nat genet": "Nat Genet", "nat gent": "Nat Genet", "ng": "Nat Genet", "nat commun": "Nat Commun", "nat comm": "Nat Commun", "nc": "Nat Commun",
     "nature": "Nature", "science": "Science", "cell": "Cell", "lancet": "Lancet", "cell genomics": "Cell Genom", "cell genom": "Cell Genom",
@@ -116,13 +119,22 @@ def main():
             new = [{"reference": reference, "study": "", "pmid": "", "doi": "", "how": f"check: PubMed did not answer ({error})", "paper": ""}]
         rows += new
         print(f"[{k + 1}/{len(open_references)}] {reference}: {'; '.join(row['how'] for row in new)}", flush=True)
+    pmids = sorted({pmid for row in rows for pmid in row["pmid"].split(";") if pmid} | set(d["pmid"].dropna()), key=int)
+    records = pubmed.records(pmids)
+    PAPERS.write_text(json.dumps(records, ensure_ascii=False, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+    given = d.loc[d["pmid"].notna(), ["ref", "pmid"]]
+    for ref, of in given.groupby("ref", sort=False)["pmid"]:  # the references whose studies the release gives a PMID: listed, to be read with the others
+        if ref not in known:
+            several = of.nunique() > 1
+            rows += [{"reference": ref, "study": study if several else "", "pmid": pmid, "doi": records[pmid]["doi"], "how": "the release's PMID", "paper": label(records[pmid])}
+                     for study, pmid in (of.items() if several else [("", of.iloc[0])])]
+    for row in rows:  # the day of publication of a row's paper, of the first if it names several
+        row["published"] = records[row["pmid"].split(";")[0]]["published"] if row["pmid"] else ""
     rows.sort(key=lambda row: (row["reference"].lower(), row["study"]))
     with REFERENCES.open("w", encoding="utf-8", newline="") as file:
         writer = csv.DictWriter(file, FIELDS, delimiter="\t", lineterminator="\n", quoting=csv.QUOTE_NONE, quotechar=None)
         writer.writeheader()
         writer.writerows(rows)
-    pmids = sorted({pmid for row in rows for pmid in row["pmid"].split(";") if pmid} | set(d["pmid"].dropna()), key=int)
-    PAPERS.write_text(json.dumps(pubmed.records(pmids), ensure_ascii=False, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     look = [row for row in rows if "check" in row["how"]]
     print(f"{len(rows)} rows for {len({row['reference'] for row in rows})} references: {len(rows) - len(look)} matched, {len(look)} to check; {len(pmids)} papers")
 

@@ -59,7 +59,8 @@ def build(release: Path, out: Path, passphrase: str, iterations: int = crypt.ITE
                for r, pmids, notes in zip(records, cited, judged["notes"])]
     summary = rel.summary(release, d, rg) | {"qc": {level: int((judged["qc"] == level).sum()) for level in ("pass", "warn", "fail")}}
     lines = lambda items: ",\n".join(items)  # a study, a paper a line, for readable diffs
-    texts = {"studies.json": f'{{\n"release":{dumps(summary)},\n"papers":{dumps({pmid: p["label"] for pmid, p in papers.items()})},\n"studies":[\n'
+    cited_as = {pmid: {"label": p["label"], "published": p["published"]} for pmid, p in papers.items()}  # what the table of studies needs of a paper
+    texts = {"studies.json": f'{{\n"release":{dumps(summary)},\n"papers":{dumps(cited_as)},\n"studies":[\n'
                              + lines(map(dumps, records)) + "\n]}\n",
              "papers.json": "{\n" + lines(f"{dumps(pmid)}:{dumps(paper)}" for pmid, paper in papers.items()) + "\n}\n",
              "candidates.json": dumps(json.loads((data / "candidates.json").read_text(encoding="utf-8"))) + "\n"}
