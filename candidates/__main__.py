@@ -7,6 +7,9 @@ writes, from them and the site's data:
 
   data/candidates.json   the candidates for the next release; the papers the rule sets aside; and the backtest: what
                          the same rule finds in the window of the last release, against what that release added
+  data/samples.tsv       every sample the Catalog records for a paper that the collection cites, with its individuals
+                         by ancestry: the quality checks compare the N of a file with them. A paper of more samples
+                         than the rule allows is left out: among so many, one always fits
   data/catalog.tsv       the Catalog's record of each study of the collection that it knows, for the quality checks
                          and the short names: its paper, its sample, its cohorts, and whose statistics it holds
                          (women's, men's or both: from the metadata file beside its summary statistics)
@@ -78,6 +81,9 @@ def main():
     known = studies.loc[have.intersection(studies.index)]
     known = known.assign(sex=catalog.sexes(known, args.cache / "meta"))[["pmid", "author", "published", "journal", "n", "ancestry", "sex", "trait", "mapped", "efo", "sample", "cohort", "title"]]
     known.rename_axis("id").to_csv(DATA / "catalog.tsv", sep="\t")
+    samples = studies[studies["pmid"].isin(set(json.loads((DATA / "papers.json").read_text())))].rename_axis("accession").reset_index()  # of the papers that the collection cites
+    samples = samples[samples.groupby("pmid")["pmid"].transform("size") <= rule["max_studies"]][["pmid", "accession", "trait", "n", "ancestries", "sample"]]
+    samples.sort_values(["pmid", "accession"], key=lambda column: column.astype(int) if column.name == "pmid" else column).to_csv(DATA / "samples.tsv", sep="\t", index=False)
     test = out["backtest"]
     print(f"Catalog fetched {fetched}: {len(studies):,} studies, published to {out['catalog']['published_to']}, added to {out['catalog']['added_to']}")
     print(f"candidates: {sum(len(p['studies']) for p in out['candidates'])} studies in {len(out['candidates'])} papers; set aside: "

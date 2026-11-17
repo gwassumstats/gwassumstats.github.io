@@ -7,6 +7,10 @@ min_snps = 200_000        # fail: fewer of the HapMap3 SNPs that LDSC regresses 
 min_coverage = 0.5        # warn: a smaller share of those SNPs
 max_bad = 0.01            # fail: a larger share of rows listed twice, or with a Z that is not a number
 n_within = 0.2            # note: the median N of the SNPs differs from the inventory's N by more than this share
+n_of_paper = [0.6, 1.5]   # note: the median N is not within these times any sample the GWAS Catalog records for its paper
+same_n = 0.01             # the largest N of a file is that of a sample if it is within this share of it
+effective = [0.8, 1.02]   # an N that is not whole numbers looks like an effective N, or half of one, if its largest is within these times it (summed over cohorts, it is a little below the whole sample's): a warn, or a note if the count of cases and controls is within n_within of it
+other_ancestry = 0.05     # warn: the largest N is that of a sample of several ancestries, and above every sample's count of the study's ancestry by more than this share
 
 [statistics]
 unsigned_positive = 0.9   # a file with a larger share of positive Z holds |Z|: it is unsigned

@@ -15,7 +15,7 @@ from conftest import MEASURED, NAMES, NAN, PAPERS, RG, data_of, measured, write
 from names.__main__ import draft, trait
 from papers import cite, pubmed
 from papers.__main__ import choose, parse
-from qc import labels
+from qc import checks, labels
 from qc.scan import measure
 
 FAST = 1000  # PBKDF2 rounds, for tests that do not need the real cost
@@ -150,6 +150,59 @@ def test_the_catalog_s_record_is_compared_where_there_is_one(mini, tmp_path):
     assert [note for note in notes["GCST0001"] if "Catalog" in note[1]] == []
     assert [note for note in notes["GCST0002"] if "Catalog" in note[1]] == [["fail", "ancestry EAS; the GWAS Catalog says European"], ["warn", "N 6,000; the GWAS Catalog says 6,500"],
                                                                          ["warn", "reference Ito et al. 2024 Nat Commun; the GWAS Catalog says Ito K 2023"]]
+
+
+SAMPLES = ["pmid", "accession", "trait", "n", "ancestries", "sample"]
+EUROPEAN = lambda accession, n, sample="", pmid="2": [pmid, accession, "A trait", n, f"European {n}", sample or f"{n:,} European ancestry individuals"]
+BOTH = lambda accession, sample: ["2", accession, "A trait", 3000, "European 2050; East Asian 950", sample]  # a sample of two ancestries
+
+
+@pytest.mark.parametrize("n, records, finding", [
+    # an N that is not whole numbers, and whose largest is just below half the effective N of 1,500 cases and 3,000 controls, 2,000
+    ((1500.5, 1900.25, 1900.25), [EUROPEAN("G20", 4500, "1,500 European ancestry cases, 3,000 European ancestry controls")],
+     ["warn", "its N looks like half an effective N, as PGC files carry (NEFFDIV2): 1,900.25 at most, where the 1,500 cases and 3,000 controls of G20 give 2,000, and 4,500 in all. h² is 2.37 times what their count gives"]),
+    # an effective N that is near the count of cases and controls: a note; of two samples that fit alike, the one of the study's ancestry alone is named
+    ((1800.5, 1960.5, 1960.5), [BOTH("G20", "up to 900 European ancestry cases, 1,150 European ancestry controls, 400 East Asian ancestry cases, 550 East Asian ancestry controls"),
+                                EUROPEAN("G21", 2050, "500 European ancestry male cases, 400 European ancestry female cases, 1,150 European ancestry controls")],
+     ["note", "its N looks like an effective N: 1,960.50 at most, where the 900 cases and 1,150 controls of G21 give 2,020, and 2,050 in all. h² is 1.05 times what their count gives"]),
+    ((1400.7, 2050.0, 2050.0), [EUROPEAN("G20", 2050, "900 European ancestry cases, 1,150 European ancestry controls")], None),  # the largest N is the count of a sample: nothing to say
+    ((1900.5, 2060.5, 2060.5), [EUROPEAN("G20", 2100)], ["note", "its N is not whole numbers (2,060.50 at most): the weights of a meta-analysis, or an effective N"]),
+    ((1400.7, 2000.0, 2060.0), [], ["note", "its N is not whole numbers (1,400.70 at least): the weights of a meta-analysis, or an effective N"]),  # the Catalog has nothing of its paper
+    ((2000, 2000, 2000), [["2", "G20", "A trait", 2000, "European 1500; East Asian 500", "1,500 European ancestry individuals, 500 East Asian ancestry individuals"], EUROPEAN("G21", 1500)],
+     ["warn", "its N, 2,000 at most, is that of a sample of several ancestries: G20 has 2,000 individuals, at most 1,500 of them European, and no sample recorded for its paper has more of these. "
+              "The file looks like the analysis of all ancestries together"]),
+    ((2000, 2000, 2000), [["2", "G20", "A trait", 2000, "European 1500; East Asian 500", ""], EUROPEAN("G21", 1950)], None),  # a sample of the paper has about as many Europeans
+    ((2000, 2000, 2000), [["2", "G20", "A trait", 2000, "European, East Asian 2000", ""]], None),  # the Catalog does not say how many are European: they all may be
+    ((2000, 2000, 2000), [EUROPEAN("G20", 700)], ["note", "the median N of its SNPs, 2,000, is above every sample the GWAS Catalog records for its paper (700): it may count samples that the statistics do not hold, "
+                                                           "such as a replication stage"]),
+    ((2000, 2000, 2000), [EUROPEAN("G20", 9000), EUROPEAN("G21", 12000)], ["note", "the median N of its SNPs, 2,000, is far from every sample the GWAS Catalog records for its paper (9,000 to 12,000): "
+                                                                                  "a part of the study, or an effective N"]),
+    ((2000, 2000, 2000), [EUROPEAN("G20", 9000), EUROPEAN("G21", 2500)], None),  # one sample of the paper is near enough
+    ((2000, 2000, 2000), [EUROPEAN("G20", 9000, pmid="7")], None),  # of another paper
+])
+def test_the_n_of_a_file_is_compared_with_the_samples_the_catalog_records(mini, tmp_path, n, records, finding):
+    rows = [line.split("\t") for line in (data_of(mini) / "metrics.tsv").read_text().splitlines()[1:]]
+    write(data_of(mini) / "metrics.tsv", MEASURED, [r for r in rows if r[0] != "B"] + [measured("B", 910, n_min=n[0], n_median=n[1], n_max=n[2])])  # B cites the paper 2; the inventory says N 2,000
+    write(data_of(mini) / "samples.tsv", SAMPLES, records)
+    notes = {d["id"]: d.get("notes", []) for d in built(mini, tmp_path / "out")["studies.json"]["studies"]}
+    assert [note for note in notes["B"] if note[0] != "fail"] == ([finding] if finding else [])  # its fail is of its h²
+    assert notes["C"] == [["warn", "40% of the HapMap3 SNPs that LDSC regresses on"]]  # C cites no paper: nothing to compare
+
+
+def test_a_study_that_is_a_record_of_the_catalog_is_compared_with_that_record(mini, tmp_path):
+    write(data_of(mini) / "samples.tsv", SAMPLES, [["222", "GCST0002", "Trait E", 6000, "East Asian 6000", ""], ["222", "GCST0003", "Trait F", 100, "East Asian 100", ""]])
+    notes = {d["id"]: [note[1] for note in d.get("notes", [])] for d in built(mini, tmp_path / "out")["studies.json"]["studies"]}
+    assert "the median N of its SNPs, 4,000, is above every sample the GWAS Catalog records for it (100): it may count samples that the statistics do not hold, such as a replication stage" in notes["GCST0003"]
+    assert not [note for note in notes["GCST0002"] if "Catalog" in note]  # 6,000, as its file has
+
+
+def test_a_sample_is_counted_for_a_study_s_ancestry():
+    row = {"accession": "G1", "n": "3000", "ancestries": "European 1800; NR 250; East Asian 950", "sample": "up to 900 European ancestry cases, 1,150  European ancestry controls, 400 Han Chinese ancestry cases, 550 East Asian ancestry controls"}
+    assert checks.recorded(row, "European") == {"accession": "G1", "n": 3000, "own": 2050, "cases": 900, "controls": 1150}  # those of no reported ancestry may be European
+    assert checks.recorded(row, "East Asian") == {"accession": "G1", "n": 3000, "own": 1200, "cases": 0, "controls": 550}  # counted by the words that name the ancestry
+    japanese = {"accession": "G2", "n": "36792", "ancestries": "East Asian 36792", "sample": "8,180 Japanese ancestry cases, 28,612 Japanese ancestry controls"}
+    assert checks.recorded(japanese, "East Asian") == {"accession": "G2", "n": 36792, "own": 36792, "cases": 8180, "controls": 28612}  # a sample of one ancestry: every case and control
+    assert checks.recorded(japanese, "European")["own"] == 0
 
 
 def test_a_label_that_a_person_found_wrong_warns_and_is_read_as_corrected(mini, tmp_path):

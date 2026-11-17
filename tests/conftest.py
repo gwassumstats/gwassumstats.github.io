@@ -56,6 +56,10 @@ min_snps = 300
 min_coverage = 0.5
 max_bad = 0.01
 n_within = 0.2
+n_of_paper = [0.6, 1.5]
+same_n = 0.01
+effective = [0.8, 1.02]
+other_ancestry = 0.05
 [statistics]
 unsigned_positive = 0.9
 signed_positive = [0.4, 0.6]

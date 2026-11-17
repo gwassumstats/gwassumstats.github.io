@@ -1,9 +1,10 @@
 id	fix	value	why
 # What is corrected of a study, and why (corrections/). `fix`: flip (Z was signed for A2: its sign is turned), clean
-# (rows listed twice, or with a Z that is not a number, are dropped), n (the file's N is an effective N: each SNP's N
-# is scaled so that the largest becomes `value`, the paper's cases and controls, as the release counts N for its
-# other case-control studies), relabel (the file is sound; `value` is the trait it holds). The corrected copies are
-# written outside this repository, each with a record of its source, its checksums and what changed.
+# (rows listed twice, or with a Z that is not a number, are dropped), n (the file's N is not the count of its
+# individuals, but an effective N, or a count with samples that its statistics do not hold: each SNP's N is scaled so
+# that the largest becomes `value`, the cases and controls of the analysis, as the release counts N for its other
+# case-control studies), relabel (the file is sound; `value` is the trait it holds). The corrected copies are written
+# outside this repository, each with a record of its source, its checksums and what changed.
 PASS_SmokingInitiation_Liu2019	flip		its Z is opposite to that of two other studies of smoking at all of the 1,727 and 1,939 SNPs with |Z| > 4 in both; rg -1.00 and -0.99
 PASS_DrinksPerWeek_Liu2019	flip		of the paper of PASS_SmokingInitiation_Liu2019: opposite to ever smoked at 127 of 132 strong SNPs; rg -0.55 with cirrhosis
 PASS_CigarettesPerDay_Liu2019	flip		of the paper of PASS_SmokingInitiation_Liu2019: opposite to COPD at all 20 strong SNPs; rg -0.61 with COPD and with lung cancer
@@ -15,8 +16,11 @@ PASS_PhysicalActivity_Wang2022	clean		518 SNPs listed twice
 PASS_BMI_Yengo2018	clean		2 SNPs listed twice
 PASS_IBD	clean		152 SNPs with a Z that is not a number
 PASS_Type_1_Diabetes	clean		102 SNPs with a Z that is not a number
-PASS_Schizophrenia_Lam2019_EAS	n	58140	the file's N is an effective N (14,916.61 for most SNPs, 25,722.77 at most), not the count of cases and controls. At the 10 published lead SNPs that the file has, its |Z| is 0.99 to 1.03 of the published: it is the paper's East Asian analysis, of 22,778 cases and 35,362 controls (GWAS Catalog GCST009336)
-PASS_Schizophrenia_Trubetskoy2022	n	130644	the file's N is an effective N (58,749.13 for most SNPs), not the count of cases and controls. At the 117 published lead SNPs that the file has, its |Z| is 0.89 of the published, as the European part of the paper's 175,799 is expected to be (0.86): 53,386 cases and 77,258 controls (GWAS Catalog GCST90128471)
+PASS_Schizophrenia_Lam2019_EAS	n	58140	the file's N looks like half the effective N, as PGC files carry (NEFFDIV2): 14,916.61 for most SNPs and 25,722.77 at most, where 22,778 cases and 35,362 controls give 27,708. The release counts cases and controls for its other case-control studies, so each SNP's N is scaled, and a SNP of fewer cohorts keeps its share. At the 10 published lead SNPs that the file has, its |Z| is 0.99 to 1.03 of the published: it is the paper's East Asian analysis, of 22,778 cases and 35,362 controls (GWAS Catalog GCST009336)
+PASS_Schizophrenia_Trubetskoy2022	n	130644	the file's N looks like half the effective N, as PGC files carry (NEFFDIV2): 58,749.13 for most SNPs, where 53,386 cases and 77,258 controls give 63,141. The release counts cases and controls for its other case-control studies, so each SNP's N is scaled, and a SNP of fewer cohorts keeps its share. At the 117 published lead SNPs that the file has, its |Z| is 0.89 of the published, as the European part of the paper's 175,799 is expected to be (0.86): 53,386 cases and 77,258 controls (GWAS Catalog GCST90128471)
+PASS_GeneticGeneralizedEpilepsy_Berkovic2022	n	49388	the file's N is an effective N: 23,363 at most, where 6,952 cases and 42,436 controls give 23,894. The file is the paper's European analysis (GWAS Catalog GCST90271612): its Z is that of the Catalog's file at all of the 27,173 SNPs compared. The release counts cases and controls for its other case-control studies, so each SNP's N is scaled, and a SNP of fewer cohorts keeps its share
+PASS_Epillepsy_Berkovic2022	n	69995	the file's N is an effective N: 65,124 at most, where 27,559 cases and 42,436 controls give 66,833. The file is the paper's European analysis (GWAS Catalog GCST90271611): its Z is that of the Catalog's file at all of the 27,263 SNPs compared. Scaled like PASS_GeneticGeneralizedEpilepsy_Berkovic2022 of the same paper, though it changes N by 7% only
+PASS_MultipleSclerosis_IMSGC2019	n	41505	the file's N, 115,803, counts the paper's replication samples too (GWAS Catalog GCST009597: 14,802 cases and 26,703 controls in the first stage, 32,627 and 41,672 in the replication). The statistics are of the first stage: at the 89 published lead SNPs that the file has, its |Z| is 0.67 of the published, where the first stage is expected at 0.58, or more at SNPs chosen in it, and both stages at 1
 PANUKBB_IndirectBilirubin	relabel	Estimated glomerular filtration rate (creatinine, cystatin C)	its N, 401,570, is that phenotype's in the Pan-UK Biobank's manifest; rg 0.98 with another study of it
 PANUKBB_LDLDirectAdjustedByMedication	relabel	FEV1/FVC ratio	its N, 316,932, is that phenotype's in the Pan-UK Biobank's manifest; rg 1.00 with another study of it
 PANUKBB_MeanArterialPressureAutomatedReadingAdjustedByMedication	relabel	LDL direct, adjusted by medication	its N, 398,402, is that phenotype's in the Pan-UK Biobank's manifest; rg 0.91 with LDL

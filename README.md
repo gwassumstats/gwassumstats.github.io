@@ -41,9 +41,12 @@ with the lab's passphrase to see where they are. It costs $0.
 | `candidates.toml` | The rule that finds candidates in the GWAS Catalog, and the window of the last release | By hand |
 | `candidates.json` | The candidates, the papers set aside, and the rule's backtest | `python -m candidates` |
 | `catalog.tsv` | The GWAS Catalog's record of each study it knows: paper, N, ancestry, sex, cohorts | `python -m candidates` |
+| `samples.tsv` | Every sample the GWAS Catalog records for a paper cited: its individuals, by ancestry, and its cases and controls | `python -m candidates` |
 
 **Quality checks** (`qc/checks.py`). Every study goes through the same checks: its file as measured, its LDSC
-results, its label against its genetic correlations (`qc/labels.py`), and its row against the GWAS Catalog's record.
+results, its label against its genetic correlations (`qc/labels.py`), its row against the GWAS Catalog's record, and
+the N of its file against the samples the Catalog records for its paper. The release counts individuals, cases and
+controls together: an N that is an effective N, or half of one, or that of a sample of several ancestries, is named.
 A fail means do not use the study as it is; a warn, use it with care; a note is worth knowing, and the study passes.
 The site shows each finding on the study's page. The label check flags a study whose label its genetic correlations
 contradict; it does not relabel it. A person who has looked adds the study to `data/labels.tsv`.
@@ -107,7 +110,8 @@ files themselves are protected by O2.
    ```
 
 6. **Look for candidates**, from any machine: `uv run python -m candidates --refresh` downloads the GWAS Catalog's
-   tables (to `.cache/`, not committed) and writes `data/candidates.json` and `data/catalog.tsv`; then rebuild.
+   tables (to `.cache/`, not committed) and writes `data/candidates.json`, `data/catalog.tsv` and
+   `data/samples.tsv`; then rebuild.
 7. **A new release:** set its window in `data/candidates.toml`, run the steps above, then update the Release notes
    in `site/index.html`: the tests say which written-in numbers no longer match.
 8. **Change the passphrase:** rebuild with the new one. Every reader logs in again.

@@ -81,6 +81,9 @@ def quality(d: pd.DataFrame, tables: dict, data: Path) -> pd.DataFrame:
     catalog = pd.read_csv(known, sep="\t", dtype=str, keep_default_na=False).set_index("id") if known.exists() else pd.DataFrame(columns=["n", "ancestry", "author", "published"])
     reviewed = {row["id"]: (row["label"], row["why"]) for row in cite.table(data / "labels.tsv")}
     by_hand = [(row["id"], row["level"], row["finding"]) for row in cite.table(data / "findings.tsv")]
-    judged = checks.judge(d, tables, metrics, catalog, reviewed, by_hand, tomllib.loads((data / "checks.toml").read_text(encoding="utf-8")))
+    recorded = data / "samples.tsv"  # the samples the GWAS Catalog records for the papers cited, if python -m candidates wrote them
+    samples = pd.read_csv(recorded, sep="\t", dtype=str, keep_default_na=False) if recorded.exists() else None
+    cited = {study: pmids[0] for study, pmids in zip(d.index, sources(d, data)[0]) if pmids}
+    judged = checks.judge(d, tables, metrics, catalog, reviewed, by_hand, tomllib.loads((data / "checks.toml").read_text(encoding="utf-8")), samples, cited)
     file = metrics.xs("h2", level="file").reindex(d.index)
     return judged.assign(hm3=(file["in_hm3"] / file["hm3"]).clip(upper=1).round(3), chi2=file["chi2_mean"].round(3), **{"lambda": file["lambda_gc"].round(3)})

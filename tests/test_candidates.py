@@ -1,12 +1,13 @@
 """The candidates for the next release: the rule on a made-up catalog, its backtest, and what the site shows of both."""
 import json
+import tomllib
 
 import pandas as pd
 import pytest
 
 from candidates import catalog
 from candidates.__main__ import backtest
-from conftest import DATA, ROOT
+from conftest import DATA, ROOT, write
 
 RULE = {"journals": ["Nat Genet", "Nature"], "max_studies": 2, "ancestries": ["European", "East Asian"], "min_n": 50_000}
 
@@ -28,6 +29,20 @@ def made_up():
         study("G10", "15", "2026-02-01", added="2026-10-01"), study("G11", "16", "2026-10-02", ancestry="East Asian"),  # in the Catalog after the window's end
         study("G12", "17", "2025-03-01"),  # nothing against it
     ]).set_index("id")
+
+
+def test_the_catalog_s_tables_are_read_into_a_row_a_study(tmp_path):
+    columns = ["STUDY ACCESSION", "PUBMED ID", "FIRST AUTHOR", "DATE", "DATE ADDED TO CATALOG", "JOURNAL", "STUDY", "DISEASE/TRAIT", "INITIAL SAMPLE SIZE", "COHORT",
+               "FULL SUMMARY STATISTICS", "SUMMARY STATS LOCATION", "MAPPED_TRAIT", "MAPPED_TRAIT_URI"]
+    write(tmp_path / "studies.tsv", columns, [
+        ["G1", "10", "Kim A", "2024-05-01", "2024-06-01", "Nat Genet", "A paper", "Trait 1", "1,500 European ancestry cases, 500 East Asian ancestry cases, 40 cases", "UKB|BBJ", "yes", "http://example.org/G1", "trait one", "http://www.ebi.ac.uk/efo/EFO_1"],
+        ["G2", "10", "Kim A", "2024-05-01", "2024-06-01", "Nat Genet", "A paper", "Trait 2", "700 individuals", "", "no", "NA", "", ""]])
+    write(tmp_path / "ancestry.tsv", ["STUDY ACCESSION", "STAGE", "NUMBER OF INDIVDUALS", "BROAD ANCESTRAL CATEGORY"], [
+        ["G1", "initial", 1500, "European"], ["G1", "initial", 500, "East Asian"], ["G1", "replication", 9000, "African unspecified"], ["G1", "initial", 40, "NR"],
+        ["G2", "initial", 400, "European, NR"], ["G2", "initial", 300, "European, NR"]])
+    table = catalog.load(tmp_path)
+    assert table.loc["G1", ["pmid", "n", "ancestry", "ancestries", "sumstats", "cohort", "efo"]].tolist() == ["10", 2040, "East Asian, European", "European 1500; East Asian 500; NR 40", True, "UKB, BBJ", "EFO_1"]
+    assert table.loc["G2", ["n", "ancestry", "ancestries", "sumstats"]].tolist() == [700, "European", "European, NR 700", False]  # the first stage only; a group as the Catalog names it
 
 
 def test_the_rule_is_five_conditions(made_up):
@@ -62,6 +77,14 @@ def test_a_study_s_sex_is_read_from_its_metadata_file(made_up, tmp_path):
 
 
 # ---------------------------------------------------------------- the committed result
+
+
+def test_the_samples_are_those_of_the_papers_cited():
+    samples = pd.read_csv(ROOT / "data" / "samples.tsv", sep="\t", dtype=str, keep_default_na=False)
+    assert set(samples["pmid"]) <= set(json.loads((ROOT / "data" / "papers.json").read_text())) and not samples["accession"].duplicated().any()
+    assert samples.groupby("pmid").size().max() <= tomllib.loads((ROOT / "data" / "candidates.toml").read_text())["rule"]["max_studies"]  # among more, one always fits
+    by_ancestry = samples["ancestries"].str.findall(r" (\d+)(?:;|$)").map(lambda counts: sum(map(int, counts)))
+    assert (by_ancestry == samples["n"].astype(int)).all() and (samples["n"].astype(int) > 0).all()  # the individuals of each ancestry add up to the sample
 
 
 def test_the_site_shows_the_candidates_that_the_script_found():

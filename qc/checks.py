@@ -1,11 +1,12 @@
 """Judges every study: pass, warn or fail, and why.
 
 What is judged: the study's files, measured SNP by SNP (qc/scan.py -> data/metrics.tsv); its LDSC results, from the
-release; its label, against its genetic correlations (qc/labels.py); and its row of the inventory against the GWAS
-Catalog's record (data/catalog.tsv). The thresholds are in data/checks.toml. A finding is a fail (do not use the
+release; its label, against its genetic correlations (qc/labels.py); its row of the inventory against the GWAS
+Catalog's record (data/catalog.tsv); and the N of its file against the samples the Catalog records (data/samples.tsv). The thresholds are in data/checks.toml. A finding is a fail (do not use the
 study as it is), a warn (use it with care) or a note (worth knowing; the study passes). Its text names another study
 as {ID}: the site shows that study's short name there.
 """
+import re
 from itertools import combinations
 
 import pandas as pd
@@ -14,6 +15,7 @@ from papers import cite
 from qc import labels
 
 LEVELS = ["fail", "warn", "note"]  # the worst first; a study with notes only passes
+ANCESTRIES = {"EUR": "European", "EAS": "East Asian"}  # as the GWAS Catalog names them
 
 
 def files(studies: pd.DataFrame, metrics: pd.DataFrame, rules: dict):
@@ -51,6 +53,60 @@ def copies(metrics: pd.DataFrame):
     for group in (list(group) for group in same.values() if len(group) > 1):
         for study in group:
             yield study, "warn", "by every number measured, its file is that of " + " and ".join(f"{{{other}}}" for other in group if other != study) + ": one file under two IDs"
+
+
+def recorded(row: pd.Series, ancestry: str) -> dict:
+    """A sample that the GWAS Catalog records, as a study of `ancestry` sees it: its individuals (`n`); those who may
+    be of that ancestry (`own`: every group that the Catalog gives it, alone or with others, or gives none); and its
+    cases and controls of that ancestry, counted from the Catalog's words for the sample."""
+    groups = [group.rsplit(" ", 1) for group in row["ancestries"].split("; ") if group]
+    own = sum(int(count) for named, count in groups if {ancestry, "NR"} & set(named.split(", ")))  # NR: not reported
+    counted = {"cases": 0, "controls": 0}
+    for count, words, kind in re.findall(r"(\d[\d,]*) ([^,]*?)\b(cases|controls)\b", row["sample"]):
+        if own == int(row["n"]) or ancestry in words:
+            counted[kind] += int(count.replace(",", ""))
+    return {"accession": row["accession"], "n": int(row["n"]), "own": own, **counted}
+
+
+def sizes(studies: pd.DataFrame, metrics: pd.DataFrame, samples: pd.DataFrame, cited: dict[str, str], rules: dict):
+    """Findings on the N of each study's file against the samples that the GWAS Catalog records: (study, level, text).
+
+    The release counts individuals: cases and controls together. A file is compared by the largest N of its SNPs, that
+    of a SNP every cohort has, and by their median. `samples`: the Catalog's records (data/samples.tsv). A study that
+    is itself a record of the Catalog is compared with that record; another with every record of its paper (`cited`:
+    {study: PMID}), for the checks cannot tell which of them it is."""
+    accessions = set(samples["accession"])
+    plain = lambda number: f"{number:,.2f}".removesuffix(".00")
+    low, high = rules["n_of_paper"]
+    for study, m in metrics.xs("h2", level="file").iterrows():
+        if study not in studies.index:
+            continue
+        ancestry = ANCESTRIES.get(studies.at[study, "anc"], studies.at[study, "anc"])
+        rows, whose = (samples[samples["accession"] == study], "it") if study in accessions else (samples[samples["pmid"] == cited.get(study, "")], "its paper")
+        records = [record for record in (recorded(row, ancestry) for _, row in rows.iterrows()) if record["n"]]
+        largest, median = m["n_max"], m["n_median"]
+        totals = sorted({size for record in records for size in (record["n"], record["own"]) if size})
+        same = lambda size: abs(largest / size - 1) <= rules["same_n"]
+        derived = not all(float(m[column]).is_integer() for column in ("n_min", "n_median", "n_max")) and not any(map(same, totals))  # not whole numbers, nor the count of a sample
+        mixed = [record for record in records if record["own"] < record["n"] and same(record["n"])]
+        effective = [(4 / (1 / record["cases"] + 1 / record["controls"]) / halved, halved, record) for record in records if record["cases"] and record["controls"] for halved in (1, 2)]
+        fits = [(largest / size, halved, record) for size, halved, record in effective if derived and rules["effective"][0] <= largest / size <= rules["effective"][1]]
+        if mixed and largest > (1 + rules["other_ancestry"]) * max(record["own"] for record in records):
+            yield study, "warn", (f"its N, {largest:,.0f} at most, is that of a sample of several ancestries: {mixed[0]['accession']} has {mixed[0]['n']:,} individuals, at most "
+                                  f"{mixed[0]['own']:,} of them {ancestry}, and no sample recorded for {whose} has more of these. The file looks like the analysis of all ancestries together")
+        elif fits:
+            ratio, halved, record = min(fits, key=lambda fit: (round(abs(fit[0] - 1), 6), fit[2]["own"] < fit[2]["n"]))  # the nearest; of two alike, the sample of one ancestry
+            total = record["cases"] + record["controls"]
+            yield study, "warn" if total / largest - 1 > rules["n_within"] else "note", (
+                f"its N looks like {'half an effective N, as PGC files carry (NEFFDIV2)' if halved == 2 else 'an effective N'}: {plain(largest)} at most, where the {record['cases']:,} cases and "
+                f"{record['controls']:,} controls of {record['accession']} give {largest / ratio:,.0f}, and {total:,} in all. h² is {total / largest:.2f} times what their count gives")
+        elif totals and not any(low <= median / size <= high for size in totals):
+            yield study, "note", (f"the median N of its SNPs, {median:,.0f}, is {'above' if median > totals[-1] else 'far from'} every sample the GWAS Catalog records for {whose} ({totals[0]:,}"
+                                  + (f" to {totals[-1]:,}" if len(totals) > 1 else "") + "): "
+                                  + ("it may count samples that the statistics do not hold, such as a replication stage" if median > totals[-1] else "a part of the study, or an effective N"))
+        elif derived:
+            value, where = next((m[column], where) for column, where in (("n_max", "at most"), ("n_median", "for most SNPs"), ("n_min", "at least")) if not float(m[column]).is_integer())
+            yield study, "note", f"its N is not whole numbers ({plain(value)} {where}): the weights of a meta-analysis, or an effective N"
 
 
 def statistics(studies: pd.DataFrame, metrics: pd.DataFrame, rules: dict):
@@ -96,20 +152,19 @@ def twins(studies: pd.DataFrame, tables: dict, rules: dict):
 
 def metadata(studies: pd.DataFrame, catalog: pd.DataFrame):
     """Findings on the inventory against the GWAS Catalog, for the studies that are in it: (study, level, text)."""
-    names = {"EUR": "European", "EAS": "East Asian"}
     letters = lambda text: cite.plain(text).lower()
     for study, c in catalog.iterrows():
         s = studies.loc[study]
         if int(c["n"]) != s["n"]:
             yield study, "warn", f"N {s['n']:,}; the GWAS Catalog says {int(c['n']):,}"
-        if c["ancestry"] != names.get(s["anc"], s["anc"]):
+        if c["ancestry"] != ANCESTRIES.get(s["anc"], s["anc"]):
             yield study, "fail", f"ancestry {s['anc']}; the GWAS Catalog says {c['ancestry'] or 'nothing'}"
         if letters(c["author"].rsplit(" ", 1)[0]) not in letters(s["ref"]) or c["published"][:4] not in s["ref"]:
             yield study, "warn", f"reference {s['ref']}; the GWAS Catalog says {c['author']} {c['published'][:4]}"
 
 
 def judge(studies: pd.DataFrame, tables: dict, metrics: pd.DataFrame, catalog: pd.DataFrame, reviewed: dict[str, tuple[str, str]],
-          by_hand: list[tuple[str, str, str]], rules: dict) -> pd.DataFrame:
+          by_hand: list[tuple[str, str, str]], rules: dict, samples: pd.DataFrame | None = None, cited: dict[str, str] | None = None) -> pd.DataFrame:
     """One row per study, in their order: `qc` (pass, warn or fail) and `notes`, its findings as [level, text], the
     worst first. `metrics`: by study and file ("h2", "rg"); `catalog`: by study; `reviewed`: {study: (the trait its
     file holds, how that is known)} for the studies whose label in the release a person found wrong; `by_hand`: what a
@@ -119,6 +174,8 @@ def judge(studies: pd.DataFrame, tables: dict, metrics: pd.DataFrame, catalog: p
     found = [*files(studies, metrics[measured.isin(studies.index)], rules["file"]), *copies(metrics[measured.isin(studies.index)]), *statistics(studies, metrics, rules["statistics"]),
              *metadata(studies, catalog[catalog.index.isin(studies.index)]), *twins(studies, tables, rules["label"])]
     found += [(study, "warn", "its file was not measured") for study in studies.index.difference(measured)]
+    if samples is not None:
+        found += sizes(studies, metrics, samples, cited or {}, rules["file"])
     found += [(study, "warn", f"the release calls it {studies.at[study, 'trait']}; its file holds {label}: {why}") for study, (label, why) in reviewed.items() if study in studies.index]
     if wrong := [level for _, level, _ in by_hand if level not in LEVELS]:
         raise ValueError(f"a finding made by hand is a {wrong[0]}: expected one of {', '.join(LEVELS)}")

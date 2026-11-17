@@ -65,6 +65,9 @@ their rule. Open: fixes to the studies that the checks flag wait for the owner (
   agrees. It flags, with the best-matching studies as evidence; it never relabels.
 - *Trait:* the complex trait a study is of (`data/traits.tsv`): one per study, shared by studies of the trait
   whatever their paper, ancestry, sex or adjustment; with the EFO term that fits, if one does, and a broad *category*.
+- *N:* the number of individuals of a study, cases and controls together: the release's convention. An *effective
+  N* is 4 / (1/cases + 1/controls), summed over a study's cohorts; some sources give it, or half of it (PGC's
+  NEFFDIV2), in place of N.
 - *Correction:* a row of `data/corrections.tsv`: a *flip* (Z was signed for A2), a *clean* (rows dropped), an *n*,
   or a *relabel*. A *corrected copy* is the study's file with its corrections applied, written outside the
   repository with its *provenance* (source, checksums, what changed). The release itself is never changed.
