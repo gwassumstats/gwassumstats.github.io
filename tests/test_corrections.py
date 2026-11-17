@@ -194,3 +194,24 @@ def test_the_table_of_corrections_names_studies_of_the_release_and_says_why():
     assert all(bool(row["value"]) == (row["fix"] in ("n", "relabel", "source", "alleles")) for row in rows)
     assert all(re.fullmatch(r"GCST\d+|https://\S+", fix.sourced(row["value"])["source"]) for row in rows if row["fix"] == "source") and planned(rows)
     assert sum(row["fix"] == "flip" for row in rows) == 6 and sum(row["fix"] == "relabel" for row in rows) == 6
+
+
+def test_the_next_version_links_each_study_to_its_file_and_lists_it(tmp_path):
+    from corrections.next import inventory, linked
+    copy, theirs = tmp_path / "copies" / "sumstats" / "A.sumstats", tmp_path / "release" / "B.sumstats"
+    for path in (copy, theirs):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("SNP\tA1\tA2\tN\tZ\n")
+    out = tmp_path / "copies" / "next"
+    (out / "sumstats").mkdir(parents=True)
+    (out / "sumstats" / "Gone.sumstats").symlink_to(theirs)
+    files = {"A": str(copy), "B": str(theirs)}
+    linked(files, out / "sumstats")
+    linked(files, out / "sumstats")  # again: nothing changes
+    assert sorted(p.name for p in (out / "sumstats").iterdir()) == ["A.sumstats", "B.sumstats"] and (out / "sumstats" / "A.sumstats").resolve() == copy.resolve()
+    studies = [{"id": "A", "name": "X_2020_A", "of": "Trait A", "trait": "a", "anc": "EUR", "n": 1000, "h2": 0.1, "h2_se": 0.01, "h2_z": 10.0, "qc": "pass", "kind": "binary",
+                "cases": 100, "controls": 900, "neff": 360, "h2l": 0.2, "h2l_se": 0.02, "ukb": True, "rec": "neff", "fixed": [["flip", "", "why"]], "label": "X et al. 2020", "cite": ["1"]},
+               {"id": "B", "name": "Y_2010_A", "of": "Trait A", "trait": "b", "anc": "EUR", "n": 500, "h2": 0.2, "h2_se": 0.05, "h2_z": 4.0, "qc": "pass", "ukb": False, "sup": "A", "label": "Y et al. 2010"}]
+    table = inventory(studies, files, out)
+    assert table.loc[0, ["effective_n", "h2_liability", "recommended", "uk_biobank", "corrected", "file"]].tolist() == [360, 0.2, "yes", "yes", "flip", str(copy)]
+    assert table.loc[1, ["effective_n", "superseded_by", "uk_biobank", "corrected", "path"]].tolist() == [500, "X_2020_A", "no", "", str(out / "sumstats" / "B.sumstats")]

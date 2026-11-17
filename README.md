@@ -116,6 +116,12 @@ its ID (a study of UK Biobank alone), the cohorts of the GWAS Catalog's record o
 before May 2015, when UK Biobank first released genotypes. The rest is by hand, from the paper, each row with its
 source; where the paper read does not say, the row says so and the study's flag is not known.
 
+**The next version** (`corrections/next.py`). `python -m corrections.next`, after the build, writes `next/` in the
+folder of the corrected copies: a link per study to its file as it now stands (its corrected copy, else the release's
+file; nothing is copied) and `inventory.tsv`, a line per study with its short name, trait, ancestry, N, effective N,
+h² and liability-scale h², QC, recommended or superseded, UK Biobank, corrections and paths. The folder may be purged:
+the command writes it again.
+
 **The study to use of a trait** (`build/recommend.py`). Of the studies of one trait and one ancestry that pass the
 checks, as the site shows them, the one of the largest effective N is recommended; h² z settles a tie. If the
 effective N of one of them is not known, effective N cannot rank it, and its N would overstate few cases among many
@@ -145,6 +151,7 @@ files themselves are protected by O2.
    uv run python -m cases     # binary or quantitative, cases and controls of new studies: data/cases.tsv
    uv run python -m ukb       # whether new studies include UK Biobank: data/ukb.tsv
    SUMSTATS_PASSPHRASE=... SUMSTATS_CORRECTIONS=<the folder of the corrected copies> uv run python -m build
+   SUMSTATS_CORRECTIONS=<the same folder> uv run python -m corrections.next   # next/: the collection as it now stands
    ```
 
    Without `SUMSTATS_PASSPHRASE` the build asks for it. `SUMSTATS_CORRECTIONS` gives a corrected study the path of its
@@ -220,7 +227,7 @@ Without the variables, the tests that need them are skipped. Run with all three 
 | `names/` | Drafts the short names (`python -m names`) |
 | `traits/` | Drafts each study's complex trait, EFO term and category (`python -m traits`) |
 | `qc/` | Quality checks: `scan.py` measures the files on Slurm, `checks.py` judges each study, `labels.py` checks its label |
-| `corrections/` | Writes corrected copies of the studies of `data/corrections.tsv`, outside the repository, with provenance |
+| `corrections/` | Writes corrected copies of the studies of `data/corrections.tsv`, outside the repository, with provenance; and the next version of the collection (`next.py`) |
 | `cases/`, `ukb/` | Draft each study's cases and controls (`python -m cases`), and whether its sample includes UK Biobank (`python -m ukb`) |
 | `candidates/` | Finds candidates for the next release in the GWAS Catalog, and backtests the rule (`python -m candidates`) |
 | `data/` | What the repository adds to a release: papers and short names, reviewable |
