@@ -17,7 +17,7 @@ STUDIES = json.loads((DATA / "studies.json").read_text())["studies"]
 SAME = 0.01
 
 
-def sample(pmid, accession, n, text, ancestries=None):
+def sample(pmid, accession, n, text, ancestries=None):  # a record of the GWAS Catalog, as data/samples.tsv has it
     return {"pmid": pmid, "accession": accession, "trait": "x", "n": str(n), "ancestries": ancestries or f"European {n}", "sample": text}
 
 
@@ -33,7 +33,7 @@ def test_cases_and_controls_are_drafted_from_the_record_of_a_study_s_sample():
                                       "GCST2": {"n": "500", "ancestry": "European", "sample": "500 European ancestry individuals"},
                                       "GCST3": {"n": "100", "ancestry": "European", "sample": "100 European ancestry cases"}}, orient="index")
     samples = pd.DataFrame([
-        sample("p0", "GCST9", 300, "120 European ancestry cases, 180 European ancestry controls"),
+        sample("p0", "GCST9", 300, "70 European ancestry cases, 50 European ancestry proxy cases, 180 European ancestry controls"),
         sample("p1", "GCST10", 300, "90 European ancestry cases, 210 European ancestry controls"), sample("p1", "GCST11", 400, "150 European ancestry cases, 250 European ancestry controls"),
         sample("p2", "GCST12", 301, "100 European ancestry cases, 201 European ancestry controls"),
         sample("p3", "GCST13", 600, "100 European ancestry cases, 500 European ancestry controls"), sample("p3", "GCST14", 600, "200 European ancestry cases, 400 European ancestry controls"),
@@ -42,6 +42,7 @@ def test_cases_and_controls_are_drafted_from_the_record_of_a_study_s_sample():
     listed = pd.DataFrame({"name": ["Asthma", "Height", "Weight", "Gout", "Stroke"], "measured": [False, True, True, False, False], "cases": [100, 2000, 2000, 30, 60], "controls": [900, 0, 0, 2970, 2940]})
     got = draft(studies, catalog, samples, {"taken": "GCST9", "taken_other_n": "GCST9"}, {"EUR": listed}, SAME)
     said = lambda name: (got[name]["kind"], got[name]["cases"], got[name]["controls"], got[name]["source"], got[name]["how"])
+    assert [name for name in got if got[name]["proxy"]] == ["taken"] and got["taken"]["proxy"] == "yes"  # a record that counts proxy cases, relatives of a case, says so
     # a study that is a record of the Catalog: its record's cases and controls; individuals make it quantitative; cases alone are to check
     assert said("GCST1") == ("binary", 100, 200, "GCST1", "its record in the GWAS Catalog") and said("GCST2") == ("quantitative", "", "", "GCST2", "its record in the GWAS Catalog")
     assert said("GCST3") == ("", "", "", "GCST3", "check: its record in the GWAS Catalog has cases without controls")
@@ -55,7 +56,7 @@ def test_cases_and_controls_are_drafted_from_the_record_of_a_study_s_sample():
     # a study of the Pan-UK Biobank: the phenotype of its N in the manifest, if there is one only, or if all are measurements; by the N of the release, whatever a correction made of it
     assert said("PANUKBB_One") == ("binary", 100, 900, "Pan-UK Biobank manifest", "the one phenotype of its N in the Pan-UK Biobank's manifest: Asthma")
     assert said("PANUKBB_Measured")[:2] == ("quantitative", "") and said("PANUKBB_Relabelled")[0] == "quantitative" and got["PANUKBB_Several"]["how"] == "check: 2 phenotypes of its N in the Pan-UK Biobank's manifest"
-    assert got["nothing"] == {"kind": "", "cases": "", "controls": "", "source": "", "how": "check: no record of its sample"}
+    assert got["nothing"] == {"kind": "", "cases": "", "controls": "", "proxy": "", "source": "", "how": "check: no record of its sample"}
 
 
 def test_the_manifest_s_phenotypes_are_read_for_an_ancestry():

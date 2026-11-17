@@ -74,6 +74,13 @@ their rule. Open: fixes to the studies that the checks flag wait for the owner (
   binary one its cases and controls with the record they are from (`python -m cases`, then by hand). The site's
   effective N of a binary study is 4 v (1 − v) times its individuals, v its share of cases (`build/recommend.py`);
   a quantitative study's is its N; a binary study whose cases are *not public* or not known has none.
+- *Proxy cases:* relatives of a case counted as cases (UK Biobank's parental history of Alzheimer's or Parkinson's
+  disease); `proxy` in `data/cases.tsv`.
+- *Liability-scale h²:* a binary study's h² converted with its trait's population *prevalence* in its ancestry, as a
+  paper of the collection states it (`data/prevalence.tsv`, quoted), and its sample's share of cases
+  (`build/liability.py`). None for a study of proxy cases, of unknown cases, or of a trait without a stated prevalence;
+  a sample's share of cases is never taken for a prevalence.
+- *UKB flag:* whether a study's sample includes UK Biobank: yes, no, or not known (`data/ukb.tsv`, with its source).
 - *Recommended, superseded:* of the studies of a trait and an ancestry that pass QC as shown, the one of the largest
   effective N is *recommended* (ties by h² z), unless a candidate without an effective N has a larger h² z. An older study of
   the same trait, ancestry and sex is *superseded* by it.

@@ -85,7 +85,7 @@ sub { font-size: .75em; line-height: 0; }
 main:has(#listview:not([hidden]) table:empty) { min-height: 100vh; }  /* the footer stays put while the data loads */
 .filters { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .9rem; margin: .9rem 0 0; color: var(--muted); }
 .filters label, .check { display: inline-flex; align-items: center; gap: .35rem; white-space: nowrap; }
-#q { width: 19rem; max-width: 100%; }
+#q { width: 14rem; max-width: 100%; }
 #rg-a, #rg-b { width: 21rem; max-width: 100%; }  /* room for a short name */
 .page-head, .section-head { margin: .9rem 0 0; color: var(--muted); font-size: var(--fs-title); font-weight: 400; }
 .page-head .check { margin-left: .9rem; font-size: var(--fs-body); }

@@ -37,12 +37,12 @@ def test_studies_carry_the_inventory_h2_panel_and_paper(mini, tmp_path):
     assert [d["id"] for d in data["studies"]] == ["A_unsigned", "B", "C", "GCST0001", "D_EAS", "GCST0002", "GCST0003"]
     assert old == {"id": "A_unsigned", "name": "Smith_2010_Height", "of": "Height", "trait": "Height (old)", "anc": "EUR", "n": 1000, "m": 900, "origin": "Old 2015",
                    "ref": "Smith et al., 2010 Nature", "signed": False, "alleles": True, "cross": False, "release": 2024, "h2": 0.2, "h2_se": 0.02, "h2_z": 10.0,
-                   "intercept": 1.01, "qc": "pass", "hm3": 0.9, "chi2": 1.3, "lambda": 1.2, "rec": "neff", "cite": ["1"]}
+                   "intercept": 1.01, "qc": "pass", "hm3": 0.9, "chi2": 1.3, "lambda": 1.2, "ukb": False, "ukb_from": "PMID 30305743", "rec": "neff", "cite": ["1"]}
     assert new == {"id": "GCST0001", "name": "OrtinVela_2025_TraitNew", "of": "Trait new", "trait": "Trait new", "anc": "EUR", "n": 4000, "m": 930, "origin": "New 2026",
                    "ref": "Ortín et al. 2025 Nat Genet", "signed": True, "alleles": True, "cross": True, "release": 2026, "h2": 0.1461, "h2_se": 0.009,
                    "h2_z": 16.23333, "intercept": 0.7683, "panel": 1, "m_rg": 926, "pmid": "111", "paper": "https://pubmed.ncbi.nlm.nih.gov/111/",
                    "catalog": "https://www.ebi.ac.uk/gwas/studies/GCST0001", "paper_id": "NG_Ortin_2025_x", "qc": "pass", "hm3": 0.93, "chi2": 1.3, "lambda": 1.2,
-                   "rec": "neff", "cite": ["111"], "notes": [["note", "LDSC intercept 0.77: the statistics look corrected for inflation (genomic control), which lowers h²"]]}
+                   "ukb": True, "ukb_from": "GCST0001", "rec": "neff", "cite": ["111"], "notes": [["note", "LDSC intercept 0.77: the statistics look corrected for inflation (genomic control), which lowers h²"]]}
     assert {d["id"]: d["panel"] for d in data["studies"] if "panel" in d} == {"GCST0001": 1, "C": 2, "GCST0002": 1}  # the panels' own order
     assert data["studies"][1]["trait"] == "Alzheimer’s disease" and data["studies"][1]["h2"] == -0.0058
 
@@ -57,8 +57,23 @@ def test_a_binary_study_has_its_cases_and_controls_and_a_study_that_passes_is_re
     assert not [d["id"] for d in data["studies"] if d["id"] not in ("B", "C", "GCST0003") and {"kind", "cases", "controls", "neff", "cases_from", "cases_how"} & set(d)]  # a quantitative study's effective N is its N
     # of each trait and ancestry, a study that passes is recommended: here two studies pass, each the only one of its trait
     assert {d["id"]: d["rec"] for d in data["studies"] if "rec" in d} == {"A_unsigned": "neff", "GCST0001": "neff"} and not [d["id"] for d in data["studies"] if "sup" in d]
-    assert data["release"]["binary"] == {"studies": 3, "counted": 2} and data["release"]["recommended"] == {"of": 6, "studies": 2, "by_z": 0, "superseded": 0}
+    assert data["release"]["binary"] == {"studies": 3, "counted": 2, "liability": 2, "proxy": 0} and data["release"]["recommended"] == {"of": 6, "studies": 2, "by_z": 0, "superseded": 0}
+    # whether its sample includes UK Biobank, and how that is known: what a person wrote, or why it is not known
+    assert [(by[study].get("ukb"), by[study].get("ukb_from"), by[study].get("ukb_how")) for study in ("A_unsigned", "B", "C", "GCST0001")] == [
+        (False, "PMID 30305743", None), (True, "PMID 2", "the paper's GWAS includes UK Biobank"), (None, None, "check: no record of its cohorts"), (True, "GCST0001", None)]
+    assert data["release"]["ukb"] == {"yes": 2, "no": 4, "unknown": 1}
+    # h² on the liability scale, with the prevalence a paper states, of each binary trait and ancestry that has one: B's h² is below 0, and stays so
+    assert (by["B"]["h2l"], by["B"]["h2l_se"], by["GCST0003"]["h2l"]) == pytest.approx((-0.00769, 0.01326, 0.05634), abs=1e-5) and "h2l" not in by["C"] and "h2l" not in by["A_unsigned"]
+    assert data["prevalence"] == {"Alzheimer's disease": {"EUR": [0.05, "2", "a prevalence of 5%"]}, "Trait D": {"EAS": [0.01, "3", "1% of people"]}}  # not Height's: no study of it is binary
     rows = cite.table(data_of(mini) / "cases.tsv")
+    write(data_of(mini) / "cases.tsv", list(rows[0]), [list((row | ({"proxy": "yes"} if row["id"] == "B" else {})).values()) for row in rows])
+    by = {d["id"]: d for d in built(mini, tmp_path / "out")["studies.json"]["studies"]}
+    assert by["B"]["proxy"] is True and "h2l" not in by["B"] and "proxy" not in by["GCST0003"]  # some of its cases are relatives of a case: no h² on the liability scale
+    prevalence = cite.table(data_of(mini) / "prevalence.tsv")
+    write(data_of(mini) / "prevalence.tsv", list(prevalence[0]), [list((row | {"source": "PMID 99"}).values()) for row in prevalence])
+    with pytest.raises(ValueError, match="data/prevalence.tsv: PMID 99 is not a paper of the collection"):
+        build(mini, tmp_path / "out", "x")
+    write(data_of(mini) / "prevalence.tsv", list(prevalence[0]), [list(row.values()) for row in prevalence])
     write(data_of(mini) / "cases.tsv", list(rows[0]), [list(row.values()) for row in rows[1:]])
     with pytest.raises(ValueError, match="data/cases.tsv lacks A_unsigned: run python -m cases"):
         build(mini, tmp_path / "out", "x")
@@ -156,6 +171,8 @@ def test_a_paper_without_its_record_stops_the_build(mini, tmp_path):
 def test_a_row_for_one_study_goes_before_the_row_of_its_reference(mini, tmp_path):
     path = data_of(mini) / "references.tsv"
     path.write_text(path.read_text() + "Kim et al. 2018 Nat Genet\tD_EAS\t1\t\tby hand: one reference, two papers\tSmith J 2010 Nature\n")
+    prevalence = data_of(mini) / "prevalence.tsv"  # whose source is the paper of D_EAS no more
+    prevalence.write_text("".join(line for line in prevalence.read_text().splitlines(keepends=True) if "PMID 3" not in line))
     assert built(mini, tmp_path / "out")["studies.json"]["studies"][4]["cite"] == ["1"]
 
 
@@ -340,7 +357,7 @@ def test_release_counts(mini, tmp_path):
     release = built(mini, tmp_path / "out")["studies.json"]["release"]
     assert release == {
         "year": 2026, "packaged": "2026-09-07", "papers": 2, "ancestries": ["EUR", "EAS"], "qc": {"pass": 2, "warn": 4, "fail": 1}, "traits": {"all": 6, "efo": 5},
-        "binary": {"studies": 3, "counted": 2}, "recommended": {"of": 6, "studies": 2, "by_z": 0, "superseded": 0},
+        "binary": {"studies": 3, "counted": 2, "liability": 2, "proxy": 0}, "ukb": {"yes": 2, "no": 4, "unknown": 1}, "recommended": {"of": 6, "studies": 2, "by_z": 0, "superseded": 0},
         "all": {"studies": 7, "before": 4, "added": 3, "signed": 6, "signed_before": 3, "unsigned": 1, "unsigned_added": 0, "no_alleles": 0},
         "EUR": {"studies": 4, "before": 3, "added": 1, "signed": 3, "signed_before": 2, "pairs": 3, "failed": 1,
                 "worst": {"id": "C", "failed": 1, "pairs": 2}, "panel": 2, "panel_added": 1, "pairs_before": 1, "panel_before": 2, "panel_kept": 1},

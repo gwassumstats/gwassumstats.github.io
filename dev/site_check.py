@@ -121,11 +121,12 @@ def text(d):
 def table_of(studies, paths):
     """The file of the studies ticked: a line each, with its trait, its cases, controls and effective N, what the checks say, whether it is corrected (by a copy, or its label
     alone), whether it is the study to use of its trait or which supersedes it, and the path after login."""
-    head = ["short_name", "id", "release_name", "trait", "ancestry", "n", "cases", "controls", "effective_n", "reference", "published", "pmid", "qc", "corrected", "recommended", "superseded_by",
-            *(["path"] if paths else [])]
+    head = ["short_name", "id", "release_name", "trait", "ancestry", "n", "cases", "controls", "effective_n", "h2", "h2_se", "h2_liability", "h2_liability_se", "reference", "published", "pmid", "qc",
+            "corrected", "recommended", "superseded_by", "uk_biobank", *(["path"] if paths else [])]
     corrected = lambda d: "copy" if any(kind != "relabel" for kind, _, _ in d.get("fixed", [])) else "label" if "fixed" in d else ""
     lines = [[d["name"], d["id"], d["trait"], d["of"], d["anc"], str(d["n"]), str(d.get("cases", "")), str(d.get("controls", "")), str(d.get("neff", "") if d.get("kind") == "binary" else d["n"]),
-              label(d), published(d), ";".join(d.get("cite", [])), d["qc"], corrected(d), "yes" if "rec" in d else "", BY_ID[d["sup"]]["name"] if "sup" in d else "", *([file_path(d["id"])] if paths else [])]
+              *(str(d.get(key, "")) for key in ("h2", "h2_se", "h2l", "h2l_se")), label(d), published(d), ";".join(d.get("cite", [])), d["qc"], corrected(d), "yes" if "rec" in d else "",
+              BY_ID[d["sup"]]["name"] if "sup" in d else "", {True: "yes", False: "no"}.get(d.get("ukb"), ""), *([file_path(d["id"])] if paths else [])]
              for d in studies]
     return "".join("\t".join(line) + "\n" for line in [head, *lines])
 
@@ -178,8 +179,8 @@ def run(pw, url, name, **context):
     check(f"[{name}] the table lists every study", bodies("sumstats-table").count() == len(STUDIES) == 602 and count() == "602 studies", count)
     d = STUDIES[0]
     check(f"[{name}] its columns: a study by its short name; h² ± SE and h² z to two significant digits; what the checks say; no ID, no trait, no Signed, no Release",
-          heads("sumstats-table") == ["", "Study", "Ancestry", "N", "M", "h² ± SE", "h² z", "QC", "Reference"]
-          and cells("sumstats-table") == ["", d["name"], d["anc"], f"{d['n']:,}", f"{d['m']:,}", plus_minus(d["h2"], d["h2_se"]), sig(d["h2_z"]), d["qc"], label(d)],
+          heads("sumstats-table") == ["", "Study", "Ancestry", "N", "M", "h² ± SE", "h² z", "QC", "UKB", "Reference"]
+          and cells("sumstats-table") == ["", d["name"], d["anc"], f"{d['n']:,}", f"{d['m']:,}", plus_minus(d["h2"], d["h2_se"]), sig(d["h2_z"]), d["qc"], {True: "yes", False: "no"}.get(d.get("ukb"), "–"), label(d)],
           lambda: (heads("sumstats-table"), cells("sumstats-table")))
     links = page.locator("#sumstats-table td.ref a").evaluate_all("list => list.map((a) => [a.textContent, a.href, a.target, a.rel])")
     check(f"[{name}] every study's reference names its paper and leads to PubMed, in a new tab",
@@ -208,7 +209,11 @@ def run(pw, url, name, **context):
     page.check("#f-rec")
     ok &= count() == f"{RELEASE['recommended']['studies']} of 602 studies" and set(page.locator("#sumstats-table td .qc").all_inner_texts()) == {"pass"}
     page.uncheck("#f-rec")
-    check(f"[{name}] the filters count as the data does: ancestry, h² z > 6, signed, nonredundant, recommended", ok and count() == "602 studies", count)
+    for value, keep in (("yes", lambda d: d.get("ukb") is True), ("no", lambda d: d.get("ukb") is False), ("unknown", lambda d: "ukb" not in d)):
+        page.select_option("#f-ukb", value)
+        ok &= count() == f"{sum(map(keep, STUDIES))} of 602 studies" and RELEASE["ukb"][value] == sum(map(keep, STUDIES))
+    page.select_option("#f-ukb", "")
+    check(f"[{name}] the filters count as the data does: ancestry, h² z > 6, signed, nonredundant, recommended, UK Biobank", ok and count() == "602 studies", count)
     ok = True
     for level in ("pass", "warn", "fail"):
         page.select_option("#f-qc", level)
@@ -337,8 +342,8 @@ def run(pw, url, name, **context):
           and first("h2-table") == top["name"] and page.locator("#h2-plot .bar").count() == len(set(bins)) and fits(),
           lambda: page.inner_text("#h2-caption"))
     check(f"[{name}] its table: h² ± SE in one column, sorted by h², without bars",
-          heads("h2-table") == ["", "Study", "Ancestry", "h² ± SE ▼", "h² z", "Intercept", "QC"] and page.locator(".meter").count() == 0
-          and cells("h2-table") == ["", top["name"], top["anc"], plus_minus(top["h2"], top["h2_se"]), sig(top["h2_z"]), f"{top['intercept']:.4f}", top["qc"]],
+          heads("h2-table") == ["", "Study", "Ancestry", "h² ± SE ▼", "Liability h² ± SE", "h² z", "Intercept", "QC"] and page.locator(".meter").count() == 0
+          and cells("h2-table") == ["", top["name"], top["anc"], plus_minus(top["h2"], top["h2_se"]), plus_minus(top.get("h2l"), top.get("h2l_se")), sig(top["h2_z"]), f"{top['intercept']:.4f}", top["qc"]],
           lambda: (heads("h2-table"), cells("h2-table")))
     shot("h2", full=False)
     box = page.locator("#h2-plot svg").bounding_box()
@@ -568,6 +573,15 @@ def run(pw, url, name, **context):
     check(f"[{name}] cases that are those of a record of the GWAS Catalog link to it",
           row("Cases and controls") == f"{stenosis['cases']:,} and {stenosis['controls']:,}: effective N {stenosis['neff']:,} · GCST90651074"
           and page.locator("#view-study .row", has_text="Cases and controls").locator("a").get_attribute("href") == "https://www.ebi.ac.uk/gwas/studies/GCST90651074", lambda: row("Cases and controls"))
+    # h² on the liability scale, with the prevalence a paper states; or why there is none. UK Biobank, and how it is known
+    adhd, proxy = BY_ID["PASS_ADHD_Demontis2018"], BY_ID["PASS_Alzheimers_Jansen2019"]
+    settled(adhd["id"])
+    liability, biobank = row("Liability-scale h²"), row("UK Biobank")
+    settled(proxy["id"])
+    check(f"[{name}] a binary study's page gives h² on the liability scale with the prevalence, quoted from its paper; a study of proxy cases has none; whether a study includes UK Biobank, and how it is known",
+          liability.startswith(f"{plus_minus(adhd['h2l'], adhd['h2l_se'])} At a population prevalence of 5%: “") and "Demontis et al. 2023" in liability
+          and row("Liability-scale h²") == "none: some of its cases are proxy cases, relatives of a case, and not cases of the trait"
+          and biobank == "no · the paper Its paper's full text does not name UK Biobank." and row("UK Biobank").startswith("yes"), lambda: (liability, biobank, row("Liability-scale h²"), row("UK Biobank")))
     told = {}
     for study in ("UKB_460K.cancer_PROSTATE", "PASS_ProstateCancer", "PASS_BMI1", "PASS_Celiac", "UKB_460K.body_HEIGHTz"):
         settled(study)

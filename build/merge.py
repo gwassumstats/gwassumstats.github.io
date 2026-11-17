@@ -121,10 +121,10 @@ def quality(d: pd.DataFrame, tables: dict, data: Path, corrected: dict[str, list
 
 def sizes(d: pd.DataFrame, largest: pd.Series, data: Path) -> pd.DataFrame:
     """Of each study, from data/cases.tsv: whether its trait is binary (`kind`: "binary", "quantitative", or "" where
-    the table does not say yet); its `cases` and `controls`, missing where they are not known; the record they are
-    from (`cases_from`) and what a person noted of them (`cases_how`); and `neff`, its effective N
-    (build/recommend.py), missing where it is not known. `largest`: the largest N of the SNPs of each study's file.
-    Every study has a row."""
+    the table does not say yet); its `cases` and `controls`, missing where they are not known; whether some of the
+    cases are proxy cases (`proxy`); the record they are from (`cases_from`) and what a person noted of them
+    (`cases_how`); and `neff`, its effective N (build/recommend.py), missing where it is not known. `largest`: the
+    largest N of the SNPs of each study's file. Every study has a row."""
     rows = {row["id"]: row for row in cite.table(data / "cases.tsv")}
     lacking = d.index.difference(list(rows))
     if len(lacking):
@@ -133,8 +133,22 @@ def sizes(d: pd.DataFrame, largest: pd.Series, data: Path) -> pd.DataFrame:
         raise ValueError(f"data/cases.tsv: {odd[0]} is binary or quantitative, with cases and controls or with neither")
     number = lambda column: pd.Series([float(rows[study][column]) if rows[study][column] else float("nan") for study in d.index], index=d.index)
     said = lambda study: rows[study]["how"].removeprefix("by hand: ") if rows[study]["how"].startswith("by hand: ") and rows[study]["kind"] == "binary" else None
-    t = pd.DataFrame({"kind": [rows[study]["kind"] for study in d.index], "cases": number("cases"), "controls": number("controls"),
+    t = pd.DataFrame({"kind": [rows[study]["kind"] for study in d.index], "cases": number("cases"), "controls": number("controls"), "proxy": [rows[study].get("proxy") == "yes" for study in d.index],
                       "cases_from": [rows[study]["source"] if rows[study]["kind"] == "binary" and rows[study]["source"] else None for study in d.index],
                       "cases_how": [said(study) for study in d.index]}, index=d.index)
     known = [recommend.effective(kind, n, cases, controls, most if pd.notna(most) else None) for kind, n, cases, controls, most in zip(t["kind"], d["n"], t["cases"], t["controls"], largest.reindex(d.index))]
     return t.assign(neff=pd.Series(known, index=d.index, dtype=float).round())
+
+
+def biobank(d: pd.DataFrame, data: Path) -> pd.DataFrame:
+    """Of each study, from data/ukb.tsv (python -m ukb): whether its sample includes UK Biobank (`ukb`: True, False,
+    or missing where it is not known), the record or paper that says so (`ukb_from`), and what a person noted
+    (`ukb_how`). Every study has a row."""
+    rows = {row["id"]: row for row in cite.table(data / "ukb.tsv")}
+    if len(lacking := d.index.difference(list(rows))):
+        raise ValueError(f"data/ukb.tsv lacks {lacking[0]}: run python -m ukb")
+    if odd := [study for study in d.index if rows[study]["ukb"] not in ("yes", "no", "")]:
+        raise ValueError(f"data/ukb.tsv: {odd[0]} says {rows[study]['ukb']!r}, not yes, no or nothing")
+    return pd.DataFrame({"ukb": [{"yes": True, "no": False}.get(rows[study]["ukb"]) for study in d.index],
+                         "ukb_from": [rows[study]["source"] or None for study in d.index],
+                         "ukb_how": [rows[study]["how"].removeprefix("by hand: ") if rows[study]["how"].startswith("by hand: ") or not rows[study]["ukb"] else None for study in d.index]}, index=d.index)

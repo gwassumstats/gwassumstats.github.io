@@ -86,7 +86,7 @@ def main():
     samples = studies[studies["pmid"].isin(set(json.loads((DATA / "papers.json").read_text())))].rename_axis("accession").reset_index()  # of the papers that the collection cites
     named = {row["source"] for row in cite.table(DATA / "cases.tsv")} if (DATA / "cases.tsv").exists() else set()  # a study's cases and controls may be those of a record of another paper
     samples = pd.concat([samples[samples.groupby("pmid")["pmid"].transform("size") <= rule["max_studies"]], studies[studies.index.isin(named)].rename_axis("accession").reset_index()])
-    samples = samples.drop_duplicates("accession")[["pmid", "accession", "trait", "n", "ancestries", "sample"]]
+    samples = samples.drop_duplicates("accession")[["pmid", "accession", "trait", "n", "ancestries", "sample", "cohort"]]
     samples.sort_values(["pmid", "accession"], key=lambda column: column.astype(int) if column.name == "pmid" else column).to_csv(DATA / "samples.tsv", sep="\t", index=False)
     test = out["backtest"]
     print(f"Catalog fetched {fetched}: {len(studies):,} studies, published to {out['catalog']['published_to']}, added to {out['catalog']['added_to']}")

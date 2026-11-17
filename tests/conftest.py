@@ -126,11 +126,16 @@ def mini(tmp_path):
     write(data / "traits.tsv", ["id", "trait", "efo", "category", "how"], [["# the trait each study is of", "", "", "", ""],
         ["A_unsigned", "Height", "EFO_1", "anthropometric", "by hand"], ["B", "Alzheimer's disease", "MONDO_2", "neurological and aging", "by hand"], ["C", "Trait C", "", "other", "check: no EFO term found"],
         ["GCST0001", "Trait new", "EFO_4", "other", "by hand"], ["D_EAS", "Trait D", "EFO_5", "other", "by hand"], ["GCST0002", "Trait E", "EFO_6", "other", "by hand"], ["GCST0003", "Trait D", "EFO_5", "other", "by hand"]])
-    write(data / "cases.tsv", ["id", "kind", "cases", "controls", "source", "how"], [  # one binary study with its cases and controls, one without; the others measure something
-        ["A_unsigned", "quantitative", "", "", "", "by hand: a measurement"], ["B", "binary", "400", "1600", "PMID 2", "by hand: the paper's cases and controls, as {C} has them too"],
-        ["C", "binary", "", "", "", "by hand: a yes-or-no trait; its cases are not public"], ["GCST0001", "quantitative", "", "", "GCST0001", "its record in the GWAS Catalog"],
-        ["D_EAS", "quantitative", "", "", "", "by hand: a measurement"], ["GCST0002", "quantitative", "", "", "GCST0002", "its record in the GWAS Catalog"],
-        ["GCST0003", "binary", "1000", "6000", "GCST0003", "its record in the GWAS Catalog"]])
+    write(data / "cases.tsv", ["id", "kind", "cases", "controls", "proxy", "source", "how"], [  # one binary study with its cases and controls, one without; the others measure something
+        ["A_unsigned", "quantitative", "", "", "", "", "by hand: a measurement"], ["B", "binary", "400", "1600", "", "PMID 2", "by hand: the paper's cases and controls, as {C} has them too"],
+        ["C", "binary", "", "", "", "", "by hand: a yes-or-no trait; its cases are not public"], ["GCST0001", "quantitative", "", "", "", "GCST0001", "its record in the GWAS Catalog"],
+        ["D_EAS", "quantitative", "", "", "", "", "by hand: a measurement"], ["GCST0002", "quantitative", "", "", "", "GCST0002", "its record in the GWAS Catalog"],
+        ["GCST0003", "binary", "1000", "6000", "", "GCST0003", "its record in the GWAS Catalog"]])
+    write(data / "ukb.tsv", ["id", "ukb", "source", "how"], [["A_unsigned", "no", "PMID 30305743", "its paper was published before UK Biobank first released genotypes, in May 2015"],
+        ["B", "yes", "PMID 2", "by hand: the paper's GWAS includes UK Biobank"], ["C", "", "", "check: no record of its cohorts"], ["GCST0001", "yes", "GCST0001", "the cohorts of its record in the GWAS Catalog: UKB"],
+        ["D_EAS", "no", "PMID 3", "by hand: a study of Japanese"], ["GCST0002", "no", "GCST0002", "the cohorts of its record in the GWAS Catalog: BBJ"], ["GCST0003", "no", "GCST0003", "the cohorts of its record in the GWAS Catalog: BBJ"]])
+    write(data / "prevalence.tsv", ["trait", "anc", "prevalence", "source", "quote"], [["# the prevalence a paper states", "", "", "", ""],  # of two binary traits, one with a study whose cases are not known
+        ["Alzheimer's disease", "EUR", "0.05", "PMID 2", "a prevalence of 5%"], ["Trait D", "EAS", "0.01", "PMID 3", "1% of people"], ["Height", "EUR", "0.5", "PMID 1", "not binary"]])
     write(data / "metrics.tsv", MEASURED, [  # what a scan of the files would have measured: see test_the_checks_judge_every_study
         measured("A_unsigned", 900, z_positive=1.0), measured("B", 910, n=2000), measured("C", 920, n=3000, in_hm3=400),
         measured("GCST0001", 930, n=4000), measured("GCST0001", 926, "rg", n=4000), measured("D_EAS", 940, n=5000),

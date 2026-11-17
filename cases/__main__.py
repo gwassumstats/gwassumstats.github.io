@@ -18,9 +18,11 @@ counts individuals only, and a Pan-UK Biobank N that only measurements have. The
 binary traits too, as for the yes-or-no traits of UK Biobank in Loh et al. 2018: read the draft, and correct such a
 row by hand.
 
-The result is data/cases.tsv: study ID, kind (binary or quantitative), cases, controls, source (the record they are
-from) and how they were found. A row that says "check" could not be drafted. Complete a row by hand and write "by
-hand" in `how`, with where its numbers are from: a later run keeps the rows that are there.
+The result is data/cases.tsv: study ID, kind (binary or quantitative), cases, controls, proxy ("yes" if some of the
+cases are proxy cases, relatives of a case: such a study has less power than its cases say, and no h² on the
+liability scale), source (the record they are from) and how they were found. A row that says "check" could not be
+drafted. Complete a row by hand and write "by hand" in `how`, with where its numbers are from: a later run keeps the
+rows that are there.
 """
 import argparse
 import csv
@@ -42,7 +44,7 @@ DATA = merge.DATA
 CACHE = DATA.parent / ".cache" / "panukb"
 MANIFEST = "https://pan-ukb-us-east-1.s3.amazonaws.com/sumstats_release/phenotype_manifest.tsv.bgz"  # every phenotype of the Pan-UK Biobank, with its cases and controls by ancestry
 MEASURED = {"continuous", "biomarkers"}  # the manifest's kinds of phenotype that are measurements
-HEAD = ["id", "kind", "cases", "controls", "source", "how"]
+HEAD = ["id", "kind", "cases", "controls", "proxy", "source", "how"]
 ABOVE = 0.001  # the largest N of a file may be above its sample by this share, for rounding, and no more
 
 
@@ -67,14 +69,16 @@ def phenotypes(table: pd.DataFrame, population: str) -> pd.DataFrame:
 
 
 def draft(studies: pd.DataFrame, catalog: pd.DataFrame, samples: pd.DataFrame, sources: dict[str, str], phenotypes: dict[str, pd.DataFrame], same: float) -> dict[str, dict]:
-    """{study: kind, cases, controls, source, how}. `studies`: anc, n, the largest N of its file's SNPs (`largest`),
+    """{study: kind, cases, controls, proxy, source, how}. `studies`: anc, n, the largest N of its file's SNPs (`largest`),
     the PMID of its paper (`pmid`) and the N of the release's inventory (`released`), by ID; `catalog`: the Catalog's
     record of a study that is one; `samples`: the Catalog's records of the papers cited; `sources`: {study: the
     accession its corrected copy was taken from}; `phenotypes`: by ancestry, those of the Pan-UK Biobank; `same`: a
     sample is a study's if their N differ by no more than this share."""
     by_accession = samples.drop_duplicates("accession").set_index("accession")
-    row = lambda kind="", cases="", controls="", source="", how="": {"kind": kind, "cases": cases, "controls": controls, "source": source, "how": how}
-    of = lambda record, source, how: row("binary", record["cases"], record["controls"], source, how) if record["cases"] and record["controls"] else row("quantitative", source=source, how=how)
+    row = lambda kind="", cases="", controls="", source="", how="", proxy="": {"kind": kind, "cases": cases, "controls": controls, "proxy": proxy, "source": source, "how": how}
+    words = {**catalog["sample"].to_dict(), **by_accession["sample"].to_dict()}  # a record that counts proxy cases says so
+    of = lambda record, source, how: (row("binary", record["cases"], record["controls"], source, how, "yes" if "proxy" in words[source].lower() else "") if record["cases"] and record["controls"]
+                                      else row("quantitative", source=source, how=how))
     drafted = {}
     for study, s in studies.iterrows():
         ancestry = ANCESTRIES.get(s["anc"], s["anc"])

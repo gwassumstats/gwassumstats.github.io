@@ -267,7 +267,7 @@ def test_one_study_of_each_trait_and_ancestry_is_recommended():
     counted = RELEASE["recommended"]
     assert counted == {"of": len(groups), "studies": sum("rec" in d for d in STUDIES), "by_z": sum(d.get("rec") == "z" for d in STUDIES), "superseded": sum("sup" in d for d in STUDIES)}
     assert counted["of"] == 376 and 300 < counted["studies"] < counted["of"] and counted["by_z"] < 40
-    assert RELEASE["binary"] == {"studies": sum(d.get("kind") == "binary" for d in STUDIES), "counted": sum("neff" in d for d in STUDIES)}
+    assert {key: RELEASE["binary"][key] for key in ("studies", "counted")} == {"studies": sum(d.get("kind") == "binary" for d in STUDIES), "counted": sum("neff" in d for d in STUDIES)}
     # the largest study of height supersedes the two before it; of schizophrenia, the corrected copy of the largest is the one to use
     assert BY_ID["PASS_Height_Yengo2022"]["rec"] == "neff" and BY_ID["PASS_Height1"]["sup"] == BY_ID["UKB_460K.body_HEIGHTz"]["sup"] == "PASS_Height_Yengo2022"
     assert BY_ID["PASS_Schizophrenia_Trubetskoy2022"]["rec"] == "neff" and WAS["PASS_Schizophrenia_Trubetskoy2022"]["qc"] == "warn"
@@ -280,6 +280,40 @@ def test_one_study_of_each_trait_and_ancestry_is_recommended():
     # of type 2 diabetes, UK Biobank's own study has the larger h² z, and no public cases: it is the one, over the meta-analysis of the largest effective N
     t2d = [BY_ID[study] for study in ("UKB_460K.disease_T2D", "PASS_Type2Diabetes_Xue2018")]
     assert t2d[0]["rec"] == "z" and "neff" not in t2d[0] and t2d[0]["h2_z"] > t2d[1]["h2_z"] and "rec" not in t2d[1]
+
+
+def test_h2_on_the_liability_scale_is_of_a_prevalence_that_a_paper_of_the_collection_states():
+    """One prevalence a trait and ancestry, from a paper a study cites, never a sample's share of cases (the GBMI's
+    paper takes it for one); every binary study with its cases, none of them proxy cases, and with a prevalence has h²
+    on the liability scale, and no other."""
+    rows, cited = cite.table(ROOT / "data" / "prevalence.tsv"), {pmid for d in STUDIES for pmid in d.get("cite", [])}
+    traits = {row["trait"] for row in cite.table(ROOT / "data" / "traits.tsv")}
+    assert len({(row["trait"], row["anc"]) for row in rows}) == len(rows) and all(row["trait"] in traits and row["anc"] in RELEASE["ancestries"] and 0 < float(row["prevalence"]) < 1 and row["quote"] for row in rows)
+    assert all(row["source"].removeprefix("PMID ") in cited for row in rows) and "PMID 36777179" not in {row["source"] for row in rows}
+    stated = SITE_DATA["prevalence"]
+    for d in STUDIES:
+        has = d.get("kind") == "binary" and "cases" in d and not d.get("proxy") and d["anc"] in stated.get(d["of"], {})
+        assert ("h2l" in d) == has, d["name"]
+        if has:
+            k, pmid, quote = stated[d["of"]][d["anc"]]
+            assert pmid in SITE_DATA["papers"] and quote and d["h2l"] * d["h2"] >= 0 and d["h2l_se"] / d["h2_se"] == pytest.approx(d["h2l"] / d["h2"], rel=0.05)
+    # the studies whose cases include relatives of a case: of Alzheimer's disease and Parkinson's disease
+    assert {d["name"] for d in STUDIES if d.get("proxy")} == {"Jansen_2019_Alzheimers", "Marioni_2018_AlzheimersProxy", "deRojas_2021_Alzheimers", "Wightman_2021_Alzheimers", "Nalls_2019_Parkinsons"}
+    assert RELEASE["binary"]["liability"] == sum("h2l" in d for d in STUDIES) and RELEASE["binary"]["proxy"] == sum(bool(d.get("proxy")) for d in STUDIES)
+    # Demontis et al. 2019 give 0.216 (s.e. 0.014) at a prevalence of 5%, with LDSC; S-LDSC on the same file gives about as much
+    assert BY_ID["PASS_ADHD_Demontis2018"]["h2l"] == pytest.approx(0.216, abs=0.02)
+
+
+def test_whether_a_study_includes_uk_biobank_is_known_with_its_source():
+    rows = {row["id"]: row for row in cite.table(ROOT / "data" / "ukb.tsv")}
+    assert set(rows) == set(BY_ID) and not [study for study, row in rows.items() if row["how"].startswith("check")]  # every study read
+    for d in STUDIES:
+        assert d.get("ukb") == {"yes": True, "no": False}.get(rows[d["id"]]["ukb"]) and (d.get("ukb_from") or d["id"].startswith(("UKB_460K.", "PANUKBB_"))), d["name"]
+        assert "ukb" in d or d.get("ukb_how")  # what is not known says why
+    assert all(d["ukb"] for d in STUDIES if d["id"].startswith(("UKB_460K.", "PANUKBB_")))
+    assert RELEASE["ukb"] == {"yes": sum(d.get("ukb") is True for d in STUDIES), "no": sum(d.get("ukb") is False for d in STUDIES), "unknown": sum("ukb" not in d for d in STUDIES)}
+    named = {d["name"]: d.get("ukb") for d in STUDIES}  # a few known from their papers: BioBank Japan; GIANT with UK Biobank; the PGC's schizophrenia
+    assert named["Kanai_2018_HeightEAS"] is False and named["Yengo_2022_Height"] is True and named["Trubetskoy_2022_Schizophrenia"] is False and named["Speliotes_2010_BMI"] is False
 
 
 def test_a_problem_is_reported_through_a_form_that_warns_it_is_public():

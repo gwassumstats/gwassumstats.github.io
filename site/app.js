@@ -24,10 +24,11 @@ const state = {
   loaded: false, studies: [], byId: new Map(), release: null,
   papers: {},         // PMID → a paper's label, "Speliotes et al. 2010 Nat Genet", and the day it was published
   traits: {},         // trait → [the EFO term that fits, or "", and its category]; a study is of the trait d.of
+  prevalence: {},     // trait → ancestry → [its population prevalence, the PMID of the paper that states it, the paper's words]
   count: {},          // ancestry → its studies in the panel and with genetic correlations, as shown: with the corrections
   view: "sumstats",   // a tab, or "study": the page of state.study
   study: null,
-  filter: { q: "", anc: "", qc: "", z6: false, signed: false, panel: false, rec: false, ticked: false },  // of the studies under "sumstats" and "heritability"
+  filter: { q: "", anc: "", qc: "", ukb: "", z6: false, signed: false, panel: false, rec: false, ticked: false },  // of the studies under "sumstats" and "heritability"
   cart: new Set(),    // the IDs of the studies ticked, for the exports; kept in this browser
   sort: { sumstats: null, h2: { key: "h2", dir: -1 }, neighbours: null },  // null: the release's order; for neighbours, the strongest first
   rg: { a: null, b: null, strict: true, all: false, heat: null },  // the pair looked up, the neighbours listed, the heatmap drawn ({ anc, kind })
@@ -287,7 +288,7 @@ function pathLine(d, label = "") {
 
 function shown() {
   const f = state.filter, sought = words(f.q);
-  return state.studies.filter((d) => (!f.anc || d.anc === f.anc) && (!f.qc || (f.qc === "corrected" ? Boolean(d.fixed) : d.qc === f.qc)) && (!f.z6 || d.h2_z > 6) && (!f.signed || d.signed) && (!f.panel || d.panel) && (!f.rec || d.rec)
+  return state.studies.filter((d) => (!f.anc || d.anc === f.anc) && (!f.qc || (f.qc === "corrected" ? Boolean(d.fixed) : d.qc === f.qc)) && (!f.ukb || (f.ukb === "unknown" ? d.ukb == null : d.ukb === (f.ukb === "yes"))) && (!f.z6 || d.h2_z > 6) && (!f.signed || d.signed) && (!f.panel || d.panel) && (!f.rec || d.rec)
     && (!f.ticked || state.cart.has(d.id)) && sought.every((w) => d.text.includes(w)));
 }
 
@@ -352,11 +353,12 @@ function renderCart() {
 // The studies ticked as a table: short name, ID, and what a script needs to find and cite each; the path after login.
 // `corrected`: "copy" for a study shown by its corrected copy, whose path this is; "label" for one whose file holds
 // another trait than its name says: `trait` is what it holds. A binary study has its cases and controls where they
-// are known, and its effective N; a quantitative study's effective N is its N
+// are known, and its effective N; a quantitative study's effective N is its N; h², and on the liability scale where
+// there is one
 function exportStudies() {
   const columns = [["short_name", (d) => d.name], ["id", (d) => d.id], ["release_name", (d) => d.trait], ["trait", (d) => d.of], ["ancestry", (d) => d.anc], ["n", (d) => d.n],
-    ["cases", (d) => d.cases], ["controls", (d) => d.controls], ["effective_n", effectiveN], ["reference", (d) => d.label], ["published", (d) => d.published], ["pmid", (d) => (d.cite ?? []).join(";")],
-    ["qc", (d) => d.qc], ["corrected", (d) => (copied(d) ? "copy" : d.fixed ? "label" : "")], ["recommended", (d) => (d.rec ? "yes" : "")], ["superseded_by", (d) => (d.sup ? state.byId.get(d.sup).name : "")],
+    ["cases", (d) => d.cases], ["controls", (d) => d.controls], ["effective_n", effectiveN], ["h2", (d) => d.h2], ["h2_se", (d) => d.h2_se], ["h2_liability", (d) => d.h2l], ["h2_liability_se", (d) => d.h2l_se], ["reference", (d) => d.label], ["published", (d) => d.published], ["pmid", (d) => (d.cite ?? []).join(";")],
+    ["qc", (d) => d.qc], ["corrected", (d) => (copied(d) ? "copy" : d.fixed ? "label" : "")], ["recommended", (d) => (d.rec ? "yes" : "")], ["superseded_by", (d) => (d.sup ? state.byId.get(d.sup).name : "")], ["uk_biobank", (d) => (d.ukb == null ? "" : yesNo(d.ukb))],
     ...(state.paths ? [["path", filePath]] : [])];
   const cell = (value) => String(value ?? "").replace(/[\t\r\n]+/g, " ");
   const lines = [columns.map(([name]) => name), ...ticked().map((d) => columns.map(([, value]) => cell(value(d))))];
@@ -386,6 +388,7 @@ const TICK = { key: "ticked", label: tickAllBox, cls: "tick", fixed: true, show:
 const STUDY = { key: "name", label: "Study", title: "Short name: first author, year and trait", cls: "study", show: studyLink };
 const ANCESTRY = { key: "anc", label: "Ancestry", cls: "short" };
 const H2 = { key: "h2", label: plusMinusLabel("h²"), title: "Heritability and its standard error: S-LDSC, observed scale", cls: "pm", first: -1, show: (d) => plusMinusCell(d.h2, d.h2_se) };
+const H2_LIABILITY = { key: "h2l", label: plusMinusLabel("Liability h²"), title: "h² on the liability scale and its standard error: of a binary trait, with the population prevalence that a paper of the collection states. A study's page says where it is from, or why there is none", cls: "pm", first: -1, show: (d) => plusMinusCell(d.h2l, d.h2l_se) };
 const H2_Z = { key: "h2_z", label: "h² z", title: "h² over its standard error", num: sig };
 const CHECKS = { key: "rank", label: "QC", title: "Quality checks: pass, warn or fail. \"corrected\": the study is shown, and checked, as corrected. A study's page says why, and what the checks say of it as released", cls: "short", first: -1, show: verdictOf };
 const COLUMNS = {
@@ -393,8 +396,9 @@ const COLUMNS = {
     { key: "n", label: "N", title: "Sample size", num: int },
     { key: "m", label: "M", title: "SNPs in the file", num: int },
     H2, H2_Z, CHECKS,
+    { key: "ukb", label: "UKB", title: "Whether the study's sample includes UK Biobank: yes, no, or – where it is not known. A study's page says how it is known", cls: "short", show: (d) => (d.ukb == null ? "–" : yesNo(d.ukb)) },
     { key: "label", label: "Reference", title: "The study's paper; it sorts by the day the paper was published", cls: "ref", show: reference, order: byPublication }],
-  h2: [TICK, STUDY, ANCESTRY, H2, H2_Z,
+  h2: [TICK, STUDY, ANCESTRY, H2, H2_LIABILITY, H2_Z,
     { key: "intercept", label: "Intercept", title: "Intercept of the LD score regression", num: fixed(4) }, CHECKS],
   neighbours: [{ ...STUDY, show: (r) => studyLink(r.d) },
     { key: "rg", label: rgPlusMinusLabel, title: "Genetic correlation and its standard error", cls: "pm", first: -1, show: (r) => plusMinusCell(r.rg, r.se) },
@@ -759,6 +763,36 @@ function counted(d) {
   }
   return block;
 }
+// A binary study's h² on the liability scale, with the prevalence it is of and the paper that states it; or why it has none
+function liabilityScale(d) {
+  const block = el("div"), [k, pmid, quote] = state.prevalence[d.of]?.[d.anc] ?? [];
+  if (d.proxy) block.append("none: some of its cases are proxy cases, relatives of a case, and not cases of the trait");
+  else if (d.cases == null) block.append("none: its cases are not known");
+  else if (k == null) block.append(`none: no paper of the collection states a population prevalence of this trait${d.anc === "EUR" ? "" : ` in ${d.anc}`}`);
+  else {
+    const source = el("div", "hint");
+    source.append(`At a population prevalence of ${+(k * 100).toPrecision(3)}%: “${quote}” (`, outside(`${PUBMED}${pmid}/`, state.papers[pmid].label), "). Its sample's share of cases is ",
+      `${+(d.cases / (d.cases + d.controls) * 100).toPrecision(2)}%.`);
+    block.append(plusMinus(d.h2l, d.h2l_se), source);
+  }
+  return block;
+}
+// Whether a study's sample includes UK Biobank, and how that is known
+function biobank(d) {
+  const block = el("div"), head = el("div"), from = d.ukb_from;
+  head.append(d.ukb == null ? "not known" : yesNo(d.ukb));
+  if (from === "PMID 30305743") head.append(" · its paper was published before May 2015, when UK Biobank first released genotypes (", outside(`${PUBMED}30305743/`, "Bycroft et al. 2018"), ")");
+  else if (/^GCST\d+$/.test(from)) head.append(" · the cohorts of its record in the GWAS Catalog, ", countedIn(from));
+  else if (from) head.append(" · ", countedIn(from));
+  else if (d.ukb) head.append(" · a study of UK Biobank alone");
+  block.append(head);
+  if (d.ukb_how) {
+    const note = el("div", "hint");
+    note.append(d.ukb_how.charAt(0).toUpperCase() + d.ukb_how.slice(1), ".");
+    block.append(note);
+  }
+  return block;
+}
 // Whether a study is the one to use of its trait and ancestry, and if not, which is
 function recommendation(d) {
   const same = state.studies.filter((s) => s.of === d.of && s.anc === d.anc), passing = same.filter((s) => s.qc === "pass"), best = same.find((s) => s.rec);
@@ -823,13 +857,13 @@ async function renderStudy() {
     field("Trait", action(d.of, () => { $("traits-q").value = d.of; go({ tab: "traits" }); }), ` (${state.traits[d.of][1]}${term(d.of).length ? "; " : ""}`, ...term(d.of), ")"),
     field("Ancestry", d.anc), field("N", int(d.n)), ...(d.kind === "binary" ? [field("Cases and controls", counted(d))] : []),
     field("M", d.m_rg != null && d.m_rg !== d.m ? `${int(d.m)} SNPs; ${int(d.m_rg)} without the strand-ambiguous ones, for rg` : `${int(d.m)} SNPs`),
-    field("Release", d.origin), field("Reference", cited),
+    field("Release", d.origin), field("Reference", cited), field("UK Biobank", biobank(d)),
     ...(httpUrl(d.catalog) ? [field("GWAS Catalog", outside(d.catalog, d.id))] : []),
     field("Signed", yesNo(d.signed)), field("Allele info", yesNo(d.alleles)), field("Cross-trait LDSC", yesNo(d.cross)),
     field("Nonredundant panel", (d.panel ? `yes: ${int(d.panel)} of ${int(state.count[d.anc].panel)} in the ${d.anc} panel, by h² z` : "no")
       + (d.was && "panel" in d.was ? `; in the release's panel: ${d.was.panel ? "yes" : "no"}` : "")),
     field("Recommended", ...recommendation(d)),
-    field("h² ± SE", plusMinus(d.h2, d.h2_se)), field("h² z", sig(d.h2_z)), field("Intercept", fixed(4)(d.intercept)),
+    field("h² ± SE", plusMinus(d.h2, d.h2_se)), ...(d.kind === "binary" ? [field("Liability-scale h²", liabilityScale(d))] : []), field("h² z", sig(d.h2_z)), field("Intercept", fixed(4)(d.intercept)),
     field(d.was?.qc ? "QC as corrected" : "QC", checked(d)),
     ...(d.fixed ? [field("Corrected", corrected(d))] : []),
     ...(d.was?.qc ? [field("QC as released", released(d))] : []),
@@ -1024,6 +1058,7 @@ function start(data) {
   state.studies = data.studies;
   state.papers = data.papers;
   state.traits = data.traits;
+  state.prevalence = data.prevalence;
   state.count = Object.fromEntries(data.release.ancestries.map((anc) => [anc, { panel: data.studies.filter((d) => d.anc === anc && d.panel).length, signed: data.studies.filter((d) => d.anc === anc && d.cross).length }]));
   for (const d of data.studies) {
     d.label = d.cite ? state.papers[d.cite[0]].label : d.ref;  // its paper, as the table lists it
@@ -1051,7 +1086,7 @@ function listen() {
   const f = state.filter;
   $("filters").addEventListener("submit", (event) => event.preventDefault());
   $("q").addEventListener("input", () => { f.q = $("q").value; renderList(); });
-  for (const name of ["anc", "qc"]) $(`f-${name}`).addEventListener("change", () => { f[name] = $(`f-${name}`).value; renderList(); });
+  for (const name of ["anc", "qc", "ukb"]) $(`f-${name}`).addEventListener("change", () => { f[name] = $(`f-${name}`).value; renderList(); });
   for (const name of ["z6", "signed", "panel", "rec", "ticked"]) $(`f-${name}`).addEventListener("change", () => { f[name] = $(`f-${name}`).checked; renderList(); });
 
   $("traits-q").addEventListener("input", () => { if (state.view === "traits") renderTraits(); });

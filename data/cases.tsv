@@ -1,603 +1,603 @@
-id	kind	cases	controls	source	how
-PASS_BMI1	quantitative			GCST000830	the record of its paper with its N in the GWAS Catalog
-PASS_Height1	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_Anorexia	binary	2907	14860	GCST002354	by hand: the paper's GWAS (GCST002354); its replication stage adds samples at 76 SNPs only. The release's N, 32,143, is above it, and above the 5,551 cases and 21,080 controls of both stages
-PASS_Bipolar_Disorder	binary	7481	9250	GCST001241	the record of its paper with its N in the GWAS Catalog
-PASS_Coronary_Artery_Disease	binary	22233	64762	GCST000998	by hand: the paper's meta-analysis (GCST000998), 86,995 in all; the N of the file's SNPs is 84,268 at most
-PASS_Crohns_Disease	binary	5956	14927	GCST003044	by hand: the genome-wide scans of the paper, as the GWAS Catalog records them for the consortium's next paper (GCST003044): their cases and controls sum to its N
-PASS_Ever_Smoked	binary				by hand: a yes-or-no trait: ever against never a regular smoker. Its cases are in no record read: the paper and the GWAS Catalog (GCST000666) give 74,035 individuals
-PASS_HDL	quantitative			GCST000755	the record of its paper with its N in the GWAS Catalog
-PASS_LDL	quantitative			GCST000759	the record of its paper with its N in the GWAS Catalog
-PASS_Rheumatoid_Arthritis	binary	14361	43923	PMID 24390342	by hand: the paper's European samples, 14,361 cases and 43,923 controls from 18 studies, 58,284 in all. The release's N is 37,681, and 38,242 at most in its file: two thirds of them, which nothing found explains
-PASS_Schizophrenia	binary	33640	43456	GCST002539	by hand: the European samples of the paper (GCST002539): 32,405 cases and 42,221 controls, and 1,235 trios, 77,096 in all; the release's N, 70,100, is 0.91 of them
-PASS_Triglycerides	quantitative			GCST000758	the record of its paper with its N in the GWAS Catalog
-PASS_Type_2_Diabetes	binary	12171	56862	GCST005047	the record of its paper with its N in the GWAS Catalog
-PASS_Ulcerative_Colitis	binary	6968	20464	GCST003045	by hand: the genome-wide scans of the paper, as the GWAS Catalog records them for the consortium's next paper (GCST003045): their cases and controls sum to its N
-PASS_Years_of_Education1	quantitative			GCST002047	the record of its paper with its N in the GWAS Catalog
-PASS_IBD	binary	12882	21770	GCST003043	by hand: the genome-wide scans of the paper, as the GWAS Catalog records them for the consortium's next paper (GCST003043): their cases and controls sum to its N
-PASS_Autism	binary	4949	5314	PMID 23453885	by hand: the paper's autism samples: 4,788 trio cases with as many pseudocontrols, 161 cases and 526 controls; they sum to its N
-PASS_Alzheimer	binary	17008	37154	GCST002245	the record of its paper with its N in the GWAS Catalog
-PASS_Type_1_Diabetes	binary	9934	16956	GCST001255	the record of its paper with its N in the GWAS Catalog
-PASS_Multiple_sclerosis	binary	9772	17376	PMID 21833088	by hand: the paper's 9,772 cases and 17,376 controls, which sum to its N; the GWAS Catalog's record (GCST001198) has 16,849 controls
-PASS_Celiac	binary	4533	10750	GCST000612	the record of its paper with its N in the GWAS Catalog
-PASS_Primary_biliary_cirrhosis	binary	2764	10475	GCST003129	the record of its paper with its N in the GWAS Catalog
-PASS_Lupus	binary	5201	9066	GCST003155	the record of its paper with its N in the GWAS Catalog
-PASS_SWB	quantitative			GCST003766	the record of its paper with its N in the GWAS Catalog
-PASS_DS	quantitative			PMID 27089181	by hand: a score of symptoms, meta-analysed with two case-control studies of depression: the paper gives one N, 161,460
-PASS_Neuroticism	quantitative			GCST003770	the record of its paper with its N in the GWAS Catalog
-PASS_Years_of_Education2	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_FastingGlucose_Manning	quantitative			GCST001527	the record of its paper with its N in the GWAS Catalog
-PASS_HbA1C	quantitative			GCST000803	the record of its paper with its N in the GWAS Catalog
-PASS_ENIGMA2_MeanPutamen	quantitative			GCST002756	the record of its paper with its N in the GWAS Catalog
-PASS_AgeFirstBirth	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_NumberChildrenEverBorn	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_Menarche2017	quantitative			PMID 28436984	by hand: an age
-UKB_460K.cov_EDU_COLLEGE	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.cov_SMOKING_STATUS	quantitative			GCST90029013	the record of its paper with its N in the GWAS Catalog
-UKB_460K.disease_ALLERGY_ECZEMA_DIAGNOSED	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.disease_ASTHMA_DIAGNOSED	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.disease_HYPERTENSION_DIAGNOSED	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.repro_MENARCHE_AGE	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.repro_MENOPAUSE_AGE	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.body_HEIGHTz	quantitative			GCST90029013	the record of its paper with its N in the GWAS Catalog
-UKB_460K.body_BMIz	quantitative			GCST90029013	the record of its paper with its N in the GWAS Catalog
-UKB_460K.body_WHRadjBMIz	quantitative			GCST90029013	the record of its paper with its N in the GWAS Catalog
-UKB_460K.bp_SYSTOLICadjMEDz	quantitative			GCST90029027	the record of its paper with its N in the GWAS Catalog
-UKB_460K.bp_DIASTOLICadjMEDz	quantitative			GCST90029027	the record of its paper with its N in the GWAS Catalog
-UKB_460K.bmd_HEEL_TSCOREz	quantitative			GCST90029018	the record of its paper with its N in the GWAS Catalog
-UKB_460K.lung_FVCzSMOKE	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.lung_FEV1FVCzSMOKE	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.disease_HI_CHOL_SELF_REP	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.disease_DIABETES_ANY_DIAGNOSED	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.disease_T2D	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.blood_EOSINOPHIL_COUNT	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.blood_HIGH_LIGHT_SCATTER_RETICULOCYTE_COUNT	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.blood_LYMPHOCYTE_COUNT	quantitative			GCST90029018	the record of its paper with its N in the GWAS Catalog
-UKB_460K.blood_MEAN_CORPUSCULAR_HEMOGLOBIN	quantitative			GCST90029018	the record of its paper with its N in the GWAS Catalog
-UKB_460K.blood_MEAN_PLATELET_VOL	quantitative			GCST90029018	the record of its paper with its N in the GWAS Catalog
-UKB_460K.blood_MEAN_SPHERED_CELL_VOL	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.blood_MONOCYTE_COUNT	quantitative			GCST90029018	the record of its paper with its N in the GWAS Catalog
-UKB_460K.blood_PLATELET_COUNT	quantitative			GCST90029018	the record of its paper with its N in the GWAS Catalog
-UKB_460K.blood_PLATELET_DISTRIB_WIDTH	quantitative			GCST90029018	the record of its paper with its N in the GWAS Catalog
-UKB_460K.blood_RBC_DISTRIB_WIDTH	quantitative			GCST90029018	the record of its paper with its N in the GWAS Catalog
-UKB_460K.blood_RED_COUNT	quantitative			GCST90029018	the record of its paper with its N in the GWAS Catalog
-UKB_460K.blood_WHITE_COUNT	quantitative			GCST90029018	the record of its paper with its N in the GWAS Catalog
-UKB_460K.disease_HYPOTHYROIDISM_SELF_REP	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.disease_THYROID_ANY_SELF_REP	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.impedance_BASAL_METABOLIC_RATEz	quantitative			GCST90029023	the record of its paper with its N in the GWAS Catalog
-UKB_460K.disease_ENDOCRINE_DIABETES	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.disease_CARDIOVASCULAR	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.disease_RESPIRATORY_ENT	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.disease_PSORIASIS	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.disease_DERMATOLOGY	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.disease_RA	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.disease_AID_ALL	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.disease_AID_SURE	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.pigment_HAIR	quantitative			GCST90029029	the record of its paper with its N in the GWAS Catalog
-UKB_460K.pigment_HAIR_darkbrown	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.pigment_HAIR_red	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.pigment_HAIR_blonde	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.pigment_HAIR_blackmale	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.body_BALDING1	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.body_BALDING4	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.pigment_SKIN	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.pigment_TANNING	quantitative			GCST90029023	the record of its paper with its N in the GWAS Catalog
-UKB_460K.pigment_SUNBURN	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.mental_NEUROTICISM	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.other_NO_WHEAT	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.other_MORNINGPERSON	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.cov_EDU_YEARS	quantitative			GCST90029020	the record of its paper with its N in the GWAS Catalog
-UKB_460K.biochemistry_AlanineAminotransferase	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_Albumin	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_AlkalinePhosphatase	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_ApolipoproteinA	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_ApolipoproteinB	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_AspartateAminotransferase	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_Calcium	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_Cholesterol	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_CreactiveProtein	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_Creatinine	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_CystatinC	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_DirectBilirubin	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_GammaGlutamyltransferase	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_Glucose	quantitative			GCST90029028	the record of its paper with its N in the GWAS Catalog
-UKB_460K.biochemistry_HbA1c	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_HDLcholesterol	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_IGF1	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_LDLdirect	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_LipoproteinA	quantitative			GCST90029034	the record of its paper with its N in the GWAS Catalog
-UKB_460K.biochemistry_Phosphate	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_SHBG	quantitative			GCST90029028	the record of its paper with its N in the GWAS Catalog
-UKB_460K.biochemistry_Testosterone_Male	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_TotalBilirubin	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_TotalProtein	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_Triglycerides	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_Urate	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_Urea	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.biochemistry_VitaminD	quantitative			GCST90029016	the record of its paper with its N in the GWAS Catalog
-PASS_ADHD_Demontis2018	binary	20183	35191	GCST007543	by hand: the paper's 20,183 cases and 35,191 controls (GCST007543), of whom 19,099 and 34,194 are European; they sum to its N
-PASS_AdultOnsetAsthma_Ferreira2019	binary	26582	300671	GCST007799	the record of its paper with its N in the GWAS Catalog
-PASS_AgeOfInitiation_Liu2019	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_Alzheimers_Jansen2019	binary	71880	383378	GCST007320	by hand: the paper's meta-analysis (GCST007320): 24,087 cases and 47,793 proxy cases, who have a parent with the disease, against 383,378 controls; 455,258 in all, where the file's N is 452,010 at most
-PASS_AlzheimersMaternal_Marioni2018	binary	27696	260980	GCST005923	the record of its paper with its N in the GWAS Catalog
-PASS_AlzheimersPaternal_Marioni2018	binary	14338	245941	GCST005920	the record of its paper with its N in the GWAS Catalog
-PASS_AlzheimersProxy_Marioni2018	binary	67614	320710	PMID 29777097	by hand: 25,580 cases of the consortium's data, and 27,696 mothers and 14,338 fathers with the disease among the parents of UK Biobank's 314,278 participants: a parent with the disease is a proxy for a case. The rest of its N, 388,324, as controls
-PASS_AtrialFibrillation_Nielsen2018	binary	60620	970216	GCST006414	the record of its source in the GWAS Catalog
-PASS_BDSCZ_Ruderfer2018	binary	53555	54065	PMID 29906448	by hand: the paper's 53,555 cases, 20,129 of bipolar disorder and 33,426 of schizophrenia, and 54,065 controls; they sum to its N
-PASS_BipolarDisorder_Ruderfer2018	binary	20129	21524	PMID 29906448	by hand: the paper's 20,129 cases of bipolar disorder and 21,524 controls; they sum to its N
-PASS_BIP_Stahl2019	binary	20352	31358	GCST008103	by hand: the paper's sample of bipolar disorder (GCST008103), 51,710 in all. The file's N, 46,582 at most, is below it and above the 46,237 of bipolar I disorder: it looks like an effective N, summed over cohorts
-PASS_CardioembolicStroke_Malik2018	binary	7193	204570	GCST006910	by hand: its cases are those of its source (GCST006910); its controls, those that its N, the release's, leaves. The GWAS Catalog's record counts 355,468 controls, 150,898 more, as it does for the paper's other two subtypes
-PASS_CD_deLange2017	binary	12194	28072	GCST004132	the record of its paper with its N in the GWAS Catalog
-PASS_ChildOnsetAsthma_Ferreira2019	binary	13962	300671	GCST007800	the record of its paper with its N in the GWAS Catalog
-PASS_CigarettesPerDay_Liu2019	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_DepressedAffect_Nagel2018	quantitative			GCST006475	the record of its paper with its N in the GWAS Catalog
-PASS_Depression_Nagel2018	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_DrinksPerWeek_Liu2019	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_GeneralRiskTolerance_KarlssonLinner2019	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_IBD_deLange2017	binary	25042	34915	GCST004131	the record of its paper with its N in the GWAS Catalog
-PASS_Insomnia_Jansen2019	binary				by hand: a yes-or-no trait: insomnia complaints or none. Its cases are in no record read: the GWAS Catalog's record of the paper counts men and women, 1,331,010 with 23andMe's, where the file's N is 386,533 at most
-PASS_Intelligence_SavageJansen2018	quantitative			GCST006250	the record of its paper with its N in the GWAS Catalog
-PASS_IschemicStroke_Malik2018	binary	34217	406111	GCST006908	the record of its source in the GWAS Catalog
-PASS_LargeArteryStroke_Malik2018	binary	4373	146392	GCST006907	by hand: its cases are those of its source (GCST006907); its controls, those that its N, the release's, leaves. The GWAS Catalog's record counts 297,290 controls, 150,898 more, as it does for the paper's other two subtypes
-PASS_LongSleepDuration_Dashti2019	binary	34184	305742	GCST007560	the record of its source in the GWAS Catalog
-PASS_MDD_Howard2019	binary	170756	329443	PMID 30718901	by hand: the paper's samples without 23andMe's: 127,552 cases and 233,763 controls of UK Biobank, 43,204 and 95,680 of the Psychiatric Genomics Consortium; 500,199 in all. The file's N is 381,708 at most, which nothing found explains
-PASS_MDD_Wray2018	binary	59851	113154	PMID 29700475	by hand: the paper's 135,458 cases and 344,901 controls without the 75,607 and 231,747 of 23andMe (its table of cohorts); they sum to the largest N of the file, 173,005
-PASS_MedicationUse_Wu2019	binary	22982	55826	GCST007936	the record of its paper with its N in the GWAS Catalog
-PASS_Neuroticism_Nagel2018	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_OvarianCancer	binary	25509	40941	PMID 28346442	by hand: the paper's 22,406 invasive and 3,103 borderline cases, and 40,941 controls, of European ancestry; they sum to its N
-PASS_ProstateCancer	binary	46939	27910	PMID 29892016	by hand: the paper's newly genotyped samples, 46,939 cases and 27,910 controls, 74,849 in all; the release's N, 72,729, is 0.97 of them
-PASS_ReactionTime_Davies2018	quantitative			GCST006269	the record of its paper with its N in the GWAS Catalog
-PASS_Schizophrenia_Pardinas2018	binary	40675	64643	GCST006803	by hand: the paper's meta-analysis (GCST006803), 105,318 in all; the release's N, 94,437, is 0.90 of it
-PASS_Schizophrenia_Ruderfer2018	binary	33426	32541	PMID 29906448	by hand: the paper's 33,426 cases of schizophrenia and 32,541 controls; they sum to its N
-PASS_SCZvsBD_Ruderfer2018	binary	23585	15270	PMID 29906448	by hand: the paper's 23,585 cases of schizophrenia, against 15,270 of bipolar disorder in the place of controls; they sum to its N
-PASS_ShortSleepDuration_Dashti2019	binary	106192	305742	GCST007559	the record of its source in the GWAS Catalog
-PASS_SleepDuration_Dashti2019	quantitative			GCST007561	the record of its source in the GWAS Catalog
-PASS_SmallVesselStroke_Malik2018	binary	5386	192662	GCST006909	by hand: its cases are those of its source (GCST006909); its controls, those that its N, the release's, leaves. The GWAS Catalog's record counts 343,560 controls, 150,898 more, as it does for the paper's other two subtypes
-PASS_SmokingCessation_Liu2019	binary				by hand: a yes-or-no trait: current against former smokers. Its cases are in no record read: the paper and the GWAS Catalog give the individuals of each analysis
-PASS_SmokingInitiation_Liu2019	binary				by hand: a yes-or-no trait: ever against never a regular smoker. Its cases are in no record read: the paper and the GWAS Catalog give the individuals of each analysis
-PASS_Stroke_Malik2018	binary	40585	406111	GCST006906	the record of its source in the GWAS Catalog
-PASS_UC_deLange2017	binary	12366	33609	GCST004133	the record of its paper with its N in the GWAS Catalog
-PASS_VerbalNumericReasoning_Davies2018	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_Worry_Nagel2018	quantitative			GCST006478	the record of its paper with its N in the GWAS Catalog
-UKB_460K.repro_NumberChildrenEverBorn_Pooled	quantitative			GCST90029020	the record of its paper with its N in the GWAS Catalog
-UKB_460K.cancer_ALL	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.repro_AgeFirstBirth_Female	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-UKB_460K.cancer_PROSTATE	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-UKB_460K.cancer_BREAST	binary				by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
-PASS_Autism_Grove2019	binary	18381	27969	GCST007554	the record of its paper with its N in the GWAS Catalog
-PASS_AnorexiaNervosa_Duncan2017	binary	3495	10982	GCST004367	the record of its paper with its N in the GWAS Catalog
-PASS_CoronaryArteryDisease_Howson2017	binary	88192	162544	PMID 28530674	by hand: the paper's 88,192 cases and 162,544 controls of all ancestries, 250,736 in all; the file's N is 247,399 at most
-PASS_Epilepsy_Anney2014	binary	8696	26157	GCST002547	by hand: the paper's 8,696 cases and 26,157 controls of all ancestries (GCST002547); they sum to the largest N of the file
-PASS_LeanBodyMass_Zillikens2017	quantitative			GCST005036	the record of its paper with its N in the GWAS Catalog
-PASS_Parkinsons23andMe_Corces2020	binary	6476	302042	PMID 33106633	by hand: the statistics of 23andMe that the paper used: 6,476 cases and 302,042 controls; they sum to its N
-PASS_AnorexiaNervosa_Watson2019	binary	16992	55525	GCST008465	the record of its paper with its N in the GWAS Catalog
-PASS_Alzheimers_deRojas2021	binary	78709	330726	PMID 34099642	by hand: 6,331 and 30,344 cases of the paper's two case-control studies, and 27,696 mothers and 14,338 fathers with the disease among the parents of UK Biobank's 314,278 participants, proxies for cases. The rest of its N, 409,435, as controls
-PASS_MCPmale_Johnston2021	quantitative			GCST012333	the record of its paper with its N in the GWAS Catalog
-PASS_MCPfemale_Johnston2021	quantitative			GCST012334	the record of its paper with its N in the GWAS Catalog
-PASS_SA_Grasby2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_TH_Grasby2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_FA_Zhao2021	quantitative			PMID 34140357	by hand: a measurement of brain imaging
-PASS_MD_Zhao2021	quantitative			PMID 34140357	by hand: a measurement of brain imaging
-PASS_AD_Zhao2021	quantitative			PMID 34140357	by hand: a measurement of brain imaging
-PASS_RD_Zhao2021	quantitative			PMID 34140357	by hand: a measurement of brain imaging
-PASS_MO_Zhao2021	quantitative			PMID 34140357	by hand: a measurement of brain imaging
-PASS_AccumbensVol_Satizabal2019	quantitative			GCST009670	the record of its paper with its N in the GWAS Catalog
-PASS_AmygdalaVol_Satizabal2019	quantitative			GCST009664	the record of its paper with its N in the GWAS Catalog
-PASS_BrainstemVol_Satizabal2019	quantitative			GCST009697	the record of its paper with its N in the GWAS Catalog
-PASS_CaudateVol_Satizabal2019	quantitative			GCST009666	the record of its paper with its N in the GWAS Catalog
-PASS_PallidumVol_Satizabal2019	quantitative			GCST009664	the record of its paper with its N in the GWAS Catalog
-PASS_PutamenVol_Satizabal2019	quantitative			GCST009666	the record of its paper with its N in the GWAS Catalog
-PASS_ThalamusVol_Satizabal2019	quantitative			GCST009664	the record of its paper with its N in the GWAS Catalog
-PASS_Baso_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_BasoP_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_Eosino_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_EosinoP_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_HCT_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_HGB_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_HLR_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_HLRP_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_IRF_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_Lym_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_LymP_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_MCH_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_MCHC_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_MCV_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_Mono_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_MonoP_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_MPV_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_MRV_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_MSCV_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_Neutro_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_NeutroP_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_PCT_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_PDW_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_Plt_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_RBC_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_RDWCV_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_RTC_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_RTCP_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_WBC_Vuckovic2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_Glaucoma_Craig2020	binary	7947	119318	GCST009722	by hand: the cases and controls of glaucoma in the paper's analysis of several traits (GCST009722), 127,265 in all; its N, 351,696, counts the samples of the two measurements analysed with them
-PASS_FetalBirthWeight_Warrington2019	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_MaternalBirthWeight_Warrington2019	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_Myopia_Hysi2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_HipOA_Tachmazidou2019	binary	15704	378169	GCST007091	the record of its paper with its N in the GWAS Catalog
-PASS_KneeOA_Tachmazidou2019	binary	24955	378169	GCST007090	the record of its paper with its N in the GWAS Catalog
-PASS_HipKneeOA_Tachmazidou2019	binary	39427	378169	GCST007092	the record of its paper with its N in the GWAS Catalog
-PASS_OA_Tachmazidou2019	binary	77052	378169	GCST007093	the record of its paper with its N in the GWAS Catalog
-PASS_LiverVol_Liu2021	quantitative			GCST90016666	the record of its paper with its N in the GWAS Catalog
-PASS_SpleenVol_Liu2021	quantitative			GCST90016666	the record of its paper with its N in the GWAS Catalog
-PASS_LungVol_Liu2021	quantitative			GCST90016666	the record of its paper with its N in the GWAS Catalog
-PASS_PancreasVol_Liu2021	quantitative			GCST90016669	the record of its paper with its N in the GWAS Catalog
-PASS_KidneyVol_Liu2021	quantitative			GCST90016666	the record of its paper with its N in the GWAS Catalog
-PASS_ViscAdiposeVol_Liu2021	quantitative			GCST90016666	the record of its paper with its N in the GWAS Catalog
-PASS_SubAdiposeVol_Liu2021	quantitative			GCST90016666	the record of its paper with its N in the GWAS Catalog
-PASS_LiverFat_Liu2021	quantitative			GCST90016666	the record of its paper with its N in the GWAS Catalog
-PASS_LiverIron_Liu2021	quantitative			GCST90016666	the record of its paper with its N in the GWAS Catalog
-PASS_PancreasFat_Liu2021	quantitative			GCST90016675	the record of its paper with its N in the GWAS Catalog
-PASS_PancreasIron_Liu2021	quantitative			GCST90016675	the record of its paper with its N in the GWAS Catalog
-PASS_FEV1_Shrine2019	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_FVC_Shrine2019	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_FEV1FVC_Shrine2019	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_PEF_Shrine2019	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_Aging_Timmers2020	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_Baso_Kanai2018_EAS	quantitative			GCST005974	the record of its paper with its N in the GWAS Catalog
-PASS_BS_Kanai_EAS	quantitative			GCST006002	the record of its paper with its N in the GWAS Catalog
-PASS_DBP_Kanai2018_EAS	quantitative			GCST005978	the record of its paper with its N in the GWAS Catalog
-PASS_EGFR_Kanai2018_EAS	quantitative			GCST005984	the record of its paper with its N in the GWAS Catalog
-PASS_Eosino_Kanai2018_EAS	quantitative			GCST005974	the record of its paper with its N in the GWAS Catalog
-PASS_HbA1c_Kanai2018_EAS	quantitative			GCST005981	the record of its paper with its N in the GWAS Catalog
-PASS_Hb_Kanai2018_EAS	quantitative			GCST005983	the record of its paper with its N in the GWAS Catalog
-PASS_HDL_Kanai2018_EAS	quantitative			GCST006005	the record of its paper with its N in the GWAS Catalog
-PASS_Height_Kanai2018_EAS	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_Ht_Kanai2018_EAS	quantitative			GCST005983	the record of its paper with its N in the GWAS Catalog
-PASS_LDL_Kanai2018_EAS	quantitative			GCST006004	the record of its paper with its N in the GWAS Catalog
-PASS_Lym_Kanai2018_EAS	quantitative			GCST005974	the record of its paper with its N in the GWAS Catalog
-PASS_MCHC_Kanai2018_EAS	quantitative			GCST005983	the record of its paper with its N in the GWAS Catalog
-PASS_MCH_Kanai2018_EAS	quantitative			GCST005973	the record of its paper with its N in the GWAS Catalog
-PASS_MCV_Kanai2018_EAS	quantitative			GCST005983	the record of its paper with its N in the GWAS Catalog
-PASS_Mono_Kanai2018_EAS	quantitative			GCST005974	the record of its paper with its N in the GWAS Catalog
-PASS_Neutro_Kanai2018_EAS	quantitative			GCST005974	the record of its paper with its N in the GWAS Catalog
-PASS_Plt_Kanai2018_EAS	quantitative			GCST005983	the record of its paper with its N in the GWAS Catalog
-PASS_RBC_Kanai2018_EAS	quantitative			GCST005983	the record of its paper with its N in the GWAS Catalog
-PASS_SBP_Kanai2018_EAS	quantitative			GCST005978	the record of its paper with its N in the GWAS Catalog
-PASS_TC_Kanai_EAS	quantitative			GCST006034	the record of its paper with its N in the GWAS Catalog
-PASS_TG_Kanai2018_EAS	quantitative			GCST006003	the record of its paper with its N in the GWAS Catalog
-PASS_WBC_Kanai2018_EAS	quantitative			GCST005973	the record of its paper with its N in the GWAS Catalog
-PASS_AtrialFibrillation_Low2017_EAS	binary	8180	28612	GCST004373	the record of its paper with its N in the GWAS Catalog
-PASS_BMI_Akiyama2017_EAS	quantitative			GCST004904	the record of its paper with its N in the GWAS Catalog
-PASS_ColorectalCancer_Tanikawa_EAS	binary	6692	27178	GCST005591	the record of its paper with its N in the GWAS Catalog
-PASS_MDD_CONVERGE2015_EAS	binary	5303	5337	PMID 26176920	by hand: the paper's 5,303 cases and 5,337 controls; they sum to its N
-PASS_Menarche_Horikoshi2018_EAS	quantitative			GCST005867	the record of its paper with its N in the GWAS Catalog
-PASS_Menopause_Horikoshi2018_EAS	quantitative			GCST005863	the record of its paper with its N in the GWAS Catalog
-PASS_POAG_Shiga2018_EAS	binary	3980	18815	GCST005388	the record of its paper with its N in the GWAS Catalog
-PASS_RA_Okada2013_EAS	binary	4873	17642	GCST002318	the record of its paper with its N in the GWAS Catalog
-PASS_Schizophrenia_Lam2019_EAS	binary	22778	35362	GCST009336	the record of its paper with its N in the GWAS Catalog
-PASS_T2D_Suzuki_EAS	binary	36614	155150	GCST007847	the record of its paper with its N in the GWAS Catalog
-PASS_BIP_Mullins2021	binary	41917	371549	GCST012465	the record of its paper with its N in the GWAS Catalog
-GBMI_AbdominalAorticAneurysm	binary	8163	1256755	GCST90399672	by hand: the European sample of the Global Biobank Meta-analysis Initiative in the GWAS Catalog (GCST90399672); its cases and controls sum to the largest N of the file
-GBMI_AcuteAppendicitis	binary	31714	978508	GCST90399676	by hand: the European sample of the Global Biobank Meta-analysis Initiative in the GWAS Catalog (GCST90399676); its cases and controls sum to the largest N of the file
-GBMI_Asthma	binary	121940	1254131	GCST90399686	by hand: the European sample of the Global Biobank Meta-analysis Initiative in the GWAS Catalog (GCST90399686); its cases and controls sum to the largest N of the file
-GBMI_ChronicObstructivePulmonaryDisease	binary	58559	937358	GCST90399694	by hand: the European sample of the Global Biobank Meta-analysis Initiative in the GWAS Catalog (GCST90399694); its cases and controls sum to the largest N of the file
-GBMI_Gout	binary	24278	1027375	GCST90399701	by hand: the European sample of the Global Biobank Meta-analysis Initiative in the GWAS Catalog (GCST90399701); its cases and controls sum to the largest N of the file
-GBMI_HeartFailure	binary	52496	967945	GCST90399713	by hand: the European sample of the Global Biobank Meta-analysis Initiative in the GWAS Catalog (GCST90399713); its cases and controls sum to the largest N of the file
-GBMI_PrimaryApenAngleGlaucoma	binary	16355	1156550	GCST90399725	by hand: the European sample of the Global Biobank Meta-analysis Initiative in the GWAS Catalog (GCST90399725); its cases and controls sum to the largest N of the file
-GBMI_Stroke	binary	34503	1004879	GCST90399732	by hand: the European sample of the Global Biobank Meta-analysis Initiative in the GWAS Catalog (GCST90399732); its cases and controls sum to the largest N of the file
-GBMI_VenousThromboembolism	binary	25146	890722	GCST90399744	by hand: the European sample of the Global Biobank Meta-analysis Initiative in the GWAS Catalog (GCST90399744); its cases and controls sum to the largest N of the file
-PANUKBB_AgeAtMenopause	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_Albumin	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_AlkalinePhosphatase	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_AtrialFibrillationAndFlutter	binary	19233	384657	Pan-UK Biobank manifest	the one phenotype of its N in the Pan-UK Biobank's manifest: Atrial fibrillation and flutter
-PANUKBB_BasophilPercentage	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_BirthWeight	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_BloodClotDVTBronchitisEmphysemaAsthmaRhinitisEczemaAllergyDiagnosedByDoctor	binary	96547	323221	Pan-UK Biobank manifest	by hand: of the six answers with its N in the Pan-UK Biobank's manifest (field 6152), hay fever, allergic rhinitis or eczema: rg 1.01 with {UKB_460K.disease_ALLERGY_ECZEMA_DIAGNOSED}, 0.71 with {UKB_460K.disease_ASTHMA_DIAGNOSED}
-PANUKBB_BreastCancerFemale	binary	13257	205913	Pan-UK Biobank manifest	the one phenotype of its N in the Pan-UK Biobank's manifest: Breast cancer [female]
-PANUKBB_C44OtherMalignantNeoplasmsOfSkin	binary	14388	406143	Pan-UK Biobank manifest	by hand: ICD-10 C44 in the Pan-UK Biobank's manifest; many codes have its N
-PANUKBB_ChildhoodSunburnOccasions	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_DiastolicBloodPressureCombinedAutomatedManualReading	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_DiverticulosisAndDiverticulitis	binary	35617	330270	Pan-UK Biobank manifest	the one phenotype of its N in the Pan-UK Biobank's manifest: Diverticulosis
-PANUKBB_EosinophilCount	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_EverSmoked	binary	191673	227144	Pan-UK Biobank manifest	by hand: the Pan-UK Biobank's manifest has smoking status, ever against never, with its N, and the answers it is made of (field 20116): 148,481 previous and 43,192 current smokers, 227,144 who never smoked
-PANUKBB_FluidIntelligenceScore	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_GammaGlutamyltransferase	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_GlycatedhaemoglobinHbA1c	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_Haemoglobin	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_HairBaldingPattern	binary	61049	130385	Pan-UK Biobank manifest	by hand: pattern 1 of field 2395 in the Pan-UK Biobank's manifest, of the two patterns with its N: rg 1.01 with {UKB_460K.body_BALDING1}, -0.96 with {UKB_460K.body_BALDING4}
-PANUKBB_HairBaldingPattern2	binary	44177	147261	Pan-UK Biobank manifest	by hand: pattern 2 of field 2395 in the Pan-UK Biobank's manifest, by its name in the release; pattern 3 has the same N, with 51,122 cases
-PANUKBB_HandGripStrengthLeft	quantitative			Pan-UK Biobank manifest	by hand: hand grip strength (left), a measurement, in the Pan-UK Biobank's manifest; a code of hospital records has the same N
-PANUKBB_HeelBoneMineralDensity	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_HypothyroidismNOS	binary	18404	399034	Pan-UK Biobank manifest	the one phenotype of its N in the Pan-UK Biobank's manifest: Hypothyroidism
-PANUKBB_IGF1	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_ImpedanceOfArmRight	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_IndirectBilirubin	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_InguinalHernia	binary	18559	363863	Pan-UK Biobank manifest	the one phenotype of its N in the Pan-UK Biobank's manifest: Inguinal hernia
-PANUKBB_IntraOcularPressureGoldmannCorrelatedLeft	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_LDLDirectAdjustedByMedication	quantitative			Pan-UK Biobank manifest	by hand: its file holds the FEV1/FVC ratio, a measurement
-PANUKBB_LegFatPercentageRight	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_MeanArterialPressureAutomatedReadingAdjustedByMedication	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_MeanSpheredCellVolume	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_MenarcheAge	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_MonocytePercentage	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_MorningPerson	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_MouthTeethDentalProblems	binary				by hand: one of the seven answers to the Pan-UK Biobank's question on mouth and teeth (field 6149), each with its N; which one its file holds is not known, so neither are its cases
-PANUKBB_NeutrophilCount	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_OperationTonsillectomyAdenoids	binary	17168	403305	Pan-UK Biobank manifest	by hand: varicose vein surgery, which its file holds, in the Pan-UK Biobank's manifest (operation code 1479); every operation code has its N
-PANUKBB_OperativeProceduresOPCS4NormalDelivery	binary	7108	413423	Pan-UK Biobank manifest	by hand: OPCS-4 R24.9, all normal delivery, in the Pan-UK Biobank's manifest; many codes have its N
-PANUKBB_Phosphate	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_PlateletCount	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_ProstateCancer	binary	7691	169762	Pan-UK Biobank manifest	the one phenotype of its N in the Pan-UK Biobank's manifest: Cancer of prostate
-PANUKBB_PulsePressureAutomatedReadingAdjustedByMedication	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_PulsePressureCombinedAutomatedManualReading	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_PulseRateAutomatedReading	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_SphericalPowerRight	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_Testosterone	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_TotalBilirubin	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_Urate	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PANUKBB_VaricoseVeinSurgery	binary				by hand: an operation code of the Pan-UK Biobank, each with its N; which one its file holds is not known, so neither are its cases
-PANUKBB_VitaminD	quantitative			Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
-PASS_AbdominalSubcutaneousAdiposeTissueVolume_Agrawal2022	quantitative			GCST90205200	the record of its paper with its N in the GWAS Catalog
-PASS_AcneVulgaris_TederLaving2023	binary	34422	364991	GCST90245818	the record of its paper with its N in the GWAS Catalog
-PASS_Alcoholuse_SanchezRoige2018	quantitative			GCST006717	the record of its paper with its N in the GWAS Catalog
-PASS_AllOsteoarthritis_Boer2021	binary	177517	649173	PMID 34450027	by hand: the paper's table of its analyses: 177,517 cases and 649,173 controls, 826,690 in all; the file's N is 830,743 at most
-PASS_AllergicRhinitis_Donertas2021	binary	27415	457183	GCST90038664	by hand: the record of its disease among the paper's in the GWAS Catalog (GCST90038664); its cases and controls sum to its N
-PASS_AlzheimersDisease_Wightman2021	binary	90338	1036225	GCST90044699	the record of its paper with its N in the GWAS Catalog
-PASS_ADHD_Demontis2023	binary	38691	186843	GCST90269774	the record of its paper with its N in the GWAS Catalog
-PASS_BMI_Yengo2018	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_CHIP_Kessler2022	binary	25657	342869	GCST90165266	the record of its paper with its N in the GWAS Catalog
-PASS_CHIPDNMT3A_Kessler2022	binary	16219	342869	GCST90165270	the record of its paper with its N in the GWAS Catalog
-PASS_CancerEsophageal_Gharahkhani2016	binary	4112	17159	GCST003739	the record of its paper with its N in the GWAS Catalog
-PASS_CancerLung_McKay2017	binary	29266	56450	GCST004748	the record of its paper with its N in the GWAS Catalog
-PASS_CancerLungAdenocarcinoma_McKay2017	binary	11273	55483	GCST004744	the record of its paper with its N in the GWAS Catalog
-PASS_CannabisUseDisorder_Johnson2020	binary	17068	357219	GCST011179	by hand: the European samples of the paper (GCST011179), 374,287 in all; the file's N is 375,180 at most
-PASS_ChronicObstructivePulmonaryDisease_Consentino2023	quantitative			GCST90244098	the record of its paper with its N in the GWAS Catalog
-PASS_CoronaryArteryDisease_Aragam2022	binary	181522	984168	GCST90132314	by hand: the European analysis of the paper (GCST90132314): 181,522 cases and 984,168 controls, which the draft does not read for a comma in the GWAS Catalog's words
-PASS_Covid19Vaccination_Hartonen2023	binary	19338	254427	PMID 37081098	by hand: the paper's samples of FinnGen: 19,338 not vaccinated, the cases, and 254,427 vaccinated; they sum to its N. The GWAS Catalog's record (GCST90255613) adds those of the Estonian Biobank
-PASS_Depression_Mallard2022	quantitative			PMID 35812988	by hand: a score of symptoms in UK Biobank; the paper's N is 252,252, the release's 252,525
-PASS_Endometriosis_Rahmioglu2023	binary	23492	450668	GCST90205183	by hand: the paper's analysis without 23andMe (GCST90205183): 21,779 European and 1,713 Japanese cases, 449,087 and 1,581 controls, 474,160 in all; the release's N is 477,454
-PASS_Epillepsy_Berkovic2022	binary	27559	42436	GCST90271608	the record of its paper with its N in the GWAS Catalog
-PASS_F1mooddisturbance_Mallard2022	quantitative			PMID 35812988	by hand: a factor common to several disorders and symptoms; its N is the effective N that the paper gives
-PASS_F2seriousmentalillness_Mallard2022	quantitative			PMID 35812988	by hand: a factor common to several disorders and symptoms; its N is the effective N that the paper gives
-PASS_ForcedExpiratoryVolumeInOneSecond_Shrine2023	quantitative			GCST90292609	the record of its source in the GWAS Catalog
-PASS_ForcedExpiratoryVolumeInOneSecondForcedVitalCapacityRatio_Shrine2023	quantitative			GCST90292611	the record of its source in the GWAS Catalog
-PASS_ForcedVitalCapacity_Shrine2023	quantitative			GCST90292610	the record of its source in the GWAS Catalog
-PASS_GastroesophagalRefluxDisease_Donertas2021	binary	20381	464217	GCST90038624	by hand: the record of its disease among the paper's in the GWAS Catalog (GCST90038624); its cases and controls sum to its N
-PASS_GastrointestinalDisease_Donertas2021	binary	77978	406620	GCST90038597	by hand: the record of its disease among the paper's in the GWAS Catalog (GCST90038597); its cases and controls sum to its N
-PASS_GeneticGeneralizedEpilepsy_Berkovic2022	binary	6952	42436	GCST90271609	the record of its paper with its N in the GWAS Catalog
-PASS_GluteofemoralAdiposeTissueVolume_Agrawal2022	quantitative			GCST90205200	the record of its paper with its N in the GWAS Catalog
-PASS_Gout_Donertas2021	binary	6810	477788	GCST90038687	by hand: the record of its disease among the paper's in the GWAS Catalog (GCST90038687); its cases and controls sum to its N
-PASS_HeartFailure_Shah2020	binary	47309	930014	GCST009541	by hand: the paper's meta-analysis (GCST009541), 977,323 in all; the file's N is 964,057 at most
-PASS_Height_Yengo2022	quantitative			GCST90245992	the record of its paper with its N in the GWAS Catalog
-PASS_HipOsteoarthritis_Boer2021	binary	36445	316943	PMID 34450027	by hand: the paper's table of its analyses: 36,445 cases and 316,943 controls, 353,388 in all; the file's N is 354,161 at most
-PASS_Insomnia_Watanabe2022	binary				by hand: which of the paper's analyses its file holds is not known: its N, 608,595, is that of none of the paper's samples in the GWAS Catalog (1,216,033 to 2,365,010), so its cases are not known
-PASS_JuvenileMyoclonicEpilepsy_Berkovic2022	binary	1732	42436	GCST90271614	by hand: the paper's European samples of juvenile myoclonic epilepsy (GCST90271614), 44,168 in all; the release's N, 39,067, is 0.88 of them
-PASS_KneeAndOrHipOsteoarthritis_Boer2021	binary	89741	400604	PMID 34450027	by hand: the paper's table of its analyses: 89,741 cases and 400,604 controls, 490,345 in all; the file's N is 493,832 at most
-PASS_KneeOsteoarthritis_Boer2021	binary	62497	333557	PMID 34450027	by hand: the paper's table of its analyses: 62,497 cases and 333,557 controls, 396,054 in all; the file's N is 399,321 at most
-PASS_Mania_Mallard2022	quantitative			PMID 35812988	by hand: a score of symptoms in UK Biobank; the paper's N is 252,252, the release's 252,525
-PASS_MetabolicSyndrome_VanWalree2022	quantitative			PMID 35983957	by hand: a factor common to five measurements, by the paper's abstract
-PASS_MultipleSclerosis_IMSGC2019	binary	14802	26703	GCST009597	the record of its paper with its N in the GWAS Catalog
-PASS_Parkinson_Nalls2019	binary	33674	449056	GCST009325	the record of its paper with its N in the GWAS Catalog
-PASS_PeakExpiratoryFlow_Shrine2023	quantitative			GCST90292612	the record of its source in the GWAS Catalog
-PASS_PhysicalActivity_Wang2022	binary				by hand: a yes-or-no trait: the paper analysed moderate-to-vigorous activity as a dichotomous outcome. Its cases are in no record read: the GWAS Catalog's record (GCST90104341) counts 608,595 individuals, the largest N of the file
-PASS_Psychosis_Mallard2022	quantitative			PMID 35812988	by hand: a score of symptoms in UK Biobank; the paper's N is 252,252, the release's 252,525
-PASS_RheumatoidArthritis_Ishigaki2022	binary	22350	74823	GCST90132222	the record of its paper with its N in the GWAS Catalog
-PASS_RheumatoidArthritis_Saevarsdottir2022	binary	31313	995377	GCST90131437	the record of its paper with its N in the GWAS Catalog
-PASS_Schizophrenia_Trubetskoy2022	binary	53386	77258	GCST90128471	the record of its paper with its N in the GWAS Catalog
-PASS_Snoring_Campos2020	binary	152302	256015	GCST009760	the record of its paper with its N in the GWAS Catalog
-PASS_SpineOsteoarthritis_Boer2021	binary	28372	305578	PMID 34450027	by hand: the paper's table of its analyses: 28,372 cases and 305,578 controls, 333,950 in all; the file's N is 336,532 at most
-PASS_StructuralConnectivityGlobal_Tissink2023	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_StructuralConnectivitySomatomotor_Tissink2023	quantitative				the GWAS Catalog counts individuals, not cases, in every record of its paper
-PASS_TelomereLength_Codd2021	quantitative			PMID 34611362	by hand: a measurement
-PASS_ThumbOsteoarthritis_Boer2021	binary	10536	236919	GCST90034529	the record of its paper with its N in the GWAS Catalog
-PASS_TotalHipReplacement_Boer2021	binary	23021	296016	PMID 34450027	by hand: the paper's table of its analyses: 23,021 cases and 296,016 controls, 319,037 in all; the file's N is 319,086 at most
-PASS_TotalJointReplacement_Boer2021	binary	40887	327689	GCST90034526	the record of its paper with its N in the GWAS Catalog
-PASS_TotalKneeReplacement_Boer2021	binary	18200	233841	GCST90034525	the record of its paper with its N in the GWAS Catalog
-PASS_TouretteSyndrome_Yu2019	binary	4819	9488	GCST007277	the record of its paper with its N in the GWAS Catalog
-PASS_Type1Diabetes_Chiou2021	binary	18942	501638	GCST90014023	the record of its paper with its N in the GWAS Catalog
-PASS_Type2Diabetes_Xue2018	binary	62892	596424	PMID 30054458	by hand: the paper's 62,892 cases and 596,424 controls, 659,316 in all; the file's N is 605,056 at most, 0.92 of them
-PASS_VaricoseVeins_Ahmed2022	binary	22473	379183	PMID 35654884	by hand: the paper's 22,473 cases and 379,183 controls of UK Biobank; they sum to its N
-PASS_VisceralAdiposeTissueVolume_Agrawal2022	quantitative			GCST90205200	the record of its paper with its N in the GWAS Catalog
-GCST90244167	binary	23394	105724	GCST90244167	its record in the GWAS Catalog
-GCST90244168	binary	15588	105724	GCST90244168	its record in the GWAS Catalog
-GCST90244169	binary	2749	105724	GCST90244169	its record in the GWAS Catalog
-GCST90244170	binary	2877	105724	GCST90244170	its record in the GWAS Catalog
-GCST90244171	binary	1427	105724	GCST90244171	its record in the GWAS Catalog
-GCST90244172	binary	2587	105724	GCST90244172	its record in the GWAS Catalog
-GCST90448187	binary	11358	1106871	GCST90448187	its record in the GWAS Catalog
-GCST90705067	quantitative			GCST90705067	its record in the GWAS Catalog
-GCST90705068	quantitative			GCST90705068	its record in the GWAS Catalog
-GCST90705069	quantitative			GCST90705069	its record in the GWAS Catalog
-GCST90651070	quantitative			GCST90651070	its record in the GWAS Catalog
-GCST90651071	quantitative			GCST90651071	its record in the GWAS Catalog
-GCST90651072	quantitative			GCST90651072	its record in the GWAS Catalog
-GCST90651073	quantitative			GCST90651073	its record in the GWAS Catalog
-GCST90651074	binary	45352	1938877	GCST90651074	its record in the GWAS Catalog
-GCST90651075	quantitative			GCST90651075	its record in the GWAS Catalog
-GCST90651076	quantitative			GCST90651076	its record in the GWAS Catalog
-GCST90651077	quantitative			GCST90651077	its record in the GWAS Catalog
-GCST90295949	quantitative			GCST90295949	its record in the GWAS Catalog
-GCST90295950	quantitative			GCST90295950	its record in the GWAS Catalog
-GCST90295951	quantitative			GCST90295951	its record in the GWAS Catalog
-GCST90726344	binary	151582	362873	GCST90726344	its record in the GWAS Catalog
-GCST90726345	binary	46708	106824	GCST90726345	its record in the GWAS Catalog
-GCST90726346	binary	37168	121420	GCST90726346	its record in the GWAS Catalog
-GCST90448693	binary	15046	38161	GCST90448693	its record in the GWAS Catalog
-GCST90448695	binary	74662	240661	GCST90448695	its record in the GWAS Catalog
-GCST90448696	binary	3860	70802	GCST90448696	its record in the GWAS Catalog
-GCST90432156	binary	5708	432028	GCST90432156	its record in the GWAS Catalog
-GCST90319905	quantitative			GCST90319905	its record in the GWAS Catalog
-GCST90319906	quantitative			GCST90319906	its record in the GWAS Catalog
-GCST90668009	binary	16251	197577	GCST90668009	its record in the GWAS Catalog
-GCST90668010	binary	4254	197577	GCST90668010	its record in the GWAS Catalog
-GCST90668011	binary	7154	197577	GCST90668011	its record in the GWAS Catalog
-GCST90668012	binary	11122	171995	GCST90668012	its record in the GWAS Catalog
-GCST90668013	binary	95524	1270968	GCST90668013	its record in the GWAS Catalog
-GCST90668016	binary	11742	691259	GCST90668016	its record in the GWAS Catalog
-GCST90566419	binary	12024	67845	GCST90566419	its record in the GWAS Catalog
-GCST90566420	quantitative			GCST90566420	its record in the GWAS Catalog
-GCST90566421	quantitative			GCST90566421	its record in the GWAS Catalog
-GCST90566422	quantitative			GCST90566422	its record in the GWAS Catalog
-GCST90566423	quantitative			GCST90566423	its record in the GWAS Catalog
-GCST90566424	quantitative			GCST90566424	its record in the GWAS Catalog
-GCST90705000	binary	128985	563054	GCST90705000	its record in the GWAS Catalog
-GCST90705001	binary	51494	253699	GCST90705001	its record in the GWAS Catalog
-GCST90705002	binary	77491	309355	GCST90705002	its record in the GWAS Catalog
-GCST90705003	binary	32474	563054	GCST90705003	its record in the GWAS Catalog
-GCST90705004	binary	11694	253699	GCST90705004	its record in the GWAS Catalog
-GCST90705005	binary	20780	309355	GCST90705005	its record in the GWAS Catalog
-GCST90705006	binary	32412	563054	GCST90705006	its record in the GWAS Catalog
-GCST90705007	binary	11427	253699	GCST90705007	its record in the GWAS Catalog
-GCST90705008	binary	20985	309355	GCST90705008	its record in the GWAS Catalog
-GCST90705009	binary	71837	563054	GCST90705009	its record in the GWAS Catalog
-GCST90705010	binary	29771	253699	GCST90705010	its record in the GWAS Catalog
-GCST90705011	binary	42066	309355	GCST90705011	its record in the GWAS Catalog
-GCST90705012	binary	31944	563054	GCST90705012	its record in the GWAS Catalog
-GCST90705013	binary	13766	253699	GCST90705013	its record in the GWAS Catalog
-GCST90705014	binary	18178	309355	GCST90705014	its record in the GWAS Catalog
-GCST90705015	binary	31915	57085	GCST90705015	its record in the GWAS Catalog
-GCST90705017	binary	18162	35388	GCST90705017	its record in the GWAS Catalog
-GCST90705018	binary	31915	23682	GCST90705018	its record in the GWAS Catalog
-GCST90705021	binary	32432	33074	GCST90705021	its record in the GWAS Catalog
-GCST90705024	binary	32432	96427	GCST90705024	its record in the GWAS Catalog
-GCST90705025	binary	11676	39764	GCST90705025	its record in the GWAS Catalog
-GCST90705026	binary	20756	56663	GCST90705026	its record in the GWAS Catalog
-GCST90705027	binary	32382	32259	GCST90705027	its record in the GWAS Catalog
-GCST90705030	binary	32382	96477	GCST90705030	its record in the GWAS Catalog
-GCST90705031	binary	11415	40025	GCST90705031	its record in the GWAS Catalog
-GCST90705032	binary	20967	56452	GCST90705032	its record in the GWAS Catalog
-GCST90446758	quantitative			GCST90446758	its record in the GWAS Catalog
-GCST90446759	quantitative			GCST90446759	its record in the GWAS Catalog
-GCST90446760	quantitative			GCST90446760	its record in the GWAS Catalog
-GCST90446761	quantitative			GCST90446761	its record in the GWAS Catalog
-GCST90446762	quantitative			GCST90446762	its record in the GWAS Catalog
-GCST90446763	quantitative			GCST90446763	its record in the GWAS Catalog
-GCST90446764	quantitative			GCST90446764	its record in the GWAS Catalog
-GCST90446765	quantitative			GCST90446765	its record in the GWAS Catalog
-GCST90446766	quantitative			GCST90446766	its record in the GWAS Catalog
-GCST90446767	quantitative			GCST90446767	its record in the GWAS Catalog
-GCST90446768	quantitative			GCST90446768	its record in the GWAS Catalog
-GCST90446769	quantitative			GCST90446769	its record in the GWAS Catalog
-GCST90446770	quantitative			GCST90446770	its record in the GWAS Catalog
-GCST90446771	quantitative			GCST90446771	its record in the GWAS Catalog
-GCST90446772	quantitative			GCST90446772	its record in the GWAS Catalog
-GCST90446773	quantitative			GCST90446773	its record in the GWAS Catalog
-GCST90446774	quantitative			GCST90446774	its record in the GWAS Catalog
-GCST90503313	quantitative			GCST90503313	its record in the GWAS Catalog
-GCST90503316	binary				by hand: a yes-or-no trait: a diagnosis, of about a quarter of the men by the paper. Its cases are in no record read: its record in the GWAS Catalog counts 102,635 men
-GCST90335162	quantitative			GCST90335162	its record in the GWAS Catalog
-GCST90335163	quantitative			GCST90335163	its record in the GWAS Catalog
-GCST90335164	quantitative			GCST90335164	its record in the GWAS Catalog
-GCST90335165	quantitative			GCST90335165	its record in the GWAS Catalog
-GCST90335166	quantitative			GCST90335166	its record in the GWAS Catalog
-GCST90335167	quantitative			GCST90335167	its record in the GWAS Catalog
-GCST90335168	quantitative			GCST90335168	its record in the GWAS Catalog
-GCST90335169	quantitative			GCST90335169	its record in the GWAS Catalog
-GCST90448960	binary	71	198973	GCST90448960	its record in the GWAS Catalog
-GCST90652529	binary	88965	685602	GCST90652529	its record in the GWAS Catalog
-GCST90652530	binary	71481	685602	GCST90652530	its record in the GWAS Catalog
-GCST90652531	binary	9626	685602	GCST90652531	its record in the GWAS Catalog
-GCST90652532	binary	15448	685602	GCST90652532	its record in the GWAS Catalog
-GCST90652548	quantitative			GCST90652548	its record in the GWAS Catalog
-GCST90652549	quantitative			GCST90652549	its record in the GWAS Catalog
-GCST90652551	quantitative			GCST90652551	its record in the GWAS Catalog
-GCST90652552	quantitative			GCST90652552	its record in the GWAS Catalog
-GCST90652553	quantitative			GCST90652553	its record in the GWAS Catalog
-GCST90652554	quantitative			GCST90652554	its record in the GWAS Catalog
-GCST90652555	quantitative			GCST90652555	its record in the GWAS Catalog
-GCST90652556	quantitative			GCST90652556	its record in the GWAS Catalog
-GCST90652557	quantitative			GCST90652557	its record in the GWAS Catalog
-GCST90652558	quantitative			GCST90652558	its record in the GWAS Catalog
-GCST90652559	quantitative			GCST90652559	its record in the GWAS Catalog
-GCST90296666	binary	25355	592376	GCST90296666	its record in the GWAS Catalog
-GCST90310293	binary	14819	941863	GCST90310293	its record in the GWAS Catalog
-GCST90429765	quantitative			GCST90429765	its record in the GWAS Catalog
-GCST90429766	quantitative			GCST90429766	its record in the GWAS Catalog
-GCST90429767	quantitative			GCST90429767	its record in the GWAS Catalog
-GCST90429768	quantitative			GCST90429768	its record in the GWAS Catalog
-GCST90429769	quantitative			GCST90429769	its record in the GWAS Catalog
-GCST90429770	quantitative			GCST90429770	its record in the GWAS Catalog
-GCST90429771	quantitative			GCST90429771	its record in the GWAS Catalog
-GCST90429772	quantitative			GCST90429772	its record in the GWAS Catalog
-GCST90429773	quantitative			GCST90429773	its record in the GWAS Catalog
-GCST90429774	quantitative			GCST90429774	its record in the GWAS Catalog
-GCST90429775	quantitative			GCST90429775	its record in the GWAS Catalog
-GCST90429776	quantitative			GCST90429776	its record in the GWAS Catalog
-GCST90429777	quantitative			GCST90429777	its record in the GWAS Catalog
-GCST90429778	quantitative			GCST90429778	its record in the GWAS Catalog
-GCST90429779	quantitative			GCST90429779	its record in the GWAS Catalog
-GCST90429780	quantitative			GCST90429780	its record in the GWAS Catalog
-GCST90429781	quantitative			GCST90429781	its record in the GWAS Catalog
-GCST90429782	quantitative			GCST90429782	its record in the GWAS Catalog
-GCST90429783	quantitative			GCST90429783	its record in the GWAS Catalog
-GCST90429784	quantitative			GCST90429784	its record in the GWAS Catalog
-GCST90429785	quantitative			GCST90429785	its record in the GWAS Catalog
-GCST90429786	quantitative			GCST90429786	its record in the GWAS Catalog
-GCST90429787	quantitative			GCST90429787	its record in the GWAS Catalog
-GCST90429788	quantitative			GCST90429788	its record in the GWAS Catalog
-GCST90429789	quantitative			GCST90429789	its record in the GWAS Catalog
-GCST90429790	quantitative			GCST90429790	its record in the GWAS Catalog
-GCST90429791	quantitative			GCST90429791	its record in the GWAS Catalog
-GCST90429792	quantitative			GCST90429792	its record in the GWAS Catalog
-GCST90429793	quantitative			GCST90429793	its record in the GWAS Catalog
-GCST90429794	quantitative			GCST90429794	its record in the GWAS Catalog
-GCST90503483	binary	7554	1367006	GCST90503483	its record in the GWAS Catalog
-GCST90558258	binary	795	371939	GCST90558258	its record in the GWAS Catalog
-GCST90435144	quantitative			GCST90435144	its record in the GWAS Catalog
-GCST90435145	quantitative			GCST90435145	its record in the GWAS Catalog
-GCST90624053	binary	77431	754803	GCST90624053	its record in the GWAS Catalog
-GCST90319877	binary	15225	1564786	GCST90319877	its record in the GWAS Catalog
-GCST90728695	binary	139533	1568809	GCST90728695	its record in the GWAS Catalog
-GCST90728696	binary	42081	1267892	GCST90728696	its record in the GWAS Catalog
-GCST90728697	binary	3590	752599	GCST90728697	its record in the GWAS Catalog
-GCST90728698	binary	4975	935830	GCST90728698	its record in the GWAS Catalog
-GCST90310294	quantitative			GCST90310294	its record in the GWAS Catalog
-GCST90310295	quantitative			GCST90310295	its record in the GWAS Catalog
-GCST90310296	quantitative			GCST90310296	its record in the GWAS Catalog
-GCST90428446	quantitative			GCST90428446	its record in the GWAS Catalog
-GCST90428447	quantitative			GCST90428447	its record in the GWAS Catalog
-GCST90428448	quantitative			GCST90428448	its record in the GWAS Catalog
-GCST90428600	binary	27194	614881	GCST90428600	its record in the GWAS Catalog
-GCST90428601	binary	22784	279647	GCST90428601	its record in the GWAS Catalog
-GCST90428602	binary	4410	335234	GCST90428602	its record in the GWAS Catalog
-GCST90444487	quantitative			GCST90444487	its record in the GWAS Catalog
-GCST90444488	quantitative			GCST90444488	its record in the GWAS Catalog
-GCST90320057	binary	25890	743585	GCST90320057	its record in the GWAS Catalog
-GCST90320058	binary	16321	743479	PMID 38671320	by hand: the paper's cases and controls of all ancestries, 759,800 in all, of whom 752,817, its N, are European (GCST90320058 counts individuals): the European cases are a little fewer
-GCST90320059	binary	2193	740816	PMID 38671320	by hand: the paper's cases and controls of all ancestries, 743,009 in all; its N, the Europeans', is 738,319 (GCST90320059 counts individuals): the European cases are a little fewer
-GCST90320065	binary	621	86796	GCST90320065	its record in the GWAS Catalog
-GCST90572789	quantitative			GCST90572789	its record in the GWAS Catalog
-GCST90572790	quantitative			GCST90572790	its record in the GWAS Catalog
-GCST90572791	binary	113393	1065268	GCST90572791	its record in the GWAS Catalog
-GCST90483463	binary	40024	665658	GCST90483463	its record in the GWAS Catalog
-GCST90483464	binary	7684	667460	GCST90483464	its record in the GWAS Catalog
-GCST90483465	binary	6271	783723	GCST90483465	its record in the GWAS Catalog
-GCST90483466	binary	23358	681351	GCST90483466	its record in the GWAS Catalog
-GCST90483467	binary	10864	694441	GCST90483467	its record in the GWAS Catalog
-GCST90483468	binary	7479	432508	GCST90483468	its record in the GWAS Catalog
-GCST90483475	quantitative			GCST90483475	its record in the GWAS Catalog
-GCST90483477	quantitative			GCST90483477	its record in the GWAS Catalog
-GCST90483481	quantitative			GCST90483481	its record in the GWAS Catalog
-GCST90483483	quantitative			GCST90483483	its record in the GWAS Catalog
-GCST90483486	quantitative			GCST90483486	its record in the GWAS Catalog
-GCST90483487	quantitative			GCST90483487	its record in the GWAS Catalog
-GCST90483488	quantitative			GCST90483488	its record in the GWAS Catalog
-GCST90483500	binary	14467	430267	GCST90483500	its record in the GWAS Catalog
-GCST90483501	binary	31309	318510	GCST90483501	its record in the GWAS Catalog
-GCST90483502	binary	42446	588955	GCST90483502	its record in the GWAS Catalog
-GCST90568440	quantitative			GCST90568440	its record in the GWAS Catalog
-GCST90568441	quantitative			GCST90568441	its record in the GWAS Catalog
-GCST90301695	quantitative			GCST90301695	its record in the GWAS Catalog
-GCST90301696	quantitative			GCST90301696	its record in the GWAS Catalog
-GCST90301697	quantitative			GCST90301697	its record in the GWAS Catalog
-GCST90301698	quantitative			GCST90301698	its record in the GWAS Catalog
-GCST90301699	quantitative			GCST90301699	its record in the GWAS Catalog
-GCST90301700	quantitative			GCST90301700	its record in the GWAS Catalog
-GCST90301701	quantitative			GCST90301701	its record in the GWAS Catalog
-GCST90301702	quantitative			GCST90301702	its record in the GWAS Catalog
-GCST90301703	quantitative			GCST90301703	its record in the GWAS Catalog
-GCST90301704	binary	1728	192399	GCST90301704	its record in the GWAS Catalog
-GCST90335174	quantitative			GCST90335174	its record in the GWAS Catalog
-GCST90335175	quantitative			GCST90335175	its record in the GWAS Catalog
-GCST90335176	quantitative			GCST90335176	its record in the GWAS Catalog
-GCST90501670	quantitative			GCST90501670	its record in the GWAS Catalog
-GCST90501671	quantitative			GCST90501671	its record in the GWAS Catalog
-GCST90501672	quantitative			GCST90501672	its record in the GWAS Catalog
+id	kind	cases	controls	proxy	source	how
+PASS_BMI1	quantitative				GCST000830	the record of its paper with its N in the GWAS Catalog
+PASS_Height1	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_Anorexia	binary	2907	14860		GCST002354	by hand: the paper's GWAS (GCST002354); its replication stage adds samples at 76 SNPs only. The release's N, 32,143, is above it, and above the 5,551 cases and 21,080 controls of both stages
+PASS_Bipolar_Disorder	binary	7481	9250		GCST001241	the record of its paper with its N in the GWAS Catalog
+PASS_Coronary_Artery_Disease	binary	22233	64762		GCST000998	by hand: the paper's meta-analysis (GCST000998), 86,995 in all; the N of the file's SNPs is 84,268 at most
+PASS_Crohns_Disease	binary	5956	14927		GCST003044	by hand: the genome-wide scans of the paper, as the GWAS Catalog records them for the consortium's next paper (GCST003044): their cases and controls sum to its N
+PASS_Ever_Smoked	binary					by hand: a yes-or-no trait: ever against never a regular smoker. Its cases are in no record read: the paper and the GWAS Catalog (GCST000666) give 74,035 individuals
+PASS_HDL	quantitative				GCST000755	the record of its paper with its N in the GWAS Catalog
+PASS_LDL	quantitative				GCST000759	the record of its paper with its N in the GWAS Catalog
+PASS_Rheumatoid_Arthritis	binary	14361	43923		PMID 24390342	by hand: the paper's European samples, 14,361 cases and 43,923 controls from 18 studies, 58,284 in all. The release's N is 37,681, and 38,242 at most in its file: two thirds of them, which nothing found explains
+PASS_Schizophrenia	binary	33640	43456		GCST002539	by hand: the European samples of the paper (GCST002539): 32,405 cases and 42,221 controls, and 1,235 trios, 77,096 in all; the release's N, 70,100, is 0.91 of them
+PASS_Triglycerides	quantitative				GCST000758	the record of its paper with its N in the GWAS Catalog
+PASS_Type_2_Diabetes	binary	12171	56862		GCST005047	the record of its paper with its N in the GWAS Catalog
+PASS_Ulcerative_Colitis	binary	6968	20464		GCST003045	by hand: the genome-wide scans of the paper, as the GWAS Catalog records them for the consortium's next paper (GCST003045): their cases and controls sum to its N
+PASS_Years_of_Education1	quantitative				GCST002047	the record of its paper with its N in the GWAS Catalog
+PASS_IBD	binary	12882	21770		GCST003043	by hand: the genome-wide scans of the paper, as the GWAS Catalog records them for the consortium's next paper (GCST003043): their cases and controls sum to its N
+PASS_Autism	binary	4949	5314		PMID 23453885	by hand: the paper's autism samples: 4,788 trio cases with as many pseudocontrols, 161 cases and 526 controls; they sum to its N
+PASS_Alzheimer	binary	17008	37154		GCST002245	the record of its paper with its N in the GWAS Catalog
+PASS_Type_1_Diabetes	binary	9934	16956		GCST001255	the record of its paper with its N in the GWAS Catalog
+PASS_Multiple_sclerosis	binary	9772	17376		PMID 21833088	by hand: the paper's 9,772 cases and 17,376 controls, which sum to its N; the GWAS Catalog's record (GCST001198) has 16,849 controls
+PASS_Celiac	binary	4533	10750		GCST000612	the record of its paper with its N in the GWAS Catalog
+PASS_Primary_biliary_cirrhosis	binary	2764	10475		GCST003129	the record of its paper with its N in the GWAS Catalog
+PASS_Lupus	binary	5201	9066		GCST003155	the record of its paper with its N in the GWAS Catalog
+PASS_SWB	quantitative				GCST003766	the record of its paper with its N in the GWAS Catalog
+PASS_DS	quantitative				PMID 27089181	by hand: a score of symptoms, meta-analysed with two case-control studies of depression: the paper gives one N, 161,460
+PASS_Neuroticism	quantitative				GCST003770	the record of its paper with its N in the GWAS Catalog
+PASS_Years_of_Education2	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_FastingGlucose_Manning	quantitative				GCST001527	the record of its paper with its N in the GWAS Catalog
+PASS_HbA1C	quantitative				GCST000803	the record of its paper with its N in the GWAS Catalog
+PASS_ENIGMA2_MeanPutamen	quantitative				GCST002756	the record of its paper with its N in the GWAS Catalog
+PASS_AgeFirstBirth	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_NumberChildrenEverBorn	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_Menarche2017	quantitative				PMID 28436984	by hand: an age
+UKB_460K.cov_EDU_COLLEGE	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.cov_SMOKING_STATUS	quantitative				GCST90029013	the record of its paper with its N in the GWAS Catalog
+UKB_460K.disease_ALLERGY_ECZEMA_DIAGNOSED	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.disease_ASTHMA_DIAGNOSED	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.disease_HYPERTENSION_DIAGNOSED	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.repro_MENARCHE_AGE	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.repro_MENOPAUSE_AGE	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.body_HEIGHTz	quantitative				GCST90029013	the record of its paper with its N in the GWAS Catalog
+UKB_460K.body_BMIz	quantitative				GCST90029013	the record of its paper with its N in the GWAS Catalog
+UKB_460K.body_WHRadjBMIz	quantitative				GCST90029013	the record of its paper with its N in the GWAS Catalog
+UKB_460K.bp_SYSTOLICadjMEDz	quantitative				GCST90029027	the record of its paper with its N in the GWAS Catalog
+UKB_460K.bp_DIASTOLICadjMEDz	quantitative				GCST90029027	the record of its paper with its N in the GWAS Catalog
+UKB_460K.bmd_HEEL_TSCOREz	quantitative				GCST90029018	the record of its paper with its N in the GWAS Catalog
+UKB_460K.lung_FVCzSMOKE	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.lung_FEV1FVCzSMOKE	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.disease_HI_CHOL_SELF_REP	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.disease_DIABETES_ANY_DIAGNOSED	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.disease_T2D	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.blood_EOSINOPHIL_COUNT	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.blood_HIGH_LIGHT_SCATTER_RETICULOCYTE_COUNT	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.blood_LYMPHOCYTE_COUNT	quantitative				GCST90029018	the record of its paper with its N in the GWAS Catalog
+UKB_460K.blood_MEAN_CORPUSCULAR_HEMOGLOBIN	quantitative				GCST90029018	the record of its paper with its N in the GWAS Catalog
+UKB_460K.blood_MEAN_PLATELET_VOL	quantitative				GCST90029018	the record of its paper with its N in the GWAS Catalog
+UKB_460K.blood_MEAN_SPHERED_CELL_VOL	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.blood_MONOCYTE_COUNT	quantitative				GCST90029018	the record of its paper with its N in the GWAS Catalog
+UKB_460K.blood_PLATELET_COUNT	quantitative				GCST90029018	the record of its paper with its N in the GWAS Catalog
+UKB_460K.blood_PLATELET_DISTRIB_WIDTH	quantitative				GCST90029018	the record of its paper with its N in the GWAS Catalog
+UKB_460K.blood_RBC_DISTRIB_WIDTH	quantitative				GCST90029018	the record of its paper with its N in the GWAS Catalog
+UKB_460K.blood_RED_COUNT	quantitative				GCST90029018	the record of its paper with its N in the GWAS Catalog
+UKB_460K.blood_WHITE_COUNT	quantitative				GCST90029018	the record of its paper with its N in the GWAS Catalog
+UKB_460K.disease_HYPOTHYROIDISM_SELF_REP	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.disease_THYROID_ANY_SELF_REP	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.impedance_BASAL_METABOLIC_RATEz	quantitative				GCST90029023	the record of its paper with its N in the GWAS Catalog
+UKB_460K.disease_ENDOCRINE_DIABETES	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.disease_CARDIOVASCULAR	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.disease_RESPIRATORY_ENT	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.disease_PSORIASIS	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.disease_DERMATOLOGY	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.disease_RA	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.disease_AID_ALL	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.disease_AID_SURE	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.pigment_HAIR	quantitative				GCST90029029	the record of its paper with its N in the GWAS Catalog
+UKB_460K.pigment_HAIR_darkbrown	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.pigment_HAIR_red	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.pigment_HAIR_blonde	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.pigment_HAIR_blackmale	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.body_BALDING1	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.body_BALDING4	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.pigment_SKIN	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.pigment_TANNING	quantitative				GCST90029023	the record of its paper with its N in the GWAS Catalog
+UKB_460K.pigment_SUNBURN	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.mental_NEUROTICISM	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.other_NO_WHEAT	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.other_MORNINGPERSON	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.cov_EDU_YEARS	quantitative				GCST90029020	the record of its paper with its N in the GWAS Catalog
+UKB_460K.biochemistry_AlanineAminotransferase	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_Albumin	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_AlkalinePhosphatase	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_ApolipoproteinA	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_ApolipoproteinB	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_AspartateAminotransferase	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_Calcium	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_Cholesterol	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_CreactiveProtein	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_Creatinine	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_CystatinC	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_DirectBilirubin	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_GammaGlutamyltransferase	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_Glucose	quantitative				GCST90029028	the record of its paper with its N in the GWAS Catalog
+UKB_460K.biochemistry_HbA1c	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_HDLcholesterol	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_IGF1	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_LDLdirect	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_LipoproteinA	quantitative				GCST90029034	the record of its paper with its N in the GWAS Catalog
+UKB_460K.biochemistry_Phosphate	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_SHBG	quantitative				GCST90029028	the record of its paper with its N in the GWAS Catalog
+UKB_460K.biochemistry_Testosterone_Male	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_TotalBilirubin	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_TotalProtein	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_Triglycerides	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_Urate	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_Urea	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.biochemistry_VitaminD	quantitative				GCST90029016	the record of its paper with its N in the GWAS Catalog
+PASS_ADHD_Demontis2018	binary	20183	35191		GCST007543	by hand: the paper's 20,183 cases and 35,191 controls (GCST007543), of whom 19,099 and 34,194 are European; they sum to its N
+PASS_AdultOnsetAsthma_Ferreira2019	binary	26582	300671		GCST007799	the record of its paper with its N in the GWAS Catalog
+PASS_AgeOfInitiation_Liu2019	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_Alzheimers_Jansen2019	binary	71880	383378	yes	GCST007320	by hand: the paper's meta-analysis (GCST007320): 24,087 cases and 47,793 proxy cases, who have a parent with the disease, against 383,378 controls; 455,258 in all, where the file's N is 452,010 at most
+PASS_AlzheimersMaternal_Marioni2018	binary	27696	260980		GCST005923	the record of its paper with its N in the GWAS Catalog
+PASS_AlzheimersPaternal_Marioni2018	binary	14338	245941		GCST005920	the record of its paper with its N in the GWAS Catalog
+PASS_AlzheimersProxy_Marioni2018	binary	67614	320710	yes	PMID 29777097	by hand: 25,580 cases of the consortium's data, and 27,696 mothers and 14,338 fathers with the disease among the parents of UK Biobank's 314,278 participants: a parent with the disease is a proxy for a case. The rest of its N, 388,324, as controls
+PASS_AtrialFibrillation_Nielsen2018	binary	60620	970216		GCST006414	the record of its source in the GWAS Catalog
+PASS_BDSCZ_Ruderfer2018	binary	53555	54065		PMID 29906448	by hand: the paper's 53,555 cases, 20,129 of bipolar disorder and 33,426 of schizophrenia, and 54,065 controls; they sum to its N
+PASS_BipolarDisorder_Ruderfer2018	binary	20129	21524		PMID 29906448	by hand: the paper's 20,129 cases of bipolar disorder and 21,524 controls; they sum to its N
+PASS_BIP_Stahl2019	binary	20352	31358		GCST008103	by hand: the paper's sample of bipolar disorder (GCST008103), 51,710 in all. The file's N, 46,582 at most, is below it and above the 46,237 of bipolar I disorder: it looks like an effective N, summed over cohorts
+PASS_CardioembolicStroke_Malik2018	binary	7193	204570		GCST006910	by hand: its cases are those of its source (GCST006910); its controls, those that its N, the release's, leaves. The GWAS Catalog's record counts 355,468 controls, 150,898 more, as it does for the paper's other two subtypes
+PASS_CD_deLange2017	binary	12194	28072		GCST004132	the record of its paper with its N in the GWAS Catalog
+PASS_ChildOnsetAsthma_Ferreira2019	binary	13962	300671		GCST007800	the record of its paper with its N in the GWAS Catalog
+PASS_CigarettesPerDay_Liu2019	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_DepressedAffect_Nagel2018	quantitative				GCST006475	the record of its paper with its N in the GWAS Catalog
+PASS_Depression_Nagel2018	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_DrinksPerWeek_Liu2019	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_GeneralRiskTolerance_KarlssonLinner2019	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_IBD_deLange2017	binary	25042	34915		GCST004131	the record of its paper with its N in the GWAS Catalog
+PASS_Insomnia_Jansen2019	binary					by hand: a yes-or-no trait: insomnia complaints or none. Its cases are in no record read: the GWAS Catalog's record of the paper counts men and women, 1,331,010 with 23andMe's, where the file's N is 386,533 at most
+PASS_Intelligence_SavageJansen2018	quantitative				GCST006250	the record of its paper with its N in the GWAS Catalog
+PASS_IschemicStroke_Malik2018	binary	34217	406111		GCST006908	the record of its source in the GWAS Catalog
+PASS_LargeArteryStroke_Malik2018	binary	4373	146392		GCST006907	by hand: its cases are those of its source (GCST006907); its controls, those that its N, the release's, leaves. The GWAS Catalog's record counts 297,290 controls, 150,898 more, as it does for the paper's other two subtypes
+PASS_LongSleepDuration_Dashti2019	binary	34184	305742		GCST007560	the record of its source in the GWAS Catalog
+PASS_MDD_Howard2019	binary	170756	329443		PMID 30718901	by hand: the paper's samples without 23andMe's: 127,552 cases and 233,763 controls of UK Biobank, 43,204 and 95,680 of the Psychiatric Genomics Consortium; 500,199 in all. The file's N is 381,708 at most, which nothing found explains
+PASS_MDD_Wray2018	binary	59851	113154		PMID 29700475	by hand: the paper's 135,458 cases and 344,901 controls without the 75,607 and 231,747 of 23andMe (its table of cohorts); they sum to the largest N of the file, 173,005
+PASS_MedicationUse_Wu2019	binary	22982	55826		GCST007936	the record of its paper with its N in the GWAS Catalog
+PASS_Neuroticism_Nagel2018	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_OvarianCancer	binary	25509	40941		PMID 28346442	by hand: the paper's 22,406 invasive and 3,103 borderline cases, and 40,941 controls, of European ancestry; they sum to its N
+PASS_ProstateCancer	binary	46939	27910		PMID 29892016	by hand: the paper's newly genotyped samples, 46,939 cases and 27,910 controls, 74,849 in all; the release's N, 72,729, is 0.97 of them
+PASS_ReactionTime_Davies2018	quantitative				GCST006269	the record of its paper with its N in the GWAS Catalog
+PASS_Schizophrenia_Pardinas2018	binary	40675	64643		GCST006803	by hand: the paper's meta-analysis (GCST006803), 105,318 in all; the release's N, 94,437, is 0.90 of it
+PASS_Schizophrenia_Ruderfer2018	binary	33426	32541		PMID 29906448	by hand: the paper's 33,426 cases of schizophrenia and 32,541 controls; they sum to its N
+PASS_SCZvsBD_Ruderfer2018	binary	23585	15270		PMID 29906448	by hand: the paper's 23,585 cases of schizophrenia, against 15,270 of bipolar disorder in the place of controls; they sum to its N
+PASS_ShortSleepDuration_Dashti2019	binary	106192	305742		GCST007559	the record of its source in the GWAS Catalog
+PASS_SleepDuration_Dashti2019	quantitative				GCST007561	the record of its source in the GWAS Catalog
+PASS_SmallVesselStroke_Malik2018	binary	5386	192662		GCST006909	by hand: its cases are those of its source (GCST006909); its controls, those that its N, the release's, leaves. The GWAS Catalog's record counts 343,560 controls, 150,898 more, as it does for the paper's other two subtypes
+PASS_SmokingCessation_Liu2019	binary					by hand: a yes-or-no trait: current against former smokers. Its cases are in no record read: the paper and the GWAS Catalog give the individuals of each analysis
+PASS_SmokingInitiation_Liu2019	binary					by hand: a yes-or-no trait: ever against never a regular smoker. Its cases are in no record read: the paper and the GWAS Catalog give the individuals of each analysis
+PASS_Stroke_Malik2018	binary	40585	406111		GCST006906	the record of its source in the GWAS Catalog
+PASS_UC_deLange2017	binary	12366	33609		GCST004133	the record of its paper with its N in the GWAS Catalog
+PASS_VerbalNumericReasoning_Davies2018	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_Worry_Nagel2018	quantitative				GCST006478	the record of its paper with its N in the GWAS Catalog
+UKB_460K.repro_NumberChildrenEverBorn_Pooled	quantitative				GCST90029020	the record of its paper with its N in the GWAS Catalog
+UKB_460K.cancer_ALL	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.repro_AgeFirstBirth_Female	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+UKB_460K.cancer_PROSTATE	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+UKB_460K.cancer_BREAST	binary					by hand: a yes-or-no trait by its name. Its cases are not public: the GWAS Catalog's records of the paper count individuals, and no other public record of them was found
+PASS_Autism_Grove2019	binary	18381	27969		GCST007554	the record of its paper with its N in the GWAS Catalog
+PASS_AnorexiaNervosa_Duncan2017	binary	3495	10982		GCST004367	the record of its paper with its N in the GWAS Catalog
+PASS_CoronaryArteryDisease_Howson2017	binary	88192	162544		PMID 28530674	by hand: the paper's 88,192 cases and 162,544 controls of all ancestries, 250,736 in all; the file's N is 247,399 at most
+PASS_Epilepsy_Anney2014	binary	8696	26157		GCST002547	by hand: the paper's 8,696 cases and 26,157 controls of all ancestries (GCST002547); they sum to the largest N of the file
+PASS_LeanBodyMass_Zillikens2017	quantitative				GCST005036	the record of its paper with its N in the GWAS Catalog
+PASS_Parkinsons23andMe_Corces2020	binary	6476	302042		PMID 33106633	by hand: the statistics of 23andMe that the paper used: 6,476 cases and 302,042 controls; they sum to its N
+PASS_AnorexiaNervosa_Watson2019	binary	16992	55525		GCST008465	the record of its paper with its N in the GWAS Catalog
+PASS_Alzheimers_deRojas2021	binary	78709	330726	yes	PMID 34099642	by hand: 6,331 and 30,344 cases of the paper's two case-control studies, and 27,696 mothers and 14,338 fathers with the disease among the parents of UK Biobank's 314,278 participants, proxies for cases. The rest of its N, 409,435, as controls
+PASS_MCPmale_Johnston2021	quantitative				GCST012333	the record of its paper with its N in the GWAS Catalog
+PASS_MCPfemale_Johnston2021	quantitative				GCST012334	the record of its paper with its N in the GWAS Catalog
+PASS_SA_Grasby2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_TH_Grasby2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_FA_Zhao2021	quantitative				PMID 34140357	by hand: a measurement of brain imaging
+PASS_MD_Zhao2021	quantitative				PMID 34140357	by hand: a measurement of brain imaging
+PASS_AD_Zhao2021	quantitative				PMID 34140357	by hand: a measurement of brain imaging
+PASS_RD_Zhao2021	quantitative				PMID 34140357	by hand: a measurement of brain imaging
+PASS_MO_Zhao2021	quantitative				PMID 34140357	by hand: a measurement of brain imaging
+PASS_AccumbensVol_Satizabal2019	quantitative				GCST009670	the record of its paper with its N in the GWAS Catalog
+PASS_AmygdalaVol_Satizabal2019	quantitative				GCST009664	the record of its paper with its N in the GWAS Catalog
+PASS_BrainstemVol_Satizabal2019	quantitative				GCST009697	the record of its paper with its N in the GWAS Catalog
+PASS_CaudateVol_Satizabal2019	quantitative				GCST009666	the record of its paper with its N in the GWAS Catalog
+PASS_PallidumVol_Satizabal2019	quantitative				GCST009664	the record of its paper with its N in the GWAS Catalog
+PASS_PutamenVol_Satizabal2019	quantitative				GCST009666	the record of its paper with its N in the GWAS Catalog
+PASS_ThalamusVol_Satizabal2019	quantitative				GCST009664	the record of its paper with its N in the GWAS Catalog
+PASS_Baso_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_BasoP_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_Eosino_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_EosinoP_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_HCT_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_HGB_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_HLR_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_HLRP_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_IRF_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_Lym_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_LymP_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_MCH_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_MCHC_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_MCV_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_Mono_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_MonoP_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_MPV_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_MRV_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_MSCV_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_Neutro_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_NeutroP_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_PCT_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_PDW_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_Plt_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_RBC_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_RDWCV_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_RTC_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_RTCP_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_WBC_Vuckovic2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_Glaucoma_Craig2020	binary	7947	119318		GCST009722	by hand: the cases and controls of glaucoma in the paper's analysis of several traits (GCST009722), 127,265 in all; its N, 351,696, counts the samples of the two measurements analysed with them
+PASS_FetalBirthWeight_Warrington2019	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_MaternalBirthWeight_Warrington2019	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_Myopia_Hysi2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_HipOA_Tachmazidou2019	binary	15704	378169		GCST007091	the record of its paper with its N in the GWAS Catalog
+PASS_KneeOA_Tachmazidou2019	binary	24955	378169		GCST007090	the record of its paper with its N in the GWAS Catalog
+PASS_HipKneeOA_Tachmazidou2019	binary	39427	378169		GCST007092	the record of its paper with its N in the GWAS Catalog
+PASS_OA_Tachmazidou2019	binary	77052	378169		GCST007093	the record of its paper with its N in the GWAS Catalog
+PASS_LiverVol_Liu2021	quantitative				GCST90016666	the record of its paper with its N in the GWAS Catalog
+PASS_SpleenVol_Liu2021	quantitative				GCST90016666	the record of its paper with its N in the GWAS Catalog
+PASS_LungVol_Liu2021	quantitative				GCST90016666	the record of its paper with its N in the GWAS Catalog
+PASS_PancreasVol_Liu2021	quantitative				GCST90016669	the record of its paper with its N in the GWAS Catalog
+PASS_KidneyVol_Liu2021	quantitative				GCST90016666	the record of its paper with its N in the GWAS Catalog
+PASS_ViscAdiposeVol_Liu2021	quantitative				GCST90016666	the record of its paper with its N in the GWAS Catalog
+PASS_SubAdiposeVol_Liu2021	quantitative				GCST90016666	the record of its paper with its N in the GWAS Catalog
+PASS_LiverFat_Liu2021	quantitative				GCST90016666	the record of its paper with its N in the GWAS Catalog
+PASS_LiverIron_Liu2021	quantitative				GCST90016666	the record of its paper with its N in the GWAS Catalog
+PASS_PancreasFat_Liu2021	quantitative				GCST90016675	the record of its paper with its N in the GWAS Catalog
+PASS_PancreasIron_Liu2021	quantitative				GCST90016675	the record of its paper with its N in the GWAS Catalog
+PASS_FEV1_Shrine2019	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_FVC_Shrine2019	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_FEV1FVC_Shrine2019	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_PEF_Shrine2019	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_Aging_Timmers2020	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_Baso_Kanai2018_EAS	quantitative				GCST005974	the record of its paper with its N in the GWAS Catalog
+PASS_BS_Kanai_EAS	quantitative				GCST006002	the record of its paper with its N in the GWAS Catalog
+PASS_DBP_Kanai2018_EAS	quantitative				GCST005978	the record of its paper with its N in the GWAS Catalog
+PASS_EGFR_Kanai2018_EAS	quantitative				GCST005984	the record of its paper with its N in the GWAS Catalog
+PASS_Eosino_Kanai2018_EAS	quantitative				GCST005974	the record of its paper with its N in the GWAS Catalog
+PASS_HbA1c_Kanai2018_EAS	quantitative				GCST005981	the record of its paper with its N in the GWAS Catalog
+PASS_Hb_Kanai2018_EAS	quantitative				GCST005983	the record of its paper with its N in the GWAS Catalog
+PASS_HDL_Kanai2018_EAS	quantitative				GCST006005	the record of its paper with its N in the GWAS Catalog
+PASS_Height_Kanai2018_EAS	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_Ht_Kanai2018_EAS	quantitative				GCST005983	the record of its paper with its N in the GWAS Catalog
+PASS_LDL_Kanai2018_EAS	quantitative				GCST006004	the record of its paper with its N in the GWAS Catalog
+PASS_Lym_Kanai2018_EAS	quantitative				GCST005974	the record of its paper with its N in the GWAS Catalog
+PASS_MCHC_Kanai2018_EAS	quantitative				GCST005983	the record of its paper with its N in the GWAS Catalog
+PASS_MCH_Kanai2018_EAS	quantitative				GCST005973	the record of its paper with its N in the GWAS Catalog
+PASS_MCV_Kanai2018_EAS	quantitative				GCST005983	the record of its paper with its N in the GWAS Catalog
+PASS_Mono_Kanai2018_EAS	quantitative				GCST005974	the record of its paper with its N in the GWAS Catalog
+PASS_Neutro_Kanai2018_EAS	quantitative				GCST005974	the record of its paper with its N in the GWAS Catalog
+PASS_Plt_Kanai2018_EAS	quantitative				GCST005983	the record of its paper with its N in the GWAS Catalog
+PASS_RBC_Kanai2018_EAS	quantitative				GCST005983	the record of its paper with its N in the GWAS Catalog
+PASS_SBP_Kanai2018_EAS	quantitative				GCST005978	the record of its paper with its N in the GWAS Catalog
+PASS_TC_Kanai_EAS	quantitative				GCST006034	the record of its paper with its N in the GWAS Catalog
+PASS_TG_Kanai2018_EAS	quantitative				GCST006003	the record of its paper with its N in the GWAS Catalog
+PASS_WBC_Kanai2018_EAS	quantitative				GCST005973	the record of its paper with its N in the GWAS Catalog
+PASS_AtrialFibrillation_Low2017_EAS	binary	8180	28612		GCST004373	the record of its paper with its N in the GWAS Catalog
+PASS_BMI_Akiyama2017_EAS	quantitative				GCST004904	the record of its paper with its N in the GWAS Catalog
+PASS_ColorectalCancer_Tanikawa_EAS	binary	6692	27178		GCST005591	the record of its paper with its N in the GWAS Catalog
+PASS_MDD_CONVERGE2015_EAS	binary	5303	5337		PMID 26176920	by hand: the paper's 5,303 cases and 5,337 controls; they sum to its N
+PASS_Menarche_Horikoshi2018_EAS	quantitative				GCST005867	the record of its paper with its N in the GWAS Catalog
+PASS_Menopause_Horikoshi2018_EAS	quantitative				GCST005863	the record of its paper with its N in the GWAS Catalog
+PASS_POAG_Shiga2018_EAS	binary	3980	18815		GCST005388	the record of its paper with its N in the GWAS Catalog
+PASS_RA_Okada2013_EAS	binary	4873	17642		GCST002318	the record of its paper with its N in the GWAS Catalog
+PASS_Schizophrenia_Lam2019_EAS	binary	22778	35362		GCST009336	the record of its paper with its N in the GWAS Catalog
+PASS_T2D_Suzuki_EAS	binary	36614	155150		GCST007847	the record of its paper with its N in the GWAS Catalog
+PASS_BIP_Mullins2021	binary	41917	371549		GCST012465	the record of its paper with its N in the GWAS Catalog
+GBMI_AbdominalAorticAneurysm	binary	8163	1256755		GCST90399672	by hand: the European sample of the Global Biobank Meta-analysis Initiative in the GWAS Catalog (GCST90399672); its cases and controls sum to the largest N of the file
+GBMI_AcuteAppendicitis	binary	31714	978508		GCST90399676	by hand: the European sample of the Global Biobank Meta-analysis Initiative in the GWAS Catalog (GCST90399676); its cases and controls sum to the largest N of the file
+GBMI_Asthma	binary	121940	1254131		GCST90399686	by hand: the European sample of the Global Biobank Meta-analysis Initiative in the GWAS Catalog (GCST90399686); its cases and controls sum to the largest N of the file
+GBMI_ChronicObstructivePulmonaryDisease	binary	58559	937358		GCST90399694	by hand: the European sample of the Global Biobank Meta-analysis Initiative in the GWAS Catalog (GCST90399694); its cases and controls sum to the largest N of the file
+GBMI_Gout	binary	24278	1027375		GCST90399701	by hand: the European sample of the Global Biobank Meta-analysis Initiative in the GWAS Catalog (GCST90399701); its cases and controls sum to the largest N of the file
+GBMI_HeartFailure	binary	52496	967945		GCST90399713	by hand: the European sample of the Global Biobank Meta-analysis Initiative in the GWAS Catalog (GCST90399713); its cases and controls sum to the largest N of the file
+GBMI_PrimaryApenAngleGlaucoma	binary	16355	1156550		GCST90399725	by hand: the European sample of the Global Biobank Meta-analysis Initiative in the GWAS Catalog (GCST90399725); its cases and controls sum to the largest N of the file
+GBMI_Stroke	binary	34503	1004879		GCST90399732	by hand: the European sample of the Global Biobank Meta-analysis Initiative in the GWAS Catalog (GCST90399732); its cases and controls sum to the largest N of the file
+GBMI_VenousThromboembolism	binary	25146	890722		GCST90399744	by hand: the European sample of the Global Biobank Meta-analysis Initiative in the GWAS Catalog (GCST90399744); its cases and controls sum to the largest N of the file
+PANUKBB_AgeAtMenopause	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_Albumin	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_AlkalinePhosphatase	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_AtrialFibrillationAndFlutter	binary	19233	384657		Pan-UK Biobank manifest	the one phenotype of its N in the Pan-UK Biobank's manifest: Atrial fibrillation and flutter
+PANUKBB_BasophilPercentage	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_BirthWeight	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_BloodClotDVTBronchitisEmphysemaAsthmaRhinitisEczemaAllergyDiagnosedByDoctor	binary	96547	323221		Pan-UK Biobank manifest	by hand: of the six answers with its N in the Pan-UK Biobank's manifest (field 6152), hay fever, allergic rhinitis or eczema: rg 1.01 with {UKB_460K.disease_ALLERGY_ECZEMA_DIAGNOSED}, 0.71 with {UKB_460K.disease_ASTHMA_DIAGNOSED}
+PANUKBB_BreastCancerFemale	binary	13257	205913		Pan-UK Biobank manifest	the one phenotype of its N in the Pan-UK Biobank's manifest: Breast cancer [female]
+PANUKBB_C44OtherMalignantNeoplasmsOfSkin	binary	14388	406143		Pan-UK Biobank manifest	by hand: ICD-10 C44 in the Pan-UK Biobank's manifest; many codes have its N
+PANUKBB_ChildhoodSunburnOccasions	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_DiastolicBloodPressureCombinedAutomatedManualReading	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_DiverticulosisAndDiverticulitis	binary	35617	330270		Pan-UK Biobank manifest	the one phenotype of its N in the Pan-UK Biobank's manifest: Diverticulosis
+PANUKBB_EosinophilCount	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_EverSmoked	binary	191673	227144		Pan-UK Biobank manifest	by hand: the Pan-UK Biobank's manifest has smoking status, ever against never, with its N, and the answers it is made of (field 20116): 148,481 previous and 43,192 current smokers, 227,144 who never smoked
+PANUKBB_FluidIntelligenceScore	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_GammaGlutamyltransferase	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_GlycatedhaemoglobinHbA1c	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_Haemoglobin	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_HairBaldingPattern	binary	61049	130385		Pan-UK Biobank manifest	by hand: pattern 1 of field 2395 in the Pan-UK Biobank's manifest, of the two patterns with its N: rg 1.01 with {UKB_460K.body_BALDING1}, -0.96 with {UKB_460K.body_BALDING4}
+PANUKBB_HairBaldingPattern2	binary	44177	147261		Pan-UK Biobank manifest	by hand: pattern 2 of field 2395 in the Pan-UK Biobank's manifest, by its name in the release; pattern 3 has the same N, with 51,122 cases
+PANUKBB_HandGripStrengthLeft	quantitative				Pan-UK Biobank manifest	by hand: hand grip strength (left), a measurement, in the Pan-UK Biobank's manifest; a code of hospital records has the same N
+PANUKBB_HeelBoneMineralDensity	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_HypothyroidismNOS	binary	18404	399034		Pan-UK Biobank manifest	the one phenotype of its N in the Pan-UK Biobank's manifest: Hypothyroidism
+PANUKBB_IGF1	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_ImpedanceOfArmRight	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_IndirectBilirubin	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_InguinalHernia	binary	18559	363863		Pan-UK Biobank manifest	the one phenotype of its N in the Pan-UK Biobank's manifest: Inguinal hernia
+PANUKBB_IntraOcularPressureGoldmannCorrelatedLeft	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_LDLDirectAdjustedByMedication	quantitative				Pan-UK Biobank manifest	by hand: its file holds the FEV1/FVC ratio, a measurement
+PANUKBB_LegFatPercentageRight	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_MeanArterialPressureAutomatedReadingAdjustedByMedication	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_MeanSpheredCellVolume	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_MenarcheAge	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_MonocytePercentage	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_MorningPerson	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_MouthTeethDentalProblems	binary					by hand: one of the seven answers to the Pan-UK Biobank's question on mouth and teeth (field 6149), each with its N; which one its file holds is not known, so neither are its cases
+PANUKBB_NeutrophilCount	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_OperationTonsillectomyAdenoids	binary	17168	403305		Pan-UK Biobank manifest	by hand: varicose vein surgery, which its file holds, in the Pan-UK Biobank's manifest (operation code 1479); every operation code has its N
+PANUKBB_OperativeProceduresOPCS4NormalDelivery	binary	7108	413423		Pan-UK Biobank manifest	by hand: OPCS-4 R24.9, all normal delivery, in the Pan-UK Biobank's manifest; many codes have its N
+PANUKBB_Phosphate	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_PlateletCount	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_ProstateCancer	binary	7691	169762		Pan-UK Biobank manifest	the one phenotype of its N in the Pan-UK Biobank's manifest: Cancer of prostate
+PANUKBB_PulsePressureAutomatedReadingAdjustedByMedication	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_PulsePressureCombinedAutomatedManualReading	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_PulseRateAutomatedReading	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_SphericalPowerRight	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_Testosterone	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_TotalBilirubin	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_Urate	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PANUKBB_VaricoseVeinSurgery	binary					by hand: an operation code of the Pan-UK Biobank, each with its N; which one its file holds is not known, so neither are its cases
+PANUKBB_VitaminD	quantitative				Pan-UK Biobank manifest	every phenotype of its N in the Pan-UK Biobank's manifest is a measurement
+PASS_AbdominalSubcutaneousAdiposeTissueVolume_Agrawal2022	quantitative				GCST90205200	the record of its paper with its N in the GWAS Catalog
+PASS_AcneVulgaris_TederLaving2023	binary	34422	364991		GCST90245818	the record of its paper with its N in the GWAS Catalog
+PASS_Alcoholuse_SanchezRoige2018	quantitative				GCST006717	the record of its paper with its N in the GWAS Catalog
+PASS_AllOsteoarthritis_Boer2021	binary	177517	649173		PMID 34450027	by hand: the paper's table of its analyses: 177,517 cases and 649,173 controls, 826,690 in all; the file's N is 830,743 at most
+PASS_AllergicRhinitis_Donertas2021	binary	27415	457183		GCST90038664	by hand: the record of its disease among the paper's in the GWAS Catalog (GCST90038664); its cases and controls sum to its N
+PASS_AlzheimersDisease_Wightman2021	binary	90338	1036225	yes	GCST90044699	the record of its paper with its N in the GWAS Catalog
+PASS_ADHD_Demontis2023	binary	38691	186843		GCST90269774	the record of its paper with its N in the GWAS Catalog
+PASS_BMI_Yengo2018	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_CHIP_Kessler2022	binary	25657	342869		GCST90165266	the record of its paper with its N in the GWAS Catalog
+PASS_CHIPDNMT3A_Kessler2022	binary	16219	342869		GCST90165270	the record of its paper with its N in the GWAS Catalog
+PASS_CancerEsophageal_Gharahkhani2016	binary	4112	17159		GCST003739	the record of its paper with its N in the GWAS Catalog
+PASS_CancerLung_McKay2017	binary	29266	56450		GCST004748	the record of its paper with its N in the GWAS Catalog
+PASS_CancerLungAdenocarcinoma_McKay2017	binary	11273	55483		GCST004744	the record of its paper with its N in the GWAS Catalog
+PASS_CannabisUseDisorder_Johnson2020	binary	17068	357219		GCST011179	by hand: the European samples of the paper (GCST011179), 374,287 in all; the file's N is 375,180 at most
+PASS_ChronicObstructivePulmonaryDisease_Consentino2023	quantitative				GCST90244098	the record of its paper with its N in the GWAS Catalog
+PASS_CoronaryArteryDisease_Aragam2022	binary	181522	984168		GCST90132314	by hand: the European analysis of the paper (GCST90132314): 181,522 cases and 984,168 controls, which the draft does not read for a comma in the GWAS Catalog's words
+PASS_Covid19Vaccination_Hartonen2023	binary	19338	254427		PMID 37081098	by hand: the paper's samples of FinnGen: 19,338 not vaccinated, the cases, and 254,427 vaccinated; they sum to its N. The GWAS Catalog's record (GCST90255613) adds those of the Estonian Biobank
+PASS_Depression_Mallard2022	quantitative				PMID 35812988	by hand: a score of symptoms in UK Biobank; the paper's N is 252,252, the release's 252,525
+PASS_Endometriosis_Rahmioglu2023	binary	23492	450668		GCST90205183	by hand: the paper's analysis without 23andMe (GCST90205183): 21,779 European and 1,713 Japanese cases, 449,087 and 1,581 controls, 474,160 in all; the release's N is 477,454
+PASS_Epillepsy_Berkovic2022	binary	27559	42436		GCST90271608	the record of its paper with its N in the GWAS Catalog
+PASS_F1mooddisturbance_Mallard2022	quantitative				PMID 35812988	by hand: a factor common to several disorders and symptoms; its N is the effective N that the paper gives
+PASS_F2seriousmentalillness_Mallard2022	quantitative				PMID 35812988	by hand: a factor common to several disorders and symptoms; its N is the effective N that the paper gives
+PASS_ForcedExpiratoryVolumeInOneSecond_Shrine2023	quantitative				GCST90292609	the record of its source in the GWAS Catalog
+PASS_ForcedExpiratoryVolumeInOneSecondForcedVitalCapacityRatio_Shrine2023	quantitative				GCST90292611	the record of its source in the GWAS Catalog
+PASS_ForcedVitalCapacity_Shrine2023	quantitative				GCST90292610	the record of its source in the GWAS Catalog
+PASS_GastroesophagalRefluxDisease_Donertas2021	binary	20381	464217		GCST90038624	by hand: the record of its disease among the paper's in the GWAS Catalog (GCST90038624); its cases and controls sum to its N
+PASS_GastrointestinalDisease_Donertas2021	binary	77978	406620		GCST90038597	by hand: the record of its disease among the paper's in the GWAS Catalog (GCST90038597); its cases and controls sum to its N
+PASS_GeneticGeneralizedEpilepsy_Berkovic2022	binary	6952	42436		GCST90271609	the record of its paper with its N in the GWAS Catalog
+PASS_GluteofemoralAdiposeTissueVolume_Agrawal2022	quantitative				GCST90205200	the record of its paper with its N in the GWAS Catalog
+PASS_Gout_Donertas2021	binary	6810	477788		GCST90038687	by hand: the record of its disease among the paper's in the GWAS Catalog (GCST90038687); its cases and controls sum to its N
+PASS_HeartFailure_Shah2020	binary	47309	930014		GCST009541	by hand: the paper's meta-analysis (GCST009541), 977,323 in all; the file's N is 964,057 at most
+PASS_Height_Yengo2022	quantitative				GCST90245992	the record of its paper with its N in the GWAS Catalog
+PASS_HipOsteoarthritis_Boer2021	binary	36445	316943		PMID 34450027	by hand: the paper's table of its analyses: 36,445 cases and 316,943 controls, 353,388 in all; the file's N is 354,161 at most
+PASS_Insomnia_Watanabe2022	binary					by hand: which of the paper's analyses its file holds is not known: its N, 608,595, is that of none of the paper's samples in the GWAS Catalog (1,216,033 to 2,365,010), so its cases are not known
+PASS_JuvenileMyoclonicEpilepsy_Berkovic2022	binary	1732	42436		GCST90271614	by hand: the paper's European samples of juvenile myoclonic epilepsy (GCST90271614), 44,168 in all; the release's N, 39,067, is 0.88 of them
+PASS_KneeAndOrHipOsteoarthritis_Boer2021	binary	89741	400604		PMID 34450027	by hand: the paper's table of its analyses: 89,741 cases and 400,604 controls, 490,345 in all; the file's N is 493,832 at most
+PASS_KneeOsteoarthritis_Boer2021	binary	62497	333557		PMID 34450027	by hand: the paper's table of its analyses: 62,497 cases and 333,557 controls, 396,054 in all; the file's N is 399,321 at most
+PASS_Mania_Mallard2022	quantitative				PMID 35812988	by hand: a score of symptoms in UK Biobank; the paper's N is 252,252, the release's 252,525
+PASS_MetabolicSyndrome_VanWalree2022	quantitative				PMID 35983957	by hand: a factor common to five measurements, by the paper's abstract
+PASS_MultipleSclerosis_IMSGC2019	binary	14802	26703		GCST009597	the record of its paper with its N in the GWAS Catalog
+PASS_Parkinson_Nalls2019	binary	33674	449056	yes	GCST009325	the record of its paper with its N in the GWAS Catalog
+PASS_PeakExpiratoryFlow_Shrine2023	quantitative				GCST90292612	the record of its source in the GWAS Catalog
+PASS_PhysicalActivity_Wang2022	binary					by hand: a yes-or-no trait: the paper analysed moderate-to-vigorous activity as a dichotomous outcome. Its cases are in no record read: the GWAS Catalog's record (GCST90104341) counts 608,595 individuals, the largest N of the file
+PASS_Psychosis_Mallard2022	quantitative				PMID 35812988	by hand: a score of symptoms in UK Biobank; the paper's N is 252,252, the release's 252,525
+PASS_RheumatoidArthritis_Ishigaki2022	binary	22350	74823		GCST90132222	the record of its paper with its N in the GWAS Catalog
+PASS_RheumatoidArthritis_Saevarsdottir2022	binary	31313	995377		GCST90131437	the record of its paper with its N in the GWAS Catalog
+PASS_Schizophrenia_Trubetskoy2022	binary	53386	77258		GCST90128471	the record of its paper with its N in the GWAS Catalog
+PASS_Snoring_Campos2020	binary	152302	256015		GCST009760	the record of its paper with its N in the GWAS Catalog
+PASS_SpineOsteoarthritis_Boer2021	binary	28372	305578		PMID 34450027	by hand: the paper's table of its analyses: 28,372 cases and 305,578 controls, 333,950 in all; the file's N is 336,532 at most
+PASS_StructuralConnectivityGlobal_Tissink2023	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_StructuralConnectivitySomatomotor_Tissink2023	quantitative					the GWAS Catalog counts individuals, not cases, in every record of its paper
+PASS_TelomereLength_Codd2021	quantitative				PMID 34611362	by hand: a measurement
+PASS_ThumbOsteoarthritis_Boer2021	binary	10536	236919		GCST90034529	the record of its paper with its N in the GWAS Catalog
+PASS_TotalHipReplacement_Boer2021	binary	23021	296016		PMID 34450027	by hand: the paper's table of its analyses: 23,021 cases and 296,016 controls, 319,037 in all; the file's N is 319,086 at most
+PASS_TotalJointReplacement_Boer2021	binary	40887	327689		GCST90034526	the record of its paper with its N in the GWAS Catalog
+PASS_TotalKneeReplacement_Boer2021	binary	18200	233841		GCST90034525	the record of its paper with its N in the GWAS Catalog
+PASS_TouretteSyndrome_Yu2019	binary	4819	9488		GCST007277	the record of its paper with its N in the GWAS Catalog
+PASS_Type1Diabetes_Chiou2021	binary	18942	501638		GCST90014023	the record of its paper with its N in the GWAS Catalog
+PASS_Type2Diabetes_Xue2018	binary	62892	596424		PMID 30054458	by hand: the paper's 62,892 cases and 596,424 controls, 659,316 in all; the file's N is 605,056 at most, 0.92 of them
+PASS_VaricoseVeins_Ahmed2022	binary	22473	379183		PMID 35654884	by hand: the paper's 22,473 cases and 379,183 controls of UK Biobank; they sum to its N
+PASS_VisceralAdiposeTissueVolume_Agrawal2022	quantitative				GCST90205200	the record of its paper with its N in the GWAS Catalog
+GCST90244167	binary	23394	105724		GCST90244167	its record in the GWAS Catalog
+GCST90244168	binary	15588	105724		GCST90244168	its record in the GWAS Catalog
+GCST90244169	binary	2749	105724		GCST90244169	its record in the GWAS Catalog
+GCST90244170	binary	2877	105724		GCST90244170	its record in the GWAS Catalog
+GCST90244171	binary	1427	105724		GCST90244171	its record in the GWAS Catalog
+GCST90244172	binary	2587	105724		GCST90244172	its record in the GWAS Catalog
+GCST90448187	binary	11358	1106871		GCST90448187	its record in the GWAS Catalog
+GCST90705067	quantitative				GCST90705067	its record in the GWAS Catalog
+GCST90705068	quantitative				GCST90705068	its record in the GWAS Catalog
+GCST90705069	quantitative				GCST90705069	its record in the GWAS Catalog
+GCST90651070	quantitative				GCST90651070	its record in the GWAS Catalog
+GCST90651071	quantitative				GCST90651071	its record in the GWAS Catalog
+GCST90651072	quantitative				GCST90651072	its record in the GWAS Catalog
+GCST90651073	quantitative				GCST90651073	its record in the GWAS Catalog
+GCST90651074	binary	45352	1938877		GCST90651074	its record in the GWAS Catalog
+GCST90651075	quantitative				GCST90651075	its record in the GWAS Catalog
+GCST90651076	quantitative				GCST90651076	its record in the GWAS Catalog
+GCST90651077	quantitative				GCST90651077	its record in the GWAS Catalog
+GCST90295949	quantitative				GCST90295949	its record in the GWAS Catalog
+GCST90295950	quantitative				GCST90295950	its record in the GWAS Catalog
+GCST90295951	quantitative				GCST90295951	its record in the GWAS Catalog
+GCST90726344	binary	151582	362873		GCST90726344	its record in the GWAS Catalog
+GCST90726345	binary	46708	106824		GCST90726345	its record in the GWAS Catalog
+GCST90726346	binary	37168	121420		GCST90726346	its record in the GWAS Catalog
+GCST90448693	binary	15046	38161		GCST90448693	its record in the GWAS Catalog
+GCST90448695	binary	74662	240661		GCST90448695	its record in the GWAS Catalog
+GCST90448696	binary	3860	70802		GCST90448696	its record in the GWAS Catalog
+GCST90432156	binary	5708	432028		GCST90432156	its record in the GWAS Catalog
+GCST90319905	quantitative				GCST90319905	its record in the GWAS Catalog
+GCST90319906	quantitative				GCST90319906	its record in the GWAS Catalog
+GCST90668009	binary	16251	197577		GCST90668009	its record in the GWAS Catalog
+GCST90668010	binary	4254	197577		GCST90668010	its record in the GWAS Catalog
+GCST90668011	binary	7154	197577		GCST90668011	its record in the GWAS Catalog
+GCST90668012	binary	11122	171995		GCST90668012	its record in the GWAS Catalog
+GCST90668013	binary	95524	1270968		GCST90668013	its record in the GWAS Catalog
+GCST90668016	binary	11742	691259		GCST90668016	its record in the GWAS Catalog
+GCST90566419	binary	12024	67845		GCST90566419	its record in the GWAS Catalog
+GCST90566420	quantitative				GCST90566420	its record in the GWAS Catalog
+GCST90566421	quantitative				GCST90566421	its record in the GWAS Catalog
+GCST90566422	quantitative				GCST90566422	its record in the GWAS Catalog
+GCST90566423	quantitative				GCST90566423	its record in the GWAS Catalog
+GCST90566424	quantitative				GCST90566424	its record in the GWAS Catalog
+GCST90705000	binary	128985	563054		GCST90705000	its record in the GWAS Catalog
+GCST90705001	binary	51494	253699		GCST90705001	its record in the GWAS Catalog
+GCST90705002	binary	77491	309355		GCST90705002	its record in the GWAS Catalog
+GCST90705003	binary	32474	563054		GCST90705003	its record in the GWAS Catalog
+GCST90705004	binary	11694	253699		GCST90705004	its record in the GWAS Catalog
+GCST90705005	binary	20780	309355		GCST90705005	its record in the GWAS Catalog
+GCST90705006	binary	32412	563054		GCST90705006	its record in the GWAS Catalog
+GCST90705007	binary	11427	253699		GCST90705007	its record in the GWAS Catalog
+GCST90705008	binary	20985	309355		GCST90705008	its record in the GWAS Catalog
+GCST90705009	binary	71837	563054		GCST90705009	its record in the GWAS Catalog
+GCST90705010	binary	29771	253699		GCST90705010	its record in the GWAS Catalog
+GCST90705011	binary	42066	309355		GCST90705011	its record in the GWAS Catalog
+GCST90705012	binary	31944	563054		GCST90705012	its record in the GWAS Catalog
+GCST90705013	binary	13766	253699		GCST90705013	its record in the GWAS Catalog
+GCST90705014	binary	18178	309355		GCST90705014	its record in the GWAS Catalog
+GCST90705015	binary	31915	57085		GCST90705015	its record in the GWAS Catalog
+GCST90705017	binary	18162	35388		GCST90705017	its record in the GWAS Catalog
+GCST90705018	binary	31915	23682		GCST90705018	its record in the GWAS Catalog
+GCST90705021	binary	32432	33074		GCST90705021	its record in the GWAS Catalog
+GCST90705024	binary	32432	96427		GCST90705024	its record in the GWAS Catalog
+GCST90705025	binary	11676	39764		GCST90705025	its record in the GWAS Catalog
+GCST90705026	binary	20756	56663		GCST90705026	its record in the GWAS Catalog
+GCST90705027	binary	32382	32259		GCST90705027	its record in the GWAS Catalog
+GCST90705030	binary	32382	96477		GCST90705030	its record in the GWAS Catalog
+GCST90705031	binary	11415	40025		GCST90705031	its record in the GWAS Catalog
+GCST90705032	binary	20967	56452		GCST90705032	its record in the GWAS Catalog
+GCST90446758	quantitative				GCST90446758	its record in the GWAS Catalog
+GCST90446759	quantitative				GCST90446759	its record in the GWAS Catalog
+GCST90446760	quantitative				GCST90446760	its record in the GWAS Catalog
+GCST90446761	quantitative				GCST90446761	its record in the GWAS Catalog
+GCST90446762	quantitative				GCST90446762	its record in the GWAS Catalog
+GCST90446763	quantitative				GCST90446763	its record in the GWAS Catalog
+GCST90446764	quantitative				GCST90446764	its record in the GWAS Catalog
+GCST90446765	quantitative				GCST90446765	its record in the GWAS Catalog
+GCST90446766	quantitative				GCST90446766	its record in the GWAS Catalog
+GCST90446767	quantitative				GCST90446767	its record in the GWAS Catalog
+GCST90446768	quantitative				GCST90446768	its record in the GWAS Catalog
+GCST90446769	quantitative				GCST90446769	its record in the GWAS Catalog
+GCST90446770	quantitative				GCST90446770	its record in the GWAS Catalog
+GCST90446771	quantitative				GCST90446771	its record in the GWAS Catalog
+GCST90446772	quantitative				GCST90446772	its record in the GWAS Catalog
+GCST90446773	quantitative				GCST90446773	its record in the GWAS Catalog
+GCST90446774	quantitative				GCST90446774	its record in the GWAS Catalog
+GCST90503313	quantitative				GCST90503313	its record in the GWAS Catalog
+GCST90503316	binary					by hand: a yes-or-no trait: a diagnosis, of about a quarter of the men by the paper. Its cases are in no record read: its record in the GWAS Catalog counts 102,635 men
+GCST90335162	quantitative				GCST90335162	its record in the GWAS Catalog
+GCST90335163	quantitative				GCST90335163	its record in the GWAS Catalog
+GCST90335164	quantitative				GCST90335164	its record in the GWAS Catalog
+GCST90335165	quantitative				GCST90335165	its record in the GWAS Catalog
+GCST90335166	quantitative				GCST90335166	its record in the GWAS Catalog
+GCST90335167	quantitative				GCST90335167	its record in the GWAS Catalog
+GCST90335168	quantitative				GCST90335168	its record in the GWAS Catalog
+GCST90335169	quantitative				GCST90335169	its record in the GWAS Catalog
+GCST90448960	binary	71	198973		GCST90448960	its record in the GWAS Catalog
+GCST90652529	binary	88965	685602		GCST90652529	its record in the GWAS Catalog
+GCST90652530	binary	71481	685602		GCST90652530	its record in the GWAS Catalog
+GCST90652531	binary	9626	685602		GCST90652531	its record in the GWAS Catalog
+GCST90652532	binary	15448	685602		GCST90652532	its record in the GWAS Catalog
+GCST90652548	quantitative				GCST90652548	its record in the GWAS Catalog
+GCST90652549	quantitative				GCST90652549	its record in the GWAS Catalog
+GCST90652551	quantitative				GCST90652551	its record in the GWAS Catalog
+GCST90652552	quantitative				GCST90652552	its record in the GWAS Catalog
+GCST90652553	quantitative				GCST90652553	its record in the GWAS Catalog
+GCST90652554	quantitative				GCST90652554	its record in the GWAS Catalog
+GCST90652555	quantitative				GCST90652555	its record in the GWAS Catalog
+GCST90652556	quantitative				GCST90652556	its record in the GWAS Catalog
+GCST90652557	quantitative				GCST90652557	its record in the GWAS Catalog
+GCST90652558	quantitative				GCST90652558	its record in the GWAS Catalog
+GCST90652559	quantitative				GCST90652559	its record in the GWAS Catalog
+GCST90296666	binary	25355	592376		GCST90296666	its record in the GWAS Catalog
+GCST90310293	binary	14819	941863		GCST90310293	its record in the GWAS Catalog
+GCST90429765	quantitative				GCST90429765	its record in the GWAS Catalog
+GCST90429766	quantitative				GCST90429766	its record in the GWAS Catalog
+GCST90429767	quantitative				GCST90429767	its record in the GWAS Catalog
+GCST90429768	quantitative				GCST90429768	its record in the GWAS Catalog
+GCST90429769	quantitative				GCST90429769	its record in the GWAS Catalog
+GCST90429770	quantitative				GCST90429770	its record in the GWAS Catalog
+GCST90429771	quantitative				GCST90429771	its record in the GWAS Catalog
+GCST90429772	quantitative				GCST90429772	its record in the GWAS Catalog
+GCST90429773	quantitative				GCST90429773	its record in the GWAS Catalog
+GCST90429774	quantitative				GCST90429774	its record in the GWAS Catalog
+GCST90429775	quantitative				GCST90429775	its record in the GWAS Catalog
+GCST90429776	quantitative				GCST90429776	its record in the GWAS Catalog
+GCST90429777	quantitative				GCST90429777	its record in the GWAS Catalog
+GCST90429778	quantitative				GCST90429778	its record in the GWAS Catalog
+GCST90429779	quantitative				GCST90429779	its record in the GWAS Catalog
+GCST90429780	quantitative				GCST90429780	its record in the GWAS Catalog
+GCST90429781	quantitative				GCST90429781	its record in the GWAS Catalog
+GCST90429782	quantitative				GCST90429782	its record in the GWAS Catalog
+GCST90429783	quantitative				GCST90429783	its record in the GWAS Catalog
+GCST90429784	quantitative				GCST90429784	its record in the GWAS Catalog
+GCST90429785	quantitative				GCST90429785	its record in the GWAS Catalog
+GCST90429786	quantitative				GCST90429786	its record in the GWAS Catalog
+GCST90429787	quantitative				GCST90429787	its record in the GWAS Catalog
+GCST90429788	quantitative				GCST90429788	its record in the GWAS Catalog
+GCST90429789	quantitative				GCST90429789	its record in the GWAS Catalog
+GCST90429790	quantitative				GCST90429790	its record in the GWAS Catalog
+GCST90429791	quantitative				GCST90429791	its record in the GWAS Catalog
+GCST90429792	quantitative				GCST90429792	its record in the GWAS Catalog
+GCST90429793	quantitative				GCST90429793	its record in the GWAS Catalog
+GCST90429794	quantitative				GCST90429794	its record in the GWAS Catalog
+GCST90503483	binary	7554	1367006		GCST90503483	its record in the GWAS Catalog
+GCST90558258	binary	795	371939		GCST90558258	its record in the GWAS Catalog
+GCST90435144	quantitative				GCST90435144	its record in the GWAS Catalog
+GCST90435145	quantitative				GCST90435145	its record in the GWAS Catalog
+GCST90624053	binary	77431	754803		GCST90624053	its record in the GWAS Catalog
+GCST90319877	binary	15225	1564786		GCST90319877	its record in the GWAS Catalog
+GCST90728695	binary	139533	1568809		GCST90728695	its record in the GWAS Catalog
+GCST90728696	binary	42081	1267892		GCST90728696	its record in the GWAS Catalog
+GCST90728697	binary	3590	752599		GCST90728697	its record in the GWAS Catalog
+GCST90728698	binary	4975	935830		GCST90728698	its record in the GWAS Catalog
+GCST90310294	quantitative				GCST90310294	its record in the GWAS Catalog
+GCST90310295	quantitative				GCST90310295	its record in the GWAS Catalog
+GCST90310296	quantitative				GCST90310296	its record in the GWAS Catalog
+GCST90428446	quantitative				GCST90428446	its record in the GWAS Catalog
+GCST90428447	quantitative				GCST90428447	its record in the GWAS Catalog
+GCST90428448	quantitative				GCST90428448	its record in the GWAS Catalog
+GCST90428600	binary	27194	614881		GCST90428600	its record in the GWAS Catalog
+GCST90428601	binary	22784	279647		GCST90428601	its record in the GWAS Catalog
+GCST90428602	binary	4410	335234		GCST90428602	its record in the GWAS Catalog
+GCST90444487	quantitative				GCST90444487	its record in the GWAS Catalog
+GCST90444488	quantitative				GCST90444488	its record in the GWAS Catalog
+GCST90320057	binary	25890	743585		GCST90320057	its record in the GWAS Catalog
+GCST90320058	binary	16321	743479		PMID 38671320	by hand: the paper's cases and controls of all ancestries, 759,800 in all, of whom 752,817, its N, are European (GCST90320058 counts individuals): the European cases are a little fewer
+GCST90320059	binary	2193	740816		PMID 38671320	by hand: the paper's cases and controls of all ancestries, 743,009 in all; its N, the Europeans', is 738,319 (GCST90320059 counts individuals): the European cases are a little fewer
+GCST90320065	binary	621	86796		GCST90320065	its record in the GWAS Catalog
+GCST90572789	quantitative				GCST90572789	its record in the GWAS Catalog
+GCST90572790	quantitative				GCST90572790	its record in the GWAS Catalog
+GCST90572791	binary	113393	1065268		GCST90572791	its record in the GWAS Catalog
+GCST90483463	binary	40024	665658		GCST90483463	its record in the GWAS Catalog
+GCST90483464	binary	7684	667460		GCST90483464	its record in the GWAS Catalog
+GCST90483465	binary	6271	783723		GCST90483465	its record in the GWAS Catalog
+GCST90483466	binary	23358	681351		GCST90483466	its record in the GWAS Catalog
+GCST90483467	binary	10864	694441		GCST90483467	its record in the GWAS Catalog
+GCST90483468	binary	7479	432508		GCST90483468	its record in the GWAS Catalog
+GCST90483475	quantitative				GCST90483475	its record in the GWAS Catalog
+GCST90483477	quantitative				GCST90483477	its record in the GWAS Catalog
+GCST90483481	quantitative				GCST90483481	its record in the GWAS Catalog
+GCST90483483	quantitative				GCST90483483	its record in the GWAS Catalog
+GCST90483486	quantitative				GCST90483486	its record in the GWAS Catalog
+GCST90483487	quantitative				GCST90483487	its record in the GWAS Catalog
+GCST90483488	quantitative				GCST90483488	its record in the GWAS Catalog
+GCST90483500	binary	14467	430267		GCST90483500	its record in the GWAS Catalog
+GCST90483501	binary	31309	318510		GCST90483501	its record in the GWAS Catalog
+GCST90483502	binary	42446	588955		GCST90483502	its record in the GWAS Catalog
+GCST90568440	quantitative				GCST90568440	its record in the GWAS Catalog
+GCST90568441	quantitative				GCST90568441	its record in the GWAS Catalog
+GCST90301695	quantitative				GCST90301695	its record in the GWAS Catalog
+GCST90301696	quantitative				GCST90301696	its record in the GWAS Catalog
+GCST90301697	quantitative				GCST90301697	its record in the GWAS Catalog
+GCST90301698	quantitative				GCST90301698	its record in the GWAS Catalog
+GCST90301699	quantitative				GCST90301699	its record in the GWAS Catalog
+GCST90301700	quantitative				GCST90301700	its record in the GWAS Catalog
+GCST90301701	quantitative				GCST90301701	its record in the GWAS Catalog
+GCST90301702	quantitative				GCST90301702	its record in the GWAS Catalog
+GCST90301703	quantitative				GCST90301703	its record in the GWAS Catalog
+GCST90301704	binary	1728	192399		GCST90301704	its record in the GWAS Catalog
+GCST90335174	quantitative				GCST90335174	its record in the GWAS Catalog
+GCST90335175	quantitative				GCST90335175	its record in the GWAS Catalog
+GCST90335176	quantitative				GCST90335176	its record in the GWAS Catalog
+GCST90501670	quantitative				GCST90501670	its record in the GWAS Catalog
+GCST90501671	quantitative				GCST90501671	its record in the GWAS Catalog
+GCST90501672	quantitative				GCST90501672	its record in the GWAS Catalog

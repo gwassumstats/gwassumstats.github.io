@@ -1,0 +1,38 @@
+trait	anc	prevalence	source	quote
+# The population prevalence of a binary trait in an ancestry, as a paper of the collection states it (`quote`, its
+# words; `source`, the paper): build/liability.py turns h² to the liability scale with it. One row a trait and ancestry;
+# where papers differ, the latest that states one value. A paper that takes its sample's share of cases for the
+# prevalence (Wang et al. 2023, the GBMI's, PMID 36777179) states none. Drafted by a script that found each quote in
+# its paper's full text (PubMed Central), then by hand.
+Rheumatoid arthritis	EUR	0.005	PMID 24390342	assuming disease prevalence of 0.5%
+Rheumatoid arthritis	EAS	0.005	PMID 24390342	assuming disease prevalence of 0.5%
+Schizophrenia	EUR	0.01	PMID 29483656	using a population prevalence of 1% (registry-based lifetime prevalence
+Schizophrenia	EAS	0.01	PMID 31740837	assuming the schizophrenia population prevalence at 1%
+Type 2 diabetes	EUR	0.1	PMID 30054458	We used 10% as the population prevalence
+Type 1 diabetes	EUR	0.0033	PMID 21980299	a disease prevalence of 0.0033
+Celiac disease	EUR	0.01	PMID 20190752	assuming a population prevalence of 1%
+Attention deficit hyperactivity disorder	EUR	0.05	PMID 36702997	using a population prevalence of 5%
+Alzheimer's disease	EUR	0.05	PMID 34493870	using the LOAD population prevalence of 0.05
+Bipolar disorder	EUR	0.02	PMID 34002096	assuming a BD population prevalence of 2%
+Major depressive disorder	EUR	0.16	PMID 41233554	we used a lifetime estimate of diagnosed MDD of 16%
+Major depressive disorder	EAS	0.036	PMID 26176920	life-time prevalence rate for MDD in China of 3.6%
+Early onset major depressive disorder	EUR	0.062	PMID 41233554	a population estimate of 6.2% for eoMDD and 3.2% for loMDD
+Late onset major depressive disorder	EUR	0.032	PMID 41233554	a population estimate of 6.2% for eoMDD and 3.2% for loMDD
+Autism spectrum disorder	EUR	0.0122	PMID 30804558	we used a population prevalence for Denmark of 1.22%
+Anorexia	EUR	0.01	PMID 28494655	It has a lifetime prevalence of approximately 1%
+Epilepsy	EUR	0.005	PMID 25087078	we assumed a point prevalence of 0.5% for all epilepsy, 0.2% for genetic generalised epilepsy
+Genetic generalized epilepsy	EUR	0.002	PMID 25087078	we assumed a point prevalence of 0.5% for all epilepsy, 0.2% for genetic generalised epilepsy
+Cannabis use disorder	EUR	0.085	PMID 33096046	on the liability scale (estimated population prevalence 8.5%)
+Endometriosis	EUR	0.08	PMID 36914876	We assumed population prevalence of 8%, 2.5%, 5.5% and 2.5% for overall endometriosis
+Parkinson's disease	EUR	0.005	PMID 31701892	assuming a global prevalence of 0.5%
+Tourette syndrome	EUR	0.008	PMID 30818990	assuming a population prevalence of 0.8%
+Acne vulgaris	EUR	0.3	PMID 36922633	assuming a 30% population prevalence of acne
+Heart failure	EUR	0.024	PMID 41184235	The all-cause HF population prevalence was set at 2.4% for EUR
+Heart failure	EAS	0.065	PMID 41184235	The all-cause HF population prevalence was set at 6.5%
+Heart failure with reduced ejection fraction	EAS	0.024	PMID 41184235	we assumed population prevalence was 2.4% for HFrEF, 2.9% for HFpEF, and 1.7% for NIHF
+Heart failure with preserved ejection fraction	EAS	0.029	PMID 41184235	we assumed population prevalence was 2.4% for HFrEF, 2.9% for HFpEF, and 1.7% for NIHF
+Non-ischemic heart failure	EAS	0.017	PMID 41184235	we assumed population prevalence was 2.4% for HFrEF, 2.9% for HFpEF, and 1.7% for NIHF
+Non-ischemic heart failure	EUR	0.012	PMID 41184235	and NIHF was set at 1.2%, half of all-cause HF
+Sarcoidosis	EUR	0.001	PMID 40075078	Assuming a lifetime prevalence of 0.1%
+Cirrhosis	EUR	0.005	PMID 38632349	assuming a population prevalence of 0.5%
+Kidney cancer	EUR	0.0166	PMID 38671320	Analyses assumed a disease prevalence of 1.66%

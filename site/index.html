@@ -36,6 +36,7 @@
       <input id="q" type="search" placeholder="name, ID, trait or reference" aria-label="Search the studies" autocomplete="off" spellcheck="false">
       <select id="f-anc" aria-label="Ancestry"><option value="">all ancestries</option></select>
       <select id="f-qc" aria-label="Quality checks"><option value="">any QC</option><option>pass</option><option>warn</option><option>fail</option><option>corrected</option></select>
+      <select id="f-ukb" aria-label="UK Biobank"><option value="">UKB: any</option><option value="yes">with UKB</option><option value="no">without UKB</option><option value="unknown">UKB unknown</option></select>
       <label title="Heritability z-score above 6"><input id="f-z6" type="checkbox"> h² z &gt; 6</label>
       <label title="Signed sumstats: used for genetic correlation"><input id="f-signed" type="checkbox"> signed</label>
       <label title="In the nonredundant panel of its ancestry"><input id="f-panel" type="checkbox"> nonredundant</label>
@@ -202,6 +203,19 @@
       gives them with the record they are from: the GWAS Catalog's record of the study or of its paper, the paper itself, or the Pan-UK Biobank's manifest. Of the
       <span data-v="binary.studies">244</span> binary studies, <span data-v="binary.counted">207</span> have them. The others have no effective N: the cases of the UK Biobank studies of
       Loh et al. 2018 are not public, and a few records count individuals only. A quantitative study's effective N is its N.</p>
+
+    <h2>What is h² on the liability scale?</h2>
+    <p>LDSC estimates h² on the observed scale, which depends on a sample's share of cases. On the liability scale it does not: h² is converted with the trait's population prevalence
+      (Lee et al. 2011 AJHG) and the sample's share of cases. The prevalence is one per trait and ancestry, as a paper of the collection states it; a study's page quotes it. Of the
+      <span data-v="binary.studies">244</span> binary studies, <span data-v="binary.liability">54</span> have one. The others have none: no paper of the collection states a prevalence of
+      their trait, or their cases are not known, or, for <span data-v="binary.proxy">5</span> studies, some of their cases are proxy cases, relatives of a case. The GBMI's paper (Wang et al.
+      2023) converts with each sample's share of cases, which is not a population prevalence: it is not used. Where the cohorts of a meta-analysis differ in their share of cases, the
+      conversion with that of the whole sample is approximate.</p>
+
+    <h2>Which studies include UK Biobank?</h2>
+    <p>Of the <span data-v="all.studies">602</span> studies, <span data-v="ukb.yes">461</span> include participants of UK Biobank, <span data-v="ukb.no">131</span> do not, and of <span data-v="ukb.unknown">10</span> it is not
+      known. A study's page says how it is known: its ID, for a study of UK Biobank alone; the cohorts of its record in the GWAS Catalog; a paper published before UK Biobank first released
+      genotypes, in May 2015; or its paper, read by a person. A filter lists the studies with or without UK Biobank, for analyses that need samples apart from it.</p>
 
     <h2>What is in a file?</h2>
     <p>One row per SNP, tab-separated, in the <code>.sumstats</code> format of LDSC. Only HapMap3 SNPs.</p>

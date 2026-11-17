@@ -7,7 +7,8 @@ ever written to the repository. The build writes, in site/data/:
 
   studies.json         the inventory with h², each study's short name, the paper it cites,
                        what the quality checks say of it, its cases and controls, and
-                       whether it is the study to use of its trait; the release's counts  public
+                       whether it is the study to use of its trait; whether its sample
+                       includes UK Biobank; the release's counts                         public
   papers.json          every paper cited: authors, title, journal, DOI, BibTeX entry     public
   candidates.json      the candidates for the next release, and the rule's backtest      public
   rg_{ancestry}.json   every genetic correlation of an ancestry                          public
@@ -36,7 +37,7 @@ from cryptography.exceptions import InvalidTag
 
 import pandas as pd
 
-from build import crypt, merge, overlay, recommend, release as rel
+from build import crypt, liability, merge, overlay, recommend, release as rel
 
 SITE_DATA = Path(__file__).parents[1] / "site" / "data"
 BLOB = "paths.enc.json"
@@ -87,16 +88,23 @@ def build(release: Path, out: Path, passphrase: str, iterations: int = crypt.ITE
     recommended, superseded = recommend.chosen(pd.DataFrame({"of": of, "anc": d["anc"], "qc": judged["qc"], "n": d["n"], "neff": sized["neff"], "h2_z": d["h2_z"], "name": name, "published": published}))
     binary = sized["kind"] == "binary"  # a quantitative study's effective N is its N: only a binary study's cases, controls and effective N are written
     counted = sized[["cases", "controls", "neff"]].where(binary).astype("Int64")
-    public = (d.assign(name=name, of=of).join(judged[["qc", "hm3", "chi2", "lambda"]]).join(counted)
-              .assign(kind=sized["kind"].where(binary), cases_from=sized["cases_from"], cases_how=sized["cases_how"], rec=recommended, sup=superseded)
-              [["name", "of", *rel.PUBLIC, "qc", "hm3", "chi2", "lambda", "kind", "cases", "controls", "neff", "cases_from", "cases_how", "rec", "sup"]].reset_index())
+    prevalence = liability.prevalences(data)
+    scaled = pd.DataFrame([liability.scaled(kind, proxy, cases, controls, n, h2, se, prevalence.get((trait, anc), {}).get("k"))
+                           for kind, proxy, cases, controls, n, h2, se, trait, anc in zip(sized["kind"], sized["proxy"], sized["cases"], sized["controls"], d["n"], d["h2"], d["h2_se"], of, d["anc"])],
+                          index=d.index, columns=["h2l", "h2l_se"]).astype(float).round(5)
+    biobank = merge.biobank(d, data)
+    public = (d.assign(name=name, of=of).join(judged[["qc", "hm3", "chi2", "lambda"]]).join(counted).join(scaled).join(biobank)
+              .assign(kind=sized["kind"].where(binary), proxy=sized["proxy"].where(sized["proxy"]), cases_from=sized["cases_from"], cases_how=sized["cases_how"], rec=recommended, sup=superseded)
+              [["name", "of", *rel.PUBLIC, "h2l", "h2l_se", "qc", "hm3", "chi2", "lambda", "kind", "cases", "controls", "neff", "proxy", "cases_from", "cases_how", "ukb", "ukb_from", "ukb_how", "rec", "sup"]].reset_index())
     records = public.astype(object).where(public.notna(), None).to_dict("records")
     records = [{k: v for k, v in r.items() if v is not None} | ({"cite": pmids} if pmids else {}) | ({"notes": notes} if notes else {})
                | ({"fixed": [[kind, value, said(why)] for kind, value, why in fixed[r["id"]]]} if r["id"] in fixed else {}) | ({"was": was[r["id"]]} if r["id"] in was else {})
                for r, pmids, notes in zip(records, cited, judged["notes"])]
     summary = rel.summary(release, theirs, as_released) | {"qc": {level: int((judged["qc"] == level).sum()) for level in ("pass", "warn", "fail")},
                                                           "traits": {"all": len(traits), "efo": sum(bool(efo) for efo, _ in traits.values())},
-                                                          "binary": {"studies": int(binary.sum()), "counted": int((binary & sized["neff"].notna()).sum())},
+                                                          "binary": {"studies": int(binary.sum()), "counted": int((binary & sized["neff"].notna()).sum()),
+                                                                     "liability": int(scaled["h2l"].notna().sum()), "proxy": int((binary & sized["proxy"]).sum())},
+                                                          "ukb": {"yes": int((biobank["ukb"] == True).sum()), "no": int((biobank["ukb"] == False).sum()), "unknown": int(biobank["ukb"].isna().sum())},
                                                           "recommended": {"of": int(pd.DataFrame({"of": of, "anc": d["anc"]}).drop_duplicates().shape[0]), "studies": int(recommended.notna().sum()),
                                                                           "by_z": int((recommended == "z").sum()), "superseded": int(superseded.notna().sum())}}
     if fixed:
@@ -107,7 +115,11 @@ def build(release: Path, out: Path, passphrase: str, iterations: int = crypt.ITE
                                                 "in": list(d.index[(d["anc"] == anc) & d["panel"].notna() & theirs["panel"].isna()])} for anc in rg}}
     lines = lambda items: ",\n".join(items)  # a study, a paper a line, for readable diffs
     cited_as = {pmid: {"label": p["label"], "published": p["published"]} for pmid, p in papers.items()}  # what the table of studies needs of a paper
-    texts = {"studies.json": f'{{\n"release":{dumps(summary)},\n"papers":{dumps(cited_as)},\n"traits":{{\n' + lines(f"{dumps(trait)}:{dumps(term)}" for trait, term in traits.items()) + '\n},\n"studies":[\n'
+    used = {key: row for key, row in prevalence.items() if key in set(zip(of[binary], d["anc"][binary]))}  # the prevalence of each binary trait and ancestry that has one: [K, its paper, its words]
+    stated = {trait: {anc: [row["k"], row["source"].removeprefix("PMID "), row["quote"]] for (t, anc), row in used.items() if t == trait} for trait, _ in used}
+    if unknown := [row["source"] for row in used.values() if row["source"].removeprefix("PMID ") not in papers]:
+        raise ValueError(f"data/prevalence.tsv: {unknown[0]} is not a paper of the collection")
+    texts = {"studies.json": f'{{\n"release":{dumps(summary)},\n"papers":{dumps(cited_as)},\n"prevalence":{dumps(stated)},\n"traits":{{\n' + lines(f"{dumps(trait)}:{dumps(term)}" for trait, term in traits.items()) + '\n},\n"studies":[\n'
                              + lines(map(dumps, records)) + "\n]}\n",
              "papers.json": "{\n" + lines(f"{dumps(pmid)}:{dumps(paper)}" for pmid, paper in papers.items()) + "\n}\n",
              "candidates.json": dumps(json.loads((data / "candidates.json").read_text(encoding="utf-8"))) + "\n"}

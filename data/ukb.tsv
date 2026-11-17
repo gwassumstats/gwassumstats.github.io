@@ -1,0 +1,603 @@
+id	ukb	source	how
+PASS_BMI1	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_Height1	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_Anorexia	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_Bipolar_Disorder	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_Coronary_Artery_Disease	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_Crohns_Disease	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_Ever_Smoked	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_HDL	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_LDL	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_Rheumatoid_Arthritis	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_Schizophrenia	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_Triglycerides	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_Type_2_Diabetes	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_Ulcerative_Colitis	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_Years_of_Education1	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_IBD	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_Autism	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_Alzheimer	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_Type_1_Diabetes	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_Multiple_sclerosis	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_Celiac	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_Primary_biliary_cirrhosis	no	PMID 26394269	by hand: its paper's full text does not name UK Biobank
+PASS_Lupus	no	PMID 26502338	by hand: its paper's full text does not name UK Biobank
+PASS_SWB	yes	PMID 27089181	by hand: the paper's GWAS adds analyses of the initial release of UK Biobank data (N = 105,739 for depressive symptoms, 107,245 for neuroticism) to consortium results
+PASS_DS	yes	PMID 27089181	by hand: the paper's GWAS adds analyses of the initial release of UK Biobank data (N = 105,739 for depressive symptoms, 107,245 for neuroticism) to consortium results
+PASS_Neuroticism	yes	PMID 27089181	by hand: the paper's GWAS adds analyses of the initial release of UK Biobank data (N = 105,739 for depressive symptoms, 107,245 for neuroticism) to consortium results
+PASS_Years_of_Education2		PMID 27225129	by hand: the paper's discovery GWAS has no UK Biobank; UK Biobank (N = 111,349) is its replication; which the file holds is not known
+PASS_FastingGlucose_Manning	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_HbA1C	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_ENIGMA2_MeanPutamen	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_AgeFirstBirth		PMID 27798627	by hand: the paper's text names UK Biobank only for a follow-up; its 62 cohorts are listed in its Supplementary Note, not read
+PASS_NumberChildrenEverBorn		PMID 27798627	by hand: the paper's text names UK Biobank only for a follow-up; its 62 cohorts are listed in its Supplementary Note, not read
+PASS_Menarche2017	yes	PMID 28436984	by hand: the paper's GWAS includes UK Biobank (N = 73,397)
+UKB_460K.cov_EDU_COLLEGE	yes		a study of UK Biobank alone, by its ID
+UKB_460K.cov_SMOKING_STATUS	yes		a study of UK Biobank alone, by its ID
+UKB_460K.disease_ALLERGY_ECZEMA_DIAGNOSED	yes		a study of UK Biobank alone, by its ID
+UKB_460K.disease_ASTHMA_DIAGNOSED	yes		a study of UK Biobank alone, by its ID
+UKB_460K.disease_HYPERTENSION_DIAGNOSED	yes		a study of UK Biobank alone, by its ID
+UKB_460K.repro_MENARCHE_AGE	yes		a study of UK Biobank alone, by its ID
+UKB_460K.repro_MENOPAUSE_AGE	yes		a study of UK Biobank alone, by its ID
+UKB_460K.body_HEIGHTz	yes		a study of UK Biobank alone, by its ID
+UKB_460K.body_BMIz	yes		a study of UK Biobank alone, by its ID
+UKB_460K.body_WHRadjBMIz	yes		a study of UK Biobank alone, by its ID
+UKB_460K.bp_SYSTOLICadjMEDz	yes		a study of UK Biobank alone, by its ID
+UKB_460K.bp_DIASTOLICadjMEDz	yes		a study of UK Biobank alone, by its ID
+UKB_460K.bmd_HEEL_TSCOREz	yes		a study of UK Biobank alone, by its ID
+UKB_460K.lung_FVCzSMOKE	yes		a study of UK Biobank alone, by its ID
+UKB_460K.lung_FEV1FVCzSMOKE	yes		a study of UK Biobank alone, by its ID
+UKB_460K.disease_HI_CHOL_SELF_REP	yes		a study of UK Biobank alone, by its ID
+UKB_460K.disease_DIABETES_ANY_DIAGNOSED	yes		a study of UK Biobank alone, by its ID
+UKB_460K.disease_T2D	yes		a study of UK Biobank alone, by its ID
+UKB_460K.blood_EOSINOPHIL_COUNT	yes		a study of UK Biobank alone, by its ID
+UKB_460K.blood_HIGH_LIGHT_SCATTER_RETICULOCYTE_COUNT	yes		a study of UK Biobank alone, by its ID
+UKB_460K.blood_LYMPHOCYTE_COUNT	yes		a study of UK Biobank alone, by its ID
+UKB_460K.blood_MEAN_CORPUSCULAR_HEMOGLOBIN	yes		a study of UK Biobank alone, by its ID
+UKB_460K.blood_MEAN_PLATELET_VOL	yes		a study of UK Biobank alone, by its ID
+UKB_460K.blood_MEAN_SPHERED_CELL_VOL	yes		a study of UK Biobank alone, by its ID
+UKB_460K.blood_MONOCYTE_COUNT	yes		a study of UK Biobank alone, by its ID
+UKB_460K.blood_PLATELET_COUNT	yes		a study of UK Biobank alone, by its ID
+UKB_460K.blood_PLATELET_DISTRIB_WIDTH	yes		a study of UK Biobank alone, by its ID
+UKB_460K.blood_RBC_DISTRIB_WIDTH	yes		a study of UK Biobank alone, by its ID
+UKB_460K.blood_RED_COUNT	yes		a study of UK Biobank alone, by its ID
+UKB_460K.blood_WHITE_COUNT	yes		a study of UK Biobank alone, by its ID
+UKB_460K.disease_HYPOTHYROIDISM_SELF_REP	yes		a study of UK Biobank alone, by its ID
+UKB_460K.disease_THYROID_ANY_SELF_REP	yes		a study of UK Biobank alone, by its ID
+UKB_460K.impedance_BASAL_METABOLIC_RATEz	yes		a study of UK Biobank alone, by its ID
+UKB_460K.disease_ENDOCRINE_DIABETES	yes		a study of UK Biobank alone, by its ID
+UKB_460K.disease_CARDIOVASCULAR	yes		a study of UK Biobank alone, by its ID
+UKB_460K.disease_RESPIRATORY_ENT	yes		a study of UK Biobank alone, by its ID
+UKB_460K.disease_PSORIASIS	yes		a study of UK Biobank alone, by its ID
+UKB_460K.disease_DERMATOLOGY	yes		a study of UK Biobank alone, by its ID
+UKB_460K.disease_RA	yes		a study of UK Biobank alone, by its ID
+UKB_460K.disease_AID_ALL	yes		a study of UK Biobank alone, by its ID
+UKB_460K.disease_AID_SURE	yes		a study of UK Biobank alone, by its ID
+UKB_460K.pigment_HAIR	yes		a study of UK Biobank alone, by its ID
+UKB_460K.pigment_HAIR_darkbrown	yes		a study of UK Biobank alone, by its ID
+UKB_460K.pigment_HAIR_red	yes		a study of UK Biobank alone, by its ID
+UKB_460K.pigment_HAIR_blonde	yes		a study of UK Biobank alone, by its ID
+UKB_460K.pigment_HAIR_blackmale	yes		a study of UK Biobank alone, by its ID
+UKB_460K.body_BALDING1	yes		a study of UK Biobank alone, by its ID
+UKB_460K.body_BALDING4	yes		a study of UK Biobank alone, by its ID
+UKB_460K.pigment_SKIN	yes		a study of UK Biobank alone, by its ID
+UKB_460K.pigment_TANNING	yes		a study of UK Biobank alone, by its ID
+UKB_460K.pigment_SUNBURN	yes		a study of UK Biobank alone, by its ID
+UKB_460K.mental_NEUROTICISM	yes		a study of UK Biobank alone, by its ID
+UKB_460K.other_NO_WHEAT	yes		a study of UK Biobank alone, by its ID
+UKB_460K.other_MORNINGPERSON	yes		a study of UK Biobank alone, by its ID
+UKB_460K.cov_EDU_YEARS	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_AlanineAminotransferase	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_Albumin	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_AlkalinePhosphatase	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_ApolipoproteinA	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_ApolipoproteinB	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_AspartateAminotransferase	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_Calcium	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_Cholesterol	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_CreactiveProtein	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_Creatinine	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_CystatinC	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_DirectBilirubin	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_GammaGlutamyltransferase	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_Glucose	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_HbA1c	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_HDLcholesterol	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_IGF1	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_LDLdirect	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_LipoproteinA	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_Phosphate	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_SHBG	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_Testosterone_Male	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_TotalBilirubin	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_TotalProtein	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_Triglycerides	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_Urate	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_Urea	yes		a study of UK Biobank alone, by its ID
+UKB_460K.biochemistry_VitaminD	yes		a study of UK Biobank alone, by its ID
+PASS_ADHD_Demontis2018	no	PMID 30478444	by hand: its paper's full text does not name UK Biobank
+PASS_AdultOnsetAsthma_Ferreira2019	yes	PMID 30929738	by hand: the paper's GWAS is of UK Biobank
+PASS_AgeOfInitiation_Liu2019	yes	PMID 30643251	by hand: the paper: "It was conducted by using the UK Biobank Resource under Application Number 16651"
+PASS_Alzheimers_Jansen2019	yes	PMID 30617256	by hand: the paper's phase 2 is UK Biobank's AD-by-proxy phenotype
+PASS_AlzheimersMaternal_Marioni2018	yes	PMID 29777097	by hand: the paper's GWAS is of 314,278 UK Biobank participants
+PASS_AlzheimersPaternal_Marioni2018	yes	PMID 29777097	by hand: the paper's GWAS is of 314,278 UK Biobank participants
+PASS_AlzheimersProxy_Marioni2018	yes	PMID 29777097	by hand: the paper's GWAS is of 314,278 UK Biobank participants
+PASS_AtrialFibrillation_Nielsen2018	yes	PMID 30061737	by hand: UK Biobank is one of the paper's six contributing studies
+PASS_BDSCZ_Ruderfer2018	no	PMID 29906448	by hand: its paper's full text does not name UK Biobank
+PASS_BipolarDisorder_Ruderfer2018	no	PMID 29906448	by hand: its paper's full text does not name UK Biobank
+PASS_BIP_Stahl2019	no	PMID 31043756	by hand: its paper's full text does not name UK Biobank
+PASS_CardioembolicStroke_Malik2018	no	PMID 29531354	by hand: its paper's full text does not name UK Biobank; the GWAS Catalog's record lists its cohorts
+PASS_CD_deLange2017	no	PMID 28067908	by hand: its paper's full text does not name UK Biobank
+PASS_ChildOnsetAsthma_Ferreira2019	yes	PMID 30929738	by hand: the paper's GWAS is of UK Biobank
+PASS_CigarettesPerDay_Liu2019	yes	PMID 30643251	by hand: the paper: "It was conducted by using the UK Biobank Resource under Application Number 16651"
+PASS_DepressedAffect_Nagel2018		PMID 29942085	by hand: no full text read; the abstract does not name the cohorts
+PASS_Depression_Nagel2018		PMID 29942085	by hand: no full text read; the abstract does not name the cohorts
+PASS_DrinksPerWeek_Liu2019	yes	PMID 30643251	by hand: the paper: "It was conducted by using the UK Biobank Resource under Application Number 16651"
+PASS_GeneralRiskTolerance_KarlssonLinner2019	yes	PMID 30643258	by hand: the paper's discovery GWAS includes UK Biobank (n = 431,126)
+PASS_IBD_deLange2017	no	PMID 28067908	by hand: its paper's full text does not name UK Biobank
+PASS_Insomnia_Jansen2019		PMID 30804565	by hand: no full text read; the abstract does not name the cohorts
+PASS_Intelligence_SavageJansen2018	yes	PMID 29942086	by hand: UK Biobank is one of the paper's 14 cohorts
+PASS_IschemicStroke_Malik2018	no	PMID 29531354	by hand: its paper's full text does not name UK Biobank; the GWAS Catalog's record lists its cohorts
+PASS_LargeArteryStroke_Malik2018	no	PMID 29531354	by hand: its paper's full text does not name UK Biobank; the GWAS Catalog's record lists its cohorts
+PASS_LongSleepDuration_Dashti2019	yes	PMID 30846698	by hand: the paper's GWAS is of 446,118 UK Biobank participants
+PASS_MDD_Howard2019	yes	PMID 30718901	by hand: the paper's meta-analysis includes UK Biobank's broad depression phenotype
+PASS_MDD_Wray2018	yes	PMID 29700475	by hand: UK Biobank is one of the paper's cohorts
+PASS_MedicationUse_Wu2019	yes	PMID 31015401	by hand: the paper's GWAS is of UK Biobank
+PASS_Neuroticism_Nagel2018		PMID 29942085	by hand: no full text read; the abstract does not name the cohorts
+PASS_OvarianCancer	no	PMID 28346442	by hand: its paper's full text does not name UK Biobank
+PASS_ProstateCancer	no	PMID 29892016	by hand: its paper's full text does not name UK Biobank
+PASS_ReactionTime_Davies2018	yes	PMID 29844566	by hand: the paper's meta-analysis includes four UK Biobank samples
+PASS_Schizophrenia_Pardinas2018	no	PMID 29483656	by hand: its paper's full text does not name UK Biobank
+PASS_Schizophrenia_Ruderfer2018	no	PMID 29906448	by hand: its paper's full text does not name UK Biobank
+PASS_SCZvsBD_Ruderfer2018	no	PMID 29906448	by hand: its paper's full text does not name UK Biobank
+PASS_ShortSleepDuration_Dashti2019	yes	PMID 30846698	by hand: the paper's GWAS is of 446,118 UK Biobank participants
+PASS_SleepDuration_Dashti2019	yes	PMID 30846698	by hand: the paper's GWAS is of 446,118 UK Biobank participants
+PASS_SmallVesselStroke_Malik2018	no	PMID 29531354	by hand: its paper's full text does not name UK Biobank; the GWAS Catalog's record lists its cohorts
+PASS_SmokingCessation_Liu2019	yes	PMID 30643251	by hand: the paper: "It was conducted by using the UK Biobank Resource under Application Number 16651"
+PASS_SmokingInitiation_Liu2019	yes	PMID 30643251	by hand: the paper: "It was conducted by using the UK Biobank Resource under Application Number 16651"
+PASS_Stroke_Malik2018	no	PMID 29531354	by hand: its paper's full text does not name UK Biobank; the GWAS Catalog's record lists its cohorts
+PASS_UC_deLange2017	no	PMID 28067908	by hand: its paper's full text does not name UK Biobank
+PASS_VerbalNumericReasoning_Davies2018	yes	PMID 29844566	by hand: the paper's meta-analysis includes four UK Biobank samples
+PASS_Worry_Nagel2018		PMID 29942085	by hand: no full text read; the abstract does not name the cohorts
+UKB_460K.repro_NumberChildrenEverBorn_Pooled	yes		a study of UK Biobank alone, by its ID
+UKB_460K.cancer_ALL	yes		a study of UK Biobank alone, by its ID
+UKB_460K.repro_AgeFirstBirth_Female	yes		a study of UK Biobank alone, by its ID
+UKB_460K.cancer_PROSTATE	yes		a study of UK Biobank alone, by its ID
+UKB_460K.cancer_BREAST	yes		a study of UK Biobank alone, by its ID
+PASS_Autism_Grove2019	no	PMID 30804558	by hand: its paper's full text does not name UK Biobank
+PASS_AnorexiaNervosa_Duncan2017	no	PMID 28494655	by hand: its paper's full text does not name UK Biobank
+PASS_CoronaryArteryDisease_Howson2017	no	PMID 28530674	by hand: its paper's full text names UK Biobank only for analyses other than the GWAS
+PASS_Epilepsy_Anney2014	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_LeanBodyMass_Zillikens2017	no	PMID 28724990	by hand: its paper's full text does not name UK Biobank
+PASS_Parkinsons23andMe_Corces2020	no	PMID 33106633	by hand: its paper's full text does not name UK Biobank
+PASS_AnorexiaNervosa_Watson2019	yes	PMID 31308545	by hand: the paper's GWAS includes UK Biobank's anorexia nervosa samples
+PASS_Alzheimers_deRojas2021	yes	PMID 34099642	by hand: the paper's discovery includes UK Biobank's AD-by-proxy study
+PASS_MCPmale_Johnston2021	yes	PMID 33830993	by hand: the paper's GWAS is of UK Biobank
+PASS_MCPfemale_Johnston2021	yes	PMID 33830993	by hand: the paper's GWAS is of UK Biobank
+PASS_SA_Grasby2020	yes	PMID 32193296	by hand: the paper's meta-analysis includes 10,083 UK Biobank participants
+PASS_TH_Grasby2020	yes	PMID 32193296	by hand: the paper's meta-analysis includes 10,083 UK Biobank participants
+PASS_FA_Zhao2021	yes	PMID 34140357	by hand: 36,624 of the paper's 43,802 subjects are of UK Biobank
+PASS_MD_Zhao2021	yes	PMID 34140357	by hand: 36,624 of the paper's 43,802 subjects are of UK Biobank
+PASS_AD_Zhao2021	yes	PMID 34140357	by hand: 36,624 of the paper's 43,802 subjects are of UK Biobank
+PASS_RD_Zhao2021	yes	PMID 34140357	by hand: 36,624 of the paper's 43,802 subjects are of UK Biobank
+PASS_MO_Zhao2021	yes	PMID 34140357	by hand: 36,624 of the paper's 43,802 subjects are of UK Biobank
+PASS_AccumbensVol_Satizabal2019	yes	PMID 31636452	by hand: the paper's GWAS combines CHARGE, ENIGMA and UK Biobank
+PASS_AmygdalaVol_Satizabal2019	yes	PMID 31636452	by hand: the paper's GWAS combines CHARGE, ENIGMA and UK Biobank
+PASS_BrainstemVol_Satizabal2019	yes	PMID 31636452	by hand: the paper's GWAS combines CHARGE, ENIGMA and UK Biobank
+PASS_CaudateVol_Satizabal2019	yes	PMID 31636452	by hand: the paper's GWAS combines CHARGE, ENIGMA and UK Biobank
+PASS_PallidumVol_Satizabal2019	yes	PMID 31636452	by hand: the paper's GWAS combines CHARGE, ENIGMA and UK Biobank
+PASS_PutamenVol_Satizabal2019	yes	PMID 31636452	by hand: the paper's GWAS combines CHARGE, ENIGMA and UK Biobank
+PASS_ThalamusVol_Satizabal2019	yes	PMID 31636452	by hand: the paper's GWAS combines CHARGE, ENIGMA and UK Biobank
+PASS_Baso_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_BasoP_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_Eosino_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_EosinoP_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_HCT_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_HGB_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_HLR_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_HLRP_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_IRF_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_Lym_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_LymP_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_MCH_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_MCHC_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_MCV_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_Mono_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_MonoP_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_MPV_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_MRV_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_MSCV_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_Neutro_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_NeutroP_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_PCT_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_PDW_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_Plt_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_RBC_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_RDWCV_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_RTC_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_RTCP_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_WBC_Vuckovic2020	yes	PMID 32888494	by hand: the paper integrates UK Biobank with an international collaborative effort
+PASS_Glaucoma_Craig2020	yes	PMID 31959993	by hand: the paper's GWAS is of 67,040 UK Biobank participants
+PASS_FetalBirthWeight_Warrington2019	yes	PMID 31043758	by hand: the paper's GWAS uses data of the EGG Consortium and UK Biobank
+PASS_MaternalBirthWeight_Warrington2019	yes	PMID 31043758	by hand: the paper's GWAS uses data of the EGG Consortium and UK Biobank
+PASS_Myopia_Hysi2020	yes	PMID 32231278	by hand: the paper's GWAS includes 102,117 UK Biobank participants
+PASS_HipOA_Tachmazidou2019	yes	PMID 30664745	by hand: the paper's meta-analysis is of UK Biobank and arcOGEN
+PASS_KneeOA_Tachmazidou2019	yes	PMID 30664745	by hand: the paper's meta-analysis is of UK Biobank and arcOGEN
+PASS_HipKneeOA_Tachmazidou2019	yes	PMID 30664745	by hand: the paper's meta-analysis is of UK Biobank and arcOGEN
+PASS_OA_Tachmazidou2019	yes	PMID 30664745	by hand: the paper's meta-analysis is of UK Biobank and arcOGEN
+PASS_LiverVol_Liu2021	yes	GCST90016666	the cohorts of its record in the GWAS Catalog: UKB
+PASS_SpleenVol_Liu2021	yes	GCST90016666	the cohorts of its record in the GWAS Catalog: UKB
+PASS_LungVol_Liu2021	yes	GCST90016666	the cohorts of its record in the GWAS Catalog: UKB
+PASS_PancreasVol_Liu2021	yes	GCST90016669	the cohorts of its record in the GWAS Catalog: UKB
+PASS_KidneyVol_Liu2021	yes	GCST90016666	the cohorts of its record in the GWAS Catalog: UKB
+PASS_ViscAdiposeVol_Liu2021	yes	GCST90016666	the cohorts of its record in the GWAS Catalog: UKB
+PASS_SubAdiposeVol_Liu2021	yes	GCST90016666	the cohorts of its record in the GWAS Catalog: UKB
+PASS_LiverFat_Liu2021	yes	GCST90016666	the cohorts of its record in the GWAS Catalog: UKB
+PASS_LiverIron_Liu2021	yes	GCST90016666	the cohorts of its record in the GWAS Catalog: UKB
+PASS_PancreasFat_Liu2021	yes	GCST90016675	the cohorts of its record in the GWAS Catalog: UKB
+PASS_PancreasIron_Liu2021	yes	GCST90016675	the cohorts of its record in the GWAS Catalog: UKB
+PASS_FEV1_Shrine2019	yes	PMID 30804560	by hand: the paper's GWAS includes 321,047 UK Biobank participants
+PASS_FVC_Shrine2019	yes	PMID 30804560	by hand: the paper's GWAS includes 321,047 UK Biobank participants
+PASS_FEV1FVC_Shrine2019	yes	PMID 30804560	by hand: the paper's GWAS includes 321,047 UK Biobank participants
+PASS_PEF_Shrine2019	yes	PMID 30804560	by hand: the paper's GWAS includes 321,047 UK Biobank participants
+PASS_Aging_Timmers2020	yes	PMID 32678081	by hand: the paper's traits include parental lifespan in UK Biobank
+PASS_Baso_Kanai2018_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_BS_Kanai_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_DBP_Kanai2018_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_EGFR_Kanai2018_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_Eosino_Kanai2018_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_HbA1c_Kanai2018_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_Hb_Kanai2018_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_HDL_Kanai2018_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_Height_Kanai2018_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_Ht_Kanai2018_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_LDL_Kanai2018_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_Lym_Kanai2018_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_MCHC_Kanai2018_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_MCH_Kanai2018_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_MCV_Kanai2018_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_Mono_Kanai2018_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_Neutro_Kanai2018_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_Plt_Kanai2018_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_RBC_Kanai2018_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_SBP_Kanai2018_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_TC_Kanai_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_TG_Kanai2018_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_WBC_Kanai2018_EAS	no	PMID 29403010	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_AtrialFibrillation_Low2017_EAS	no	PMID 28416822	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_BMI_Akiyama2017_EAS	no	PMID 28892062	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_ColorectalCancer_Tanikawa_EAS	no	PMID 29471430	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_MDD_CONVERGE2015_EAS	no	PMID 26176920	by hand: its paper's full text does not name UK Biobank; a study of Han Chinese women
+PASS_Menarche_Horikoshi2018_EAS	no	PMID 29773799	by hand: the paper's GWAS is of BioBank Japan; UK Biobank's women only for a comparison
+PASS_Menopause_Horikoshi2018_EAS	no	PMID 29773799	by hand: the paper's GWAS is of BioBank Japan; UK Biobank's women only for a comparison
+PASS_POAG_Shiga2018_EAS	no	PMID 29452408	by hand: its paper's full text does not name UK Biobank
+PASS_RA_Okada2013_EAS	no	PMID 30305743	its paper was published before UK Biobank first released genotypes, in May 2015
+PASS_Schizophrenia_Lam2019_EAS	no	PMID 31740837	by hand: its paper's full text names UK Biobank only for analyses other than the GWAS
+PASS_T2D_Suzuki_EAS	no	PMID 30718926	by hand: by its paper's abstract, a GWAS of Japanese individuals (BioBank Japan)
+PASS_BIP_Mullins2021	yes	PMID 34002096	by hand: UK Biobank is one of the paper's five external cohorts
+GBMI_AbdominalAorticAneurysm	yes	GCST90399672	the cohorts of its record in the GWAS Catalog: BioMe, BioVU, CCPM, DECODE, EB, FinnGen, HUNT, MGBB, MGI, UKB
+GBMI_AcuteAppendicitis	yes	GCST90399676	the cohorts of its record in the GWAS Catalog: BioVU, EB, FinnGen, GS:SFHS, HUNT, MGBB, MGI, UKB
+GBMI_Asthma	yes	GCST90399686	the cohorts of its record in the GWAS Catalog: BioMe, BioVU, CCPM, DECODE, EB, FinnGen, GS:SFHS, HUNT, Lifelines, MGBB, MGI, QSKIN, UCLA, UKB
+GBMI_ChronicObstructivePulmonaryDisease	yes	GCST90399694	the cohorts of its record in the GWAS Catalog: BioMe, BioVU, CCPM, EB, FinnGen, GS:SFHS, HUNT, Lifelines, MGBB, MGI, UCLA, UKB
+GBMI_Gout	yes	GCST90399701	the cohorts of its record in the GWAS Catalog: BioMe, BioVU, CCPM, EB, FinnGen, GS:SFHS, HUNT, MGBB, MGI, UCLA, UKB
+GBMI_HeartFailure	yes	GCST90399713	the cohorts of its record in the GWAS Catalog: BioMe, BioVU, EB, FinnGen, HUNT, Lifelines, MGBB, MGI, UCLA, UKB
+GBMI_PrimaryApenAngleGlaucoma	yes	GCST90399725	the cohorts of its record in the GWAS Catalog: BioVU, CCPM, DECODE, EB, FinnGen, GS:SFHS, HUNT, Lifelines, MGBB, MGI, QSKIN, UKB
+GBMI_Stroke	yes	GCST90399732	the cohorts of its record in the GWAS Catalog: BioMe, BioVU, CCPM, EB, FinnGen, GS:SFHS, HUNT, Lifelines, MGBB, MGI, QSKIN, UCLA, UKB
+GBMI_VenousThromboembolism	yes	GCST90399744	the cohorts of its record in the GWAS Catalog: BioMe, BioVU, EB, FinnGen, MGI, UCLA, UKB
+PANUKBB_AgeAtMenopause	yes		a study of UK Biobank alone, by its ID
+PANUKBB_Albumin	yes		a study of UK Biobank alone, by its ID
+PANUKBB_AlkalinePhosphatase	yes		a study of UK Biobank alone, by its ID
+PANUKBB_AtrialFibrillationAndFlutter	yes		a study of UK Biobank alone, by its ID
+PANUKBB_BasophilPercentage	yes		a study of UK Biobank alone, by its ID
+PANUKBB_BirthWeight	yes		a study of UK Biobank alone, by its ID
+PANUKBB_BloodClotDVTBronchitisEmphysemaAsthmaRhinitisEczemaAllergyDiagnosedByDoctor	yes		a study of UK Biobank alone, by its ID
+PANUKBB_BreastCancerFemale	yes		a study of UK Biobank alone, by its ID
+PANUKBB_C44OtherMalignantNeoplasmsOfSkin	yes		a study of UK Biobank alone, by its ID
+PANUKBB_ChildhoodSunburnOccasions	yes		a study of UK Biobank alone, by its ID
+PANUKBB_DiastolicBloodPressureCombinedAutomatedManualReading	yes		a study of UK Biobank alone, by its ID
+PANUKBB_DiverticulosisAndDiverticulitis	yes		a study of UK Biobank alone, by its ID
+PANUKBB_EosinophilCount	yes		a study of UK Biobank alone, by its ID
+PANUKBB_EverSmoked	yes		a study of UK Biobank alone, by its ID
+PANUKBB_FluidIntelligenceScore	yes		a study of UK Biobank alone, by its ID
+PANUKBB_GammaGlutamyltransferase	yes		a study of UK Biobank alone, by its ID
+PANUKBB_GlycatedhaemoglobinHbA1c	yes		a study of UK Biobank alone, by its ID
+PANUKBB_Haemoglobin	yes		a study of UK Biobank alone, by its ID
+PANUKBB_HairBaldingPattern	yes		a study of UK Biobank alone, by its ID
+PANUKBB_HairBaldingPattern2	yes		a study of UK Biobank alone, by its ID
+PANUKBB_HandGripStrengthLeft	yes		a study of UK Biobank alone, by its ID
+PANUKBB_HeelBoneMineralDensity	yes		a study of UK Biobank alone, by its ID
+PANUKBB_HypothyroidismNOS	yes		a study of UK Biobank alone, by its ID
+PANUKBB_IGF1	yes		a study of UK Biobank alone, by its ID
+PANUKBB_ImpedanceOfArmRight	yes		a study of UK Biobank alone, by its ID
+PANUKBB_IndirectBilirubin	yes		a study of UK Biobank alone, by its ID
+PANUKBB_InguinalHernia	yes		a study of UK Biobank alone, by its ID
+PANUKBB_IntraOcularPressureGoldmannCorrelatedLeft	yes		a study of UK Biobank alone, by its ID
+PANUKBB_LDLDirectAdjustedByMedication	yes		a study of UK Biobank alone, by its ID
+PANUKBB_LegFatPercentageRight	yes		a study of UK Biobank alone, by its ID
+PANUKBB_MeanArterialPressureAutomatedReadingAdjustedByMedication	yes		a study of UK Biobank alone, by its ID
+PANUKBB_MeanSpheredCellVolume	yes		a study of UK Biobank alone, by its ID
+PANUKBB_MenarcheAge	yes		a study of UK Biobank alone, by its ID
+PANUKBB_MonocytePercentage	yes		a study of UK Biobank alone, by its ID
+PANUKBB_MorningPerson	yes		a study of UK Biobank alone, by its ID
+PANUKBB_MouthTeethDentalProblems	yes		a study of UK Biobank alone, by its ID
+PANUKBB_NeutrophilCount	yes		a study of UK Biobank alone, by its ID
+PANUKBB_OperationTonsillectomyAdenoids	yes		a study of UK Biobank alone, by its ID
+PANUKBB_OperativeProceduresOPCS4NormalDelivery	yes		a study of UK Biobank alone, by its ID
+PANUKBB_Phosphate	yes		a study of UK Biobank alone, by its ID
+PANUKBB_PlateletCount	yes		a study of UK Biobank alone, by its ID
+PANUKBB_ProstateCancer	yes		a study of UK Biobank alone, by its ID
+PANUKBB_PulsePressureAutomatedReadingAdjustedByMedication	yes		a study of UK Biobank alone, by its ID
+PANUKBB_PulsePressureCombinedAutomatedManualReading	yes		a study of UK Biobank alone, by its ID
+PANUKBB_PulseRateAutomatedReading	yes		a study of UK Biobank alone, by its ID
+PANUKBB_SphericalPowerRight	yes		a study of UK Biobank alone, by its ID
+PANUKBB_Testosterone	yes		a study of UK Biobank alone, by its ID
+PANUKBB_TotalBilirubin	yes		a study of UK Biobank alone, by its ID
+PANUKBB_Urate	yes		a study of UK Biobank alone, by its ID
+PANUKBB_VaricoseVeinSurgery	yes		a study of UK Biobank alone, by its ID
+PANUKBB_VitaminD	yes		a study of UK Biobank alone, by its ID
+PASS_AbdominalSubcutaneousAdiposeTissueVolume_Agrawal2022	yes	GCST90205200	the cohorts of its record in the GWAS Catalog: UKB
+PASS_AcneVulgaris_TederLaving2023	no	GCST90245818	the cohorts of its record in the GWAS Catalog: EB, FinnGen, LifeLines
+PASS_Alcoholuse_SanchezRoige2018	yes	PMID 30336701	by hand: the paper's GWAS is of UK Biobank (N = 121,604) and 23andMe
+PASS_AllOsteoarthritis_Boer2021	yes	PMID 34450027	by hand: the paper names cohort-level summary statistics of UK Biobank
+PASS_AllergicRhinitis_Donertas2021	yes	GCST90038664	the cohorts of its record in the GWAS Catalog: UKB
+PASS_AlzheimersDisease_Wightman2021	yes	GCST90044699	the cohorts of its record in the GWAS Catalog: IGAP, UKB, DemGene, TwinGene, deCODE, FinnGen, HUNT, BioVU, 23andMe, others
+PASS_ADHD_Demontis2023	no	GCST90269774	the cohorts of its record in the GWAS Catalog: iPSYCH, deCODE, PGC
+PASS_BMI_Yengo2018	yes	PMID 30124842	by hand: the paper's GWAS includes about 450,000 UK Biobank participants
+PASS_CHIP_Kessler2022	yes	GCST90165266	the cohorts of its record in the GWAS Catalog: UKB
+PASS_CHIPDNMT3A_Kessler2022	yes	GCST90165270	the cohorts of its record in the GWAS Catalog: UKB
+PASS_CancerEsophageal_Gharahkhani2016	no	PMID 27527254	by hand: its paper's full text does not name UK Biobank
+PASS_CancerLung_McKay2017	no	PMID 28604730	by hand: its paper's full text names UK Biobank only for analyses other than the GWAS
+PASS_CancerLungAdenocarcinoma_McKay2017	no	PMID 28604730	by hand: its paper's full text names UK Biobank only for analyses other than the GWAS
+PASS_CannabisUseDisorder_Johnson2020	no	PMID 33096046	by hand: its paper's full text names UK Biobank only for analyses other than the GWAS
+PASS_ChronicObstructivePulmonaryDisease_Consentino2023	yes	GCST90244098	the cohorts of its record in the GWAS Catalog: UKB
+PASS_CoronaryArteryDisease_Aragam2022	yes	GCST90132314	the cohorts of its record in the GWAS Catalog: deCODE, EPIC_CAD, GerMIFS, HUNT, MGBB, CARDIoGRAMplusC4D, other, UKB
+PASS_Covid19Vaccination_Hartonen2023	no	PMID 37081098	by hand: its paper's full text names UK Biobank only for analyses other than the GWAS
+PASS_Depression_Mallard2022	yes	PMID 35812988	by hand: the paper's GWAS is of 252,252 UK Biobank participants
+PASS_Endometriosis_Rahmioglu2023	yes	PMID 36914876	by hand: the paper: "Part of this research has been conducted using the UK Biobank Resource under Application Number 9637"
+PASS_Epillepsy_Berkovic2022	yes	GCST90271608	the cohorts of its record in the GWAS Catalog: other, GenEPA, CHOP, EPICURE, HBCS, KORA, ILM, PoBI, POPGEN, TSS, UKBS
+PASS_F1mooddisturbance_Mallard2022	yes	PMID 35812988	by hand: the paper's GWAS is of 252,252 UK Biobank participants
+PASS_F2seriousmentalillness_Mallard2022	yes	PMID 35812988	by hand: the paper's GWAS is of 252,252 UK Biobank participants
+PASS_ForcedExpiratoryVolumeInOneSecond_Shrine2023	yes	GCST90292609	the cohorts of its record in the GWAS Catalog: AHS, ALSPAC, ARIC, B58C, BHS, CHS, Croatia, EPIC-Norfolk, EXCEED, FHS, FinnTwin, GS:SFHS, Health2000, HUNT, KORA, LBC, MESA, NEO, NFBC, Orcades, PIVUS, QBB, Raine, RS, SAPALDIA, SHIP, TwinsUK, UKB, UKHLS, VIKING, YFS
+PASS_ForcedExpiratoryVolumeInOneSecondForcedVitalCapacityRatio_Shrine2023	yes	GCST90292611	the cohorts of its record in the GWAS Catalog: AHS, ALSPAC, ARIC, B58C, BHS, CHS, Croatia, EPIC-Norfolk, EXCEED, FHS, FinnTwin, GS:SFHS, Health2000, HUNT, KORA, LBC, MESA, NEO, NFBC, Orcades, PIVUS, QBB, Raine, RS, SAPALDIA, SHIP, TwinsUK, UKB, UKHLS, VIKING, YFS
+PASS_ForcedVitalCapacity_Shrine2023	yes	GCST90292610	the cohorts of its record in the GWAS Catalog: AHS, ALSPAC, ARIC, B58C, BHS, CHS, Croatia, EPIC-Norfolk, EXCEED, FHS, FinnTwin, GS:SFHS, Health2000, HUNT, KORA, LBC, MESA, NEO, NFBC, Orcades, PIVUS, QBB, Raine, RS, SAPALDIA, SHIP, TwinsUK, UKB, UKHLS, VIKING, YFS
+PASS_GastroesophagalRefluxDisease_Donertas2021	yes	GCST90038624	the cohorts of its record in the GWAS Catalog: UKB
+PASS_GastrointestinalDisease_Donertas2021	yes	GCST90038597	the cohorts of its record in the GWAS Catalog: UKB
+PASS_GeneticGeneralizedEpilepsy_Berkovic2022	yes	GCST90271609	the cohorts of its record in the GWAS Catalog: other, GenEPA, CHOP, EPICURE, HBCS, KORA, ILM, PoBI, POPGEN, TSS, UKBS
+PASS_GluteofemoralAdiposeTissueVolume_Agrawal2022	yes	GCST90205200	the cohorts of its record in the GWAS Catalog: UKB
+PASS_Gout_Donertas2021	yes	GCST90038687	the cohorts of its record in the GWAS Catalog: UKB
+PASS_HeartFailure_Shah2020	yes	PMID 31919418	by hand: the paper estimates h² of its UK Biobank part
+PASS_Height_Yengo2022	yes	PMID 36224396	by hand: the paper predicts in UK Biobank participants "who were not included in our discovery GWAS"
+PASS_HipOsteoarthritis_Boer2021	yes	PMID 34450027	by hand: the paper names cohort-level summary statistics of UK Biobank
+PASS_Insomnia_Watanabe2022		PMID 35835914	by hand: no full text read; the abstract does not name the cohorts
+PASS_JuvenileMyoclonicEpilepsy_Berkovic2022	yes	GCST90271614	the cohorts of its record in the GWAS Catalog: other, GenEPA, CHOP, EPICURE, HBCS, KORA, ILM, PoBI, POPGEN, TSS, UKBS
+PASS_KneeAndOrHipOsteoarthritis_Boer2021	yes	PMID 34450027	by hand: the paper names cohort-level summary statistics of UK Biobank
+PASS_KneeOsteoarthritis_Boer2021	yes	PMID 34450027	by hand: the paper names cohort-level summary statistics of UK Biobank
+PASS_Mania_Mallard2022	yes	PMID 35812988	by hand: the paper's GWAS is of 252,252 UK Biobank participants
+PASS_MetabolicSyndrome_VanWalree2022		PMID 35983957	by hand: no full text read; the abstract does not name the cohorts
+PASS_MultipleSclerosis_IMSGC2019	no	PMID 31604244	by hand: its paper's full text does not name UK Biobank
+PASS_Parkinson_Nalls2019	yes	PMID 31701892	by hand: the paper's GWAS includes 18.6K UK Biobank proxy cases
+PASS_PeakExpiratoryFlow_Shrine2023	yes	GCST90292612	the cohorts of its record in the GWAS Catalog: ALSPAC, ARIC, B58C, Croatia, EPIC-Norfolk, FinnTwin, HUNT, LBC, Orcades, Raine, SHIP, UKB, VIKING
+PASS_PhysicalActivity_Wang2022	yes	PMID 36071172	by hand: the paper's meta-analysis includes "nearly half-a-million from the UK Biobank"
+PASS_Psychosis_Mallard2022	yes	PMID 35812988	by hand: the paper's GWAS is of 252,252 UK Biobank participants
+PASS_RheumatoidArthritis_Ishigaki2022	yes	PMID 36333501	by hand: the paper: "The UK Biobank analysis was conducted via application no. 47821"
+PASS_RheumatoidArthritis_Saevarsdottir2022	yes	GCST90131437	the cohorts of its record in the GWAS Catalog: UKB, FinnGen, EIRA, EIMS, Umea, CHB, Other
+PASS_Schizophrenia_Trubetskoy2022	no	PMID 35396580	by hand: its paper's full text does not name UK Biobank
+PASS_Snoring_Campos2020	yes	PMID 32060260	by hand: the paper's GWAS is of UK Biobank
+PASS_SpineOsteoarthritis_Boer2021	yes	PMID 34450027	by hand: the paper names cohort-level summary statistics of UK Biobank
+PASS_StructuralConnectivityGlobal_Tissink2023	yes	PMID 36882310	by hand: the paper's GWAS is of UK Biobank
+PASS_StructuralConnectivitySomatomotor_Tissink2023	yes	PMID 36882310	by hand: the paper's GWAS is of UK Biobank
+PASS_TelomereLength_Codd2021	yes	PMID 34611362	by hand: the paper's GWAS is of 472,174 UK Biobank participants
+PASS_ThumbOsteoarthritis_Boer2021	yes	GCST90034529	the cohorts of its record in the GWAS Catalog: deCODE, EB, LLS, RS, TwinsUK, HUNT, UKB
+PASS_TotalHipReplacement_Boer2021	yes	PMID 34450027	by hand: the paper names cohort-level summary statistics of UK Biobank
+PASS_TotalJointReplacement_Boer2021	yes	GCST90034526	the cohorts of its record in the GWAS Catalog: arcOGEN, deCODE, EB, RS, ARGO, NHS, HUNT, UKB
+PASS_TotalKneeReplacement_Boer2021	yes	GCST90034525	the cohorts of its record in the GWAS Catalog: arcOGEN, deCODE, EB, RS, ARGO, NHS, HUNT, UKB
+PASS_TouretteSyndrome_Yu2019	no	PMID 30818990	by hand: its paper's full text does not name UK Biobank
+PASS_Type1Diabetes_Chiou2021	yes	PMID 34012112	by hand: UK Biobank is one of the paper's cohorts
+PASS_Type2Diabetes_Xue2018	yes	PMID 30054458	by hand: the paper's meta-analysis includes UK Biobank (21,147 cases and 434,460 controls)
+PASS_VaricoseVeins_Ahmed2022	yes	PMID 35654884	by hand: the paper's GWAS is of 401,656 UK Biobank participants
+PASS_VisceralAdiposeTissueVolume_Agrawal2022	yes	GCST90205200	the cohorts of its record in the GWAS Catalog: UKB
+GCST90244167	no	GCST90244167	the cohorts of its record in the GWAS Catalog: OCAC, BCAC
+GCST90244168	no	GCST90244168	the cohorts of its record in the GWAS Catalog: OCAC, BCAC
+GCST90244169	no	GCST90244169	the cohorts of its record in the GWAS Catalog: OCAC, BCAC
+GCST90244170	no	GCST90244170	the cohorts of its record in the GWAS Catalog: OCAC, BCAC
+GCST90244171	no	GCST90244171	the cohorts of its record in the GWAS Catalog: OCAC, BCAC
+GCST90244172	no	GCST90244172	the cohorts of its record in the GWAS Catalog: OCAC, BCAC
+GCST90448187	yes	GCST90448187	the cohorts of its record in the GWAS Catalog: FinnGen, UKB, EB, MGBB
+GCST90705067	no	GCST90705067	the cohorts of its record in the GWAS Catalog: KCPS, TWB
+GCST90705068	no	GCST90705068	the cohorts of its record in the GWAS Catalog: KCPS, TWB
+GCST90705069	no	GCST90705069	the cohorts of its record in the GWAS Catalog: KCPS, TWB
+GCST90651070	yes	GCST90651070	the cohorts of its record in the GWAS Catalog: UKB, FinnGen, MVP, NR
+GCST90651071	yes	GCST90651071	the cohorts of its record in the GWAS Catalog: UKB
+GCST90651072	yes	GCST90651072	the cohorts of its record in the GWAS Catalog: UKB
+GCST90651073	yes	GCST90651073	the cohorts of its record in the GWAS Catalog: UKB
+GCST90651074	yes	GCST90651074	the cohorts of its record in the GWAS Catalog: UKB, FinnGen, MVP, NR
+GCST90651075	yes	GCST90651075	the cohorts of its record in the GWAS Catalog: UKB
+GCST90651076	yes	GCST90651076	the cohorts of its record in the GWAS Catalog: UKB
+GCST90651077	yes	GCST90651077	the cohorts of its record in the GWAS Catalog: UKB
+GCST90295949	yes	GCST90295949	the cohorts of its record in the GWAS Catalog: UKB
+GCST90295950	yes	GCST90295950	the cohorts of its record in the GWAS Catalog: UKB
+GCST90295951	yes	GCST90295951	the cohorts of its record in the GWAS Catalog: UKB
+GCST90726344	no	PMID 41233554	by hand: the paper analyses UK Biobank only as a comparison cohort, apart from its Nordic cohorts
+GCST90726345	no	GCST90726345	the cohorts of its record in the GWAS Catalog: iPSYCH, MOBA, PREFECT, EB, FinnGen
+GCST90726346	no	GCST90726346	the cohorts of its record in the GWAS Catalog: EB, FinnGen
+GCST90448693	yes	GCST90448693	the cohorts of its record in the GWAS Catalog: UKB
+GCST90448695	yes	GCST90448695	the cohorts of its record in the GWAS Catalog: UKB
+GCST90448696	yes	GCST90448696	the cohorts of its record in the GWAS Catalog: UKB
+GCST90432156	yes	GCST90432156	the cohorts of its record in the GWAS Catalog: BioVU, DeCODE, EB, FinnGen, MVP, UKB, NR
+GCST90319905	no	GCST90319905	the cohorts of its record in the GWAS Catalog: BBJ, KoGES
+GCST90319906	yes	GCST90319906	the cohorts of its record in the GWAS Catalog: CKDGen, UKB
+GCST90668009	no	GCST90668009	the cohorts of its record in the GWAS Catalog: BBJ
+GCST90668010	no	GCST90668010	the cohorts of its record in the GWAS Catalog: BBJ
+GCST90668011	no	GCST90668011	the cohorts of its record in the GWAS Catalog: BBJ
+GCST90668012	no	GCST90668012	the cohorts of its record in the GWAS Catalog: BBJ
+GCST90668013	no	GCST90668013	the cohorts of its record in the GWAS Catalog: BioMe, discovEHR, eMERGE, FinnGen, HERMES, PMB, MVP
+GCST90668016	yes	GCST90668016	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90566419	no	PMID 40325049	by hand: its paper's full text does not name UK Biobank
+GCST90566420	no	PMID 40325049	by hand: its paper's full text does not name UK Biobank
+GCST90566421	no	PMID 40325049	by hand: its paper's full text does not name UK Biobank
+GCST90566422	no	PMID 40325049	by hand: its paper's full text does not name UK Biobank
+GCST90566423	no	PMID 40325049	by hand: its paper's full text does not name UK Biobank
+GCST90566424	no	PMID 40325049	by hand: its paper's full text does not name UK Biobank
+GCST90705000	yes	GCST90705000	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705001	yes	GCST90705001	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705002	yes	GCST90705002	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705003	yes	GCST90705003	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705004	yes	GCST90705004	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705005	yes	GCST90705005	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705006	yes	GCST90705006	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705007	yes	GCST90705007	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705008	yes	GCST90705008	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705009	yes	GCST90705009	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705010	yes	GCST90705010	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705011	yes	GCST90705011	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705012	yes	GCST90705012	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705013	yes	GCST90705013	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705014	yes	GCST90705014	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705015	yes	GCST90705015	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705017	yes	GCST90705017	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705018	yes	GCST90705018	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705021	yes	GCST90705021	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705024	yes	GCST90705024	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705025	yes	GCST90705025	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705026	yes	GCST90705026	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705027	yes	GCST90705027	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705030	yes	GCST90705030	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705031	yes	GCST90705031	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90705032	yes	GCST90705032	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90446758	yes	GCST90446758	the cohorts of its record in the GWAS Catalog: UKB
+GCST90446759	yes	GCST90446759	the cohorts of its record in the GWAS Catalog: UKB
+GCST90446760	yes	GCST90446760	the cohorts of its record in the GWAS Catalog: UKB
+GCST90446761	yes	GCST90446761	the cohorts of its record in the GWAS Catalog: UKB
+GCST90446762	yes	GCST90446762	the cohorts of its record in the GWAS Catalog: UKB
+GCST90446763	yes	GCST90446763	the cohorts of its record in the GWAS Catalog: UKB
+GCST90446764	yes	GCST90446764	the cohorts of its record in the GWAS Catalog: UKB
+GCST90446765	yes	GCST90446765	the cohorts of its record in the GWAS Catalog: UKB
+GCST90446766	yes	GCST90446766	the cohorts of its record in the GWAS Catalog: UKB
+GCST90446767	yes	GCST90446767	the cohorts of its record in the GWAS Catalog: UKB
+GCST90446768	yes	GCST90446768	the cohorts of its record in the GWAS Catalog: UKB
+GCST90446769	yes	GCST90446769	the cohorts of its record in the GWAS Catalog: UKB
+GCST90446770	yes	GCST90446770	the cohorts of its record in the GWAS Catalog: UKB
+GCST90446771	yes	GCST90446771	the cohorts of its record in the GWAS Catalog: UKB
+GCST90446772	yes	GCST90446772	the cohorts of its record in the GWAS Catalog: UKB
+GCST90446773	yes	GCST90446773	the cohorts of its record in the GWAS Catalog: UKB
+GCST90446774	yes	GCST90446774	the cohorts of its record in the GWAS Catalog: UKB
+GCST90503313	no	GCST90503313	the cohorts of its record in the GWAS Catalog: MVP
+GCST90503316	no	GCST90503316	the cohorts of its record in the GWAS Catalog: MVP
+GCST90335162	no	GCST90335162	the cohorts of its record in the GWAS Catalog: CKB
+GCST90335163	no	GCST90335163	the cohorts of its record in the GWAS Catalog: CKB
+GCST90335164	no	GCST90335164	the cohorts of its record in the GWAS Catalog: CKB
+GCST90335165	no	GCST90335165	the cohorts of its record in the GWAS Catalog: CKB
+GCST90335166	no	GCST90335166	the cohorts of its record in the GWAS Catalog: CKB
+GCST90335167	no	GCST90335167	the cohorts of its record in the GWAS Catalog: CKB
+GCST90335168	no	GCST90335168	the cohorts of its record in the GWAS Catalog: CKB
+GCST90335169	no	GCST90335169	the cohorts of its record in the GWAS Catalog: CKB
+GCST90448960	no	GCST90448960	the cohorts of its record in the GWAS Catalog: Estonian Biobank
+GCST90652529	yes	GCST90652529	the cohorts of its record in the GWAS Catalog: FinnGen, UKB
+GCST90652530	yes	GCST90652530	the cohorts of its record in the GWAS Catalog: FinnGen, UKB
+GCST90652531	yes	GCST90652531	the cohorts of its record in the GWAS Catalog: FinnGen, UKB
+GCST90652532	yes	GCST90652532	the cohorts of its record in the GWAS Catalog: FinnGen, UKB
+GCST90652548	yes	GCST90652548	the cohorts of its record in the GWAS Catalog: UKB
+GCST90652549	yes	GCST90652549	the cohorts of its record in the GWAS Catalog: UKB
+GCST90652551	yes	GCST90652551	the cohorts of its record in the GWAS Catalog: UKB
+GCST90652552	yes	GCST90652552	the cohorts of its record in the GWAS Catalog: UKB
+GCST90652553	yes	GCST90652553	the cohorts of its record in the GWAS Catalog: UKB
+GCST90652554	yes	GCST90652554	the cohorts of its record in the GWAS Catalog: UKB
+GCST90652555	yes	GCST90652555	the cohorts of its record in the GWAS Catalog: UKB
+GCST90652556	yes	GCST90652556	the cohorts of its record in the GWAS Catalog: UKB
+GCST90652557	yes	GCST90652557	the cohorts of its record in the GWAS Catalog: UKB
+GCST90652558	yes	GCST90652558	the cohorts of its record in the GWAS Catalog: UKB
+GCST90652559	yes	GCST90652559	the cohorts of its record in the GWAS Catalog: UKB
+GCST90296666	no	GCST90296666	the cohorts of its record in the GWAS Catalog: FinnGen, EB
+GCST90310293	yes	GCST90310293	the cohorts of its record in the GWAS Catalog: QUEBEC-CAVS, EPIC-Norfolk, EB, UKB, FinnGen
+GCST90429765	yes	GCST90429765	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429766	yes	GCST90429766	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429767	yes	GCST90429767	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429768	yes	GCST90429768	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429769	yes	GCST90429769	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429770	yes	GCST90429770	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429771	yes	GCST90429771	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429772	yes	GCST90429772	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429773	yes	GCST90429773	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429774	yes	GCST90429774	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429775	yes	GCST90429775	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429776	yes	GCST90429776	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429777	yes	GCST90429777	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429778	yes	GCST90429778	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429779	yes	GCST90429779	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429780	yes	GCST90429780	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429781	yes	GCST90429781	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429782	yes	GCST90429782	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429783	yes	GCST90429783	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429784	yes	GCST90429784	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429785	yes	GCST90429785	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429786	yes	GCST90429786	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429787	yes	GCST90429787	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429788	yes	GCST90429788	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429789	yes	GCST90429789	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429790	yes	GCST90429790	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429791	yes	GCST90429791	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429792	yes	GCST90429792	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429793	yes	GCST90429793	the cohorts of its record in the GWAS Catalog: UKB
+GCST90429794	yes	GCST90429794	the cohorts of its record in the GWAS Catalog: UKB
+GCST90503483	yes	GCST90503483	the cohorts of its record in the GWAS Catalog: FinnGen, UKB, MVP, AllofUs
+GCST90558258	yes	GCST90558258	the cohorts of its record in the GWAS Catalog: UKB
+GCST90435144	yes	GCST90435144	the cohorts of its record in the GWAS Catalog: UKB
+GCST90435145	yes	GCST90435145	the cohorts of its record in the GWAS Catalog: UKB
+GCST90624053	yes	GCST90624053	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90319877	yes	GCST90319877	the cohorts of its record in the GWAS Catalog: FinnGen, CHB, UKB, MyCode, IHCS, AllOfUs, deCODE, EB
+GCST90728695	yes	PMID 40038546	by hand: the paper derives a score "from the HF all GWAS, excluding UK Biobank (UKB) participants"
+GCST90728696	yes	GCST90728696	the cohorts of its record in the GWAS Catalog: ARIC, Bio-SHiFT, TRIUMPH, Doetinchem, BioVU, CHB, DBDS, CHS, discovEHR, EPIC-Norfolk, EB, FHS, GoDARTS, HFPGR, MAGnet, MDC, ORIGIN, PIVUS, PROSPER, SHIP, TwinGene, UKB, ULSAM, deCODE
+GCST90728697	yes	GCST90728697	the cohorts of its record in the GWAS Catalog: BioVU, CHS, discovEHR, GoDARTS, PIVUS, UKB, ULSAM, deCODE
+GCST90728698	yes	GCST90728698	the cohorts of its record in the GWAS Catalog: Bio-SHiFT, TRIUMPH, Doetinchem, BioVU, CHS, discovEHR, EB, GoDARTS, HFPGR, MAGnet, PIVUS, UKB, ULSAM, deCODE
+GCST90310294	yes	GCST90310294	the cohorts of its record in the GWAS Catalog: ICBP, UKB, MVP, BioVU
+GCST90310295	yes	GCST90310295	the cohorts of its record in the GWAS Catalog: ICBP, UKB, MVP, BioVU
+GCST90310296	yes	GCST90310296	the cohorts of its record in the GWAS Catalog: ICBP, UKB, MVP, BioVU
+GCST90428446	yes	GCST90428446	the cohorts of its record in the GWAS Catalog: UKB
+GCST90428447	yes	GCST90428447	the cohorts of its record in the GWAS Catalog: UKB
+GCST90428448	yes	GCST90428448	the cohorts of its record in the GWAS Catalog: UKB
+GCST90428600	yes	GCST90428600	the cohorts of its record in the GWAS Catalog: GS:SFHS, FinnGen, KP, MPP, GlobalGout, NHS, HPFS, MGBB, UKB
+GCST90428601	yes	GCST90428601	the cohorts of its record in the GWAS Catalog: GS:SFHS, FinnGen, KP, MPP, GlobalGout, NHS, HPFS, MGBB, UKB
+GCST90428602	yes	GCST90428602	the cohorts of its record in the GWAS Catalog: GS:SFHS, FinnGen, KP, MPP, GlobalGout, NHS, HPFS, MGBB, UKB
+GCST90444487	yes	GCST90444487	the cohorts of its record in the GWAS Catalog: GIANT, MAGIC, GLGC, MVP, FinnGen, UKB
+GCST90444488	no	GCST90444488	the cohorts of its record in the GWAS Catalog: GIANT, MAGIC, GLGC, MVP, FinnGen
+GCST90320057	yes	GCST90320057	the cohorts of its record in the GWAS Catalog: UKB, FinnGen, BBJ
+GCST90320058	yes	GCST90320058	the cohorts of its record in the GWAS Catalog: UKB, FinnGen, BBJ
+GCST90320059	yes	GCST90320059	the cohorts of its record in the GWAS Catalog: UKB, FinnGen, BBJ
+GCST90320065	yes	GCST90320065	the cohorts of its record in the GWAS Catalog: UKB, FinnGen, BBJ
+GCST90572789	yes	GCST90572789	the cohorts of its record in the GWAS Catalog: CHB, DBDS, UKB, HUNT, MGI, ThyroidOmics
+GCST90572790	yes	GCST90572790	the cohorts of its record in the GWAS Catalog: CHB, DBDS, UKB, HUNT, MGI, ThyroidOmics
+GCST90572791	yes	GCST90572791	the cohorts of its record in the GWAS Catalog: CHB, DBDS, UKB, FinnGen, 23andMe
+GCST90483463	yes	GCST90483463	the cohorts of its record in the GWAS Catalog: UKB, EB, FinnGen, DBDS, CHB, deCODE
+GCST90483464	yes	GCST90483464	the cohorts of its record in the GWAS Catalog: UKB, EB, FinnGen, DBDS, CHB, deCODE
+GCST90483465	yes	GCST90483465	the cohorts of its record in the GWAS Catalog: UKB, EB, FinnGen, DBDS, CHB, deCODE
+GCST90483466	yes	GCST90483466	the cohorts of its record in the GWAS Catalog: UKB, EB, FinnGen, DBDS, CHB, deCODE
+GCST90483467	yes	GCST90483467	the cohorts of its record in the GWAS Catalog: UKB, EB, FinnGen, DBDS, CHB, deCODE
+GCST90483468	yes	GCST90483468	the cohorts of its record in the GWAS Catalog: UKB, EB, FinnGen, DBDS, CHB, deCODE
+GCST90483475	yes	GCST90483475	the cohorts of its record in the GWAS Catalog: UKB, EB, deCODE, ALSPAC
+GCST90483477	yes	GCST90483477	the cohorts of its record in the GWAS Catalog: UKB, EB, deCODE
+GCST90483481	yes	GCST90483481	the cohorts of its record in the GWAS Catalog: UKB, EB, deCODE, ALSPAC
+GCST90483483	yes	GCST90483483	the cohorts of its record in the GWAS Catalog: UKB, EB, deCODE
+GCST90483486	yes	GCST90483486	the cohorts of its record in the GWAS Catalog: UKB, EB, deCODE, ALSPAC
+GCST90483487	yes	GCST90483487	the cohorts of its record in the GWAS Catalog: UKB, deCODE
+GCST90483488	yes	GCST90483488	the cohorts of its record in the GWAS Catalog: UKB, EB, deCODE
+GCST90483500	yes	GCST90483500	the cohorts of its record in the GWAS Catalog: UKB, FinnGen, EB
+GCST90483501	yes	GCST90483501	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90483502	yes	GCST90483502	the cohorts of its record in the GWAS Catalog: UKB, FinnGen
+GCST90568440	no	GCST90568440	the cohorts of its record in the GWAS Catalog: ABCD, ALSPAC, BDAPUSC, CATSS, CHDS, COGA, COPSAC2010, DMHDS, E-Risk, FTC, Generation_R, GINI, GSMS, IBG, INMA, INSchool, MCTFR, MoBa, MSUTR, MUSP, NFBC1986, NTR, QIMR, Raine Study, TCHAD, TEDS, TRAILS, VTSABD
+GCST90568441	no	GCST90568441	the cohorts of its record in the GWAS Catalog: ABCD, ALSPAC, BDAPUSC, CATSS, CHDS, COGA, COPSAC2010, DMHDS, E-Risk, FTC, Generation_R, GINI, GSMS, IBG, INMA, INSchool, MCTFR, MoBa, MSUTR, MUSP, NFBC1986, NTR, QIMR, Raine Study, TCHAD, TEDS, TRAILS, VTSABD
+GCST90301695	yes	GCST90301695	the cohorts of its record in the GWAS Catalog: UKB
+GCST90301696	yes	GCST90301696	the cohorts of its record in the GWAS Catalog: UKB
+GCST90301697	yes	GCST90301697	the cohorts of its record in the GWAS Catalog: UKB
+GCST90301698	yes	GCST90301698	the cohorts of its record in the GWAS Catalog: UKB
+GCST90301699	yes	GCST90301699	the cohorts of its record in the GWAS Catalog: UKB
+GCST90301700	yes	GCST90301700	the cohorts of its record in the GWAS Catalog: UKB
+GCST90301701	yes	GCST90301701	the cohorts of its record in the GWAS Catalog: UKB
+GCST90301702	yes	GCST90301702	the cohorts of its record in the GWAS Catalog: UKB
+GCST90301703	yes	GCST90301703	the cohorts of its record in the GWAS Catalog: UKB
+GCST90301704	yes	GCST90301704	the cohorts of its record in the GWAS Catalog: UKB
+GCST90335174	yes	GCST90335174	the cohorts of its record in the GWAS Catalog: UKB
+GCST90335175	yes	GCST90335175	the cohorts of its record in the GWAS Catalog: UKB
+GCST90335176	yes	GCST90335176	the cohorts of its record in the GWAS Catalog: UKB
+GCST90501670	yes	GCST90501670	the cohorts of its record in the GWAS Catalog: UKB
+GCST90501671	yes	GCST90501671	the cohorts of its record in the GWAS Catalog: UKB
+GCST90501672	yes	GCST90501672	the cohorts of its record in the GWAS Catalog: UKB
