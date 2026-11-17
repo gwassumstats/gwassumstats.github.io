@@ -1,5 +1,5 @@
 """Writes a corrected copy of every study that data/corrections.tsv says to take from its source again, to flip, to
-clean or to give another N.
+clean, to give another N or to give its alleles.
 
   SUMSTATS_CORRECTIONS=<a folder outside the repository> uv run --group qc python -m corrections [RELEASE] \\
       [--snplist FILE --bim-prefix PREFIX] [--account NAME]
@@ -21,6 +21,7 @@ to any other folder.
 """
 import argparse
 import datetime
+import functools
 import hashlib
 import json
 import os
@@ -65,6 +66,7 @@ def correct(plan: dict[str, list[dict]], sources: dict[str, str], out: Path, cod
     `sources`: the release's file of each study; `snplist`, `bim_prefix`: the reference that a study taken from its
     source is formatted with; `sizes`: {accession: N}, the GWAS Catalog's, for a source's file that has no N."""
     lines = []
+    listed = functools.cache(lambda: pd.read_csv(snplist, sep="\t", dtype=str).drop_duplicates("SNP").set_index("SNP"))  # the HapMap3 list's alleles, read once if a fix asks
     for study, fixes in plan.items():
         source, copy, record = Path(sources[study]), out / "sumstats" / f"{study}.sumstats", out / "provenance" / f"{study}.json"
         rows = before = fix.read(source)
@@ -77,7 +79,7 @@ def correct(plan: dict[str, list[dict]], sources: dict[str, str], out: Path, cod
             rows = fix.read(copy)
             changed = {"rows_of_the_source": taken["formatting"]["rows"], "snps_also_in_the_release_file": int(rows["SNP"].isin(before["SNP"]).sum())}
         for row in fixes[bool(taken):]:
-            rows, what = fix.FIXES[row["fix"]](rows, row["value"])
+            rows, what = fix.FIXES[row["fix"]](rows, row["value"], listed)
             changed |= what
         rows.to_csv(copy, sep="\t", index=False, lineterminator="\n")
         if list(fix.read(copy).columns) != list(before.columns) or not fix.finite(rows["Z"]).all() or rows["SNP"].duplicated().any() and any(r["fix"] == "clean" for r in fixes):
@@ -121,13 +123,15 @@ def main():
     from_source = [study for study, fixes in plan.items() if fixes[0]["fix"] == "source"]
     if from_source and not (args.snplist and args.bim_prefix):
         parser.error(f"{len(from_source)} studies are taken from their source: name the reference they are formatted with, --snplist and --bim-prefix")
+    if not args.snplist and any(row["fix"] == "alleles" for fixes in plan.values() for row in fixes):
+        parser.error("a study gets its alleles from the HapMap3 list: name it, --snplist")
     sizes = {row["accession"]: float(row["n"]) for row in cite.table(ROOT / "data" / "samples.tsv")}
     code = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True).stdout.strip()
     parts = [{study: plan[study] for study in plan if study not in from_source}, *({study: plan[study]} for study in from_source)]  # a task for each study from its source, one for the rest
     parts = [part for part in parts if part]
     k = len(parts)
     if parts:
-        submitted(args.name, out, args.account, correct, parts, [{study: index[study] for study in part} for part in parts], [out] * k, [code] * k, [args.snplist] * k, [args.bim_prefix] * k, [sizes] * k)
+        submitted(args.name, out / "submitit-logs", args.account, correct, parts, [{study: index[study] for study in part} for part in parts], [out] * k, [code] * k, [args.snplist] * k, [args.bim_prefix] * k, [sizes] * k)
     missing = [study for study, fixes in asked.items() if not standing(study, fixes, out)]
     records = [json.loads((out / "provenance" / f"{study}.json").read_text()) for study in asked if study not in missing]
     pd.DataFrame([{"id": record["study"], "fixes": "; ".join(fix["fix"] + (f" {fix['value']}" if fix["value"] else "") for fix in record["fixes"]),

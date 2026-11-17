@@ -42,6 +42,13 @@ def test_another_n_scales_each_snp_s_n(source):
     assert list(rows["N"]) == ["201.000", "201.000", "180.000", "100.500", "201.000", "201.000"] and changed == {"n_scaled_by": 2.0, "n_largest_before": 100.5}
 
 
+def test_a_file_of_one_pair_of_letters_gets_each_snp_s_alleles(source):
+    alleles = pd.DataFrame({"A1": ["G", "C", "T"], "A2": ["A", "T", "G"]}, index=pd.Index(["rs1", "rs2", "rs4"], name="SNP"))
+    rows, changed = fix.lettered(fix.read(source), alleles)
+    assert rows[["SNP", "A1", "A2", "Z"]].values.tolist() == [["rs1", "G", "A", "1.2300"], ["rs2", "T", "C", "-0.5"], ["rs2", "T", "C", "0.7"], ["rs4", "T", "G", "0"]]  # the second by the alphabet first; Z as it was
+    assert changed == {"alleles_from_the_list": 4, "not_in_the_list": 2}  # rs3 and rs5 are not of the list
+
+
 def test_a_copy_is_written_with_its_record_and_the_source_is_left_alone(source, tmp_path):
     out = tmp_path / "scratch"
     plan = planned([{"id": "X", "fix": "clean", "value": "", "why": "rows listed twice"}, {"id": "X", "fix": "flip", "value": "", "why": "signed for A2"},
@@ -183,6 +190,6 @@ def test_the_panel_rule_gives_the_release_s_own_panels(release):
 def test_the_table_of_corrections_names_studies_of_the_release_and_says_why():
     rows = cite.table(ROOT / "data" / "corrections.tsv")
     assert {row["id"] for row in rows} <= STUDIES and all(row["why"] and row["fix"] in {*fix.FIXES, "source", "relabel"} for row in rows)
-    assert all(bool(row["value"]) == (row["fix"] in ("n", "relabel", "source")) for row in rows)
+    assert all(bool(row["value"]) == (row["fix"] in ("n", "relabel", "source", "alleles")) for row in rows)
     assert all(re.fullmatch(r"GCST\d+|https://\S+", fix.sourced(row["value"])["source"]) for row in rows if row["fix"] == "source") and planned(rows)
     assert sum(row["fix"] == "flip" for row in rows) == 6 and sum(row["fix"] == "relabel" for row in rows) == 6

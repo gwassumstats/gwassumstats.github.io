@@ -163,7 +163,7 @@ def main():
     behind = lambda: [k for k, study in enumerate(corrected) if lacking(study, corrected[study], partners[k], out, covered[study])]
     if todo := [k for k in behind() if not args.only or list(corrected)[k] in args.only]:
         studies = [list(corrected)[k] for k in todo]
-        submitted(args.name, out, args.account, rerun, studies, [d.at[study, "anc"] for study in studies], [corrected[study] for study in studies], [partners[k] for k in todo], [out] * len(todo),
+        submitted(args.name, out / "submitit-logs", args.account, rerun, studies, [d.at[study, "anc"] for study in studies], [corrected[study] for study in studies], [partners[k] for k in todo], [out] * len(todo),
                   [settings] * len(todo), [covered[study] for study in studies], memory=16, minutes=120, strict=False)
     if left := [list(corrected)[k] for k in behind()]:
         parser.exit(1, f"LDSC has yet to finish for {len(left)} studies ({', '.join(left[:3])}{', ...' if len(left) > 3 else ''}): see their logs, or give the command again; nothing was written\n")

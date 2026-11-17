@@ -6,13 +6,12 @@ import sys
 from pathlib import Path
 
 
-def submitted(name: str, out: Path, account: str | None, function, *arguments, memory: int = 8, minutes: int = 60, strict: bool = True) -> list:
+def submitted(name: str, logs: Path, account: str | None, function, *arguments, memory: int = 8, minutes: int = 60, strict: bool = True) -> list:
     """Runs `function` over `arguments`, a Slurm task each, under the name `name`, and returns the tasks' results. The
-    logs go to submitit-logs/ under `out`, with a record of what was submitted and how it ended. A task that failed
-    raises what it raised, or, if not `strict`, gives None in place of its result."""
+    logs go to the folder `logs`, with a record of what was submitted and how it ended. A task that failed raises what
+    it raised, or, if not `strict`, gives None in place of its result."""
     import submitit  # only on O2: the group "qc"
 
-    logs = out / "submitit-logs"
     folder, record = logs / name, logs / f"{name}.log"
     if folder.exists() or record.exists() or subprocess.run(["squeue", "-h", "-u", getpass.getuser(), "-n", name], capture_output=True, text=True).stdout.strip():
         sys.exit(f"{name} has run already, or is running: choose another --name")

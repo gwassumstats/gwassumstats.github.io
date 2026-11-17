@@ -1,6 +1,7 @@
 """The fixes a file can get, on its rows as text: nothing but what a fix changes is rewritten."""
 import math
 
+import numpy as np
 import pandas as pd
 
 
@@ -35,6 +36,15 @@ def rescale(rows: pd.DataFrame, n: float) -> tuple[pd.DataFrame, dict]:
     return rows.assign(N=rows["N"].map(lambda value: f"{float(value) * n / largest:.3f}")), {"n_scaled_by": round(n / largest, 6), "n_largest_before": float(largest)}
 
 
+def lettered(rows: pd.DataFrame, alleles: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
+    """Each SNP with its own two alleles, from the HapMap3 list, the second by the alphabet as A1: for a file that has
+    one pair of letters at every SNP, while its Z is for the second of the SNP's alleles by the alphabet. `alleles`:
+    the list's A1 and A2, by SNP. A SNP that the list lacks is dropped."""
+    known = rows["SNP"].isin(alleles.index)
+    a, b = (alleles.loc[rows.loc[known, "SNP"], column].to_numpy(str) for column in ("A1", "A2"))
+    return rows[known].assign(A1=np.where(a > b, a, b), A2=np.where(a > b, b, a)), {"alleles_from_the_list": int(known.sum()), "not_in_the_list": int((~known).sum())}
+
+
 def sourced(value: str) -> dict:
     """What a `source` fix says, as in "GCST006906; a1=Allele1; a2=Allele2; n=446696": where the study's statistics
     are (`source`: an accession of the GWAS Catalog, or a URL); the file's name in the study's folder, if the folder
@@ -52,4 +62,6 @@ def sourced(value: str) -> dict:
     return {"source": source, "file": given.pop("file", ""), "n": n, "roles": given}
 
 
-FIXES = {"flip": lambda rows, value: flip(rows), "clean": lambda rows, value: clean(rows), "n": lambda rows, value: rescale(rows, float(value))}
+# a fix: the rows, what the table says of it, and the HapMap3 list's alleles, read if asked for -> the rows, and what changed
+FIXES = {"flip": lambda rows, value, listed: flip(rows), "clean": lambda rows, value, listed: clean(rows), "n": lambda rows, value, listed: rescale(rows, float(value)),
+         "alleles": lambda rows, value, listed: lettered(rows, listed())}

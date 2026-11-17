@@ -15,7 +15,7 @@ from conftest import MEASURED, NAMES, NAN, PAPERS, RG, data_of, measured, write
 from names.__main__ import draft, trait
 from papers import cite, pubmed
 from papers.__main__ import choose, parse
-from qc import checks, labels
+from qc import checks, labels, signs
 from qc.scan import measure
 
 FAST = 1000  # PBKDF2 rounds, for tests that do not need the real cost
@@ -505,6 +505,23 @@ def test_a_file_is_measured_snp_by_snp(tmp_path):
     plain = tmp_path / "Y.sumstats"
     plain.write_text("SNP\tN\tZ\nrs1\t10\t1.5\n")
     assert measure(str(plain), pd.Index(["rs1"]))["columns"] == "SNP N Z" and "bad_alleles" not in measure(str(plain), pd.Index(["rs1"]))
+
+
+def test_the_signs_of_two_files_are_compared_at_the_snps_strong_in_both(tmp_path, monkeypatch):
+    alleles = pd.DataFrame({"A1": ["A", "C", "A", "A", "G"], "A2": ["G", "T", "C", "T", "A"]}, index=pd.Index(["rs1", "rs2", "rs3", "rs4", "rs5"], name="SNP"))
+    files = {"X": "rs1\tA\tG\t9\nrs2\tT\tC\t-8\nrs3\tT\tG\t7\nrs4\tA\tT\t9\nrs5\tG\tA\t2\nrs6\tA\tG\t9\nrs1\tA\tG\t-9\n",  # rs2 the other way round; rs3 on the other strand
+             "Y": "rs1\tG\tA\t-5\nrs2\tC\tT\t6\nrs3\tC\tA\t6\nrs5\tG\tA\t5\n",  # as X at rs1 and rs2, against it at rs3
+             "W": "rs1\tA\tG\t5\nrs2\tC\tT\t-5\nrs3\tA\tC\t-5\n"}
+    for name, rows in files.items():
+        (tmp_path / f"{name}.sumstats").write_text("SNP\tA1\tA2\tZ\n" + rows)
+    assert signs.oriented(str(tmp_path / "X.sumstats"), alleles).to_dict() == {"rs1": 1, "rs2": 1, "rs3": 1}  # not rs4, which reads either way; nor rs5, too weak; nor rs6, not of the list
+    (tmp_path / "list.tsv").write_text("SNP\tA1\tA2\n" + "".join(f"{snp}\t{row.A1}\t{row.A2}\n" for snp, row in alleles.iterrows()))
+    monkeypatch.setattr(signs, "LEAST", 3)
+    pairs = signs.compared({name: str(tmp_path / f"{name}.sumstats") for name in files}, str(tmp_path / "list.tsv"))
+    assert pairs.values.tolist() == [["X", "Y", 3, 2], ["X", "W", 3, 1], ["Y", "W", 3, 2]]
+    monkeypatch.setattr(signs, "KEPT", 1)
+    assert signs.chosen(pairs, {"X": "one trait", "Y": "another", "W": "one trait"})[["a", "b"]].values.tolist() == [["X", "Y"], ["X", "W"], ["Y", "W"]]  # X and W are of one trait; the others are someone's clearest
+    assert signs.chosen(pairs.iloc[:2], {"X": "t", "Y": "u", "W": "v"})[["a", "b"]].values.tolist() == [["X", "Y"], ["X", "W"]]  # each is the only pair of Y, of W
 
 
 def test_encryption_round_trip():

@@ -63,7 +63,7 @@ def main():
     if unknown := [accession for accession in args.accessions if accession not in files.index]:
         parser.error(f"the release has no study {unknown[0]}")
     k = len(args.accessions)
-    lines = submitted(args.name, out, args.account, again, args.accessions, [files[a] for a in args.accessions], [float(sizes[a]) for a in args.accessions], [out] * k, [args.snplist] * k, [args.bim_prefix] * k)
+    lines = submitted(args.name, out / "submitit-logs", args.account, again, args.accessions, [files[a] for a in args.accessions], [float(sizes[a]) for a in args.accessions], [out] * k, [args.snplist] * k, [args.bim_prefix] * k)
     pd.DataFrame(lines).to_csv(out / "check.tsv", sep="\t", index=False)
     print(f"{sum(line['identical'] for line in lines)} of {len(lines)} files are the release's, byte for byte")
 
